@@ -1,0 +1,189 @@
+{
+  "schema_version": "1.0",
+  "review_id": "HAP-RICHTAP-06-IRQ-STOP-SERIALIZATION-20261102",
+  "generated_local_date": "2026-11-02",
+  "driver": "haptic_86938",
+  "status": "POTENTIAL_RICHTAP_IRQ_STOP_WORK_CONCURRENCY_WITHOUT_SHARED_LOCK; STATIC_PATH_CONFIRMED; RUNTIME_UNVERIFIED",
+  "binding": {
+    "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "candidate_module_sha256": "175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "reconstruction_map_sha256": "97b0404507e15d07a16f7f669eefa2b0f80418ac4a8e427df64551880e981143",
+    "prior_stop_worker_review": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/richtap_stop_work_callback_teardown_review.json",
+    "prior_stop_worker_review_sha256": "8e115eaba19e2b12b27a1ecde44d9a3a9add0bc0f844cbdc47737c467b344ef3"
+  },
+  "docker_read_only_elf_inspection": {
+    "container_image": "nubia-sm8850-kernel-builder:latest",
+    "container_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "tool": "LLVM readelf 18.1.3",
+    "mount_mode": "repository mounted read-only",
+    "stock_module_path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "candidate_module_path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "candidate_module_sha256": "175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c",
+    "commands": [
+      "llvm-readelf -s --wide /work/kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+      "llvm-readelf -r --wide /work/kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko"
+    ],
+    "candidate_symbols": [
+      "irq_handle",
+      "richtap_stop_work",
+      "aw8693x_get_irq_state",
+      "aw8693x_irq_clear",
+      "aw8693x_stop",
+      "aw8693x_set_rtp_aei"
+    ],
+    "interpretation": "Confirms the candidate module and current callback-table targets in the pinned builder image. Stock callback identity is additionally bound by the stock module hash, Ghidra/assembly evidence below, and the prior stock ELF resolution review.",
+    "candidate_data_relocations": [
+      {
+        "target": "aw8693x_get_irq_state",
+        "offset": "0x3b0"
+      },
+      {
+        "target": "aw8693x_stop",
+        "offset": "0x3d0"
+      },
+      {
+        "target": "aw8693x_set_rtp_data",
+        "offset": "0x468"
+      },
+      {
+        "target": "aw8693x_irq_clear",
+        "offset": "0x488"
+      },
+      {
+        "target": "aw8693x_set_rtp_aei",
+        "offset": "0x4a8"
+      },
+      {
+        "target": "aw8693x_get_glb_state",
+        "offset": "0x4f8"
+      },
+      {
+        "target": "aw8693x_rtp_get_fifo_afs",
+        "offset": "0x508"
+      },
+      {
+        "target": "aw8693x_rtp_get_fifo_afi",
+        "offset": "0x518"
+      }
+    ],
+    "stock_commands": [
+      "llvm-readelf --version",
+      "llvm-readelf -r --wide /work/reference_modules/full_vendor_boot/haptic_86938.ko"
+    ]
+  },
+  "mapped_evidence": [
+    {
+      "function": "irq_config",
+      "stock_entry": "00108368",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_067_irq_config_exact.S",
+      "candidate_source_sha256": "cefeed224bd60749bac4bd5c7457e2f720723ac248304d16051a579360ed99ab",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0066_irq_config_00108368.asm",
+      "stock_assembly_sha256": "193472d744db86fbf869b0339e6de679fe4d73ce58b0d2320e07580b7fa76f65",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0066_00108368_irq_config.c",
+      "stock_ghidra_decompilation_sha256": "6e1f30fc5e0a16a35a24fa262156061375522d47b4877ea78d6a06ba71fdcc40"
+    },
+    {
+      "function": "irq_handle",
+      "stock_entry": "00109090",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_073_irq_handle_exact.S",
+      "candidate_source_sha256": "4ece4db884100fc3d631571d0b8a779e54b70a782623cc22611417d42818b706",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0073_irq_handle_00109090.asm",
+      "stock_assembly_sha256": "3cf59ea3df996cd316b402838fbd56a6a02b56515562e4a3eaf955777822bff5",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c",
+      "stock_ghidra_decompilation_sha256": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279"
+    },
+    {
+      "function": "richtap_update_fifo_data",
+      "stock_entry": "0010946c",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_136_richtap_update_fifo_data.c",
+      "candidate_source_sha256": "ac116df6363c353a9846cc8adde4c1562d65143d0b7205dfa33a0edb1dbaf685",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0074_richtap_update_fifo_data_0010946c.asm",
+      "stock_assembly_sha256": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0074_0010946c_richtap_update_fifo_data.c",
+      "stock_ghidra_decompilation_sha256": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e"
+    },
+    {
+      "function": "richtap_stop_work",
+      "stock_entry": "00108ba0",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_112_richtap_stop_work.c",
+      "candidate_source_sha256": "1b4df1b9e7c716d4f4554270a39e9def79c5ecc723e505eff3a7d25846d85127",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0071_richtap_stop_work_00108ba0.asm",
+      "stock_assembly_sha256": "255cbe283df945f8e4e62cde2df21f5a94656377412befc2c4be2ad26edc3f14",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0071_00108ba0_richtap_stop_work.c",
+      "stock_ghidra_decompilation_sha256": "ded7c7d4f14825b14120c2d0e45dc9abb6a5001e55f6ca28bd71b5cfa38718a0"
+    },
+    {
+      "function": "aw8693x_get_irq_state",
+      "stock_entry": "00103688",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_104_aw8693x_get_irq_state.c",
+      "candidate_source_sha256": "3cabac78caae322a70474027c4088d1176f5d9fc49e614e4dee107d86ee5cf41",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0003_aw8693x_get_irq_state_00103688.asm",
+      "stock_assembly_sha256": "3edc8791483bde198ca52e2e149ddab48b9bb9aa3129504967c8639d02d1ce98",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0003_00103688_aw8693x_get_irq_state.c",
+      "stock_ghidra_decompilation_sha256": "48d825f913d5474894d6468a7215eef15a2fc490a30099eb63a23ea2bec31af8"
+    },
+    {
+      "function": "aw8693x_irq_clear",
+      "stock_entry": "00105684",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_058_aw8693x_irq_clear.c",
+      "candidate_source_sha256": "0b811f940f4b1a2245961c5cfefd1155fd0f3a7f5dcb36c73badb7972c4c51c4",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0028_aw8693x_irq_clear_00105684.asm",
+      "stock_assembly_sha256": "07526fe9db6fc00a7da99bd0dbc6ad4db3f270fc36b7a7576ce97bab894d29d8",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0028_00105684_aw8693x_irq_clear.c",
+      "stock_ghidra_decompilation_sha256": "2686ca9470ea094b320deceaceacd75c2c200ff9ee7cce912dcc749c85dd9585"
+    },
+    {
+      "function": "aw8693x_stop",
+      "stock_entry": "00103d4c",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_118_aw8693x_stop.c",
+      "candidate_source_sha256": "b4eacd8636a7168c5035fc3e8428c3146948dd03bcd348888eb2e9a641d306e0",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0007_aw8693x_stop_00103d4c.asm",
+      "stock_assembly_sha256": "e981210fc1a403ed4030ca227b02dafc83b8c564329829f23c26bccfdccf88fd",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0007_00103d4c_aw8693x_stop.c",
+      "stock_ghidra_decompilation_sha256": "017483a186ed349feecb572aef77ccd37e10c47e391785485563cf16fc092300"
+    },
+    {
+      "function": "aw8693x_set_rtp_aei",
+      "stock_entry": "00105ac0",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_040_aw8693x_set_rtp_aei.c",
+      "candidate_source_sha256": "0464d414b7463072ece502e769f9f391f740f03a412b19fe7f670fd9a5d0f04b",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0032_aw8693x_set_rtp_aei_00105ac0.asm",
+      "stock_assembly_sha256": "9d85048e3ac7ae7ed593e4948b169e7a79c39ee561fb2b9a4a7e62de2701ab5c",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0032_00105ac0_aw8693x_set_rtp_aei.c",
+      "stock_ghidra_decompilation_sha256": "12d3e35959326e1254505191b54e2f7cc3c112c973d65fcf16216875e5221b21",
+      "candidate_arm64_include": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_040_aw8693x_set_rtp_aei_arm64.inc",
+      "candidate_arm64_include_sha256": "c250320ee09646c103f55d0cccad19eaa9eeb94c40b1ea42fce745119d91ea97"
+    }
+  ],
+  "concurrency_evidence": {
+    "irq_registration": "Stock irq_config registers irq_handle as the threaded handler through devm_request_threaded_irq, with a null primary handler and flags 0x2002.",
+    "irq_handler_locking": "irq_handle reads state+0x6bc and calls aw8693x_get_irq_state. In its Richtap-active branch (snapshot value 1), it calls richtap_update_fifo_data and FIFO callbacks without acquiring state+0x2f0. The other non-Richtap/audio path uses state+0x370, which does not serialize with the stop worker mutex.",
+    "irq_state_and_fifo": "aw8693x_get_irq_state reads I2C register 0x02. richtap_update_fifo_data copies into state+0x608 and updates state+0x620/+0x6b8 while it services RTP data.",
+    "stop_worker_locking": "richtap_stop_work, queued by the stop ioctl path, takes state+0x2f0 and invokes aw8693x_irq_clear, aw8693x_stop, then aw8693x_set_rtp_aei(0), finally clearing state+0x6bc. The IRQ handler does not take this mutex in its active Richtap branch.",
+    "shared_device_access": "aw8693x_irq_clear also reads I2C register 0x02. aw8693x_stop performs I2C writes to registers 0x45, 0x08 and 0x09 and polls register 0x3f; aw8693x_set_rtp_aei updates register 0x03. The two contexts can therefore overlap state/FIFO and device-operation sequences if an IRQ is serviced while the stop work runs."
+  },
+  "finding": {
+    "id": "HAP-RICHTAP-06",
+    "title": "Richtap IRQ FIFO service is not serialized with ioctl stop work",
+    "severity": "medium_potential_concurrency",
+    "confidence": "moderate_static_lockset_and_callpath",
+    "condition": "An active Richtap threaded IRQ handler overlaps the queued state+0x668 stop worker.",
+    "impact": "Potential interleaving of FIFO/state updates and stop-related I2C operations. Exact hardware effect and whether the device exposes a user-visible failure are not established.",
+    "runtime_reproduced": false,
+    "hardware_tested": false,
+    "separate_from": "HAP-RICHTAP-03 concerns stop-work lifetime during remove; HAP-RICHTAP-06 concerns lock coverage while the device remains active."
+  },
+  "hardening_follow_up": [
+    "Keep the stock-exact reconstruction unchanged.",
+    "In a separate hardening candidate, coordinate the Richtap IRQ path and stop worker with a lock shared by both, or disable the device IRQ source and synchronize the threaded handler around the stop sequence.",
+    "Validate lock ordering, FIFO completion, and IRQ re-enable behavior with a runtime stress test before accepting a fix."
+  ],
+  "limits": [
+    "This is a static lockset/call-path finding; no concurrent schedule was reproduced.",
+    "I2C helper transactions may serialize individually, but this review does not establish transaction-level serialization across the full stop sequence.",
+    "No hardware behavior or specific register read-to-clear effect is claimed.",
+    "No reconstruction source changed; no rebuild was required. Docker was used read-only to inspect both stock and candidate module artifacts."
+  ]
+}
