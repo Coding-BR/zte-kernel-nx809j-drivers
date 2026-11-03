@@ -32,6 +32,8 @@ The Ghidra call export is reconciled against every hardening cancel/drain. It re
 
 One work item remains unusual: probe initializes `tiktap_work_routine` at `+0x628`, but the full decompiled-reference scan and direct work-queue call inventory show no in-module enqueue path targeting it. The two Richtap ioctl enqueue paths target `+0x648` (`richtap_rtp_work`) and `+0x668` (`richtap_stop_work`); ioctl `0x5213`, named `TIKTAP_RTP_MIX_MODE`, only logs and returns. The remove keeps its `+0x628` cancellation as a defensive drain. This evidence establishes no producer inside the preserved module analysis, while leaving out-of-module scheduling outside the claim; details are recorded in `async_teardown_ledger.json`.
 
+The follow-up [Richtap ioctl proxy ABI attestation](../haptic_ioctl_proxy_abi_20261103/README.md) records the target `struct file.private_data` offset assertion and the rebound Docker build for the current candidate.
+
 ## Limits
 
 This is static synchronization hardening. Runtime unbind/reprobe stress, lockdep, KCSAN, target hardware behavior, and an independent review remain open. The haptic driver is still incomplete and the new wrappers are not stock-equivalent. The strict import-parity audit may flag lifetime-only imports; see the final report for the exact result.

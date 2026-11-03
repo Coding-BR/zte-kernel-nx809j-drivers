@@ -412,3 +412,6 @@ long richtap_file_unlocked_ioctl(struct file *file, unsigned int command,
 	haptic_lifetime_exit_file(lifetime);
 	return ret;
 }
+
+_Static_assert(__builtin_offsetof(struct file, private_data) == 0x20,
+	       "stock Richtap ioctl assembly reads file->private_data at +0x20");
