@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0
-/* Joern-only semantic model from the stock Ghidra decompilation.
- * Kbuild compiles the matching exact .S function instead.
+/* Joern-only hardening model for the candidate vibrator_init.
+ * The stock Ghidra decompilation remains preserved under offline_static/.
+ * Kbuild assembles the corresponding .S implementation instead.
  */
 #include <stdbool.h>
 typedef unsigned char undefined;
@@ -25,12 +26,13 @@ void vibrator_init(long param_1)
   *(undefined8 *)(param_1 + 0xa8) = "zte_vibrator";
   *(code **)(param_1 + 0xd8) = brightness_get;
   *(code **)(param_1 + 200) = brightness_set;
-  iVar1 = devm_led_classdev_register_ext
-                    (*(long *)(param_1 + 0x328) + 0x20,(undefined8 *)(param_1 + 0xa8),0);
+  /* The lifecycle wrapper registers the LED child after full probe success. */
+  iVar1 = 0;
   if (iVar1 < 0) {
     _printk(&DAT_0010f3c2,"haptic_hv",0xfd5,"vibrator_init");
   }
-  iVar1 = sysfs_create_group(*(undefined8 *)(param_1 + 0xf8),vibrator_attribute_group);
+  /* The generic attribute group is also deferred until full probe success. */
+  iVar1 = 0;
   if (iVar1 < 0) {
     _printk(&DAT_0010ef6e,"haptic_hv",0xfdb,"vibrator_init");
   }

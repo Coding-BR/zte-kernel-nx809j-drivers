@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T08:23:57.689986Z",
+  "driver": "haptic_86938",
+  "builder_image": "nubia-sm8850-kernel-builder:latest",
+  "builder_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "source_kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+  "target_kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+  "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+  "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+  "bindgen_volume": "nx809j_bindgen_0695",
+  "kernel_output_seed_volume": "codex-kbuild-haptic_86938-1-bb2a4cd9d9f4",
+  "staged_source_root": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\haptic_86938_probe_interfaces_20261103_v2\\haptic_86938",
+  "fresh_module_source_copies": true,
+  "fresh_kernel_output_copies": true,
+  "environment": {
+    "PATH": "/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "ARCH": "arm64",
+    "LLVM": "1",
+    "LLVM_IAS": "1",
+    "jobs": 8
+  },
+  "build_command": "make -C /work/src/kernel/kernel_platform/common O=/work/kernel_out ARCH=arm64 LLVM=1 LLVM_IAS=1 M=/work/validation/haptic_86938/cycle_N KCFLAGS=\"-ffile-prefix-map=/work/validation/haptic_86938/cycle_N=/haptic_86938 -fdebug-prefix-map=/work/validation/haptic_86938/cycle_N=/haptic_86938\" -j 8 modules",
+  "initial_environment_attempt": {
+    "exit_code": 2,
+    "reason": "clang was not on PATH in the first invocation; no driver compilation completed. The corrected PATH is captured above.",
+    "log": "docker/cycle_1_initial_env_failure.log"
+  },
+  "cycles": [
+    {
+      "cycle": 1,
+      "exit_code": 0,
+      "kernel_output_volume": "codex-kbuild-haptic-ifaces-20261103-v2-c1",
+      "module_path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\haptic_86938_probe_interfaces_20261103_v2\\haptic_86938\\cycle_1\\haptic_86938.ko",
+      "module_sha256": "d2705ec78d029bd9510231c83d0e3f01da9133201d749e3e7933b0896fbae421",
+      "module_size_bytes": 6700448,
+      "log": "docker/cycle_1.log"
+    },
+    {
+      "cycle": 2,
+      "exit_code": 0,
+      "kernel_output_volume": "codex-kbuild-haptic-ifaces-20261103-v2-c2",
+      "module_path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\haptic_86938_probe_interfaces_20261103_v2\\haptic_86938\\cycle_2\\haptic_86938.ko",
+      "module_sha256": "d2705ec78d029bd9510231c83d0e3f01da9133201d749e3e7933b0896fbae421",
+      "module_size_bytes": 6700448,
+      "log": "docker/cycle_2.log"
+    }
+  ],
+  "reproducible": true,
+  "btf_note": "Both builds skipped BTF generation because vmlinux is unavailable in the pinned build image; module builds exited successfully.",
+  "build_input_notes": [
+    "Kbuild compiled the object list selected by the driver Makefile; the Joern-only semantic_model.c file is not an object target.",
+    "The semantic model was synchronized into the staged source copy after the successful build; this non-Kbuild file does not affect the module bytes."
+  ]
+}

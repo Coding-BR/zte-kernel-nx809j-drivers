@@ -54,16 +54,14 @@ vibrator_init:
     .inst 0xaa1f03e2
     .inst 0xf9001029
     .inst 0x91008100
-    .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, devm_led_classdev_register_ext
+    .inst 0x2a1f03e0
     .inst 0x37f80640
     .inst 0xf9407e60
     .inst 0x90000001
     .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, vibrator_attribute_group
     .inst 0x91000021
     .reloc .-4, R_AARCH64_ADD_ABS_LO12_NC, vibrator_attribute_group
-    .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, sysfs_create_group
+    .inst 0x2a1f03e0
     .inst 0x37f806c0
     .inst 0x910cc260
     .inst 0x52800021

@@ -5,6 +5,8 @@
 #include <linux/sysfs.h>
 #include <linux/types.h>
 
+#include "haptic_86938_internal.h"
+
 struct aw_haptic;
 
 ssize_t cont_drv_lvl_show(struct device *dev, struct device_attribute *attr,
@@ -49,6 +51,10 @@ static struct attribute_group aw8693x_vibrator_attribute_group = {
 int aw8693x_creat_node(struct aw_haptic *haptic)
 {
 	int ret;
+
+	/* Probe defers this group until every callback-owned resource is ready. */
+	if (!haptic_lifetime_aw_node_creation_allowed())
+		return 0;
 
 	ret = sysfs_create_group(*(struct kobject **)((char *)haptic + 0xf8),
 				 &aw8693x_vibrator_attribute_group);

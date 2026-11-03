@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "driver": "haptic_86938",
   "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
-  "candidate_sha256": "116f401d4f5d708f93d4c9cce26f516d1e0c0ac4a37c44aace2b0d6d453da051",
+  "candidate_sha256": "d2705ec78d029bd9510231c83d0e3f01da9133201d749e3e7933b0896fbae421",
   "reconstruction_mode": "partial_c_microtasks",
   "mappings": [
     {
@@ -36,8 +36,8 @@
       "stock_entry": "00103258",
       "source_file": "haptic_86938_fn_126_aw8693x_creat_node.c",
       "source_function": "aw8693x_creat_node",
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "status": "reviewed",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
       "kcfi_required": true,
       "kcfi_evidence": {
         "decision": "KCFI preamble observed",
@@ -81,11 +81,22 @@
         "attestation/haptic_aw8693x_creat_node_20261102/host_harness/harness_result.json",
         "workspace_tools/reconstruction_pipeline/hard_driver_job.haptic_86938_aw8693x_creat_node_20261102.json",
         "reverse_engineering/validation/reconstructed/haptic_86938/attestation/awrw_exact_reconstruction_20261102/mapping_review.json",
-        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/awrw_exact_reconstruction_20261102/assembly_comparison.json"
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/awrw_exact_reconstruction_20261102/assembly_comparison.json",
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_interface_publication_20261103/README.md",
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_interface_publication_20261103/probe_interface_publication_attestation.json",
+        "attestation/haptic_probe_interface_publication_20261103/README.md",
+        "attestation/haptic_probe_interface_publication_20261103/probe_interface_publication_attestation.json",
+        "attestation/haptic_probe_interface_publication_20261103/docker_builds.json",
+        "attestation/haptic_probe_interface_publication_20261103/canonical_audit.json",
+        "attestation/haptic_probe_interface_publication_20261103/candidate_symbols.txt",
+        "attestation/haptic_probe_interface_publication_20261103/source_sync.json",
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_interface_publication_20261103/candidate_kcfi_check.json",
+        "attestation/haptic_probe_interface_publication_20261103/candidate_kcfi_check.json"
       ],
-      "mapping_note": "Current Docker module SHA-256 d6177430412b5355d6b662eb79b2b8939b14a48c3c32f717b6f4c8e8e65e569f; 104-byte stock/candidate function has exact instructions, relocations and P-Code shape. Candidate Ghidra normalized comparison passes only with the declared narrow same-section/same-name object-versus-address-of fallback: the 40-byte sysfs group moved from .data+0x190 to .data+0x2a0. Fresh ELF audit confirms the same five ordered 0644 attributes, callbacks and terminator; current host harness and ten-callback KCFI comparison pass. Raw strict normalized-C equality is false; semantic equivalence and promotion remain NOT_ESTABLISHED.",
-      "independent_review": "PASS",
-      "review_disposition": "STOCK_EXACT_ASSEMBLY_MATCH"
+      "mapping_note": "The prior exact-body report applies only to its earlier candidate SHA-256 d6177430412b5355d6b662eb79b2b8939b14a48c3c32f717b6f4c8e8e65e569f. The current candidate adds a probe-time gate and calls the preserved sysfs-group body only during late publication; whole-function stock equivalence is not claimed.",
+      "independent_review": "PENDING_INDEPENDENT_REVIEW",
+      "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_interface_publication_20261103/README.md"
     },
     {
       "stock_function": "aw8693x_ram_get_f0",
@@ -2101,11 +2112,22 @@
         "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_partial_probe_teardown_20261103/docker_builds.json",
         "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_partial_probe_teardown_20261103/source_sync.json",
         "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_partial_probe_teardown_20261103/canonical_audit.json",
-        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_partial_probe_teardown_20261103/module_abi_audit.json"
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_partial_probe_teardown_20261103/module_abi_audit.json",
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_interface_publication_20261103/README.md",
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_interface_publication_20261103/probe_interface_publication_attestation.json",
+        "attestation/haptic_probe_interface_publication_20261103/README.md",
+        "attestation/haptic_probe_interface_publication_20261103/probe_interface_publication_attestation.json",
+        "attestation/haptic_probe_interface_publication_20261103/docker_builds.json",
+        "attestation/haptic_probe_interface_publication_20261103/canonical_audit.json",
+        "attestation/haptic_probe_interface_publication_20261103/candidate_symbols.txt",
+        "attestation/haptic_probe_interface_publication_20261103/source_sync.json",
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_interface_publication_20261103/candidate_kcfi_check.json",
+        "attestation/haptic_probe_interface_publication_20261103/candidate_kcfi_check.json"
       ],
       "independent_review": "PENDING_INDEPENDENT_REVIEW",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_remove_serialization_20261103/README.md"
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_interface_publication_20261103/README.md",
+      "mapping_note": "Declared lifecycle hardening deviation: sysfs/LED publication is deferred until the complete stock probe returns with its global state and misc registration; stock equivalence is not claimed for this wrapper."
     },
     {
       "stock_function": "aw_remove",
@@ -2194,8 +2216,8 @@
       "stock_entry": "00108468",
       "source_file": "haptic_86938_fn_068_vibrator_init_exact.S",
       "source_function": "vibrator_init",
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "status": "reviewed",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
       "kcfi_required": false,
       "kcfi_evidence": {
         "decision": "NO_VALID_KCFI_PREAMBLE",
@@ -2212,10 +2234,21 @@
         "attestation/haptic_aw_i2c_probe_20261101/candidate_ghidra_v2/ghidra_candidate_export_run.json",
         "attestation/haptic_aw_i2c_probe_20261101/protocol_core_v11/hard_protocol_report.json",
         "reverse_engineering/validation/reconstructed/haptic_86938/attestation/awrw_exact_reconstruction_20261102/mapping_review.json",
-        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/awrw_exact_reconstruction_20261102/assembly_comparison.json"
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/awrw_exact_reconstruction_20261102/assembly_comparison.json",
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_interface_publication_20261103/README.md",
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_interface_publication_20261103/probe_interface_publication_attestation.json",
+        "attestation/haptic_probe_interface_publication_20261103/README.md",
+        "attestation/haptic_probe_interface_publication_20261103/probe_interface_publication_attestation.json",
+        "attestation/haptic_probe_interface_publication_20261103/docker_builds.json",
+        "attestation/haptic_probe_interface_publication_20261103/canonical_audit.json",
+        "attestation/haptic_probe_interface_publication_20261103/candidate_symbols.txt",
+        "attestation/haptic_probe_interface_publication_20261103/source_sync.json",
+        "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_068_vibrator_init_semantic_model.c"
       ],
-      "independent_review": "PASS",
-      "review_disposition": "STOCK_EXACT_ASSEMBLY_MATCH"
+      "independent_review": "PENDING_INDEPENDENT_REVIEW",
+      "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_interface_publication_20261103/README.md",
+      "mapping_note": "Historical stock-exact review applies to the earlier candidate only. The current candidate intentionally suppresses the two registration calls during probe initialization and publishes interfaces after resource allocation; whole-function stock equivalence is not claimed."
     },
     {
       "stock_function": "haptic_init",

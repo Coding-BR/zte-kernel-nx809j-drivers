@@ -6,6 +6,7 @@
 #include <linux/interrupt.h>
 
 struct aw_haptic;
+struct attribute_group;
 struct device;
 struct file;
 struct i2c_client;
@@ -15,8 +16,12 @@ struct work_struct;
 struct haptic_lifetime;
 extern struct aw_haptic *g_aw_haptic;
 extern struct miscdevice richtap_misc;
+extern struct attribute_group vibrator_attribute_group;
 
 int aw_i2c_probe(struct i2c_client *client);
+void aw_remove(struct i2c_client *client);
+int aw8693x_creat_node(struct aw_haptic *haptic);
+bool haptic_lifetime_aw_node_creation_allowed(void);
 void haptic_lifetime_transition_begin(void);
 void haptic_lifetime_transition_end(void);
 int haptic_lifetime_misc_register(struct miscdevice *misc);

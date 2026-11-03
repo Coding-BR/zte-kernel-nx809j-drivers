@@ -16,6 +16,7 @@
 #include <linux/mutex.h>
 #include <linux/refcount.h>
 #include <linux/slab.h>
+#include <linux/sysfs.h>
 #include <linux/wait.h>
 #include <linux/workqueue.h>
 
@@ -43,6 +44,8 @@ static DEFINE_MUTEX(haptic_irq_stop_lock);
 static struct haptic_lifetime *active_lifetime;
 static void *haptic_partial_probe_state;
 static bool haptic_misc_registered;
+static bool haptic_probe_complete;
+static bool haptic_aw_node_creation_allowed;
 static atomic_t haptic_shutdown = ATOMIC_INIT(1);
 static atomic_t haptic_ram_callbacks = ATOMIC_INIT(0);
 static DECLARE_WAIT_QUEUE_HEAD(haptic_ram_callbacks_idle);
@@ -57,6 +60,7 @@ extern long richtap_file_unlocked_ioctl_stock_exact(struct file *file,
 							    unsigned long argument);
 extern void ram_load(const struct firmware *firmware, void *context);
 extern char *aw_ram_name;
+extern struct attribute_group vibrator_attribute_group;
 
 static void haptic_ram_firmware_complete(const struct firmware *firmware,
 					 void *context);
@@ -87,8 +91,10 @@ bool haptic_lifetime_is_shutting_down(void)
 
 int aw_i2c_probe(struct i2c_client *client)
 {
+	struct led_classdev *led_cdev;
 	int ret;
 	void *state;
+	bool cleanup = false;
 
 	/* Serialize the singleton shutdown gate across probe and remove. */
 	mutex_lock(&haptic_lifecycle_transition_lock);
@@ -100,6 +106,8 @@ int aw_i2c_probe(struct i2c_client *client)
 		return -EBUSY;
 	}
 	atomic_set(&haptic_shutdown, 0);
+	WRITE_ONCE(haptic_probe_complete, false);
+	WRITE_ONCE(haptic_aw_node_creation_allowed, false);
 	mutex_unlock(&haptic_lifetime_registry_lock);
 
 	ret = aw_i2c_probe_stock_exact(client);
@@ -107,14 +115,50 @@ int aw_i2c_probe(struct i2c_client *client)
 		atomic_set(&haptic_shutdown, 1);
 	} else {
 		state = i2c_get_clientdata(client);
-		if (state && READ_ONCE(g_aw_haptic) != state) {
-			mutex_lock(&haptic_lifetime_registry_lock);
-			haptic_partial_probe_state = state;
-			mutex_unlock(&haptic_lifetime_registry_lock);
+		if (!state || READ_ONCE(g_aw_haptic) != state) {
+			atomic_set(&haptic_shutdown, 1);
+			ret = state ? -ENOMEM : -ENODEV;
+			if (state) {
+				mutex_lock(&haptic_lifetime_registry_lock);
+				haptic_partial_probe_state = state;
+				mutex_unlock(&haptic_lifetime_registry_lock);
+				cleanup = true;
+			}
+		} else if (!READ_ONCE(haptic_misc_registered)) {
+			atomic_set(&haptic_shutdown, 1);
+			ret = -ENODEV;
+			cleanup = true;
+		} else {
+			led_cdev = (struct led_classdev *)((char *)state + 0xa8);
+			ret = devm_led_classdev_register_ext(&client->dev, led_cdev,
+							     NULL);
+			if (!ret && !READ_ONCE(led_cdev->dev))
+				ret = -ENODEV;
+			if (!ret)
+				ret = sysfs_create_group(&led_cdev->dev->kobj,
+							&vibrator_attribute_group);
+			if (!ret) {
+				WRITE_ONCE(haptic_aw_node_creation_allowed, true);
+				ret = aw8693x_creat_node(state);
+				WRITE_ONCE(haptic_aw_node_creation_allowed, false);
+			}
+			if (ret) {
+				atomic_set(&haptic_shutdown, 1);
+				cleanup = true;
+			} else {
+				WRITE_ONCE(haptic_probe_complete, true);
+			}
 		}
 	}
 	mutex_unlock(&haptic_lifecycle_transition_lock);
+	if (cleanup)
+		aw_remove(client);
 	return ret;
+}
+
+bool haptic_lifetime_aw_node_creation_allowed(void)
+{
+	return READ_ONCE(haptic_aw_node_creation_allowed);
 }
 
 void haptic_lifetime_transition_begin(void)
@@ -151,7 +195,8 @@ int haptic_lifetime_file_open(struct file *file)
 
 	mutex_lock(&haptic_lifetime_registry_lock);
 	state = READ_ONCE(g_aw_haptic);
-	if (!state || haptic_lifetime_is_shutting_down()) {
+	if (!state || !READ_ONCE(haptic_probe_complete) ||
+	    haptic_lifetime_is_shutting_down()) {
 		mutex_unlock(&haptic_lifetime_registry_lock);
 		return -ENODEV;
 	}
@@ -277,6 +322,7 @@ bool haptic_lifetime_block_file_access(void *state)
 	bool published;
 
 	atomic_set(&haptic_shutdown, 1);
+	WRITE_ONCE(haptic_probe_complete, false);
 	mutex_lock(&haptic_lifetime_registry_lock);
 	published = READ_ONCE(g_aw_haptic) == state;
 	if (published)

@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0",
+  "attestation_id": "haptic_probe_interface_publication_20261103",
+  "generated_utc": "2026-11-03T08:27:26.148484Z",
+  "driver": "haptic_86938",
+  "disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
+  "independent_review": "PENDING_INDEPENDENT_REVIEW",
+  "candidate": {
+    "sha256": "d2705ec78d029bd9510231c83d0e3f01da9133201d749e3e7933b0896fbae421",
+    "size_bytes": 6700448,
+    "source_base_commit": "c38382c6d448ea7b150bd879981d9287fa70d69c",
+    "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+  },
+  "finding": {
+    "summary": "The stock driver publishes the LED child and sysfs groups before probe-owned state and resources are fully initialized.",
+    "stock_order": [
+      "vibrator_init registers the LED child and generic sysfs group",
+      "haptic_init initializes additional device state",
+      "the probe creates the private workqueue and invokes AW function-table slot 1",
+      "RTP-buffer and FIFO-page allocations follow",
+      "misc registration and g_aw_haptic publication occur on the complete-success path"
+    ],
+    "risks": "sysfs stores and LED callbacks could run while probe state is partial; the misc device could accept open before the wrapper has completed late interface registration.",
+    "evidence": [
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0067_00108468_vibrator_init.c",
+        "sha256": "15429439cf9e786b13eedb60b08ef9331d42e3325fcb9a7caa2feca441cffe83",
+        "observation": "vibrator_init calls devm_led_classdev_register_ext and sysfs_create_group before hrtimer_init and state work/mutex setup"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+        "sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a",
+        "observation": "probe calls vibrator_init before haptic_init; later resource allocation and final misc/global publication follow"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+        "sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb",
+        "observation": "stock assembly for probe call ordering; table callback invocation at offset 0x5084"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_aw8693x_func_list_20261101/callback_table_audit.json",
+        "sha256": "770a19cec349b7dc6cd327a5e3ddc95f0676aaffe41cc4ac743f87ff9f6a741c",
+        "observation": "stock function table slot 1, offset 0x8, resolves to aw8693x_creat_node"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/sysfs_remove_window_review.json",
+        "sha256": "45a3c866a8af4a0733bb3cce58f52abb21a4d162f58f9ed01a46e101f3afd7eb",
+        "observation": "hash-bound review of callback slot and registration call locations"
+      }
+    ]
+  },
+  "candidate_changes": [
+    {
+      "source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_068_vibrator_init_exact.S",
+      "sha256": "7077df4eb9b1ee5a0d553bf52285309ff7dd9f55ebf07ff2a36f468814cf6fb8",
+      "change": "Replaces the LED registration and generic sysfs registration call instructions in vibrator_init with zero-success returns; preserves the remaining stock initialization sequence."
+    },
+    {
+      "source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_vibrator_init_support.inc",
+      "sha256": "7c4178aeee9fb984fe2aea05e582b76f44c63e5e21f5aff88b7239fd3d435de1",
+      "change": "Makes vibrator_attribute_group globally visible inside the module so the lifecycle wrapper can publish it after probe completion."
+    },
+    {
+      "source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_126_aw8693x_creat_node.c",
+      "sha256": "c5812641c584ebf8d21d9720852aee9541a8b6cdb50e61f8973af7880ea134bd",
+      "change": "Gates AW-specific group creation during stock probe; the lifecycle wrapper explicitly enables the call for late publication."
+    },
+    {
+      "source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+      "sha256": "3d958fc19b04eeaa062f6a6bcf2d33345d5aff99aaad7afe266dbcbef0e2e718",
+      "change": "Requires a published client state and tracked misc registration; publishes LED child and both groups after stock probe success; opens the misc gate only after publication succeeds; on failure, sets shutdown and invokes aw_remove after releasing the transition lock."
+    },
+    {
+      "source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_internal.h",
+      "sha256": "b38bce4be3ca427c140c8f62b24af8407b8fa0e00c8682d5dae6de3a489e27cd",
+      "change": "Declares the new lifecycle and AW-node interfaces without changing the stock callback signatures."
+    },
+    {
+      "source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c",
+      "sha256": "cdff4fcf77ffe8ec41c0de72b4b470f0faac12c3e0153de384401e7280fe1f29",
+      "change": "Unchanged in this batch; its existing early LED unregistration remains the synchronous sysfs teardown point."
+    },
+    {
+      "source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_068_vibrator_init_semantic_model.c",
+      "sha256": "1dbde0ec438baad86eab45b5a60f54e471a0a130f75916f81134ab8f77db66fb",
+      "change": "Joern-only model follows the candidate deferred-registration behavior; the preserved stock Ghidra output remains unchanged."
+    }
+  ],
+  "static_checks": {
+    "candidate_exported_symbols": [
+      "aw_i2c_probe",
+      "vibrator_init",
+      "aw8693x_creat_node",
+      "vibrator_attribute_group"
+    ],
+    "symbol_evidence": "candidate_symbols.txt",
+    "repository_docker_curated_source_parity": "source_sync.json",
+    "canonical_audit": {
+      "status": "INCOMPLETE",
+      "hardware_validation": "DEFERRED",
+      "gates": [
+        {
+          "name": "O0 Identity/scope",
+          "status": "PASS"
+        },
+        {
+          "name": "O1 Stock/ELF",
+          "status": "INCOMPLETE"
+        },
+        {
+          "name": "O2/O3 Assembly + Ghidra",
+          "status": "INCOMPLETE"
+        },
+        {
+          "name": "O2 Assembly",
+          "status": "INCOMPLETE"
+        },
+        {
+          "name": "O4 Reconstruction map",
+          "status": "INCOMPLETE"
+        },
+        {
+          "name": "O5 ABI/layout",
+          "status": "INCOMPLETE"
+        },
+        {
+          "name": "O6 Microtasks",
+          "status": "INCOMPLETE"
+        },
+        {
+          "name": "O8 KCFI",
+          "status": "INCOMPLETE"
+        },
+        {
+          "name": "O8/O9 Build + KMI + parity",
+          "status": "INCOMPLETE"
+        },
+        {
+          "name": "O10 Independent review",
+          "status": "INCOMPLETE"
+        },
+        {
+          "name": "Hardware",
+          "status": "DEFERRED"
+        }
+      ]
+    },
+    "changed_callback_kcfi_spot_check": {
+      "report": "candidate_kcfi_check.json",
+      "result": "PASS_FOR_TWO_CHANGED_FUNCTIONS_ONLY",
+      "full_module_gate": "INCOMPLETE"
+    }
+  },
+  "build_attestation": "docker_builds.json",
+  "limitations": [
+    "No runtime or hardware result is claimed.",
+    "The three changed functions are declared hardening deviations and are not stock-equivalent promotions.",
+    "Independent review is pending.",
+    "The canonical offline audit remains incomplete because paired stock/Ghidra run inventory, assembly inventory, ABI/layout, microtask, current-stock KCFI, independent-review, and hardware evidence are missing."
+  ]
+}
