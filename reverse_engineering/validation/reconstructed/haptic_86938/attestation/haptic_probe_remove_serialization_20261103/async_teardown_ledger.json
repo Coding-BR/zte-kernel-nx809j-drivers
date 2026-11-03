@@ -310,6 +310,13 @@
     "misc_open_vs_remove": "Target misc_open holds misc_mtx through the open callback. Remove releases haptic_lifetime_registry_lock before misc_deregister takes that mutex, so these paths do not hold the locks in opposite order.",
     "disposition": "No unmatched explicit or VFS module reference identified by static review. misc_deregister and active-operation drain still gate state teardown."
   },
+  "misc_fops_state_routing": {
+    "read": "Stock richtap_read returns 0 without dereferencing struct file; candidate behavior is unchanged.",
+    "write": "Stock richtap_write returns count without dereferencing struct file; candidate behavior is unchanged.",
+    "unlocked_ioctl": "Lifetime wrapper enters the sidecar operation, passes a proxy whose private_data is raw haptic state to the stock-exact ioctl, then exits the operation.",
+    "mmap": "Candidate wrapper resolves state through the sidecar and attaches a VMA reference on successful remap.",
+    "disposition": "Every registered Richtap fops slot was accounted for; no reviewed path interprets the sidecar pointer as raw haptic state."
+  },
   "lock_order_review": {
     "probe_and_remove": "Both acquire haptic_lifecycle_transition_lock before haptic_lifetime_registry_lock; file operations do not acquire the transition lock.",
     "irq_and_stop_worker": "Both acquire haptic_irq_stop_lock before entering stock IRQ code or taking the stop-work state mutex. Stock irq_config registers irq_handle as the threaded handler (primary=NULL), so the wrapper mutex is used in thread context.",

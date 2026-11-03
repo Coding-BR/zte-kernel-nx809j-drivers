@@ -13,6 +13,10 @@ This supplemental attestation records the target-kernel layout contract used whe
 
 Stock `richtap_file_open` calls `try_module_get` at `0010ea44`, paired with `module_put` in `richtap_file_release` at `0010ea8c`. The candidate wrappers preserve that pair: a failed lifetime open immediately drops the explicit pin, and successful release drops it after releasing the sidecar reference. Candidate `left_fops.owner = THIS_MODULE` also uses the target VFS pin: `misc_open` calls `fops_get` (`drivers/char/misc.c:149`), and final file cleanup calls `.release` before `fops_put` (`fs/file_table.c:430-436`). Those explicit and VFS references are independently balanced. The target `misc_open` holds `misc_mtx` across its callback; remove releases `haptic_lifetime_registry_lock` before calling `misc_deregister`, so the two paths do not hold those locks in opposite order. The remove path's `misc_deregister` and active-operation drain remain necessary for state lifetime.
 
+## File-operation state routing
+
+The stock `richtap_read` body returns `0`, and `richtap_write` returns the requested count without reading the file argument. They remain safe with the sidecar in `file->private_data`. The ioctl wrapper enters the sidecar operation, builds the verified proxy with raw haptic state in `private_data`, calls the stock-exact body, and exits the operation. The mmap wrapper instead enters the sidecar directly and attaches a VMA reference after a successful remap. The reviewed fops set has no other path that treats the sidecar pointer as raw haptic state.
+
 ## Docker validation
 
 - Target release: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k`.
