@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_timer_inventory_current_candidate_revalidation_20261103",
+  "disposition": "THREE_START_CALLSITES_MAP_TO_TWO_TIMERS_NO_UNCANCELLED_TIMER_FOUND",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "candidate_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+  "docker_curated_candidate_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+  "target_kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+  "start_callsites": [
+    {
+      "meaning": "starts vibrator timer after vibrator operation",
+      "stock_assembly_callsite": "0x6c4c",
+      "timer_offset": "state+0x330",
+      "function": "vibrator_work_routine@001096ec"
+    },
+    {
+      "meaning": "initially starts audio timer",
+      "stock_assembly_callsite": "0xa280",
+      "timer_offset": "state+0x520",
+      "function": "haptic_audio_store@0010cd9c"
+    },
+    {
+      "meaning": "periodically rearms the same audio timer",
+      "stock_assembly_callsite": "0xaf14",
+      "timer_offset": "state+0x520",
+      "function": "audio_timer_func@0010dcc4"
+    }
+  ],
+  "timer_initialization": [
+    {
+      "callback": "vibrator_timer_func",
+      "timer_offset": "state+0x330",
+      "function": "vibrator_init@00108468"
+    },
+    {
+      "callback": "audio_timer_func",
+      "timer_offset": "state+0x520",
+      "function": "haptic_init@00108608"
+    }
+  ],
+  "teardown": {
+    "drained_work_offsets": [
+      "state+0x560",
+      "state+0x3a0",
+      "state+0x428"
+    ],
+    "timer_offsets": [
+      "state+0x520",
+      "state+0x330"
+    ],
+    "callback_gates": [
+      "vibrator_timer_func checks shutdown and returns HRTIMER_NORESTART",
+      "audio_timer_func checks shutdown and returns HRTIMER_NORESTART",
+      "vibrator_work_routine wrapper checks shutdown before stock body",
+      "haptic_audio_store is drained by LED-child unregister before timer/work teardown"
+    ],
+    "each_timer_cancelled_twice": true,
+    "each_work_cancelled_twice": true
+  },
+  "target_kernel_semantics": {
+    "workqueue_source_sha256": "192be8175ff7fed8445758f98a18fc67e88245801ee75f84378af82fda3dd46e",
+    "hrtimer_source_sha256": "1c58df0d5c9931504450d7a74f0c641d0c394724adf8c55f9d7e17167f3443ed",
+    "existing_evidence_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_timer_work_teardown_revalidation_20261103/docker_target_kernel_cancel_semantics.txt"
+  },
+  "conclusion": "The three stock start relocations account for two initialized timers: the vibrator timer has one start site, while the audio timer has an initial start and a periodic rearm. Both timer objects are canceled twice in current aw_remove, with their associated work drained between cancellation passes. The apparent third-start/two-cancel mismatch is not an unhandled third timer.",
+  "limitations": [
+    "Static evidence only; timer scheduling was not exercised at runtime.",
+    "This revalidation binds the inventory to the current candidate hash but does not close unrelated haptic lifetime or hardware gates."
+  ],
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0067_00108468_vibrator_init.c",
+      "sha256": "15429439cf9e786b13eedb60b08ef9331d42e3325fcb9a7caa2feca441cffe83"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0068_00108608_haptic_init.c",
+      "sha256": "802cb5f280b74b3f64b754539ed4a8e1ecd065bde98d166795746f48966ed14a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0077_001096b4_vibrator_timer_func.c",
+      "sha256": "6a34a570abb0b90b2ebb3f4f1bbc29b8ddb0fb0e2bcb6893ca0f6e3ed7d30192"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0078_001096ec_vibrator_work_routine.c",
+      "sha256": "9038ac726bdd9743c991b30f2f448ad05b4ac26732b999998971fd4483aded55"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0128_0010cd9c_haptic_audio_store.c",
+      "sha256": "8e3fab12b9f882d4c0363d17e8a58326320897549e64fc14f9c25f946805def1"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0145_0010dcc4_audio_timer_func.c",
+      "sha256": "9fd27c0057ec9fdd307f34e7a981cd7731bdc3059a95a78ff063f8da8272b6a6"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+      "sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0067_vibrator_init_00108468.asm",
+      "sha256": "ef8e5b8fe1da3e00657a631214dadb3558d3d7abd52aa9a1ba0ebe3de105e698"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0068_haptic_init_00108608.asm",
+      "sha256": "6b84a298d308fa120f9b9afaa69196b98140a307bb512aba15b5344e48614f8d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0077_vibrator_timer_func_001096b4.asm",
+      "sha256": "72860b2dccc0252c3558245ec2406a9358ba3ebd97434150eea27a4479181547"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0078_vibrator_work_routine_001096ec.asm",
+      "sha256": "ce970653f5cc7fa1fd977ecaf2695fa37af2e4ff2dbe46ea9f480c4902ea3a4b"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0128_haptic_audio_store_0010cd9c.asm",
+      "sha256": "a56cbf1797bec5d898d862a55ee1a7172d208e042253ef66c519bc9787c73e50"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0145_audio_timer_func_0010dcc4.asm",
+      "sha256": "59f37079616b8600ae387f50c6a466d74ebd413b73c71f166164ecb2e33b952c"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+      "sha256": "9a3222a3b44a6533ff0b95d799786bc3c3d4f8b4854febe6e46bf5a73a5b586b"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c",
+      "sha256": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_072_vibrator_timer_func.c",
+      "sha256": "eb1747ef7fc2ecc7a844d971986999cc1372212fd4ed81f1d5407938ae53dc29"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_076_audio_timer_func.c",
+      "sha256": "72d4a807b0dde8182d61b313142fcf7e3489e60f769d8f1bdb192f170c0d838c"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_068_vibrator_init_exact.S",
+      "sha256": "7077df4eb9b1ee5a0d553bf52285309ff7dd9f55ebf07ff2a36f468814cf6fb8"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_069_haptic_init_exact.S",
+      "sha256": "bf6eaebe89f01ba6680aa82f888872514149c046d6ec65fce0f3a4519043e9d6"
+    },
+    {
+      "path": "reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_timer_inventory_current_candidate_revalidation_20261103\\docker_current_timer_work_disassembly.txt",
+      "sha256": "726b89cbb400360379daf78712589b9cbda9ed6afa10f180dc3355a6acde7481"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+      "sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca"
+    },
+    {
+      "path": "docker_curated/haptic_86938.ko",
+      "sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca"
+    }
+  ]
+}

@@ -1,0 +1,894 @@
+
+/work/input/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000002740 <vibrator_timer_func>:
+    2740: d503233f     	paciasp
+    2744: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+    2748: f9000bf3     	str	x19, [sp, #0x10]
+    274c: 910003fd     	mov	x29, sp
+    2750: aa0003f3     	mov	x19, x0
+    2754: 94000000     	bl	0x2754 <vibrator_timer_func+0x14>
+		0000000000002754:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    2758: 370000e0     	tbnz	w0, #0x0, 0x2774 <vibrator_timer_func+0x34>
+    275c: f9408e61     	ldr	x1, [x19, #0x118]
+    2760: d10bc268     	sub	x8, x19, #0x2f0
+    2764: 9103e262     	add	x2, x19, #0xf8
+    2768: 52800400     	mov	w0, #0x20               // =32
+    276c: b900011f     	str	wzr, [x8]
+    2770: 94000000     	bl	0x2770 <vibrator_timer_func+0x30>
+		0000000000002770:  R_AARCH64_CALL26	queue_work_on
+    2774: 2a1f03e0     	mov	w0, wzr
+    2778: f9400bf3     	ldr	x19, [sp, #0x10]
+    277c: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+    2780: d50323bf     	autiasp
+    2784: d65f03c0     	ret
+
+0000000000002954 <audio_timer_func>:
+    2954: d503233f     	paciasp
+    2958: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+    295c: f9000bf3     	str	x19, [sp, #0x10]
+    2960: 910003fd     	mov	x29, sp
+    2964: aa0003f3     	mov	x19, x0
+    2968: 94000000     	bl	0x2968 <audio_timer_func+0x14>
+		0000000000002968:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    296c: 37000320     	tbnz	w0, #0x0, 0x29d0 <audio_timer_func+0x7c>
+    2970: f8528261     	ldur	x1, [x19, #-0xd8]
+    2974: 91010262     	add	x2, x19, #0x40
+    2978: 52800400     	mov	w0, #0x20               // =32
+    297c: 94000000     	bl	0x297c <audio_timer_func+0x28>
+		000000000000297c:  R_AARCH64_CALL26	queue_work_on
+    2980: b85bc268     	ldur	w8, [x19, #-0x44]
+    2984: 529bd069     	mov	w9, #0xde83             // =56963
+    2988: aa1303e0     	mov	x0, x19
+    298c: 72a86369     	movk	w9, #0x431b, lsl #16
+    2990: aa1f03e2     	mov	x2, xzr
+    2994: 52800023     	mov	w3, #0x1                // =1
+    2998: 9b297d09     	smull	x9, w8, w9
+    299c: d37ffd2a     	lsr	x10, x9, #63
+    29a0: 9372fd29     	asr	x9, x9, #50
+    29a4: 0b0a0129     	add	w9, w9, w10
+    29a8: 5288480a     	mov	w10, #0x4240            // =16960
+    29ac: 72a001ea     	movk	w10, #0xf, lsl #16
+    29b0: 1b0aa128     	msub	w8, w9, w10, w8
+    29b4: 52807d0a     	mov	w10, #0x3e8             // =1000
+    29b8: 1b0a7d08     	mul	w8, w8, w10
+    29bc: 5299400a     	mov	w10, #0xca00            // =51712
+    29c0: 72a7734a     	movk	w10, #0x3b9a, lsl #16
+    29c4: 93407d08     	sxtw	x8, w8
+    29c8: 9b2a2121     	smaddl	x1, w9, w10, x8
+    29cc: 94000000     	bl	0x29cc <audio_timer_func+0x78>
+		00000000000029cc:  R_AARCH64_CALL26	hrtimer_start_range_ns
+    29d0: 2a1f03e0     	mov	w0, wzr
+    29d4: f9400bf3     	ldr	x19, [sp, #0x10]
+    29d8: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+    29dc: d50323bf     	autiasp
+    29e0: d65f03c0     	ret
+
+00000000000064fc <aw_remove>:
+    64fc: d503233f     	paciasp
+    6500: a9bd7bfd     	stp	x29, x30, [sp, #-0x30]!
+    6504: a90157f6     	stp	x22, x21, [sp, #0x10]
+    6508: a9024ff4     	stp	x20, x19, [sp, #0x20]
+    650c: 910003fd     	mov	x29, sp
+    6510: aa0003f6     	mov	x22, x0
+    6514: 94000000     	bl	0x6514 <aw_remove+0x18>
+		0000000000006514:  R_AARCH64_CALL26	haptic_lifetime_transition_begin
+    6518: f9405ed3     	ldr	x19, [x22, #0xb8]
+    651c: b50000f3     	cbnz	x19, 0x6538 <aw_remove+0x3c>
+    6520: 94000000     	bl	0x6520 <aw_remove+0x24>
+		0000000000006520:  R_AARCH64_CALL26	haptic_lifetime_transition_end
+    6524: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+    6528: a94157f6     	ldp	x22, x21, [sp, #0x10]
+    652c: a8c37bfd     	ldp	x29, x30, [sp], #0x30
+    6530: d50323bf     	autiasp
+    6534: d65f03c0     	ret
+    6538: 90000000     	adrp	x0, 0x6000 <aw8693x_get_wav_loop+0x90>
+		0000000000006538:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x752
+    653c: 91000000     	add	x0, x0, #0x0
+		000000000000653c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x752
+    6540: 90000001     	adrp	x1, 0x6000 <aw8693x_get_wav_loop+0x90>
+		0000000000006540:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x18
+    6544: 91000021     	add	x1, x1, #0x0
+		0000000000006544:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x18
+    6548: 90000003     	adrp	x3, 0x6000 <aw8693x_get_wav_loop+0x90>
+		0000000000006548:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x12fc
+    654c: 91000063     	add	x3, x3, #0x0
+		000000000000654c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x12fc
+    6550: 52823b22     	mov	w2, #0x11d9             // =4569
+    6554: 94000000     	bl	0x6554 <aw_remove+0x58>
+		0000000000006554:  R_AARCH64_CALL26	_printk
+    6558: aa1303e0     	mov	x0, x19
+    655c: 94000000     	bl	0x655c <aw_remove+0x60>
+		000000000000655c:  R_AARCH64_CALL26	haptic_lifetime_block_file_access
+    6560: f9407e68     	ldr	x8, [x19, #0xf8]
+    6564: 2a0003f4     	mov	w20, w0
+    6568: b4000088     	cbz	x8, 0x6578 <aw_remove+0x7c>
+    656c: 9102a260     	add	x0, x19, #0xa8
+    6570: 94000000     	bl	0x6570 <aw_remove+0x74>
+		0000000000006570:  R_AARCH64_CALL26	led_classdev_unregister
+    6574: f9007e7f     	str	xzr, [x19, #0xf8]
+    6578: f9422675     	ldr	x21, [x19, #0x448]
+    657c: b4000115     	cbz	x21, 0x659c <aw_remove+0xa0>
+    6580: 910f0260     	add	x0, x19, #0x3c0
+    6584: 94000000     	bl	0x6584 <aw_remove+0x88>
+		0000000000006584:  R_AARCH64_CALL26	cancel_delayed_work_sync
+    6588: 94000000     	bl	0x6588 <aw_remove+0x8c>
+		0000000000006588:  R_AARCH64_CALL26	haptic_lifetime_wait_ram_callbacks
+    658c: 910f0260     	add	x0, x19, #0x3c0
+    6590: 94000000     	bl	0x6590 <aw_remove+0x94>
+		0000000000006590:  R_AARCH64_CALL26	cancel_delayed_work_sync
+    6594: 37000094     	tbnz	w20, #0x0, 0x65a4 <aw_remove+0xa8>
+    6598: 14000012     	b	0x65e0 <aw_remove+0xe4>
+    659c: 94000000     	bl	0x659c <aw_remove+0xa0>
+		000000000000659c:  R_AARCH64_CALL26	haptic_lifetime_wait_ram_callbacks
+    65a0: 360000f4     	tbz	w20, #0x0, 0x65bc <aw_remove+0xc0>
+    65a4: 9118a260     	add	x0, x19, #0x628
+    65a8: 94000000     	bl	0x65a8 <aw_remove+0xac>
+		00000000000065a8:  R_AARCH64_CALL26	cancel_work_sync
+    65ac: 91192260     	add	x0, x19, #0x648
+    65b0: 94000000     	bl	0x65b0 <aw_remove+0xb4>
+		00000000000065b0:  R_AARCH64_CALL26	cancel_work_sync
+    65b4: 9119a260     	add	x0, x19, #0x668
+    65b8: 94000000     	bl	0x65b8 <aw_remove+0xbc>
+		00000000000065b8:  R_AARCH64_CALL26	cancel_work_sync
+    65bc: 39405668     	ldrb	w8, [x19, #0x15]
+    65c0: 37000108     	tbnz	w8, #0x0, 0x65e0 <aw_remove+0xe4>
+    65c4: b9405260     	ldr	w0, [x19, #0x50]
+    65c8: 94000000     	bl	0x65c8 <aw_remove+0xcc>
+		00000000000065c8:  R_AARCH64_CALL26	gpio_to_desc
+    65cc: 94000000     	bl	0x65cc <aw_remove+0xd0>
+		00000000000065cc:  R_AARCH64_CALL26	gpiod_to_irq
+    65d0: 2a0003e1     	mov	w1, w0
+    65d4: 910082c0     	add	x0, x22, #0x20
+    65d8: aa1303e2     	mov	x2, x19
+    65dc: 94000000     	bl	0x65dc <aw_remove+0xe0>
+		00000000000065dc:  R_AARCH64_CALL26	devm_free_irq
+    65e0: 91148260     	add	x0, x19, #0x520
+    65e4: 94000000     	bl	0x65e4 <aw_remove+0xe8>
+		00000000000065e4:  R_AARCH64_CALL26	hrtimer_cancel
+    65e8: 910cc260     	add	x0, x19, #0x330
+    65ec: 94000000     	bl	0x65ec <aw_remove+0xf0>
+		00000000000065ec:  R_AARCH64_CALL26	hrtimer_cancel
+    65f0: 91158260     	add	x0, x19, #0x560
+    65f4: 94000000     	bl	0x65f4 <aw_remove+0xf8>
+		00000000000065f4:  R_AARCH64_CALL26	cancel_work_sync
+    65f8: 910e8260     	add	x0, x19, #0x3a0
+    65fc: 94000000     	bl	0x65fc <aw_remove+0x100>
+		00000000000065fc:  R_AARCH64_CALL26	cancel_work_sync
+    6600: 9110a260     	add	x0, x19, #0x428
+    6604: 94000000     	bl	0x6604 <aw_remove+0x108>
+		0000000000006604:  R_AARCH64_CALL26	cancel_work_sync
+    6608: 91148260     	add	x0, x19, #0x520
+    660c: 94000000     	bl	0x660c <aw_remove+0x110>
+		000000000000660c:  R_AARCH64_CALL26	hrtimer_cancel
+    6610: 910cc260     	add	x0, x19, #0x330
+    6614: 94000000     	bl	0x6614 <aw_remove+0x118>
+		0000000000006614:  R_AARCH64_CALL26	hrtimer_cancel
+    6618: 91158260     	add	x0, x19, #0x560
+    661c: 94000000     	bl	0x661c <aw_remove+0x120>
+		000000000000661c:  R_AARCH64_CALL26	cancel_work_sync
+    6620: 910e8260     	add	x0, x19, #0x3a0
+    6624: 94000000     	bl	0x6624 <aw_remove+0x128>
+		0000000000006624:  R_AARCH64_CALL26	cancel_work_sync
+    6628: 9110a260     	add	x0, x19, #0x428
+    662c: 94000000     	bl	0x662c <aw_remove+0x130>
+		000000000000662c:  R_AARCH64_CALL26	cancel_work_sync
+    6630: b4000095     	cbz	x21, 0x6640 <aw_remove+0x144>
+    6634: aa1503e0     	mov	x0, x21
+    6638: 94000000     	bl	0x6638 <aw_remove+0x13c>
+		0000000000006638:  R_AARCH64_CALL26	destroy_workqueue
+    663c: f902267f     	str	xzr, [x19, #0x448]
+    6640: 36000094     	tbz	w20, #0x0, 0x6650 <aw_remove+0x154>
+    6644: f9430660     	ldr	x0, [x19, #0x608]
+    6648: 94000000     	bl	0x6648 <aw_remove+0x14c>
+		0000000000006648:  R_AARCH64_CALL26	kfree
+    664c: f903067f     	str	xzr, [x19, #0x608]
+    6650: aa1303e0     	mov	x0, x19
+    6654: 94000000     	bl	0x6654 <aw_remove+0x158>
+		0000000000006654:  R_AARCH64_CALL26	haptic_lifetime_retire_state
+    6658: 17ffffb2     	b	0x6520 <aw_remove+0x24>
+
+000000000000b0c8 <vibrator_work_routine_stock_exact>:
+    b0c8: d503233f     	paciasp
+    b0cc: a9bc7bfd     	stp	x29, x30, [sp, #-0x40]!
+    b0d0: a9015ff8     	stp	x24, x23, [sp, #0x10]
+    b0d4: a90257f6     	stp	x22, x21, [sp, #0x20]
+    b0d8: a9034ff4     	stp	x20, x19, [sp, #0x30]
+    b0dc: 910003fd     	mov	x29, sp
+    b0e0: d104e013     	sub	x19, x0, #0x138
+    b0e4: aa0003f4     	mov	x20, x0
+    b0e8: d110a015     	sub	x21, x0, #0x428
+    b0ec: aa1303e0     	mov	x0, x19
+    b0f0: 94000000     	bl	0xb0f0 <vibrator_work_routine_stock_exact+0x28>
+		000000000000b0f0:  R_AARCH64_CALL26	mutex_lock
+    b0f4: f940d288     	ldr	x8, [x20, #0x1a0]
+    b0f8: aa1503e0     	mov	x0, x21
+    b0fc: 52800021     	mov	w1, #0x1                // =1
+    b100: f9408d08     	ldr	x8, [x8, #0x118]
+    b104: b85fc110     	ldur	w16, [x8, #-0x4]
+    b108: 728dd2b1     	movk	w17, #0x6e95
+    b10c: 72ba6f71     	movk	w17, #0xd37b, lsl #16
+    b110: 6b11021f     	cmp	w16, w17
+    b114: 54000040     	b.eq	0xb11c <vibrator_work_routine_stock_exact+0x54>
+    b118: d4304500     	brk	#0x8228
+    b11c: d63f0100     	blr	x8
+    b120: f940d288     	ldr	x8, [x20, #0x1a0]
+    b124: aa1503e0     	mov	x0, x21
+    b128: f9401d08     	ldr	x8, [x8, #0x38]
+    b12c: b85fc110     	ldur	w16, [x8, #-0x4]
+    b130: 72810611     	movk	w17, #0x830
+    b134: 72b08f51     	movk	w17, #0x847a, lsl #16
+    b138: 6b11021f     	cmp	w16, w17
+    b13c: 54000040     	b.eq	0xb144 <vibrator_work_routine_stock_exact+0x7c>
+    b140: d4304500     	brk	#0x8228
+    b144: d63f0100     	blr	x8
+    b148: d10fa288     	sub	x8, x20, #0x3e8
+    b14c: b9400108     	ldr	w8, [x8]
+    b150: 35000128     	cbnz	w8, 0xb174 <vibrator_work_routine_stock_exact+0xac>
+    b154: aa1303e0     	mov	x0, x19
+    b158: 94000000     	bl	0xb158 <vibrator_work_routine_stock_exact+0x90>
+		000000000000b158:  R_AARCH64_CALL26	mutex_unlock
+    b15c: a9434ff4     	ldp	x20, x19, [sp, #0x30]
+    b160: a94257f6     	ldp	x22, x21, [sp, #0x20]
+    b164: a9415ff8     	ldp	x24, x23, [sp, #0x10]
+    b168: a8c47bfd     	ldp	x29, x30, [sp], #0x40
+    b16c: d50323bf     	autiasp
+    b170: d65f03c0     	ret
+    b174: d10f5298     	sub	x24, x20, #0x3d4
+    b178: 90000000     	adrp	x0, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b178:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x3664
+    b17c: 91000000     	add	x0, x0, #0x0
+		000000000000b17c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x3664
+    b180: b9400304     	ldr	w4, [x24]
+    b184: 90000001     	adrp	x1, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b184:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c64
+    b188: 91000021     	add	x1, x1, #0x0
+		000000000000b188:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c64
+    b18c: 90000003     	adrp	x3, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b18c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x249e
+    b190: 91000063     	add	x3, x3, #0x0
+		000000000000b190:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x249e
+    b194: 52807842     	mov	w2, #0x3c2              // =962
+    b198: 94000000     	bl	0xb198 <vibrator_work_routine_stock_exact+0xd0>
+		000000000000b198:  R_AARCH64_CALL26	_printk
+    b19c: b9400304     	ldr	w4, [x24]
+    b1a0: 7100009f     	cmp	w4, #0x0
+    b1a4: 5400014c     	b.gt	0xb1cc <vibrator_work_routine_stock_exact+0x104>
+    b1a8: 90000000     	adrp	x0, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b1a8:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x26b8
+    b1ac: 91000000     	add	x0, x0, #0x0
+		000000000000b1ac:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x26b8
+    b1b0: 90000001     	adrp	x1, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b1b0:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c64
+    b1b4: 91000021     	add	x1, x1, #0x0
+		000000000000b1b4:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c64
+    b1b8: 90000003     	adrp	x3, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b1b8:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x249e
+    b1bc: 91000063     	add	x3, x3, #0x0
+		000000000000b1bc:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x249e
+    b1c0: 52807882     	mov	w2, #0x3c4              // =964
+    b1c4: 94000000     	bl	0xb1c4 <vibrator_work_routine_stock_exact+0xfc>
+		000000000000b1c4:  R_AARCH64_CALL26	_printk
+    b1c8: 14000053     	b	0xb314 <vibrator_work_routine_stock_exact+0x24c>
+    b1cc: 3940f289     	ldrb	w9, [x20, #0x3c]
+    b1d0: d1103688     	sub	x8, x20, #0x40d
+    b1d4: 5280002a     	mov	w10, #0x1               // =1
+    b1d8: 3900010a     	strb	w10, [x8]
+    b1dc: 6b09009f     	cmp	w4, w9
+    b1e0: 54000082     	b.hs	0xb1f0 <vibrator_work_routine_stock_exact+0x128>
+    b1e4: 2a1f03f6     	mov	w22, wzr
+    b1e8: 52800077     	mov	w23, #0x3               // =3
+    b1ec: 14000011     	b	0xb230 <vibrator_work_routine_stock_exact+0x168>
+    b1f0: 3940f689     	ldrb	w9, [x20, #0x3d]
+    b1f4: 6b09009f     	cmp	w4, w9
+    b1f8: 54000082     	b.hs	0xb208 <vibrator_work_routine_stock_exact+0x140>
+    b1fc: 2a1f03f6     	mov	w22, wzr
+    b200: 52800057     	mov	w23, #0x2               // =2
+    b204: 1400000b     	b	0xb230 <vibrator_work_routine_stock_exact+0x168>
+    b208: 3940fa89     	ldrb	w9, [x20, #0x3e]
+    b20c: 6b09009f     	cmp	w4, w9
+    b210: 54000082     	b.hs	0xb220 <vibrator_work_routine_stock_exact+0x158>
+    b214: 2a1f03f6     	mov	w22, wzr
+    b218: 52800037     	mov	w23, #0x1               // =1
+    b21c: 14000005     	b	0xb230 <vibrator_work_routine_stock_exact+0x168>
+    b220: 528000a9     	mov	w9, #0x5                // =5
+    b224: 52800097     	mov	w23, #0x4               // =4
+    b228: 528001f6     	mov	w22, #0xf               // =15
+    b22c: 39000109     	strb	w9, [x8]
+    b230: 90000000     	adrp	x0, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b230:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x27be
+    b234: 91000000     	add	x0, x0, #0x0
+		000000000000b234:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x27be
+    b238: 90000001     	adrp	x1, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b238:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c64
+    b23c: 91000021     	add	x1, x1, #0x0
+		000000000000b23c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c64
+    b240: 90000003     	adrp	x3, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b240:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x249e
+    b244: 91000063     	add	x3, x3, #0x0
+		000000000000b244:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x249e
+    b248: 52807ac2     	mov	w2, #0x3d6              // =982
+    b24c: 2a1703e5     	mov	w5, w23
+    b250: 94000000     	bl	0xb250 <vibrator_work_routine_stock_exact+0x188>
+		000000000000b250:  R_AARCH64_CALL26	_printk
+    b254: f940d288     	ldr	x8, [x20, #0x1a0]
+    b258: aa1503e0     	mov	x0, x21
+    b25c: 2a1f03e1     	mov	w1, wzr
+    b260: 2a1703e2     	mov	w2, w23
+    b264: f9406108     	ldr	x8, [x8, #0xc0]
+    b268: b85fc110     	ldur	w16, [x8, #-0x4]
+    b26c: 728fccb1     	movk	w17, #0x7e65
+    b270: 72af70f1     	movk	w17, #0x7b87, lsl #16
+    b274: 6b11021f     	cmp	w16, w17
+    b278: 54000040     	b.eq	0xb280 <vibrator_work_routine_stock_exact+0x1b8>
+    b27c: d4304500     	brk	#0x8228
+    b280: d63f0100     	blr	x8
+    b284: f940d288     	ldr	x8, [x20, #0x1a0]
+    b288: aa1503e0     	mov	x0, x21
+    b28c: 2a1f03e1     	mov	w1, wzr
+    b290: 2a1603e2     	mov	w2, w22
+    b294: f9406508     	ldr	x8, [x8, #0xc8]
+    b298: b85fc110     	ldur	w16, [x8, #-0x4]
+    b29c: 728fccb1     	movk	w17, #0x7e65
+    b2a0: 72af70f1     	movk	w17, #0x7b87, lsl #16
+    b2a4: 6b11021f     	cmp	w16, w17
+    b2a8: 54000040     	b.eq	0xb2b0 <vibrator_work_routine_stock_exact+0x1e8>
+    b2ac: d4304500     	brk	#0x8228
+    b2b0: d63f0100     	blr	x8
+    b2b4: f940d288     	ldr	x8, [x20, #0x1a0]
+    b2b8: aa1503e0     	mov	x0, x21
+    b2bc: 52800021     	mov	w1, #0x1                // =1
+    b2c0: 2a1f03e2     	mov	w2, wzr
+    b2c4: f9406108     	ldr	x8, [x8, #0xc0]
+    b2c8: b85fc110     	ldur	w16, [x8, #-0x4]
+    b2cc: 728fccb1     	movk	w17, #0x7e65
+    b2d0: 72af70f1     	movk	w17, #0x7b87, lsl #16
+    b2d4: 6b11021f     	cmp	w16, w17
+    b2d8: 54000040     	b.eq	0xb2e0 <vibrator_work_routine_stock_exact+0x218>
+    b2dc: d4304500     	brk	#0x8228
+    b2e0: d63f0100     	blr	x8
+    b2e4: f940d288     	ldr	x8, [x20, #0x1a0]
+    b2e8: aa1503e0     	mov	x0, x21
+    b2ec: 52800021     	mov	w1, #0x1                // =1
+    b2f0: 2a1f03e2     	mov	w2, wzr
+    b2f4: f9406508     	ldr	x8, [x8, #0xc8]
+    b2f8: b85fc110     	ldur	w16, [x8, #-0x4]
+    b2fc: 728fccb1     	movk	w17, #0x7e65
+    b300: 72af70f1     	movk	w17, #0x7b87, lsl #16
+    b304: 6b11021f     	cmp	w16, w17
+    b308: 54000040     	b.eq	0xb310 <vibrator_work_routine_stock_exact+0x248>
+    b30c: d4304500     	brk	#0x8228
+    b310: d63f0100     	blr	x8
+    b314: d1103688     	sub	x8, x20, #0x40d
+    b318: 39400108     	ldrb	w8, [x8]
+    b31c: 7100111f     	cmp	w8, #0x4
+    b320: 540005a0     	b.eq	0xb3d4 <vibrator_work_routine_stock_exact+0x30c>
+    b324: 7100151f     	cmp	w8, #0x5
+    b328: 54000941     	b.ne	0xb450 <vibrator_work_routine_stock_exact+0x388>
+    b32c: d1103288     	sub	x8, x20, #0x40c
+    b330: 39400109     	ldrb	w9, [x8]
+    b334: f940d288     	ldr	x8, [x20, #0x1a0]
+    b338: 7100053f     	cmp	w9, #0x1
+    b33c: 54001181     	b.ne	0xb56c <vibrator_work_routine_stock_exact+0x4a4>
+    b340: f9402108     	ldr	x8, [x8, #0x40]
+    b344: aa1503e0     	mov	x0, x21
+    b348: b85fc110     	ldur	w16, [x8, #-0x4]
+    b34c: 72810611     	movk	w17, #0x830
+    b350: 72b08f51     	movk	w17, #0x847a, lsl #16
+    b354: 6b11021f     	cmp	w16, w17
+    b358: 54000040     	b.eq	0xb360 <vibrator_work_routine_stock_exact+0x298>
+    b35c: d4304500     	brk	#0x8228
+    b360: d63f0100     	blr	x8
+    b364: d10f0288     	sub	x8, x20, #0x3c0
+    b368: 52823289     	mov	w9, #0x1194             // =4500
+    b36c: b9400108     	ldr	w8, [x8]
+    b370: 6b09011f     	cmp	w8, w9
+    b374: 54001229     	b.ls	0xb5b8 <vibrator_work_routine_stock_exact+0x4f0>
+    b378: f940d288     	ldr	x8, [x20, #0x1a0]
+    b37c: aa1503e0     	mov	x0, x21
+    b380: 528000a1     	mov	w1, #0x5                // =5
+    b384: f9404d08     	ldr	x8, [x8, #0x98]
+    b388: b85fc110     	ldur	w16, [x8, #-0x4]
+    b38c: 729bedd1     	movk	w17, #0xdf6e
+    b390: 72a3a151     	movk	w17, #0x1d0a, lsl #16
+    b394: 6b11021f     	cmp	w16, w17
+    b398: 54000040     	b.eq	0xb3a0 <vibrator_work_routine_stock_exact+0x2d8>
+    b39c: d4304500     	brk	#0x8228
+    b3a0: d63f0100     	blr	x8
+    b3a4: f940d288     	ldr	x8, [x20, #0x1a0]
+    b3a8: aa1503e0     	mov	x0, x21
+    b3ac: 52800021     	mov	w1, #0x1                // =1
+    b3b0: f9403108     	ldr	x8, [x8, #0x60]
+    b3b4: b85fc110     	ldur	w16, [x8, #-0x4]
+    b3b8: 729bedd1     	movk	w17, #0xdf6e
+    b3bc: 72a3a151     	movk	w17, #0x1d0a, lsl #16
+    b3c0: 6b11021f     	cmp	w16, w17
+    b3c4: 54000040     	b.eq	0xb3cc <vibrator_work_routine_stock_exact+0x304>
+    b3c8: d4304500     	brk	#0x8228
+    b3cc: d63f0100     	blr	x8
+    b3d0: 1400000b     	b	0xb3fc <vibrator_work_routine_stock_exact+0x334>
+    b3d4: f940d288     	ldr	x8, [x20, #0x1a0]
+    b3d8: aa1503e0     	mov	x0, x21
+    b3dc: f9402508     	ldr	x8, [x8, #0x48]
+    b3e0: b85fc110     	ldur	w16, [x8, #-0x4]
+    b3e4: 72810611     	movk	w17, #0x830
+    b3e8: 72b08f51     	movk	w17, #0x847a, lsl #16
+    b3ec: 6b11021f     	cmp	w16, w17
+    b3f0: 54000040     	b.eq	0xb3f8 <vibrator_work_routine_stock_exact+0x330>
+    b3f4: d4304500     	brk	#0x8228
+    b3f8: d63f0100     	blr	x8
+    b3fc: b9400308     	ldr	w8, [x24]
+    b400: 5289ba69     	mov	w9, #0x4dd3             // =19923
+    b404: d103e280     	sub	x0, x20, #0xf8
+    b408: 72a20c49     	movk	w9, #0x1062, lsl #16
+    b40c: aa1f03e2     	mov	x2, xzr
+    b410: 52800023     	mov	w3, #0x1                // =1
+    b414: 9b297d09     	smull	x9, w8, w9
+    b418: d37ffd2a     	lsr	x10, x9, #63
+    b41c: 9366fd29     	asr	x9, x9, #38
+    b420: 0b0a0129     	add	w9, w9, w10
+    b424: 52807d0a     	mov	w10, #0x3e8             // =1000
+    b428: 1b0aa128     	msub	w8, w9, w10, w8
+    b42c: 5288480a     	mov	w10, #0x4240            // =16960
+    b430: 72a001ea     	movk	w10, #0xf, lsl #16
+    b434: 1b0a7d08     	mul	w8, w8, w10
+    b438: 5299400a     	mov	w10, #0xca00            // =51712
+    b43c: 72a7734a     	movk	w10, #0x3b9a, lsl #16
+    b440: 93407d08     	sxtw	x8, w8
+    b444: 9b2a2121     	smaddl	x1, w9, w10, x8
+    b448: 94000000     	bl	0xb448 <vibrator_work_routine_stock_exact+0x380>
+		000000000000b448:  R_AARCH64_CALL26	hrtimer_start_range_ns
+    b44c: 17ffff42     	b	0xb154 <vibrator_work_routine_stock_exact+0x8c>
+    b450: 7100051f     	cmp	w8, #0x1
+    b454: 540007a1     	b.ne	0xb548 <vibrator_work_routine_stock_exact+0x480>
+    b458: f940d288     	ldr	x8, [x20, #0x1a0]
+    b45c: d10fd289     	sub	x9, x20, #0x3f4
+    b460: aa1503e0     	mov	x0, x21
+    b464: b9400121     	ldr	w1, [x9]
+    b468: f9404508     	ldr	x8, [x8, #0x88]
+    b46c: b85fc110     	ldur	w16, [x8, #-0x4]
+    b470: 729bedd1     	movk	w17, #0xdf6e
+    b474: 72a3a151     	movk	w17, #0x1d0a, lsl #16
+    b478: 6b11021f     	cmp	w16, w17
+    b47c: 54000040     	b.eq	0xb484 <vibrator_work_routine_stock_exact+0x3bc>
+    b480: d4304500     	brk	#0x8228
+    b484: d63f0100     	blr	x8
+    b488: 90000000     	adrp	x0, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b488:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2ab6
+    b48c: 91000000     	add	x0, x0, #0x0
+		000000000000b48c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2ab6
+    b490: 90000001     	adrp	x1, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b490:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c64
+    b494: 91000021     	add	x1, x1, #0x0
+		000000000000b494:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c64
+    b498: 90000003     	adrp	x3, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b498:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x35d6
+    b49c: 91000063     	add	x3, x3, #0x0
+		000000000000b49c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x35d6
+    b4a0: 52805322     	mov	w2, #0x299              // =665
+    b4a4: 94000000     	bl	0xb4a4 <vibrator_work_routine_stock_exact+0x3dc>
+		000000000000b4a4:  R_AARCH64_CALL26	_printk
+    b4a8: 3941be81     	ldrb	w1, [x20, #0x6f]
+    b4ac: f940d288     	ldr	x8, [x20, #0x1a0]
+    b4b0: 3940e689     	ldrb	w9, [x20, #0x39]
+    b4b4: 5100042a     	sub	w10, w1, #0x1
+    b4b8: f9405108     	ldr	x8, [x8, #0xa0]
+    b4bc: 6b2a013f     	cmp	w9, w10, uxtb
+    b4c0: 54000068     	b.hi	0xb4cc <vibrator_work_routine_stock_exact+0x404>
+    b4c4: d10fe289     	sub	x9, x20, #0x3f8
+    b4c8: b9400121     	ldr	w1, [x9]
+    b4cc: aa1503e0     	mov	x0, x21
+    b4d0: b85fc110     	ldur	w16, [x8, #-0x4]
+    b4d4: 729bedd1     	movk	w17, #0xdf6e
+    b4d8: 72a3a151     	movk	w17, #0x1d0a, lsl #16
+    b4dc: 6b11021f     	cmp	w16, w17
+    b4e0: 54000040     	b.eq	0xb4e8 <vibrator_work_routine_stock_exact+0x420>
+    b4e4: d4304500     	brk	#0x8228
+    b4e8: d63f0100     	blr	x8
+    b4ec: f940d288     	ldr	x8, [x20, #0x1a0]
+    b4f0: aa1503e0     	mov	x0, x21
+    b4f4: 52800021     	mov	w1, #0x1                // =1
+    b4f8: f9404d08     	ldr	x8, [x8, #0x98]
+    b4fc: b85fc110     	ldur	w16, [x8, #-0x4]
+    b500: 729bedd1     	movk	w17, #0xdf6e
+    b504: 72a3a151     	movk	w17, #0x1d0a, lsl #16
+    b508: 6b11021f     	cmp	w16, w17
+    b50c: 54000040     	b.eq	0xb514 <vibrator_work_routine_stock_exact+0x44c>
+    b510: d4304500     	brk	#0x8228
+    b514: d63f0100     	blr	x8
+    b518: f940d288     	ldr	x8, [x20, #0x1a0]
+    b51c: aa1503e0     	mov	x0, x21
+    b520: 52800021     	mov	w1, #0x1                // =1
+    b524: f9403108     	ldr	x8, [x8, #0x60]
+    b528: b85fc110     	ldur	w16, [x8, #-0x4]
+    b52c: 729bedd1     	movk	w17, #0xdf6e
+    b530: 72a3a151     	movk	w17, #0x1d0a, lsl #16
+    b534: 6b11021f     	cmp	w16, w17
+    b538: 54000040     	b.eq	0xb540 <vibrator_work_routine_stock_exact+0x478>
+    b53c: d4304500     	brk	#0x8228
+    b540: d63f0100     	blr	x8
+    b544: 17ffff04     	b	0xb154 <vibrator_work_routine_stock_exact+0x8c>
+    b548: 90000000     	adrp	x0, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b548:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x4282
+    b54c: 91000000     	add	x0, x0, #0x0
+		000000000000b54c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x4282
+    b550: 90000001     	adrp	x1, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b550:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c64
+    b554: 91000021     	add	x1, x1, #0x0
+		000000000000b554:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c64
+    b558: 90000003     	adrp	x3, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b558:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x23f8
+    b55c: 91000063     	add	x3, x3, #0x0
+		000000000000b55c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x23f8
+    b560: 52808162     	mov	w2, #0x40b              // =1035
+    b564: 94000000     	bl	0xb564 <vibrator_work_routine_stock_exact+0x49c>
+		000000000000b564:  R_AARCH64_CALL26	_printk
+    b568: 17fffefb     	b	0xb154 <vibrator_work_routine_stock_exact+0x8c>
+    b56c: d10fd289     	sub	x9, x20, #0x3f4
+    b570: f9404508     	ldr	x8, [x8, #0x88]
+    b574: aa1503e0     	mov	x0, x21
+    b578: b9400121     	ldr	w1, [x9]
+    b57c: b85fc110     	ldur	w16, [x8, #-0x4]
+    b580: 729bedd1     	movk	w17, #0xdf6e
+    b584: 72a3a151     	movk	w17, #0x1d0a, lsl #16
+    b588: 6b11021f     	cmp	w16, w17
+    b58c: 54000040     	b.eq	0xb594 <vibrator_work_routine_stock_exact+0x4cc>
+    b590: d4304500     	brk	#0x8228
+    b594: d63f0100     	blr	x8
+    b598: 90000000     	adrp	x0, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b598:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2ab6
+    b59c: 91000000     	add	x0, x0, #0x0
+		000000000000b59c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2ab6
+    b5a0: 90000001     	adrp	x1, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b5a0:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c64
+    b5a4: 91000021     	add	x1, x1, #0x0
+		000000000000b5a4:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c64
+    b5a8: 90000003     	adrp	x3, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b5a8:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x35d6
+    b5ac: 91000063     	add	x3, x3, #0x0
+		000000000000b5ac:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x35d6
+    b5b0: 528052a2     	mov	w2, #0x295              // =661
+    b5b4: 14000019     	b	0xb618 <vibrator_work_routine_stock_exact+0x550>
+    b5b8: d10fd28a     	sub	x10, x20, #0x3f4
+    b5bc: aa1503e0     	mov	x0, x21
+    b5c0: b940014a     	ldr	w10, [x10]
+    b5c4: 1b097d49     	mul	w9, w10, w9
+    b5c8: 5280180a     	mov	w10, #0xc0              // =192
+    b5cc: 1ac80928     	udiv	w8, w9, w8
+    b5d0: f940d289     	ldr	x9, [x20, #0x1a0]
+    b5d4: f9404529     	ldr	x9, [x9, #0x88]
+    b5d8: 7103011f     	cmp	w8, #0xc0
+    b5dc: 1a8ab101     	csel	w1, w8, w10, lt
+    b5e0: b85fc130     	ldur	w16, [x9, #-0x4]
+    b5e4: 729bedd1     	movk	w17, #0xdf6e
+    b5e8: 72a3a151     	movk	w17, #0x1d0a, lsl #16
+    b5ec: 6b11021f     	cmp	w16, w17
+    b5f0: 54000040     	b.eq	0xb5f8 <vibrator_work_routine_stock_exact+0x530>
+    b5f4: d4304520     	brk	#0x8229
+    b5f8: d63f0120     	blr	x9
+    b5fc: 90000000     	adrp	x0, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b5fc:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x3062
+    b600: 91000000     	add	x0, x0, #0x0
+		000000000000b600:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x3062
+    b604: 90000001     	adrp	x1, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b604:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c64
+    b608: 91000021     	add	x1, x1, #0x0
+		000000000000b608:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c64
+    b60c: 90000003     	adrp	x3, 0xb000 <irq_handle_stock_exact+0x318>
+		000000000000b60c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x35d6
+    b610: 91000063     	add	x3, x3, #0x0
+		000000000000b610:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x35d6
+    b614: 52805242     	mov	w2, #0x292              // =658
+    b618: 94000000     	bl	0xb618 <vibrator_work_routine_stock_exact+0x550>
+		000000000000b618:  R_AARCH64_CALL26	_printk
+    b61c: 17ffff57     	b	0xb378 <vibrator_work_routine_stock_exact+0x2b0>
+
+000000000000c674 <haptic_audio_store>:
+    c674: d503233f     	paciasp
+    c678: d101c3ff     	sub	sp, sp, #0x70
+    c67c: a9037bfd     	stp	x29, x30, [sp, #0x30]
+    c680: f90023f7     	str	x23, [sp, #0x40]
+    c684: a90557f6     	stp	x22, x21, [sp, #0x50]
+    c688: a9064ff4     	stp	x20, x19, [sp, #0x60]
+    c68c: 9100c3fd     	add	x29, sp, #0x30
+    c690: d5384108     	mrs	x8, SP_EL0
+    c694: aa0303f3     	mov	x19, x3
+    c698: f9438908     	ldr	x8, [x8, #0x710]
+    c69c: f81f83a8     	stur	x8, [x29, #-0x8]
+    c6a0: f9404c16     	ldr	x22, [x0, #0x98]
+    c6a4: a901ffff     	stp	xzr, xzr, [sp, #0x18]
+    c6a8: f9000bff     	str	xzr, [sp, #0x10]
+    c6ac: 3855e2c8     	ldurb	w8, [x22, #-0xa2]
+    c6b0: 36000b68     	tbz	w8, #0x0, 0xc81c <haptic_audio_store+0x1a8>
+    c6b4: 910043e8     	add	x8, sp, #0x10
+    c6b8: aa0203e0     	mov	x0, x2
+    c6bc: 90000001     	adrp	x1, 0xc000 <cali_store+0x9c>
+		000000000000c6bc:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2484
+    c6c0: 91000021     	add	x1, x1, #0x0
+		000000000000c6c0:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2484
+    c6c4: 910043e2     	add	x2, sp, #0x10
+    c6c8: b27e0103     	orr	x3, x8, #0x4
+    c6cc: 91002104     	add	x4, x8, #0x8
+    c6d0: 91003105     	add	x5, x8, #0xc
+    c6d4: 91004106     	add	x6, x8, #0x10
+    c6d8: 91005107     	add	x7, x8, #0x14
+    c6dc: 94000000     	bl	0xc6dc <haptic_audio_store+0x68>
+		000000000000c6dc:  R_AARCH64_CALL26	sscanf
+    c6e0: 7100181f     	cmp	w0, #0x6
+    c6e4: 54000821     	b.ne	0xc7e8 <haptic_audio_store+0x174>
+    c6e8: b9401be6     	ldr	w6, [sp, #0x18]
+    c6ec: 35000aa6     	cbnz	w6, 0xc840 <haptic_audio_store+0x1cc>
+    c6f0: d503201f     	nop
+    c6f4: 90000008     	adrp	x8, 0xc000 <cali_store+0x9c>
+		000000000000c6f4:  R_AARCH64_ADR_PREL_PG_HI21	kmalloc_caches+0x28
+    c6f8: 5281b801     	mov	w1, #0xdc0              // =3520
+    c6fc: 52800302     	mov	w2, #0x18               // =24
+    c700: f9400100     	ldr	x0, [x8]
+		000000000000c700:  R_AARCH64_LDST64_ABS_LO12_NC	kmalloc_caches+0x28
+    c704: 94000000     	bl	0xc704 <haptic_audio_store+0x90>
+		000000000000c704:  R_AARCH64_CALL26	__kmalloc_cache_noprof
+    c708: aa0003f4     	mov	x20, x0
+    c70c: b40015d4     	cbz	x20, 0xc9c4 <haptic_audio_store+0x350>
+    c710: 911122c0     	add	x0, x22, #0x448
+    c714: 94000000     	bl	0xc714 <haptic_audio_store+0xa0>
+		000000000000c714:  R_AARCH64_CALL26	mutex_lock
+    c718: 294227e8     	ldp	w8, w9, [sp, #0x10]
+    c71c: 29442beb     	ldp	w11, w10, [sp, #0x20]
+    c720: 39000288     	strb	w8, [x20]
+    c724: 39000689     	strb	w9, [x20, #0x1]
+    c728: 294327e8     	ldp	w8, w9, [sp, #0x18]
+    c72c: 39000e8b     	strb	w11, [x20, #0x3]
+    c730: 39000a88     	strb	w8, [x20, #0x2]
+    c734: 12001d48     	and	w8, w10, #0xff
+    c738: 7102011f     	cmp	w8, #0x80
+    c73c: 12800fe8     	mov	w8, #-0x80              // =-128
+    c740: 39001689     	strb	w9, [x20, #0x5]
+    c744: 1a8a8108     	csel	w8, w8, w10, hi
+    c748: 39001288     	strb	w8, [x20, #0x4]
+    c74c: d503201f     	nop
+    c750: 90000008     	adrp	x8, 0xc000 <cali_store+0x9c>
+		000000000000c750:  R_AARCH64_ADR_PREL_PG_HI21	kmalloc_caches+0x28
+    c754: 5281b801     	mov	w1, #0xdc0              // =3520
+    c758: 52800302     	mov	w2, #0x18               // =24
+    c75c: f9400100     	ldr	x0, [x8]
+		000000000000c75c:  R_AARCH64_LDST64_ABS_LO12_NC	kmalloc_caches+0x28
+    c760: 94000000     	bl	0xc760 <haptic_audio_store+0xec>
+		000000000000c760:  R_AARCH64_CALL26	__kmalloc_cache_noprof
+    c764: d102a2d5     	sub	x21, x22, #0xa8
+    c768: b40002c0     	cbz	x0, 0xc7c0 <haptic_audio_store+0x14c>
+    c76c: 39400288     	ldrb	w8, [x20]
+    c770: b8401289     	ldur	w9, [x20, #0x1]
+    c774: 9113a2c1     	add	x1, x22, #0x4e8
+    c778: 3940168a     	ldrb	w10, [x20, #0x5]
+    c77c: 39000008     	strb	w8, [x0]
+    c780: 91002008     	add	x8, x0, #0x8
+    c784: b8001009     	stur	w9, [x0, #0x1]
+    c788: 3900140a     	strb	w10, [x0, #0x5]
+    c78c: f9000408     	str	x8, [x0, #0x8]
+    c790: f9000808     	str	x8, [x0, #0x10]
+    c794: f94276c2     	ldr	x2, [x22, #0x4e8]
+    c798: f9400449     	ldr	x9, [x2, #0x8]
+    c79c: eb01013f     	cmp	x9, x1
+    c7a0: 54000f01     	b.ne	0xc980 <haptic_audio_store+0x30c>
+    c7a4: eb01011f     	cmp	x8, x1
+    c7a8: 54000ec0     	b.eq	0xc980 <haptic_audio_store+0x30c>
+    c7ac: eb08005f     	cmp	x2, x8
+    c7b0: 54000e80     	b.eq	0xc980 <haptic_audio_store+0x30c>
+    c7b4: f9000448     	str	x8, [x2, #0x8]
+    c7b8: a9008402     	stp	x2, x1, [x0, #0x8]
+    c7bc: f9000028     	str	x8, [x1]
+    c7c0: 39400688     	ldrb	w8, [x20, #0x1]
+    c7c4: 7103fd1f     	cmp	w8, #0xff
+    c7c8: 54000580     	b.eq	0xc878 <haptic_audio_store+0x204>
+    c7cc: 9111e2c0     	add	x0, x22, #0x478
+    c7d0: 94000000     	bl	0xc7d0 <haptic_audio_store+0x15c>
+		000000000000c7d0:  R_AARCH64_CALL26	hrtimer_active
+    c7d4: 36000840     	tbz	w0, #0x0, 0xc8dc <haptic_audio_store+0x268>
+    c7d8: 911122c0     	add	x0, x22, #0x448
+    c7dc: 94000000     	bl	0xc7dc <haptic_audio_store+0x168>
+		000000000000c7dc:  R_AARCH64_CALL26	mutex_unlock
+    c7e0: aa1403e0     	mov	x0, x20
+    c7e4: 94000000     	bl	0xc7e4 <haptic_audio_store+0x170>
+		000000000000c7e4:  R_AARCH64_CALL26	kfree
+    c7e8: d5384108     	mrs	x8, SP_EL0
+    c7ec: f9438908     	ldr	x8, [x8, #0x710]
+    c7f0: f85f83a9     	ldur	x9, [x29, #-0x8]
+    c7f4: eb09011f     	cmp	x8, x9
+    c7f8: 54000ca1     	b.ne	0xc98c <haptic_audio_store+0x318>
+    c7fc: aa1303e0     	mov	x0, x19
+    c800: a9464ff4     	ldp	x20, x19, [sp, #0x60]
+    c804: f94023f7     	ldr	x23, [sp, #0x40]
+    c808: a94557f6     	ldp	x22, x21, [sp, #0x50]
+    c80c: a9437bfd     	ldp	x29, x30, [sp, #0x30]
+    c810: 9101c3ff     	add	sp, sp, #0x70
+    c814: d50323bf     	autiasp
+    c818: d65f03c0     	ret
+    c81c: 90000000     	adrp	x0, 0xc000 <cali_store+0x9c>
+		000000000000c81c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x47d6
+    c820: 91000000     	add	x0, x0, #0x0
+		000000000000c820:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x47d6
+    c824: 90000001     	adrp	x1, 0xc000 <cali_store+0x9c>
+		000000000000c824:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c64
+    c828: 91000021     	add	x1, x1, #0x0
+		000000000000c828:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c64
+    c82c: 90000003     	adrp	x3, 0xc000 <cali_store+0x9c>
+		000000000000c82c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2cb6
+    c830: 91000063     	add	x3, x3, #0x0
+		000000000000c830:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2cb6
+    c834: 52817522     	mov	w2, #0xba9              // =2985
+    c838: 94000000     	bl	0xc838 <haptic_audio_store+0x1c4>
+		000000000000c838:  R_AARCH64_CALL26	_printk
+    c83c: 17ffffeb     	b	0xc7e8 <haptic_audio_store+0x174>
+    c840: 294217e4     	ldp	w4, w5, [sp, #0x10]
+    c844: 2943a3e7     	ldp	w7, w8, [sp, #0x1c]
+    c848: b94027e9     	ldr	w9, [sp, #0x24]
+    c84c: 90000000     	adrp	x0, 0xc000 <cali_store+0x9c>
+		000000000000c84c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2e1c
+    c850: 91000000     	add	x0, x0, #0x0
+		000000000000c850:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2e1c
+    c854: 90000001     	adrp	x1, 0xc000 <cali_store+0x9c>
+		000000000000c854:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c64
+    c858: 91000021     	add	x1, x1, #0x0
+		000000000000c858:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c64
+    c85c: 90000003     	adrp	x3, 0xc000 <cali_store+0x9c>
+		000000000000c85c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2cb6
+    c860: 91000063     	add	x3, x3, #0x0
+		000000000000c860:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2cb6
+    c864: 52817622     	mov	w2, #0xbb1              // =2993
+    c868: b9000be9     	str	w9, [sp, #0x8]
+    c86c: b90003e8     	str	w8, [sp]
+    c870: 94000000     	bl	0xc870 <haptic_audio_store+0x1fc>
+		000000000000c870:  R_AARCH64_CALL26	_printk
+    c874: 17ffff9f     	b	0xc6f0 <haptic_audio_store+0x7c>
+    c878: 90000000     	adrp	x0, 0xc000 <cali_store+0x9c>
+		000000000000c878:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x3a3c
+    c87c: 91000000     	add	x0, x0, #0x0
+		000000000000c87c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x3a3c
+    c880: 90000001     	adrp	x1, 0xc000 <cali_store+0x9c>
+		000000000000c880:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c64
+    c884: 91000021     	add	x1, x1, #0x0
+		000000000000c884:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c64
+    c888: 90000003     	adrp	x3, 0xc000 <cali_store+0x9c>
+		000000000000c888:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2cb6
+    c88c: 91000063     	add	x3, x3, #0x0
+		000000000000c88c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2cb6
+    c890: 52817942     	mov	w2, #0xbca              // =3018
+    c894: 94000000     	bl	0xc894 <haptic_audio_store+0x220>
+		000000000000c894:  R_AARCH64_CALL26	_printk
+    c898: 9111e2c0     	add	x0, x22, #0x478
+    c89c: 94000000     	bl	0xc89c <haptic_audio_store+0x228>
+		000000000000c89c:  R_AARCH64_CALL26	hrtimer_active
+    c8a0: 3607f9c0     	tbz	w0, #0x0, 0xc7d8 <haptic_audio_store+0x164>
+    c8a4: 90000000     	adrp	x0, 0xc000 <cali_store+0x9c>
+		000000000000c8a4:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2e62
+    c8a8: 91000000     	add	x0, x0, #0x0
+		000000000000c8a8:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2e62
+    c8ac: 90000001     	adrp	x1, 0xc000 <cali_store+0x9c>
+		000000000000c8ac:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c64
+    c8b0: 91000021     	add	x1, x1, #0x0
+		000000000000c8b0:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c64
+    c8b4: 90000003     	adrp	x3, 0xc000 <cali_store+0x9c>
+		000000000000c8b4:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2cb6
+    c8b8: 91000063     	add	x3, x3, #0x0
+		000000000000c8b8:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2cb6
+    c8bc: 52817982     	mov	w2, #0xbcc              // =3020
+    c8c0: 94000000     	bl	0xc8c0 <haptic_audio_store+0x24c>
+		000000000000c8c0:  R_AARCH64_CALL26	_printk
+    c8c4: 9111e2c0     	add	x0, x22, #0x478
+    c8c8: 94000000     	bl	0xc8c8 <haptic_audio_store+0x254>
+		000000000000c8c8:  R_AARCH64_CALL26	hrtimer_cancel
+    c8cc: aa1503e0     	mov	x0, x21
+    c8d0: 3913e2df     	strb	wzr, [x22, #0x4f8]
+    c8d4: 94000053     	bl	0xca20 <haptic_audio_store+0x3ac>
+		000000000000c8d4:  R_AARCH64_CALL26	audio_off
+    c8d8: 17ffffc0     	b	0xc7d8 <haptic_audio_store+0x164>
+    c8dc: 90000000     	adrp	x0, 0xc000 <cali_store+0x9c>
+		000000000000c8dc:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2f20
+    c8e0: 91000000     	add	x0, x0, #0x0
+		000000000000c8e0:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2f20
+    c8e4: 90000001     	adrp	x1, 0xc000 <cali_store+0x9c>
+		000000000000c8e4:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c64
+    c8e8: 91000021     	add	x1, x1, #0x0
+		000000000000c8e8:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c64
+    c8ec: 90000003     	adrp	x3, 0xc000 <cali_store+0x9c>
+		000000000000c8ec:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2cb6
+    c8f0: 91000063     	add	x3, x3, #0x0
+		000000000000c8f0:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2cb6
+    c8f4: 52817aa2     	mov	w2, #0xbd5              // =3029
+    c8f8: 94000000     	bl	0xc8f8 <haptic_audio_store+0x284>
+		000000000000c8f8:  R_AARCH64_CALL26	_printk
+    c8fc: f94292c8     	ldr	x8, [x22, #0x520]
+    c900: aa1503e0     	mov	x0, x21
+    c904: 52800021     	mov	w1, #0x1                // =1
+    c908: 2a1f03e2     	mov	w2, wzr
+    c90c: f9406108     	ldr	x8, [x8, #0xc0]
+    c910: b85fc110     	ldur	w16, [x8, #-0x4]
+    c914: 728fccb1     	movk	w17, #0x7e65
+    c918: 72af70f1     	movk	w17, #0x7b87, lsl #16
+    c91c: 6b11021f     	cmp	w16, w17
+    c920: 54000040     	b.eq	0xc928 <haptic_audio_store+0x2b4>
+    c924: d4304500     	brk	#0x8228
+    c928: d63f0100     	blr	x8
+    c92c: b94432c8     	ldr	w8, [x22, #0x430]
+    c930: 529bd069     	mov	w9, #0xde83             // =56963
+    c934: 9111e2c0     	add	x0, x22, #0x478
+    c938: 72a86369     	movk	w9, #0x431b, lsl #16
+    c93c: aa1f03e2     	mov	x2, xzr
+    c940: 52800023     	mov	w3, #0x1                // =1
+    c944: 9b297d09     	smull	x9, w8, w9
+    c948: d37ffd2a     	lsr	x10, x9, #63
+    c94c: 9372fd29     	asr	x9, x9, #50
+    c950: 0b0a0129     	add	w9, w9, w10
+    c954: 5288480a     	mov	w10, #0x4240            // =16960
+    c958: 72a001ea     	movk	w10, #0xf, lsl #16
+    c95c: 1b0aa128     	msub	w8, w9, w10, w8
+    c960: 52807d0a     	mov	w10, #0x3e8             // =1000
+    c964: 1b0a7d08     	mul	w8, w8, w10
+    c968: 5299400a     	mov	w10, #0xca00            // =51712
+    c96c: 72a7734a     	movk	w10, #0x3b9a, lsl #16
+    c970: 93407d08     	sxtw	x8, w8
+    c974: 9b2a2121     	smaddl	x1, w9, w10, x8
+    c978: 94000000     	bl	0xc978 <haptic_audio_store+0x304>
+		000000000000c978:  R_AARCH64_CALL26	hrtimer_start_range_ns
+    c97c: 17ffff97     	b	0xc7d8 <haptic_audio_store+0x164>
+    c980: aa0803e0     	mov	x0, x8
+    c984: 94000000     	bl	0xc984 <haptic_audio_store+0x310>
+		000000000000c984:  R_AARCH64_CALL26	__list_add_valid_or_report
+    c988: 17ffff8e     	b	0xc7c0 <haptic_audio_store+0x14c>
+    c98c: 94000000     	bl	0xc98c <haptic_audio_store+0x318>
+		000000000000c98c:  R_AARCH64_CALL26	__stack_chk_fail
+    c990: 90000008     	adrp	x8, 0xc000 <cali_store+0x9c>
+		000000000000c990:  R_AARCH64_ADR_PREL_PG_HI21	kmalloc_caches+0x28
+    c994: d5384115     	mrs	x21, SP_EL0
+    c998: f9402ab7     	ldr	x23, [x21, #0x50]
+    c99c: f9400100     	ldr	x0, [x8]
+		000000000000c99c:  R_AARCH64_LDST64_ABS_LO12_NC	kmalloc_caches+0x28
+    c9a0: 90000008     	adrp	x8, 0xc000 <cali_store+0x9c>
+		000000000000c9a0:  R_AARCH64_ADR_PREL_PG_HI21	.codetag.alloc_tags+0x370
+    c9a4: 91000108     	add	x8, x8, #0x0
+		000000000000c9a4:  R_AARCH64_ADD_ABS_LO12_NC	.codetag.alloc_tags+0x370
+    c9a8: 5281b801     	mov	w1, #0xdc0              // =3520
+    c9ac: 52800302     	mov	w2, #0x18               // =24
+    c9b0: f9002aa8     	str	x8, [x21, #0x50]
+    c9b4: 94000000     	bl	0xc9b4 <haptic_audio_store+0x340>
+		000000000000c9b4:  R_AARCH64_CALL26	__kmalloc_cache_noprof
+    c9b8: aa0003f4     	mov	x20, x0
+    c9bc: f9002ab7     	str	x23, [x21, #0x50]
+    c9c0: b5ffea94     	cbnz	x20, 0xc710 <haptic_audio_store+0x9c>
+    c9c4: 90000000     	adrp	x0, 0xc000 <cali_store+0x9c>
+		000000000000c9c4:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x363e
+    c9c8: 91000000     	add	x0, x0, #0x0
+		000000000000c9c8:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x363e
+    c9cc: 90000001     	adrp	x1, 0xc000 <cali_store+0x9c>
+		000000000000c9cc:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c64
+    c9d0: 91000021     	add	x1, x1, #0x0
+		000000000000c9d0:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c64
+    c9d4: 90000003     	adrp	x3, 0xc000 <cali_store+0x9c>
+		000000000000c9d4:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2cb6
+    c9d8: 91000063     	add	x3, x3, #0x0
+		000000000000c9d8:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x2cb6
+    c9dc: 528176e2     	mov	w2, #0xbb7              // =2999
+    c9e0: 94000000     	bl	0xc9e0 <haptic_audio_store+0x36c>
+		000000000000c9e0:  R_AARCH64_CALL26	_printk
+    c9e4: 17ffff81     	b	0xc7e8 <haptic_audio_store+0x174>
+    c9e8: 90000008     	adrp	x8, 0xc000 <cali_store+0x9c>
+		000000000000c9e8:  R_AARCH64_ADR_PREL_PG_HI21	kmalloc_caches+0x28
+    c9ec: d5384115     	mrs	x21, SP_EL0
+    c9f0: f9402ab7     	ldr	x23, [x21, #0x50]
+    c9f4: f9400100     	ldr	x0, [x8]
+		000000000000c9f4:  R_AARCH64_LDST64_ABS_LO12_NC	kmalloc_caches+0x28
+    c9f8: 90000008     	adrp	x8, 0xc000 <cali_store+0x9c>
+		000000000000c9f8:  R_AARCH64_ADR_PREL_PG_HI21	.codetag.alloc_tags+0x398
+    c9fc: 91000108     	add	x8, x8, #0x0
+		000000000000c9fc:  R_AARCH64_ADD_ABS_LO12_NC	.codetag.alloc_tags+0x398
+    ca00: 5281b801     	mov	w1, #0xdc0              // =3520
+    ca04: 52800302     	mov	w2, #0x18               // =24
+    ca08: f9002aa8     	str	x8, [x21, #0x50]
+    ca0c: 94000000     	bl	0xca0c <haptic_audio_store+0x398>
+		000000000000ca0c:  R_AARCH64_CALL26	__kmalloc_cache_noprof
+    ca10: f9002ab7     	str	x23, [x21, #0x50]
+    ca14: d102a2d5     	sub	x21, x22, #0xa8
+    ca18: b5ffeaa0     	cbnz	x0, 0xc76c <haptic_audio_store+0xf8>
+    ca1c: 17ffff69     	b	0xc7c0 <haptic_audio_store+0x14c>
