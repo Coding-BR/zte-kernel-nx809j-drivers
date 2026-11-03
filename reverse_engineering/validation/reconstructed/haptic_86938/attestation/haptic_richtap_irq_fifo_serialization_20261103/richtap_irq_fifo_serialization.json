@@ -1,0 +1,145 @@
+{
+  "schema": "haptic-richtap-irq-fifo-serialization/v1",
+  "review_date": "2026-11-03",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "stock_evidence": [
+    {
+      "role": "irq_config",
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0066_00108368_irq_config.c",
+      "sha256": "6e1f30fc5e0a16a35a24fa262156061375522d47b4877ea78d6a06ba71fdcc40"
+    },
+    {
+      "role": "rtp_worker",
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0070_001088f8_richtap_rtp_work.c",
+      "sha256": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5"
+    },
+    {
+      "role": "irq_handler",
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c",
+      "sha256": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279"
+    },
+    {
+      "role": "fifo_helper",
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0074_0010946c_richtap_update_fifo_data.c",
+      "sha256": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e"
+    },
+    {
+      "role": "ioctl",
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c",
+      "sha256": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824"
+    },
+    {
+      "role": "aei",
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0032_00105ac0_aw8693x_set_rtp_aei.c",
+      "sha256": "12d3e35959326e1254505191b54e2f7cc3c112c973d65fcf16216875e5221b21"
+    }
+  ],
+  "stock_findings": [
+    {
+      "claim": "irq_handle is installed as the threaded handler (primary handler NULL); an already-running IRQ thread can continue after the chip AEI bit is masked.",
+      "source": "irq_config",
+      "line_anchors": [
+        24
+      ]
+    },
+    {
+      "claim": "richtap_rtp_work and the RTP branch of irq_handle both call richtap_update_fifo_data over the shared RTP cursor/counter state; the RTP branch call is outside the later +0x370 device-mutex path.",
+      "sources": [
+        "rtp_worker",
+        "irq_handler",
+        "fifo_helper"
+      ],
+      "line_anchors": {
+        "rtp_worker": [
+          70
+        ],
+        "irq_handler": [
+          16,
+          24,
+          29,
+          42,
+          66
+        ]
+      }
+    },
+    {
+      "claim": "ioctl 0x520a masks RTP AEI and queues work at +0x648; AEI helper updates the chip register bit and does not wait for a Linux IRQ thread to finish.",
+      "sources": [
+        "ioctl",
+        "aei"
+      ],
+      "line_anchors": {
+        "ioctl": [
+          148,
+          151,
+          166,
+          174,
+          190,
+          237
+        ],
+        "aei": [
+          4,
+          11
+        ]
+      }
+    }
+  ],
+  "candidate": {
+    "module_path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "module_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+    "module_bytes": 6715896,
+    "worker_source": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_137_richtap_rtp_work.c",
+      "sha256": "09b73a031b1d81e4791f767644cf9fc7ce3131127be81c36a8c91c2f738285d6"
+    },
+    "lifetime_wrapper_source": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+      "sha256": "9a3222a3b44a6533ff0b95d799786bc3c3d4f8b4854febe6e46bf5a73a5b586b"
+    },
+    "disassembly": {
+      "stock_excerpt": {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_fifo_serialization_20261103/stock_irq_fifo_evidence.txt",
+        "sha256": "6f0ae63625fabb4f4f2695abba560f89f70a410bfc838c1db7cddc79631d40cf"
+      },
+      "worker_disassembly": {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_fifo_serialization_20261103/candidate_richtap_rtp_work_disassembly.txt",
+        "sha256": "61c25ead28a347e322e53e1631c6248562e8fd4cfe8188b70c975f5c734aa2b5"
+      },
+      "irq_lock_disassembly": {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_fifo_serialization_20261103/candidate_irq_lock_disassembly.txt",
+        "sha256": "3436e9f38aac3d2ef07818620624e36869901c4e254566f29f4556dd9284aee1"
+      },
+      "queue_disassembly": {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_fifo_serialization_20261103/candidate_queue_current_disassembly.txt",
+        "sha256": "78cdbb4340893ead339ed0d81cf3f2f92c271e1bede02ab10d6e035e6e0354c4"
+      },
+      "abi": {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_fifo_serialization_20261103/undefined_imports_and_vermagic.txt",
+        "sha256": "3f99a7cca9ae0ee66e0b96f80d6b19abafb1c4c6454ef28318cce9d4add77ba9"
+      },
+      "kernel_excerpt": {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_fifo_serialization_20261103/target_workqueue_source_evidence.txt",
+        "sha256": "c353911924663cb8243bb462146a0123726e128f9df81af5f7ac160914e70933"
+      }
+    }
+  },
+  "hardening": {
+    "shared_lock": "haptic_lifetime_irq_stop_lock / haptic_irq_stop_lock at .data+0x400",
+    "coverage": "RTP cursor initialization, each FIFO cursor/count update iteration, and the RTP start/stream/AEI-enable phase now share the mutex used by the irq_handle wrapper.",
+    "polling": "The worker releases the mutex before msleep(1), then reacquires it and rechecks shutdown before touching shared FIFO state.",
+    "all_exits": "Candidate disassembly routes shutdown exits, failed richtap_rtp_start and normal completion through mutex unlock before return.",
+    "lock_order_review": "The worker takes only the IRQ/stop mutex. The ioctl path cancels +0x648 while holding the stream mutex before taking IRQ/stop; remove drains +0x648 without holding IRQ/stop. No cycle was found in these reviewed paths."
+  },
+  "build": {
+    "report_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_fifo_serialization_20261103/docker_builds.json",
+    "candidate_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+    "two_clean_cycles_byte_identical": true,
+    "undefined_imports_unchanged": true
+  },
+  "conclusion": "STATICALLY_SERIALIZED_IRQ_AND_RICHTAP_WORKER_FIFO_ACCESS",
+  "scope_limits": [
+    "The driver still has separate producer/consumer FIFO protocol questions.",
+    "No runtime stress, Lockdep, KCSAN, IRQ-latency measurement, module load, or NX809J hardware validation was performed.",
+    "This is a declared hardening deviation, not proof of stock semantic equivalence."
+  ]
+}

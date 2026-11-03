@@ -111,6 +111,13 @@ void richtap_rtp_work(struct work_struct *work)
     if (haptic_lifetime_is_shutting_down())
         return;
 
+    /* AEI masking does not drain an IRQ thread already updating the FIFO. */
+    haptic_lifetime_irq_stop_lock();
+    if (haptic_lifetime_is_shutting_down()) {
+        haptic_lifetime_irq_stop_unlock();
+        return;
+    }
+
 #if defined(__aarch64__)
 	register char *work_base asm("x19");
 	register struct aw_haptic *aw asm("x20");
@@ -148,9 +155,16 @@ void richtap_rtp_work(struct work_struct *work)
 	*(struct richtap_fifo_node **)(work_base - 0x28) =
 		*(struct richtap_fifo_node **)(work_base - 0x38);
 #endif
+	haptic_lifetime_irq_stop_unlock();
 	u8 state;
 
+	/* IRQ and worker share the FIFO cursor; release the lock before polling. */
 	for (;;) {
+		haptic_lifetime_irq_stop_lock();
+		if (haptic_lifetime_is_shutting_down()) {
+			haptic_lifetime_irq_stop_unlock();
+			return;
+		}
 		state = RTP_CURSOR->state;
 		if (state == (u8)'U') {
 			s32 node_size = RTP_CURSOR->data_size;
@@ -194,19 +208,38 @@ void richtap_rtp_work(struct work_struct *work)
 #endif
 			}
 		} else if (state == 0xaaU) {
+			haptic_lifetime_irq_stop_unlock();
 			break;
 		} else {
+			haptic_lifetime_irq_stop_unlock();
 			msleep(1);
+			if (copied >= RTP_LENGTH)
+				break;
+			if (retries++ >= 30U)
+				break;
+			continue;
 		}
 
-		if (copied >= RTP_LENGTH)
+		if (copied >= RTP_LENGTH) {
+			haptic_lifetime_irq_stop_unlock();
 			break;
-		if (retries++ >= 30U)
+		}
+		if (retries++ >= 30U) {
+			haptic_lifetime_irq_stop_unlock();
 			break;
+		}
+		haptic_lifetime_irq_stop_unlock();
 	}
 
-	if ((richtap_rtp_start(aw) & 1U) == 0U)
+	haptic_lifetime_irq_stop_lock();
+	if (haptic_lifetime_is_shutting_down()) {
+		haptic_lifetime_irq_stop_unlock();
 		return;
+	}
+	if ((richtap_rtp_start(aw) & 1U) == 0U) {
+		haptic_lifetime_irq_stop_unlock();
+		return;
+	}
 
 	RICHTAP_FUNC(set_rtp_data)(aw, RTP_DATA, copied);
 	if (RICHTAP_FIELD_11 == 1U) {
@@ -228,4 +261,5 @@ void richtap_rtp_work(struct work_struct *work)
 		RICHTAP_FUNC(irq_clear)(aw);
 		RTP_LOOP = 1U;
 	}
+	haptic_lifetime_irq_stop_unlock();
 }

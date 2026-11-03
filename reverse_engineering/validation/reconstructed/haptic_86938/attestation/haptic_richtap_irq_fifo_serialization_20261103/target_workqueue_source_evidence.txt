@@ -1,0 +1,107 @@
+Pinned kernel source and config evidence
+kernel_source_commit=3356b35306d35d5a480e3b63df1a9f065b5d9f55
+--- include/linux/workqueue.h: WORK_CPU_UNBOUND ---
+    88	enum wq_misc_consts {
+    89		WORK_NR_COLORS		= (1 << WORK_STRUCT_COLOR_BITS),
+    90	
+    91		/* not bound to any CPU, prefer the local CPU */
+    92		WORK_CPU_UNBOUND	= NR_CPUS,
+    93	
+    94		/* bit mask for work_busy() return values */
+--- include/linux/workqueue.h: WQ_UNBOUND ---
+   372	 */
+   373	enum wq_flags {
+   374		WQ_BH			= 1 << 0, /* execute in bottom half (softirq) context */
+   375		WQ_UNBOUND		= 1 << 1, /* not bound to any cpu */
+   376		WQ_FREEZABLE		= 1 << 2, /* freeze during suspend */
+   377		WQ_MEM_RECLAIM		= 1 << 3, /* may be used for memory reclaim */
+   378		WQ_HIGHPRI		= 1 << 4, /* high priority */
+--- kernel/workqueue.c: per-node max_active contract ---
+   316	/*
+   317	 * Unlike in a per-cpu workqueue where max_active limits its concurrency level
+   318	 * on each CPU, in an unbound workqueue, max_active applies to the whole system.
+   319	 * As sharing a single nr_active across multiple sockets can be very expensive,
+   320	 * the counting and enforcement is per NUMA node.
+   321	 *
+   322	 * The following struct is used to enforce per-node max_active. When a pwq wants
+   323	 * to start executing a work item, it should increment ->nr using
+   324	 * tryinc_node_nr_active(). If acquisition fails due to ->nr already being over
+   325	 * ->max, the pwq is queued on ->pending_pwqs. As in-flight work items finish
+   326	 * and decrement ->nr, node_activate_pending_pwq() activates the pending pwqs in
+   327	 * round-robin order.
+   328	 */
+   329	struct wq_node_nr_active {
+   330		int			max;		/* per-node max_active */
+   331		atomic_t		nr;		/* per-node nr_active */
+--- kernel/workqueue.c: unbound CPU sentinel handling ---
+  2266			return;
+  2267		rcu_read_lock();
+  2268	retry:
+  2269		/* pwq which will be used unless @work is executing elsewhere */
+  2270		if (req_cpu == WORK_CPU_UNBOUND) {
+  2271			if (wq->flags & WQ_UNBOUND)
+  2272				cpu = wq_select_unbound_cpu(raw_smp_processor_id());
+  2273			else
+  2274				cpu = raw_smp_processor_id();
+  2275		}
+  2276	
+  2277		pwq = rcu_dereference(*per_cpu_ptr(wq->cpu_pwq, cpu));
+  2278		pool = pwq->pool;
+--- kernel/workqueue.c: max_active per-node calculation ---
+  1577	 * Update @wq->node_nr_active[]->max. @wq must be unbound. max_active is
+  1578	 * distributed among nodes according to the proportions of numbers of online
+  1579	 * cpus. The result is always between @wq->min_active and max_active.
+  1580	 */
+  1581	static void wq_update_node_max_active(struct workqueue_struct *wq, int off_cpu)
+  1582	{
+  1583		struct cpumask *effective = unbound_effective_cpumask(wq);
+  1584		int min_active = READ_ONCE(wq->min_active);
+  1585		int max_active = READ_ONCE(wq->max_active);
+  1586		int total_cpus, node;
+  1587	
+  1588		lockdep_assert_held(&wq->mutex);
+  1589	
+  1590		if (!wq_topo_initialized)
+  1591			return;
+  1592	
+  1593		if (off_cpu >= 0 && !cpumask_test_cpu(off_cpu, effective))
+  1594			off_cpu = -1;
+  1595	
+  1596		total_cpus = cpumask_weight_and(effective, cpu_online_mask);
+  1597		if (off_cpu >= 0)
+  1598			total_cpus--;
+  1599	
+  1600		/* If all CPUs of the wq get offline, use the default values */
+  1601		if (unlikely(!total_cpus)) {
+  1602			for_each_node(node)
+  1603				wq_node_nr_active(wq, node)->max = min_active;
+  1604	
+  1605			wq_node_nr_active(wq, NUMA_NO_NODE)->max = max_active;
+  1606			return;
+  1607		}
+  1608	
+  1609		for_each_node(node) {
+  1610			int node_cpus;
+  1611	
+  1612			node_cpus = cpumask_weight_and(effective, cpumask_of_node(node));
+  1613			if (off_cpu >= 0 && cpu_to_node(off_cpu) == node)
+  1614				node_cpus--;
+  1615	
+  1616			wq_node_nr_active(wq, node)->max =
+  1617				clamp(DIV_ROUND_UP(max_active * node_cpus, total_cpus),
+  1618				      min_active, max_active);
+  1619		}
+  1620	
+  1621		wq_node_nr_active(wq, NUMA_NO_NODE)->max = max_active;
+  1622	}
+--- include/asm-generic/topology.h: cpu_to_node fallback ---
+    31	
+    32	/* Other architectures wishing to use this simple topology API should fill
+    33	   in the below functions as appropriate in their own <asm/topology.h> file. */
+    34	#ifndef cpu_to_node
+    35	#define cpu_to_node(cpu)	((void)(cpu),0)
+    36	#endif
+    37	#ifndef set_numa_node
+--- target .config ---
+CONFIG_NR_CPUS=32
+# CONFIG_NUMA is not set

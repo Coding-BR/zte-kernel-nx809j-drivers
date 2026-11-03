@@ -1,0 +1,88 @@
+{
+  "schema": "haptic-richtap-irq-fifo-docker-builds/v1",
+  "build_date": "2026-11-03",
+  "target_kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+  "docker_image": "nubia-sm8850-kernel-builder:latest",
+  "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+  "toolchain": {
+    "clang": "clang-r536225 / Android clang 19.0.1",
+    "rust": "rust-1.82.0-dev"
+  },
+  "environment": {
+    "KBUILD_BUILD_TIMESTAMP": "2000-01-01 00:00:00 UTC",
+    "KBUILD_BUILD_USER": "codex",
+    "KBUILD_BUILD_HOST": "reproducible",
+    "KCFLAGS": "not set"
+  },
+  "kernel_output_config_sha256": {
+    "include/generated/autoconf.h": "5182b0be5898da1e4da8f422d504921581b4f77855dd660162394596810d7978",
+    "include/config/auto.conf": "c5f23e085c632f0a7905655199d06a8de8bd373c6b5dbc2400ca48be8898b564",
+    "include/generated/rustc_cfg": "a2c74139b56570dcf6cc24e5c4f0b79f2ba4f0d06f8cfe6ceb2c4d1a47f02577"
+  },
+  "commands": [
+    "make -C /work/src/kernel/kernel_platform/common O=/work/kernel_out ARCH=arm64 LLVM=1 LLVM_IAS=1 M=/work/validation/haptic_86938/source clean",
+    "make -C /work/src/kernel/kernel_platform/common O=/work/kernel_out ARCH=arm64 LLVM=1 LLVM_IAS=1 M=/work/validation/haptic_86938/source -j8 modules"
+  ],
+  "source_files": [
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_137_richtap_rtp_work.c",
+      "sha256": "09b73a031b1d81e4791f767644cf9fc7ce3131127be81c36a8c91c2f738285d6",
+      "bytes": 7949
+    }
+  ],
+  "module": {
+    "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+    "bytes": 6715896
+  },
+  "abi_comparison": {
+    "previous_candidate_sha256": "25b2ff207e3cd56368e8f9256bb5a534e9c6486bf1a5a3004137399c9e2fc7d2",
+    "previous_undefined_import_count": 93,
+    "current_undefined_import_count": 93,
+    "import_set_delta": [],
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64"
+  },
+  "cycles": [
+    {
+      "cycle": 1,
+      "source_directory": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\haptic_richtap_irq_fifo_serialization_20261103\\cycle_1\\source",
+      "output_volume": "codex-kbuild-haptic_86938-rtp-irq-20261103-c1",
+      "clean_exit_code": 0,
+      "build_exit_code": 0,
+      "module_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+      "module_bytes": 6715896,
+      "source_sha256": "09b73a031b1d81e4791f767644cf9fc7ce3131127be81c36a8c91c2f738285d6",
+      "clean_log": {
+        "path": "docker_clean_cycle_1.log",
+        "sha256": "0a1422bcb2460e4f65e24bed769940dcc42ac8a7661fc4a72cda19e9a06f836c",
+        "bytes": 288
+      },
+      "build_log": {
+        "path": "docker_build_cycle_1.log",
+        "sha256": "b54e18609409cce78e1efab7be9914b33eeccdd8528cafe06b7d56ad34b201d1",
+        "bytes": 14861
+      }
+    },
+    {
+      "cycle": 2,
+      "source_directory": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\haptic_richtap_irq_fifo_serialization_20261103\\cycle_2\\source",
+      "output_volume": "codex-kbuild-haptic_86938-rtp-irq-20261103-c2",
+      "clean_exit_code": 0,
+      "build_exit_code": 0,
+      "module_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+      "module_bytes": 6715896,
+      "source_sha256": "09b73a031b1d81e4791f767644cf9fc7ce3131127be81c36a8c91c2f738285d6",
+      "clean_log": {
+        "path": "docker_clean_cycle_2.log",
+        "sha256": "0a1422bcb2460e4f65e24bed769940dcc42ac8a7661fc4a72cda19e9a06f836c",
+        "bytes": 288
+      },
+      "build_log": {
+        "path": "docker_build_cycle_2.log",
+        "sha256": "b54e18609409cce78e1efab7be9914b33eeccdd8528cafe06b7d56ad34b201d1",
+        "bytes": 14861
+      }
+    }
+  ],
+  "result": "PASS_TWO_CLEAN_INDEPENDENT_BUILDS_BYTE_IDENTICAL"
+}

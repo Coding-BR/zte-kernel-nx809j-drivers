@@ -1,0 +1,340 @@
+=== reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0066_00108368_irq_config.c:1-34 ===
+0001: 
+0002: ulong irq_config(undefined8 param_1,long param_2)
+0003: 
+0004: {
+0005:   undefined4 uVar1;
+0006:   ulong uVar2;
+0007:   code *pcVar3;
+0008:   
+0009:   if ((*(int *)(param_2 + 0x50) < 0) || ((*(byte *)(param_2 + 0x15) & 1) != 0)) {
+0010:     _dev_info(param_1,"skipping IRQ registration");
+0011:     uVar2 = 0;
+0012:     *(byte *)(param_2 + 0x15) = *(byte *)(param_2 + 0x15) | 1;
+0013:   }
+0014:   else {
+0015:     pcVar3 = *(code **)(*(long *)(param_2 + 0x5c8) + 0x108);
+0016:     if (*(int *)(pcVar3 + -4) != -0x7b85f7d0) {
+0017:                     /* WARNING: Does not return */
+0018:       pcVar3 = (code *)SoftwareBreakpoint(0x8228,0x1083b4);
+0019:       (*pcVar3)();
+0020:     }
+0021:     (*pcVar3)(param_2);
+0022:     gpio_to_desc(*(undefined4 *)(param_2 + 0x50));
+0023:     uVar1 = gpiod_to_irq();
+0024:     uVar2 = devm_request_threaded_irq(param_1,uVar1,0,irq_handle,0x2002,"aw_haptic",param_2);
+0025:     if ((int)uVar2 != 0) {
+0026:       uVar2 = uVar2 & 0xffffffff;
+0027:       gpio_to_desc(*(undefined4 *)(param_2 + 0x50));
+0028:       uVar1 = gpiod_to_irq();
+0029:       _printk(&DAT_001113e2,"haptic_hv",0x6ce,"irq_config",uVar1,uVar2);
+0030:     }
+0031:   }
+0032:   return uVar2;
+0033: }
+0034: 
+
+=== reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0070_001088f8_richtap_rtp_work.c:1-105 ===
+0001: 
+0002: void richtap_rtp_work(long param_1)
+0003: 
+0004: {
+0005:   bool bVar1;
+0006:   char cVar2;
+0007:   ulong uVar3;
+0008:   int iVar4;
+0009:   undefined1 *puVar5;
+0010:   code *pcVar6;
+0011:   long lVar7;
+0012:   uint uVar8;
+0013:   uint *puVar9;
+0014:   uint uVar10;
+0015:   
+0016:   *(undefined4 *)(param_1 + 0x78) = 0;
+0017:   uVar8 = 0;
+0018:   uVar10 = 0;
+0019:   lVar7 = param_1 + -0x648;
+0020:   puVar9 = (uint *)(param_1 + -0x1f0);
+0021:   *(undefined8 *)(param_1 + -0x28) = *(undefined8 *)(param_1 + -0x38);
+0022:   do {
+0023:     cVar2 = **(char **)(param_1 + -0x28);
+0024:     if (cVar2 == 'U') {
+0025:       iVar4 = (int)*(short *)(*(char **)(param_1 + -0x28) + 2);
+0026:       if (*puVar9 < uVar8 + iVar4) {
+0027:         memcpy((void *)(*(long *)(param_1 + -0x40) + (ulong)uVar8),
+0028:                (void *)(*(long *)(param_1 + -0x28) + 0x18),(ulong)(*puVar9 - uVar8));
+0029:         *(short *)(param_1 + 0x70) = (short)*puVar9 - (short)uVar8;
+0030:         uVar8 = *puVar9;
+0031:       }
+0032:       else {
+0033:         memcpy((void *)(*(long *)(param_1 + -0x40) + (ulong)uVar8),
+0034:                (void *)(*(long *)(param_1 + -0x28) + 0x18),(long)iVar4);
+0035:         puVar5 = *(undefined1 **)(param_1 + -0x28);
+0036:         *puVar5 = 0xff;
+0037:         uVar8 = uVar8 + (int)*(short *)(puVar5 + 2);
+0038:         *(undefined2 *)(*(long *)(param_1 + -0x28) + 2) = 0;
+0039:         *(undefined2 *)(param_1 + 0x70) = 0;
+0040:         *(undefined8 *)(param_1 + -0x28) = *(undefined8 *)(*(long *)(param_1 + -0x28) + 8);
+0041:       }
+0042:     }
+0043:     else {
+0044:       if (cVar2 == -0x56) break;
+0045:       msleep(1);
+0046:     }
+0047:     if ((*puVar9 <= uVar8) || (bVar1 = 0x1d < uVar10, uVar10 = uVar10 + 1, bVar1)) break;
+0048:   } while( true );
+0049:   uVar3 = richtap_rtp_start(lVar7);
+0050:   if ((uVar3 & 1) != 0) {
+0051:     pcVar6 = *(code **)(*(long *)(param_1 + -0x80) + 0xd0);
+0052:     if (*(int *)(pcVar6 + -4) != -0x39584d65) {
+0053:                     /* WARNING: Does not return */
+0054:       pcVar6 = (code *)SoftwareBreakpoint(0x8228,0x108a28);
+0055:       (*pcVar6)();
+0056:     }
+0057:     (*pcVar6)(lVar7,*(undefined8 *)(param_1 + -0x40),uVar8);
+0058:     if (*(char *)(param_1 + -0x637) == '\x01') {
+0059:       *(undefined4 *)(param_1 + 0x74) = 1;
+0060:       do {
+0061:         pcVar6 = *(code **)(*(long *)(param_1 + -0x80) + 0x170);
+0062:         if (*(int *)(pcVar6 + -4) != 0x784b3854) {
+0063:                     /* WARNING: Does not return */
+0064:           pcVar6 = (code *)SoftwareBreakpoint(0x8228,0x108a68);
+0065:           (*pcVar6)();
+0066:         }
+0067:         cVar2 = (*pcVar6)(lVar7);
+0068:         if (((cVar2 != '\0') || (*(char *)(param_1 + -0x631) != '\x02')) ||
+0069:            (**(char **)(param_1 + -0x28) != 'U')) break;
+0070:         richtap_update_fifo_data(lVar7,*puVar9 >> 2);
+0071:         pcVar6 = *(code **)(*(long *)(param_1 + -0x80) + 0x160);
+0072:         if (*(int *)(pcVar6 + -4) != 0x784b3854) {
+0073:                     /* WARNING: Does not return */
+0074:           pcVar6 = (code *)SoftwareBreakpoint(0x8228,0x108ac4);
+0075:           (*pcVar6)();
+0076:         }
+0077:         uVar3 = (*pcVar6)(lVar7);
+0078:       } while ((uVar3 & 0xf) != 0);
+0079:       pcVar6 = *(code **)(*(long *)(param_1 + -0x80) + 0xf0);
+0080:       if (*(int *)(pcVar6 + -4) != -0x7b85f7d0) {
+0081:                     /* WARNING: Does not return */
+0082:         pcVar6 = (code *)SoftwareBreakpoint(0x8228,0x108af4);
+0083:         (*pcVar6)();
+0084:       }
+0085:       (*pcVar6)(lVar7);
+0086:       pcVar6 = *(code **)(*(long *)(param_1 + -0x80) + 0x110);
+0087:       if (*(int *)(pcVar6 + -4) != 0x1d0adf6e) {
+0088:                     /* WARNING: Does not return */
+0089:         pcVar6 = (code *)SoftwareBreakpoint(0x8228,0x108b20);
+0090:         (*pcVar6)();
+0091:       }
+0092:       (*pcVar6)(lVar7,1);
+0093:     }
+0094:     else {
+0095:       pcVar6 = *(code **)(*(long *)(param_1 + -0x80) + 0x110);
+0096:       if (*(int *)(pcVar6 + -4) != 0x1d0adf6e) {
+0097:                     /* WARNING: Does not return */
+0098:         pcVar6 = (code *)SoftwareBreakpoint(0x8228,0x108b54);
+0099:         (*pcVar6)();
+0100:       }
+0101:       (*pcVar6)(lVar7,1);
+0102:       pcVar6 = *(code **)(*(long *)(param_1 + -0x80) + 0xf0);
+0103:       if (*(int *)(pcVar6 + -4) != -0x7b85f7d0) {
+0104:                     /* WARNING: Does not return */
+0105:         pcVar6 = (code *)SoftwareBreakpoint(0x8228,0x108b7c);
+
+=== reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c:14-48 ===
+0014:   
+0015:   _printk(&DAT_0010f834,"haptic_hv",0x665,"irq_handle");
+0016:   iVar2 = *(int *)(param_2 + 0x6bc);
+0017:   pcVar9 = *(code **)(*(long *)(param_2 + 0x5c8) + 0x18);
+0018:   if (*(int *)(pcVar9 + -4) != 0x512cf1f0) {
+0019:                     /* WARNING: Does not return */
+0020:     pcVar9 = (code *)SoftwareBreakpoint(0x8228,0x1090f0);
+0021:     (*pcVar9)();
+0022:   }
+0023:   iVar5 = (*pcVar9)(param_2);
+0024:   if (iVar2 == 1) {
+0025:     if (iVar5 == 0) {
+0026:       _printk(&DAT_00111628,"haptic_hv",0x66a,"irq_handle","irq_handle");
+0027:       uVar6 = *(uint *)(param_2 + 0x458) >> 1;
+0028:       while( true ) {
+0029:         richtap_update_fifo_data(param_2,uVar6);
+0030:         pcVar9 = *(code **)(*(long *)(param_2 + 0x5c8) + 0x180);
+0031:         if (*(int *)(pcVar9 + -4) != 0x784b3854) {
+0032:                     /* WARNING: Does not return */
+0033:           pcVar9 = (code *)SoftwareBreakpoint(0x8228,0x1092fc);
+0034:           (*pcVar9)();
+0035:         }
+0036:         cVar4 = (*pcVar9)(param_2);
+0037:         if (((cVar4 != '\0') || (*(int *)(param_2 + 0x6bc) == 0)) ||
+0038:            (**(char **)(param_2 + 0x620) != 'U')) break;
+0039:         uVar6 = *(uint *)(param_2 + 0x458) >> 2;
+0040:       }
+0041:     }
+0042:     if (**(char **)(param_2 + 0x620) == -1) {
+0043:       _printk(&DAT_00110371,"haptic_hv",0x675,"irq_handle");
+0044:       pcVar9 = *(code **)(*(long *)(param_2 + 0x5c8) + 0x110);
+0045:       if (*(int *)(pcVar9 + -4) != 0x1d0adf6e) {
+0046:                     /* WARNING: Does not return */
+0047:         pcVar9 = (code *)SoftwareBreakpoint(0x8228,0x109158);
+0048:         (*pcVar9)();
+
+=== reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c:60-75 ===
+0060:           pcVar9 = (code *)SoftwareBreakpoint(0x8228,0x109198);
+0061:           (*pcVar9)();
+0062:         }
+0063:         cVar4 = (*pcVar9)(param_2);
+0064:         while( true ) {
+0065:           if ((cVar4 != '\0') || (*(char *)(param_2 + 0x17) != '\x02')) goto LAB_0010941c;
+0066:           mutex_lock(param_2 + 0x370);
+0067:           uVar6 = *(uint *)(param_2 + 0x74);
+0068:           if (uVar6 == 0) break;
+0069:           if (aw_rtp == (int *)0x0) {
+0070:             puVar7 = &DAT_001109d7;
+0071:             uVar8 = 0x68d;
+0072:             goto LAB_0010938c;
+0073:           }
+0074:           uVar3 = *(uint *)(param_2 + 0x458) >> 2;
+0075:           pcVar9 = *(code **)(*(long *)(param_2 + 0x5c8) + 0xd0);
+
+=== reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0074_0010946c_richtap_update_fifo_data.c:1-55 ===
+0001: 
+0002: void richtap_update_fifo_data(long param_1,uint param_2)
+0003: 
+0004: {
+0005:   char cVar1;
+0006:   ushort uVar2;
+0007:   undefined8 uVar3;
+0008:   code *pcVar4;
+0009:   int iVar5;
+0010:   uint uVar6;
+0011:   size_t __n;
+0012:   int iVar7;
+0013:   
+0014:   iVar5 = 0;
+0015:   iVar7 = 3;
+0016:   do {
+0017:     cVar1 = **(char **)(param_1 + 0x620);
+0018:     if (cVar1 == 'U') {
+0019:       uVar2 = *(ushort *)(param_1 + 0x6b8);
+0020:       __n = (long)*(short *)(*(char **)(param_1 + 0x620) + 2) - (long)(short)uVar2;
+0021:       uVar6 = (uint)__n;
+0022:       if (param_2 < uVar6 || param_2 - uVar6 == 0) {
+0023:         if ((1000 < uVar2) || (1000 < (ulong)*(ushort *)(param_1 + 0x6b8))) {
+0024: LAB_001095f8:
+0025:                     /* WARNING: Does not return */
+0026:           pcVar4 = (code *)SoftwareBreakpoint(0x5512,0x1095fc);
+0027:           (*pcVar4)();
+0028:         }
+0029:         memcpy((void *)(*(long *)(param_1 + 0x608) + (long)iVar5),
+0030:                (void *)(*(long *)(param_1 + 0x620) + (ulong)*(ushort *)(param_1 + 0x6b8) + 0x18),
+0031:                (ulong)param_2);
+0032:         iVar5 = param_2 + iVar5;
+0033:         *(short *)(param_1 + 0x6b8) = *(short *)(param_1 + 0x6b8) + (short)param_2;
+0034: LAB_0010959c:
+0035:         pcVar4 = *(code **)(*(long *)(param_1 + 0x5c8) + 0xd0);
+0036:         if (*(int *)(pcVar4 + -4) != -0x39584d65) {
+0037:                     /* WARNING: Does not return */
+0038:           pcVar4 = (code *)SoftwareBreakpoint(0x8228,0x1095c8);
+0039:           (*pcVar4)();
+0040:         }
+0041:         (*pcVar4)(param_1,*(undefined8 *)(param_1 + 0x608),iVar5);
+0042:         return;
+0043:       }
+0044:       if ((1000 < uVar2) || (1000 < (ulong)*(ushort *)(param_1 + 0x6b8))) goto LAB_001095f8;
+0045:       memcpy((void *)(*(long *)(param_1 + 0x608) + (long)iVar5),
+0046:              (void *)(*(long *)(param_1 + 0x620) + (ulong)*(ushort *)(param_1 + 0x6b8) + 0x18),__n);
+0047:       iVar5 = uVar6 + iVar5;
+0048:       **(undefined1 **)(param_1 + 0x620) = 0xff;
+0049:       *(undefined2 *)(*(long *)(param_1 + 0x620) + 2) = 0;
+0050:       uVar3 = *(undefined8 *)(*(long *)(param_1 + 0x620) + 8);
+0051:       *(undefined2 *)(param_1 + 0x6b8) = 0;
+0052:       *(undefined8 *)(param_1 + 0x620) = uVar3;
+0053:       param_2 = param_2 - uVar6;
+0054:     }
+0055:     else {
+
+=== reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c:145-192 ===
+0145:         memset((void *)((lVar7 - __n) + 16000),0,__n);
+0146:         goto LAB_0010e768;
+0147:       }
+0148:       if (param_2 != 0x520a) goto LAB_0010e8f0;
+0149:       _printk(&DAT_0010fd17,"haptic_hv",0x5d9,"richtap_file_unlocked_ioctl");
+0150:       richtap_clean_buf(lVar6);
+0151:       mutex_lock(lVar6 + 0x2f0);
+0152:       pcVar3 = *(code **)(*(long *)(lVar6 + 0x5c8) + 0xf0);
+0153:       if (*(int *)(pcVar3 + -4) != -0x7b85f7d0) {
+0154:                     /* WARNING: Does not return */
+0155:         pcVar3 = (code *)SoftwareBreakpoint(0x8228,0x10e828);
+0156:         (*pcVar3)();
+0157:       }
+0158:       (*pcVar3)(lVar6);
+0159:       pcVar3 = *(code **)(*(long *)(lVar6 + 0x5c8) + 0x38);
+0160:       if (*(int *)(pcVar3 + -4) != -0x7b85f7d0) {
+0161:                     /* WARNING: Does not return */
+0162:         pcVar3 = (code *)SoftwareBreakpoint(0x8228,0x10e850);
+0163:         (*pcVar3)();
+0164:       }
+0165:       (*pcVar3)(lVar6);
+0166:       mutex_unlock(lVar6 + 0x2f0);
+0167:       pcVar3 = *(code **)(*(long *)(lVar6 + 0x5c8) + 0x110);
+0168:       if (*(int *)(pcVar3 + -4) != 0x1d0adf6e) {
+0169:                     /* WARNING: Does not return */
+0170:         pcVar3 = (code *)SoftwareBreakpoint(0x8228,0x10e884);
+0171:         (*pcVar3)();
+0172:       }
+0173:       (*pcVar3)(lVar6,0);
+0174:       *(undefined4 *)(lVar6 + 0x6bc) = 0;
+0175:       pcVar3 = *(code **)(*(long *)(lVar6 + 0x5c8) + 0x118);
+0176:       if (*(int *)(pcVar3 + -4) != -0x2c84916b) {
+0177:                     /* WARNING: Does not return */
+0178:         pcVar3 = (code *)SoftwareBreakpoint(0x8228,0x10e8b4);
+0179:         (*pcVar3)();
+0180:       }
+0181:       (*pcVar3)(lVar6,2);
+0182:       pcVar3 = *(code **)(*(long *)(lVar6 + 0x5c8) + 0xa0);
+0183:       if (*(int *)(pcVar3 + -4) != 0x1d0adf6e) {
+0184:                     /* WARNING: Does not return */
+0185:         pcVar3 = (code *)SoftwareBreakpoint(0x8228,0x10e8e0);
+0186:         (*pcVar3)();
+0187:       }
+0188:       (*pcVar3)(lVar6,*(undefined4 *)(lVar6 + 0x30));
+0189:       uVar2 = *(undefined8 *)(lVar6 + 0x448);
+0190:       lVar6 = lVar6 + 0x648;
+0191:     }
+0192:     else {
+
+=== reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0032_00105ac0_aw8693x_set_rtp_aei.c:1-14 ===
+0001: 
+0002: void aw8693x_set_rtp_aei(undefined8 param_1,ulong param_2)
+0003: 
+0004: {
+0005:   undefined4 uVar1;
+0006:   
+0007:   uVar1 = 0;
+0008:   if ((param_2 & 1) == 0) {
+0009:     uVar1 = 0x10;
+0010:   }
+0011:   i2c_w_bits(param_1,3,0xffffffef,uVar1);
+0012:   return;
+0013: }
+0014: 
+
+=== reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c:225-241 ===
+0225:       if (param_2 != 0x5212) {
+0226:         if (param_2 == 0x5213) {
+0227:           _printk(&DAT_0010f89e,"haptic_hv",0x5f2,"richtap_file_unlocked_ioctl");
+0228:           goto LAB_0010e69c;
+0229:         }
+0230: LAB_0010e8f0:
+0231:         _dev_err(*(undefined8 *)(lVar6 + 800),"%s, unknown cmd\n","richtap_file_unlocked_ioctl");
+0232:         goto LAB_0010e69c;
+0233:       }
+0234:       uVar2 = *(undefined8 *)(lVar6 + 0x448);
+0235:       lVar6 = lVar6 + 0x668;
+0236:     }
+0237:     queue_work_on(0x20,uVar2,lVar6);
+0238:   }
+0239: LAB_0010e69c:
+0240:   uVar2 = 0;
+0241: LAB_0010e76c:
+
