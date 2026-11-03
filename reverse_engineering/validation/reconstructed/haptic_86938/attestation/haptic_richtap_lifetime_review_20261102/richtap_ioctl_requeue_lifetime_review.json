@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0",
+  "review_id": "HAP-RICHTAP-05-IOCTL-REQUEUE",
+  "generated_local_date": "2026-11-02",
+  "driver": "haptic_86938",
+  "status": "IOCTL_0x520A_CAN_REQUEUE_RTP_WORK_AFTER_REMOVE_CANCEL; STATIC_PATH_CONFIRMED; RUNTIME_UNVERIFIED",
+  "binding": {
+    "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "candidate_module_sha256": "175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c",
+    "target_kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "target_kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "docker_source_mount_mode": "read-only",
+    "reconstruction_map": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+      "sha256": "97b0404507e15d07a16f7f669eefa2b0f80418ac4a8e427df64551880e981143"
+    }
+  },
+  "prior_review": {
+    "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/richtap_lifetime_static_review.json",
+    "sha256": "ed5dbcab856530b13a5bb923a6b97a95cb8b9ad8a43c2ef7f7af96df2a4efdda",
+    "related_finding": "HAP-RICHTAP-02 establishes that misc_deregister removes the registration but does not drain already-open file descriptors."
+  },
+  "mapped_functions": [
+    {
+      "function": "aw_i2c_probe",
+      "stock_entry": "001073c0",
+      "mapping_status": "PROMOTED_OFFLINE_EXACT",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_143_aw_i2c_probe_exact.S",
+      "candidate_source_sha256": "24caf6eba7c579b52dde033fbf7c1e5f8d6f0dc6c3cb67499f0ba072b4059504",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+      "stock_assembly_sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+      "stock_ghidra_decompilation_sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a"
+    },
+    {
+      "function": "aw_remove",
+      "stock_entry": "0010823c",
+      "mapping_status": "PROMOTED_OFFLINE_EXACT",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c",
+      "candidate_source_sha256": "14da2f127a98cc9810286b26b6dea32d70a2404adc27743d1186d2723c5136bf",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+      "stock_assembly_sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+      "stock_ghidra_decompilation_sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbebd34e9c198fdd6ef17cb6c804e8438"
+    },
+    {
+      "function": "richtap_file_unlocked_ioctl",
+      "stock_entry": "0010e374",
+      "mapping_status": "PROMOTED_OFFLINE_EXACT",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_134_richtap_file_unlocked_ioctl_exact.S",
+      "candidate_source_sha256": "19873419ed795e1b431c9527f876abc567a8c7503bdbe20a68ebcd3e1f9424aa",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0151_richtap_file_unlocked_ioctl_0010e374.asm",
+      "stock_assembly_sha256": "1c28ebb056e308409fe6892d83aa68aba8bba8a732e8f12b18c6024203dbe0ad",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c",
+      "stock_ghidra_decompilation_sha256": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824"
+    },
+    {
+      "function": "richtap_rtp_work",
+      "stock_entry": "001088f8",
+      "mapping_status": "PROMOTED_OFFLINE_EXACT",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_137_richtap_rtp_work.c",
+      "candidate_source_sha256": "77d8572d35c9ebeab1202375e93bea5aad3efe038c318ea62afb3f5807f1643e",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0070_richtap_rtp_work_001088f8.asm",
+      "stock_assembly_sha256": "393de37c1ba2b68f4e42e90f4bd72515fc7650b1542bc48aa14af747012cfa83",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0070_001088f8_richtap_rtp_work.c",
+      "stock_ghidra_decompilation_sha256": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5"
+    }
+  ],
+  "stock_call_path": [
+    {
+      "stage": "work_item_initialization",
+      "evidence": "aw_i2c_probe stores the work_struct at state+0x648 and its callback at state+0x660. The stock Ghidra decompilation identifies that callback as richtap_rtp_work; the neighboring item at +0x668 is richtap_stop_work.",
+      "stock_assembly_locations": [
+        "aw_i2c_probe: 0x52e0-0x52f4",
+        "aw_i2c_probe: 0x52fc-0x5310"
+      ]
+    },
+    {
+      "stage": "ioctl_submission",
+      "evidence": "Command 0x520a follows the setup path and reaches queue_work_on with queue=state+0x448 and work=state+0x648. The 0x5212 branch queues state+0x668. The 0x5213 branch only emits a log and returns; it does not queue work.",
+      "stock_assembly_locations": [
+        "richtap_file_unlocked_ioctl: command 0x520a dispatch at 0xb9a8-0xb9b0",
+        "richtap_file_unlocked_ioctl: work pointer state+0x648 at 0xbac4-0xbacc",
+        "richtap_file_unlocked_ioctl: shared queue_work_on call at 0xb5dc-0xb5e0",
+        "richtap_file_unlocked_ioctl: command 0x5212 selects state+0x668 at 0xb5d4-0xb5e0",
+        "richtap_file_unlocked_ioctl: command 0x5213 log-and-return path at 0xb978-0xb9a4"
+      ],
+      "ghidra_decompilation_locations": [
+        "0151_0010e374_richtap_file_unlocked_ioctl.c:148-190",
+        "0151_0010e374_richtap_file_unlocked_ioctl.c:225-237"
+      ]
+    },
+    {
+      "stage": "remove_order",
+      "evidence": "aw_remove calls cancel_work_sync(state+0x648), then frees the buffer at state+0x608 and the order-2 pages at state+0x610, and only afterward calls misc_deregister. No admission gate or wait for active ioctl calls is present in this path.",
+      "stock_assembly_locations": [
+        "aw_remove: cancel_work_sync(state+0x648) at 0x54ac-0x54b0",
+        "aw_remove: kfree(*(state+0x608)) at 0x54b4-0x54b8",
+        "aw_remove: free_pages(*(state+0x610), 2) at 0x54ec-0x54f4",
+        "aw_remove: misc_deregister at 0x54f8-0x5500"
+      ]
+    },
+    {
+      "stage": "worker_resource_access",
+      "evidence": "richtap_rtp_work derives the device state by subtracting 0x648 from the work pointer, reads the RTP buffer at state+0x608, and uses the FIFO head/cursor at state+0x610/state+0x620 before invoking chip callbacks.",
+      "source_and_stock_decompilation": [
+        "haptic_86938_fn_137_richtap_rtp_work.c: state layout assertions and worker body",
+        "0070_001088f8_richtap_rtp_work.c"
+      ]
+    }
+  ],
+  "finding": {
+    "id": "HAP-RICHTAP-05",
+    "title": "ioctl 0x520a can resubmit the RTP work item after aw_remove cancels it",
+    "severity": "high",
+    "confidence": "high_static_callpath_and_ordering",
+    "condition": "An already-open Richtap file descriptor invokes ioctl 0x520a after the sole cancellation of state+0x648 while aw_remove is continuing to free the RTP buffer/pages. The existing HAP-RICHTAP-02 review confirms misc_deregister does not drain already-open descriptors.",
+    "impact": "The resubmitted richtap_rtp_work may execute while state+0x608 or the FIFO pages at state+0x610 are being freed, or after those resources have been released.",
+    "runtime_reproduced": false,
+    "hardware_tested": false
+  },
+  "hardening_follow_up": [
+    "In a separate hardening candidate, close Richtap ioctl admission and synchronize in-flight file operations before teardown frees any state-owned resources.",
+    "After admission is closed, cancel and drain state+0x648, then free the RTP buffer/pages and destroy the per-device workqueue only after every producer and worker is quiescent.",
+    "Keep this hardening separate from the stock-exact reconstruction."
+  ],
+  "limits": [
+    "This is a static call-path and teardown-order finding bound to the stock module, candidate module, map, candidate sources and Ghidra/assembly exports.",
+    "The finding is conditional on an ioctl 0x520a overlapping the remove window; the scheduler interleaving was not reproduced.",
+    "No reconstruction source changed. The pinned Docker source volume remains read-only, and a rebuild was not needed."
+  ]
+}

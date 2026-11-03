@@ -100,3 +100,11 @@ No direct workqueue or asynchronous firmware submission relocation appears in th
 Stock aw_remove cancels the audio work item at state+0x560 before canceling its producer hrtimer at +0x520. The audio timer callback queues +0x560 and rearms itself. The vibrator work item at +0x428 is likewise canceled before its producer timer at +0x330; vibrator_timer_func queues +0x428. If either timer callback is active across this ordering, it can submit work after cancel_work_sync has returned. The later hrtimer_cancel waits for the timer callback, but aw_remove does not cancel the newly submitted work a second time.
 
 haptic_init and vibrator_init bind both timer callbacks and work routines to these offsets; haptic_audio_store and vibrator_work_routine arm the timers. This is a high-confidence static ordering path, not a reproduced runtime failure. The IRQ handler has no direct workqueue relocation. See timer_work_teardown_review.json.
+
+### HAP-RICHTAP-05 — ioctl 0x520a can resubmit the RTP worker after remove cancellation
+
+Stock richtap_file_unlocked_ioctl routes command 0x520a to queue_work_on with the item at state +0x648. The 0x5212 branch queues the neighboring +0x668 item; 0x5213 only logs and returns. Stock aw_remove cancels +0x648, then frees the RTP buffer at +0x608 and pages at +0x610, and only afterward calls misc_deregister. The already-open descriptor path remains available during removal, as documented in HAP-RICHTAP-02.
+
+The +0x648 callback is richtap_rtp_work; it derives state from the work pointer and reads the +0x608 buffer and +0x610/+0x620 FIFO fields. A 0x520a submitted after the remove-time cancellation can therefore queue the worker while those resources are being released. This is a high-confidence static path, conditional on an ioctl overlapping the remove window; no scheduler race or hardware behavior was reproduced. The exact function/source/assembly hashes and call sites are in richtap_ioctl_requeue_lifetime_review.json. No reconstruction source changed, so Docker rebuild was unnecessary.
+
+For a separate hardening candidate, close and synchronize ioctl admission before draining +0x648; release the buffer/pages only after all active ioctl calls and workers have completed. Preserve the stock-exact source independently.
