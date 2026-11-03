@@ -1,0 +1,359 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-27T12:07:45Z",
+  "microproof": "MP5_RESOURCE_LIFETIME_MANUAL_RELATION_REVIEW",
+  "driver": "haptic_86938",
+  "status": "PARTIALLY_REVIEWED_STATIC_RELATIONS_WITH_OWNERSHIP_AND_PATH_GAPS_OPEN",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "inputs": {
+    "MP4_EVENT_CALLBACK_LIFETIME": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/MP4_EVENT_CALLBACK_LIFETIME.json",
+      "sha256": "674525b0bc8f5375a645a7cac742ca5a2bc8f2fc9b89f594c38d377338d9feb5"
+    },
+    "MP4_RELATION_REVIEW": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/MP4_RELATION_REVIEW.json",
+      "sha256": "3430cd4d9a26f4af43a84a196b87a870def743b41b07953a225b2ac276c8fee7"
+    },
+    "MP5_RESOURCE_LIFETIME_SURFACE": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/MP5_RESOURCE_LIFETIME_SURFACE.json",
+      "sha256": "55a4ea691be7a50a883d3b42aea622800f89dd8af4ee467ee845b0971b09aac7"
+    },
+    "ghidra_stock_repaired_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/manifest.json",
+      "sha256": "ffc85c859a4d42b94c1b200bb8122ec3efcc8265d69fc5a72526011b586eb3f8"
+    },
+    "stock_assembly_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/manifest.json",
+      "sha256": "f71d157397fb0fd9ddcb61c796ab408f4112db09f6b98a85ccd67162fcd20005"
+    }
+  },
+  "review_method": {
+    "basis": [
+      "Manually cross-checked recovered Ghidra pseudocode against the pinned stock Assembly export for the cited functions and raw state offsets.",
+      "Used MP4 relocation evidence for the static misc_device object identity and MP5 callsite inventory for resource-surface coverage.",
+      "Only exact pointer identity, static object identity, raw offsets, and callsite arguments are promoted; lifecycle completeness and semantic ownership remain separate questions."
+    ],
+    "automated_count_join_pairs": 0,
+    "manually_confirmed_lifecycle_pairs": 4,
+    "other_same_context_relations_reviewed": 1,
+    "allocation_release_ownership_pairs_proven": 0,
+    "semantic_equivalence_proven": false,
+    "candidate_source_authorized": false,
+    "promotion_authorized": false
+  },
+  "shared_state_object": {
+    "status": "SAME_RAW_POINTER_STORED_RECOVERED_AND_PASSED_TO_INITIALIZERS",
+    "evidence": [
+      {
+        "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+        "sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a",
+        "locations": [
+          "lines 50-57",
+          "lines 220-236"
+        ],
+        "claim": "The value returned by devm_kmalloc is stored at the raw client offset +0xb8 and the same local pointer is passed to vibrator_init, haptic_init, and ram_work_init."
+      },
+      {
+        "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+        "sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbeBD34e9c198fdd6ef17cb6c804e8438",
+        "locations": [
+          "line 11"
+        ],
+        "claim": "aw_remove loads a pointer from the same raw client offset +0xb8 before issuing teardown calls."
+      },
+      {
+        "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+        "sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb",
+        "locations": [
+          "function offset +0x80: devm_kmalloc call",
+          "instruction 0x4684: str x0, [x22, #0xb8]"
+        ],
+        "claim": "Stock AArch64 assembly corroborates allocation result storage at the same raw offset."
+      }
+    ],
+    "limits": [
+      "The recovered pointer identity is strong, but this review does not assign a complete C type or field-name layout to the containing object.",
+      "This relation alone does not establish that every probe failure path reaches the same teardown operations."
+    ]
+  },
+  "confirmed_static_lifecycle_pairs": [
+    {
+      "id": "misc_device_register_deregister",
+      "status": "SAME_STATIC_OBJECT_TARGET_CONFIRMED",
+      "evidence": [
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/MP4_RELATION_REVIEW.json",
+          "locations": [
+            "reviewed_relations.misc_device_object_references_file_operation_table"
+          ],
+          "claim": "The .data relocation identifies richtap_misc and its pointer to left_fops."
+        },
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+          "sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a",
+          "locations": [
+            "line 333"
+          ],
+          "claim": "Probe calls misc_register(richtap_misc)."
+        },
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+          "sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbeBD34e9c198fdd6ef17cb6c804e8438",
+          "locations": [
+            "line 39"
+          ],
+          "claim": "Remove calls misc_deregister(richtap_misc) using the same static object."
+        }
+      ],
+      "limits": [
+        "The return from misc_register is not checked in the recovered probe pseudocode.",
+        "This confirms object identity and calls, not successful registration on every path or complete file-operation quiescence."
+      ]
+    },
+    {
+      "id": "vibrator_hrtimer_init_cancel",
+      "status": "SAME_STATE_BASE_AND_RAW_OFFSET_CONFIRMED",
+      "state_offset": "0x330",
+      "evidence": [
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0067_00108468_vibrator_init.c",
+          "sha256": "15429439cf9e786b13eedb60b08ef9331d42e3325fcb9a7caa2feca441cffe83",
+          "locations": [
+            "lines 21-22"
+          ],
+          "claim": "vibrator_init calls hrtimer_init(state+0x330) and stores vibrator_timer_func at raw state offset +0x358."
+        },
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0067_vibrator_init_00108468.asm",
+          "sha256": "ef8e5b8fe1da3e00657a631214dadb3558d3d7abd52aa9a1ba0ebe3de105e698",
+          "locations": [
+            "instruction 0x56fc: hrtimer_init relocation",
+            "instruction 0x570c: stores callback pointer at [x19,#0x358]"
+          ],
+          "claim": "Stock Assembly confirms the call and raw callback-pointer store."
+        },
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+          "sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbeBD34e9c198fdd6ef17cb6c804e8438",
+          "locations": [
+            "line 18"
+          ],
+          "claim": "Remove calls hrtimer_cancel(state+0x330) after recovering the shared state pointer."
+        },
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+          "sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562",
+          "locations": [
+            "instructions 0x547c-0x5480"
+          ],
+          "claim": "Stock Assembly passes x19+0x330 to hrtimer_cancel."
+        }
+      ],
+      "limits": [
+        "A raw offset correspondence does not recover the complete hrtimer field type or callback behavior.",
+        "The callback's ability to rearm work/timers and all concurrent access paths remain unreviewed."
+      ]
+    },
+    {
+      "id": "audio_hrtimer_init_cancel",
+      "status": "SAME_STATE_BASE_AND_RAW_OFFSET_CONFIRMED",
+      "state_offset": "0x520",
+      "evidence": [
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0068_00108608_haptic_init.c",
+          "sha256": "802cb5f280b74b3f64b754539ed4a8e1ecd065bde98d166795746f48966ed14a",
+          "locations": [
+            "lines 11-12"
+          ],
+          "claim": "haptic_init calls hrtimer_init(state+0x520) and stores audio_timer_func at raw state offset +0x548."
+        },
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0068_haptic_init_00108608.asm",
+          "sha256": "6b84a298d308fa120f9b9afaa69196b98140a307bb512aba15b5344e48614f8d",
+          "locations": [
+            "instruction 0x5840: hrtimer_init relocation",
+            "instruction 0x5850: stores callback pointer at [x19,#0x548]"
+          ],
+          "claim": "Stock Assembly confirms the call and raw callback-pointer store."
+        },
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+          "sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbeBD34e9c198fdd6ef17cb6c804e8438",
+          "locations": [
+            "line 15"
+          ],
+          "claim": "Remove calls hrtimer_cancel(state+0x520) for the recovered same state base."
+        },
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+          "sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562",
+          "locations": [
+            "instructions 0x5464-0x5468"
+          ],
+          "claim": "Stock Assembly passes x19+0x520 to hrtimer_cancel."
+        }
+      ],
+      "limits": [
+        "A raw offset correspondence does not recover the complete hrtimer field type or callback behavior.",
+        "The callback's ability to rearm work/timers and all concurrent access paths remain unreviewed."
+      ]
+    },
+    {
+      "id": "delayed_work_queue_cancel",
+      "status": "SAME_STATE_BASE_AND_RAW_OFFSET_CONFIRMED",
+      "state_offset": "0x3c0",
+      "evidence": [
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0069_0010887c_ram_work_init.c",
+          "sha256": "cfe32f55276e6ee4db4f9d95d9efd8c44e3fc619519901d47ef0c5ad8e24c51e",
+          "locations": [
+            "lines 7-12"
+          ],
+          "claim": "ram_work_init initializes raw object offset +0x3c0, stores ram_work_routine at +0x3d8, initializes the timer subobject at +0x3e0, and queues +0x3c0."
+        },
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0069_ram_work_init_0010887c.asm",
+          "sha256": "3433ecddba333ca7da5880d2c13d2c87522181c9c353a988021f6710c7199ea3",
+          "locations": [
+            "instruction 0x5aa8: init_timer_key relocation",
+            "instructions 0x5ab0-0x5ac0: queue_delayed_work_on receives x19+0x3c0"
+          ],
+          "claim": "Stock Assembly confirms distinct raw offsets for the timer subobject and queued delayed-work object."
+        },
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+          "sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbeBD34E9C198FDD6EF17CB6C804E8438",
+          "locations": [
+            "line 13"
+          ],
+          "claim": "Remove calls cancel_delayed_work_sync(state+0x3c0) on the recovered same state base."
+        },
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+          "sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562",
+          "locations": [
+            "instructions 0x5454-0x5458"
+          ],
+          "claim": "Stock Assembly passes x19+0x3c0 to cancel_delayed_work_sync."
+        }
+      ],
+      "limits": [
+        "The stored ram_work_routine pointer is kept distinct from delayed_work_timer_fn, which is supplied to init_timer_key.",
+        "This relation does not establish asynchronous firmware callback quiescence or prove all producers are stopped before remove."
+      ]
+    }
+  ],
+  "other_same_context_relations_reviewed": [
+    {
+      "id": "threaded_irq_registration_and_dev_id",
+      "status": "SAME_STATE_POINTER_ARGUMENT_CONFIRMED_CLEANUP_PATH_CONDITIONS_OPEN",
+      "evidence": [
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0066_00108368_irq_config.c",
+          "sha256": "6e1f30fc5e0a16a35a24fa262156061375522d47b4877ea78d6a06ba71fdcc40",
+          "locations": [
+            "line 24"
+          ],
+          "claim": "irq_config passes its state pointer as dev_id to devm_request_threaded_irq and names irq_handle as the threaded handler."
+        },
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0066_irq_config_00108368.asm",
+          "sha256": "193472d744db86fbf869b0339e6de679fe4d73ce58b0d2320e07580b7fa76f65",
+          "locations": [
+            "instructions 0x55c4-0x55c8: x19 passed as argument 6"
+          ],
+          "claim": "Stock Assembly corroborates the same state pointer argument."
+        },
+        {
+          "source": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+          "sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbeBD34e9c198fdd6ef17cb6c804e8438",
+          "locations": [
+            "lines 19-21"
+          ],
+          "claim": "Remove derives the interrupt from the state GPIO slot and passes the same recovered state pointer to devm_free_irq."
+        }
+      ],
+      "limits": [
+        "irq_config may skip registration for some state conditions; its error paths and the two devm_free_irq callsites are not fully path-paired here.",
+        "The callback ABI and synchronization relative to firmware, work, and user mappings remain open."
+      ]
+    }
+  ],
+  "resource_group_review": [
+    {
+      "resource_group": "workqueue",
+      "status": "OPEN_RELEASE_AND_WORK_ITEM_OWNERSHIP",
+      "evidence": "MP5 records one alloc_workqueue call and no direct destroy_workqueue import/reference; probe stores the returned pointer at state+0x448. aw_remove has no identified destroy_workqueue call.",
+      "limits": "This is an unresolved release/lifetime question, not a leak conclusion. queue_work_on targets and the custom workqueue argument still need per-call dataflow."
+    },
+    {
+      "resource_group": "page_allocation",
+      "status": "OPEN_POINTER_AND_PATH_PAIRING",
+      "evidence": "MP5 records two get_free_pages_noprof callsites and one free_pages callsite; aw_remove frees the pointer loaded from state+0x610.",
+      "limits": "The two acquisition sites, success/error paths, and the state+0x610 owner have not been joined into a complete path proof."
+    },
+    {
+      "resource_group": "heap_allocation",
+      "status": "OPEN_POINTER_AND_PATH_PAIRING",
+      "evidence": "MP5 inventories devm_kmalloc, __kmalloc_noprof, __kmalloc_large_noprof, devm_kfree, and kfree references.",
+      "limits": "Counts do not prove which allocation each free consumes or whether all error paths are balanced."
+    },
+    {
+      "resource_group": "gpio",
+      "status": "OPEN_MANAGED_AND_EXPLICIT_FREE_INTERACTION",
+      "evidence": "MP5 inventories devm_gpio_request_one and gpio_free at different counts.",
+      "limits": "GPIO identities, request outcomes, devres semantics, and path conditions are not paired."
+    },
+    {
+      "resource_group": "irq",
+      "status": "PARTIAL_SAME_DEV_ID_RELATION_REVIEWED",
+      "evidence": "The registration argument and remove dev_id match the shared state pointer; MP5 has one registration and two explicit devm_free_irq callsites.",
+      "limits": "Failure-unwind pairing and registration-skip conditions remain open."
+    },
+    {
+      "resource_group": "misc_device",
+      "status": "STATIC_OBJECT_PAIR_CONFIRMED",
+      "evidence": "misc_register and misc_deregister both reference richtap_misc; MP4 relocations bind that object to left_fops.",
+      "limits": "Registration result handling and open-file lifetime relative to remove are not proven."
+    },
+    {
+      "resource_group": "sysfs_group",
+      "status": "OPEN_CLEANUP_COUNTERPART",
+      "evidence": "MP5 records two sysfs_create_group calls and no direct sysfs_remove_group reference.",
+      "limits": "No cleanup conclusion is made until ownership through the exact target kernel APIs and object lifetime is traced."
+    },
+    {
+      "resource_group": "led_class_device",
+      "status": "OPEN_MANAGED_LIFETIME",
+      "evidence": "MP5 records devm_led_classdev_register_ext and no explicit unregister import.",
+      "limits": "Managed cleanup behavior and its device-lifetime boundary remain unverified."
+    },
+    {
+      "resource_group": "hrtimer",
+      "status": "TWO_RAW_OFFSET_INIT_CANCEL_PAIRS_CONFIRMED_OTHER_CALLS_OPEN",
+      "evidence": "vibrator_init state+0x330 pairs with aw_remove cancel at +0x330; haptic_init state+0x520 pairs with aw_remove cancel at +0x520. MP5 also contains three other start calls and additional cancel references.",
+      "limits": "All callback rearm paths and full timer-to-work ownership remain open."
+    },
+    {
+      "resource_group": "firmware",
+      "status": "OPEN_ASYNC_CALLBACK_COMPLETION_AND_TEARDOWN",
+      "evidence": "MP4 confirms two request_firmware_nowait sites targeting ram_load; MP5 inventories synchronous and asynchronous request/release references.",
+      "limits": "Outstanding callback completion and object lifetime during remove are not joined."
+    },
+    {
+      "resource_group": "latency_qos",
+      "status": "OPEN_REQUEST_OBJECT_PAIRING",
+      "evidence": "MP5 records three cpu_latency_qos_add_request and three remove references.",
+      "limits": "Request object identity and conditional path pairing are not reviewed."
+    }
+  ],
+  "open_blockers": [
+    "Trace pointer origins and concrete target sets for the other 154 CALLIND sites; keep the three computed-target hypotheses unpromoted.",
+    "Trace the stored alloc_workqueue pointer and prove its release, consumers, and teardown ordering.",
+    "Join both page allocation sites and all relevant heap/GPIO/IRQ/latency-QoS resources by pointer identity and success/error path.",
+    "Resolve misc/open file and mmap lifetime against teardown; static register/deregister object identity is not a complete ABI/lifetime proof.",
+    "Resolve sysfs and devm LED lifetime using the exact target-kernel sources and registrations.",
+    "Prove asynchronous firmware callbacks and every work/timer producer are quiesced before state memory can be released.",
+    "Candidate source, candidate Joern analysis, candidate Docker build, relational oracle, and independent review remain unstarted."
+  ]
+}

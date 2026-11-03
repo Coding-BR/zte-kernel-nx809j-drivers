@@ -1,0 +1,1693 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-10-27T12:01:50.815369+00:00",
+  "microproof": "MP5_RESOURCE_LIFETIME_SURFACE",
+  "driver": "haptic_86938",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "status": "EXTRACTED_REVIEW_REQUIRED",
+  "summary": {
+    "resource_groups": 11,
+    "selected_call_references": 213,
+    "focused_functions_with_raw_state_effect_counts": 29,
+    "stock_import_count": 78,
+    "pairs_proven_by_automated_count_join": 0
+  },
+  "inputs": {
+    "MP2_STATE_EFFECT_LEDGER": {
+      "path": "MP2_STATE_EFFECT_LEDGER.json",
+      "sha256": "018b74c5b0bf5454e8b0be2813fc2950c031a73412a62624222e537f4ec65870",
+      "status": "EXTRACTED_REVIEW_REQUIRED"
+    },
+    "MP3_CONTROL_ERROR_MATRIX": {
+      "path": "MP3_CONTROL_ERROR_MATRIX.json",
+      "sha256": "6f4248f03511311f003696861295f89c0bd157f0330417164ae033db113f5e9d",
+      "status": "EXTRACTED_REVIEW_REQUIRED"
+    },
+    "MP4_EVENT_CALLBACK_LIFETIME": {
+      "path": "MP4_EVENT_CALLBACK_LIFETIME.json",
+      "sha256": "674525b0bc8f5375a645a7cac742ca5a2bc8f2fc9b89f594c38d377338d9feb5",
+      "status": "EXTRACTED_REVIEW_REQUIRED"
+    },
+    "ghidra_stock_repaired_externals": {
+      "path": "C:/Users/adria/Desktop/drivers/zte-kernel-nx809j-drivers/reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko",
+      "sha256": "ccc8151d09eb5cc18c196b5c865c91440957a60a5be58f5117eec933e40fe578"
+    }
+  },
+  "resource_groups": {
+    "workqueue": {
+      "api_counts_by_role": {
+        "acquire_or_create": {
+          "alloc_workqueue": 1
+        },
+        "activity": {
+          "queue_work_on": 8,
+          "queue_delayed_work_on": 2
+        },
+        "quiescence": {
+          "cancel_work_sync": 4,
+          "cancel_delayed_work_sync": 1
+        },
+        "release_counterpart_to_check": {
+          "destroy_workqueue": 0
+        }
+      },
+      "direct_import_presence": {
+        "alloc_workqueue": true,
+        "cancel_delayed_work_sync": true,
+        "cancel_work_sync": true,
+        "destroy_workqueue": false,
+        "queue_delayed_work_on": true,
+        "queue_work_on": true
+      },
+      "callsite_evidence": [
+        {
+          "caller_identity": "rtp_auto_sin_store@00106ed0",
+          "caller": "rtp_auto_sin_store",
+          "caller_entry": "00106ed0",
+          "callsite": "00106f84",
+          "api": "queue_work_on",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::queue_work_on"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "00107e24",
+          "api": "alloc_workqueue",
+          "api_family_by_name": "registration_or_initialization",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::alloc_workqueue"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "00108278",
+          "api": "cancel_delayed_work_sync",
+          "api_family_by_name": "quiescence_or_deregistration",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::cancel_delayed_work_sync"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "00108280",
+          "api": "cancel_work_sync",
+          "api_family_by_name": "quiescence_or_deregistration",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::cancel_work_sync"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "00108290",
+          "api": "cancel_work_sync",
+          "api_family_by_name": "quiescence_or_deregistration",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::cancel_work_sync"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "00108298",
+          "api": "cancel_work_sync",
+          "api_family_by_name": "quiescence_or_deregistration",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::cancel_work_sync"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "001082d0",
+          "api": "cancel_work_sync",
+          "api_family_by_name": "quiescence_or_deregistration",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::cancel_work_sync"
+        },
+        {
+          "caller_identity": "ram_work_init@0010887c",
+          "caller": "ram_work_init",
+          "caller_entry": "0010887c",
+          "callsite": "001088e0",
+          "api": "queue_delayed_work_on",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::queue_delayed_work_on"
+        },
+        {
+          "caller_identity": "brightness_set@0010960c",
+          "caller": "brightness_set",
+          "caller_entry": "0010960c",
+          "callsite": "00109678",
+          "api": "queue_work_on",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::queue_work_on"
+        },
+        {
+          "caller_identity": "vibrator_timer_func@001096b4",
+          "caller": "vibrator_timer_func",
+          "caller_entry": "001096b4",
+          "callsite": "001096d4",
+          "api": "queue_work_on",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::queue_work_on"
+        },
+        {
+          "caller_identity": "activate_store@0010a430",
+          "caller": "activate_store",
+          "caller_entry": "0010a430",
+          "callsite": "0010a534",
+          "api": "queue_work_on",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::queue_work_on"
+        },
+        {
+          "caller_identity": "aw_rtp_store@0010af38",
+          "caller": "aw_rtp_store",
+          "caller_entry": "0010af38",
+          "callsite": "0010b080",
+          "api": "queue_work_on",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::queue_work_on"
+        },
+        {
+          "caller_identity": "ram_load@0010b2e0",
+          "caller": "ram_load",
+          "caller_entry": "0010b2e0",
+          "callsite": "0010b360",
+          "api": "queue_delayed_work_on",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::queue_delayed_work_on"
+        },
+        {
+          "caller_identity": "activate_aw_store@0010dac4",
+          "caller": "activate_aw_store",
+          "caller_entry": "0010dac4",
+          "callsite": "0010db90",
+          "api": "queue_work_on",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::queue_work_on"
+        },
+        {
+          "caller_identity": "audio_timer_func@0010dcc4",
+          "caller": "audio_timer_func",
+          "caller_entry": "0010dcc4",
+          "callsite": "0010dce4",
+          "api": "queue_work_on",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::queue_work_on"
+        },
+        {
+          "caller_identity": "richtap_file_unlocked_ioctl@0010e374",
+          "caller": "richtap_file_unlocked_ioctl",
+          "caller_entry": "0010e374",
+          "callsite": "0010e400",
+          "api": "queue_work_on",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::queue_work_on"
+        }
+      ],
+      "pairing_status": "UNRESOLVED_NO_OWNERSHIP_OR_PATH_PAIRING_ASSERTED"
+    },
+    "page_allocation": {
+      "api_counts_by_role": {
+        "acquire_or_create": {
+          "get_free_pages_noprof": 2
+        },
+        "release": {
+          "free_pages": 1
+        }
+      },
+      "direct_import_presence": {
+        "free_pages": true,
+        "get_free_pages_noprof": true
+      },
+      "callsite_evidence": [
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "00107f18",
+          "api": "get_free_pages_noprof",
+          "api_family_by_name": "resource_acquisition",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::get_free_pages_noprof"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "001081c8",
+          "api": "get_free_pages_noprof",
+          "api_family_by_name": "resource_acquisition",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::get_free_pages_noprof"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "00108314",
+          "api": "free_pages",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::free_pages"
+        }
+      ],
+      "pairing_status": "UNRESOLVED_NO_OWNERSHIP_OR_PATH_PAIRING_ASSERTED"
+    },
+    "heap_allocation": {
+      "api_counts_by_role": {
+        "acquire_or_create": {
+          "devm_kmalloc": 1,
+          "__kmalloc_noprof": 6,
+          "__kmalloc_large_noprof": 2
+        },
+        "release": {
+          "devm_kfree": 1,
+          "kfree": 9
+        }
+      },
+      "direct_import_presence": {
+        "__kmalloc_large_noprof": true,
+        "__kmalloc_noprof": true,
+        "devm_kfree": true,
+        "devm_kmalloc": true,
+        "kfree": true
+      },
+      "callsite_evidence": [
+        {
+          "caller_identity": "i2c_w_bytes@00107114",
+          "caller": "i2c_w_bytes",
+          "caller_entry": "00107114",
+          "callsite": "00107150",
+          "api": "__kmalloc_noprof",
+          "api_family_by_name": "resource_acquisition",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::__kmalloc_noprof"
+        },
+        {
+          "caller_identity": "i2c_w_bytes@00107114",
+          "caller": "i2c_w_bytes",
+          "caller_entry": "00107114",
+          "callsite": "001071a0",
+          "api": "kfree",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::kfree"
+        },
+        {
+          "caller_identity": "i2c_w_bytes@00107114",
+          "caller": "i2c_w_bytes",
+          "caller_entry": "00107114",
+          "callsite": "00107214",
+          "api": "__kmalloc_noprof",
+          "api_family_by_name": "resource_acquisition",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::__kmalloc_noprof"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "00107440",
+          "api": "devm_kmalloc",
+          "api_family_by_name": "resource_acquisition",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::devm_kmalloc"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "00107dac",
+          "api": "devm_kfree",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::devm_kfree"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "00107f00",
+          "api": "__kmalloc_large_noprof",
+          "api_family_by_name": "resource_acquisition",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::__kmalloc_large_noprof"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "00108188",
+          "api": "__kmalloc_large_noprof",
+          "api_family_by_name": "resource_acquisition",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::__kmalloc_large_noprof"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "001081ec",
+          "api": "kfree",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::kfree"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "001082d8",
+          "api": "kfree",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::kfree"
+        },
+        {
+          "caller_identity": "ram_load@0010b2e0",
+          "caller": "ram_load",
+          "caller_entry": "0010b2e0",
+          "callsite": "0010b44c",
+          "api": "__kmalloc_noprof",
+          "api_family_by_name": "resource_acquisition",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::__kmalloc_noprof"
+        },
+        {
+          "caller_identity": "ram_load@0010b2e0",
+          "caller": "ram_load",
+          "caller_entry": "0010b2e0",
+          "callsite": "0010b548",
+          "api": "__kmalloc_noprof",
+          "api_family_by_name": "resource_acquisition",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::__kmalloc_noprof"
+        },
+        {
+          "caller_identity": "ram_load@0010b2e0",
+          "caller": "ram_load",
+          "caller_entry": "0010b2e0",
+          "callsite": "0010b620",
+          "api": "kfree",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::kfree"
+        },
+        {
+          "caller_identity": "haptic_audio_store@0010cd9c",
+          "caller": "haptic_audio_store",
+          "caller_entry": "0010cd9c",
+          "callsite": "0010cf0c",
+          "api": "kfree",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::kfree"
+        },
+        {
+          "caller_identity": "audio_off@0010d148",
+          "caller": "audio_off",
+          "caller_entry": "0010d148",
+          "callsite": "0010d228",
+          "api": "kfree",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::kfree"
+        },
+        {
+          "caller_identity": "awrw_store@0010d620",
+          "caller": "awrw_store",
+          "caller_entry": "0010d620",
+          "callsite": "0010d6a8",
+          "api": "kfree",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::kfree"
+        },
+        {
+          "caller_identity": "awrw_store@0010d620",
+          "caller": "awrw_store",
+          "caller_entry": "0010d620",
+          "callsite": "0010d6bc",
+          "api": "__kmalloc_noprof",
+          "api_family_by_name": "resource_acquisition",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::__kmalloc_noprof"
+        },
+        {
+          "caller_identity": "awrw_store@0010d620",
+          "caller": "awrw_store",
+          "caller_entry": "0010d620",
+          "callsite": "0010d96c",
+          "api": "__kmalloc_noprof",
+          "api_family_by_name": "resource_acquisition",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::__kmalloc_noprof"
+        },
+        {
+          "caller_identity": "audio_work_routine@0010dd50",
+          "caller": "audio_work_routine",
+          "caller_entry": "0010dd50",
+          "callsite": "0010ddf0",
+          "api": "kfree",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::kfree"
+        },
+        {
+          "caller_identity": "audio_work_routine@0010dd50",
+          "caller": "audio_work_routine",
+          "caller_entry": "0010dd50",
+          "callsite": "0010dee4",
+          "api": "kfree",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::kfree"
+        }
+      ],
+      "pairing_status": "UNRESOLVED_NO_OWNERSHIP_OR_PATH_PAIRING_ASSERTED"
+    },
+    "gpio": {
+      "api_counts_by_role": {
+        "acquire_or_create": {
+          "devm_gpio_request_one": 2
+        },
+        "release_or_free": {
+          "gpio_free": 4
+        },
+        "lookup_or_control": {
+          "of_get_named_gpio": 2,
+          "gpio_to_desc": 8,
+          "gpiod_to_irq": 6,
+          "gpiod_set_raw_value_cansleep": 2
+        }
+      },
+      "direct_import_presence": {
+        "devm_gpio_request_one": true,
+        "gpio_free": true,
+        "gpio_to_desc": true,
+        "gpiod_set_raw_value_cansleep": true,
+        "gpiod_to_irq": true,
+        "of_get_named_gpio": true
+      },
+      "callsite_evidence": [
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "001074d0",
+          "api": "devm_gpio_request_one",
+          "api_family_by_name": "resource_acquisition",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::devm_gpio_request_one"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "001074f0",
+          "api": "devm_gpio_request_one",
+          "api_family_by_name": "resource_acquisition",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::devm_gpio_request_one"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "00107580",
+          "api": "gpio_to_desc",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpio_to_desc"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "00107588",
+          "api": "gpiod_set_raw_value_cansleep",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpiod_set_raw_value_cansleep"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "001075a0",
+          "api": "gpio_to_desc",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpio_to_desc"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "001075a8",
+          "api": "gpiod_set_raw_value_cansleep",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpiod_set_raw_value_cansleep"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "00107870",
+          "api": "of_get_named_gpio",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::of_get_named_gpio"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "001078f8",
+          "api": "of_get_named_gpio",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::of_get_named_gpio"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "00107d94",
+          "api": "gpio_free",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpio_free"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "00107da0",
+          "api": "gpio_free",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpio_free"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "001081f4",
+          "api": "gpio_to_desc",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpio_to_desc"
+        },
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "001081f8",
+          "api": "gpiod_to_irq",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpiod_to_irq"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "001082a8",
+          "api": "gpio_to_desc",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpio_to_desc"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "001082ac",
+          "api": "gpiod_to_irq",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpiod_to_irq"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "001082c8",
+          "api": "gpio_free",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpio_free"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "0010832c",
+          "api": "gpio_free",
+          "api_family_by_name": "resource_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpio_free"
+        },
+        {
+          "caller_identity": "irq_config@00108368",
+          "caller": "irq_config",
+          "caller_entry": "00108368",
+          "callsite": "001083bc",
+          "api": "gpio_to_desc",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpio_to_desc"
+        },
+        {
+          "caller_identity": "irq_config@00108368",
+          "caller": "irq_config",
+          "caller_entry": "00108368",
+          "callsite": "001083c0",
+          "api": "gpiod_to_irq",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpiod_to_irq"
+        },
+        {
+          "caller_identity": "irq_config@00108368",
+          "caller": "irq_config",
+          "caller_entry": "00108368",
+          "callsite": "00108430",
+          "api": "gpio_to_desc",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpio_to_desc"
+        },
+        {
+          "caller_identity": "irq_config@00108368",
+          "caller": "irq_config",
+          "caller_entry": "00108368",
+          "callsite": "00108434",
+          "api": "gpiod_to_irq",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpiod_to_irq"
+        },
+        {
+          "caller_identity": "rtp_osc_cali@0010c7f0",
+          "caller": "rtp_osc_cali",
+          "caller_entry": "0010c7f0",
+          "callsite": "0010ca10",
+          "api": "gpio_to_desc",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpio_to_desc"
+        },
+        {
+          "caller_identity": "rtp_osc_cali@0010c7f0",
+          "caller": "rtp_osc_cali",
+          "caller_entry": "0010c7f0",
+          "callsite": "0010ca14",
+          "api": "gpiod_to_irq",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpiod_to_irq"
+        },
+        {
+          "caller_identity": "rtp_osc_cali@0010c7f0",
+          "caller": "rtp_osc_cali",
+          "caller_entry": "0010c7f0",
+          "callsite": "0010cbe8",
+          "api": "gpio_to_desc",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpio_to_desc"
+        },
+        {
+          "caller_identity": "rtp_osc_cali@0010c7f0",
+          "caller": "rtp_osc_cali",
+          "caller_entry": "0010c7f0",
+          "callsite": "0010cbec",
+          "api": "gpiod_to_irq",
+          "api_family_by_name": "gpio_and_board_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::gpiod_to_irq"
+        }
+      ],
+      "pairing_status": "UNRESOLVED_NO_OWNERSHIP_OR_PATH_PAIRING_ASSERTED"
+    },
+    "irq": {
+      "api_counts_by_role": {
+        "acquire_or_create": {
+          "devm_request_threaded_irq": 1
+        },
+        "release_or_free": {
+          "devm_free_irq": 2
+        },
+        "control": {
+          "disable_irq": 1,
+          "enable_irq": 1
+        }
+      },
+      "direct_import_presence": {
+        "devm_free_irq": true,
+        "devm_request_threaded_irq": true,
+        "disable_irq": true,
+        "enable_irq": true
+      },
+      "callsite_evidence": [
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "00108208",
+          "api": "devm_free_irq",
+          "api_family_by_name": "quiescence_or_deregistration",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::devm_free_irq"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "001082bc",
+          "api": "devm_free_irq",
+          "api_family_by_name": "quiescence_or_deregistration",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::devm_free_irq"
+        },
+        {
+          "caller_identity": "irq_config@00108368",
+          "caller": "irq_config",
+          "caller_entry": "00108368",
+          "callsite": "001083e8",
+          "api": "devm_request_threaded_irq",
+          "api_family_by_name": "registration_or_initialization",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::devm_request_threaded_irq"
+        },
+        {
+          "caller_identity": "rtp_osc_cali@0010c7f0",
+          "caller": "rtp_osc_cali",
+          "caller_entry": "0010c7f0",
+          "callsite": "0010ca18",
+          "api": "disable_irq",
+          "api_family_by_name": "irq_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::disable_irq"
+        },
+        {
+          "caller_identity": "rtp_osc_cali@0010c7f0",
+          "caller": "rtp_osc_cali",
+          "caller_entry": "0010c7f0",
+          "callsite": "0010cbf0",
+          "api": "enable_irq",
+          "api_family_by_name": "irq_control",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::enable_irq"
+        }
+      ],
+      "pairing_status": "UNRESOLVED_NO_OWNERSHIP_OR_PATH_PAIRING_ASSERTED"
+    },
+    "misc_device": {
+      "api_counts_by_role": {
+        "acquire_or_create": {
+          "misc_register": 1
+        },
+        "release": {
+          "misc_deregister": 1
+        }
+      },
+      "direct_import_presence": {
+        "misc_deregister": true,
+        "misc_register": true
+      },
+      "callsite_evidence": [
+        {
+          "caller_identity": "aw_i2c_probe@001073c0",
+          "caller": "aw_i2c_probe",
+          "caller_entry": "001073c0",
+          "callsite": "00108154",
+          "api": "misc_register",
+          "api_family_by_name": "registration_or_initialization",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::misc_register"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "00108320",
+          "api": "misc_deregister",
+          "api_family_by_name": "quiescence_or_deregistration",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::misc_deregister"
+        }
+      ],
+      "pairing_status": "UNRESOLVED_NO_OWNERSHIP_OR_PATH_PAIRING_ASSERTED"
+    },
+    "sysfs_group": {
+      "api_counts_by_role": {
+        "acquire_or_create": {
+          "sysfs_create_group": 2
+        },
+        "release_counterpart_to_check": {
+          "sysfs_remove_group": 0
+        }
+      },
+      "direct_import_presence": {
+        "sysfs_create_group": true,
+        "sysfs_remove_group": false
+      },
+      "callsite_evidence": [
+        {
+          "caller_identity": "aw8693x_creat_node@00103258",
+          "caller": "aw8693x_creat_node",
+          "caller_entry": "00103258",
+          "callsite": "00103274",
+          "api": "sysfs_create_group",
+          "api_family_by_name": "registration_or_initialization",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::sysfs_create_group"
+        },
+        {
+          "caller_identity": "vibrator_init@00108468",
+          "caller": "vibrator_init",
+          "caller_entry": "00108468",
+          "callsite": "00108508",
+          "api": "sysfs_create_group",
+          "api_family_by_name": "registration_or_initialization",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::sysfs_create_group"
+        }
+      ],
+      "pairing_status": "UNRESOLVED_NO_OWNERSHIP_OR_PATH_PAIRING_ASSERTED"
+    },
+    "led_class_device": {
+      "api_counts_by_role": {
+        "acquire_or_create": {
+          "devm_led_classdev_register_ext": 1
+        },
+        "release_counterpart_to_check": {
+          "devm_led_classdev_unregister": 0
+        }
+      },
+      "direct_import_presence": {
+        "devm_led_classdev_register_ext": true,
+        "devm_led_classdev_unregister": false
+      },
+      "callsite_evidence": [
+        {
+          "caller_identity": "vibrator_init@00108468",
+          "caller": "vibrator_init",
+          "caller_entry": "00108468",
+          "callsite": "001084f4",
+          "api": "devm_led_classdev_register_ext",
+          "api_family_by_name": "registration_or_initialization",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::devm_led_classdev_register_ext"
+        }
+      ],
+      "pairing_status": "UNRESOLVED_NO_OWNERSHIP_OR_PATH_PAIRING_ASSERTED"
+    },
+    "hrtimer": {
+      "api_counts_by_role": {
+        "initialize": {
+          "hrtimer_init": 2
+        },
+        "activity": {
+          "hrtimer_start_range_ns": 3,
+          "hrtimer_active": 4,
+          "__hrtimer_get_remaining": 2
+        },
+        "quiescence": {
+          "hrtimer_cancel": 5
+        }
+      },
+      "direct_import_presence": {
+        "__hrtimer_get_remaining": true,
+        "hrtimer_active": true,
+        "hrtimer_cancel": true,
+        "hrtimer_init": true,
+        "hrtimer_start_range_ns": true
+      },
+      "callsite_evidence": [
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "00108288",
+          "api": "hrtimer_cancel",
+          "api_family_by_name": "quiescence_or_deregistration",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_cancel"
+        },
+        {
+          "caller_identity": "aw_remove@0010823c",
+          "caller": "aw_remove",
+          "caller_entry": "0010823c",
+          "callsite": "001082a0",
+          "api": "hrtimer_cancel",
+          "api_family_by_name": "quiescence_or_deregistration",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_cancel"
+        },
+        {
+          "caller_identity": "vibrator_init@00108468",
+          "caller": "vibrator_init",
+          "caller_entry": "00108468",
+          "callsite": "0010851c",
+          "api": "hrtimer_init",
+          "api_family_by_name": "registration_or_initialization",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_init"
+        },
+        {
+          "caller_identity": "haptic_init@00108608",
+          "caller": "haptic_init",
+          "caller_entry": "00108608",
+          "callsite": "00108660",
+          "api": "hrtimer_init",
+          "api_family_by_name": "registration_or_initialization",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_init"
+        },
+        {
+          "caller_identity": "vibrator_work_routine@001096ec",
+          "caller": "vibrator_work_routine",
+          "caller_entry": "001096ec",
+          "callsite": "00109a6c",
+          "api": "hrtimer_start_range_ns",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_start_range_ns"
+        },
+        {
+          "caller_identity": "duration_show@0010a2e8",
+          "caller": "duration_show",
+          "caller_entry": "0010a2e8",
+          "callsite": "0010a304",
+          "api": "hrtimer_active",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_active"
+        },
+        {
+          "caller_identity": "duration_show@0010a2e8",
+          "caller": "duration_show",
+          "caller_entry": "0010a2e8",
+          "callsite": "0010a314",
+          "api": "__hrtimer_get_remaining",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::__hrtimer_get_remaining"
+        },
+        {
+          "caller_identity": "activate_store@0010a430",
+          "caller": "activate_store",
+          "caller_entry": "0010a430",
+          "callsite": "0010a514",
+          "api": "hrtimer_cancel",
+          "api_family_by_name": "quiescence_or_deregistration",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_cancel"
+        },
+        {
+          "caller_identity": "haptic_audio_store@0010cd9c",
+          "caller": "haptic_audio_store",
+          "caller_entry": "0010cd9c",
+          "callsite": "0010cef8",
+          "api": "hrtimer_active",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_active"
+        },
+        {
+          "caller_identity": "haptic_audio_store@0010cd9c",
+          "caller": "haptic_audio_store",
+          "caller_entry": "0010cd9c",
+          "callsite": "0010cfc4",
+          "api": "hrtimer_active",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_active"
+        },
+        {
+          "caller_identity": "haptic_audio_store@0010cd9c",
+          "caller": "haptic_audio_store",
+          "caller_entry": "0010cd9c",
+          "callsite": "0010cff0",
+          "api": "hrtimer_cancel",
+          "api_family_by_name": "quiescence_or_deregistration",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_cancel"
+        },
+        {
+          "caller_identity": "haptic_audio_store@0010cd9c",
+          "caller": "haptic_audio_store",
+          "caller_entry": "0010cd9c",
+          "callsite": "0010d0a0",
+          "api": "hrtimer_start_range_ns",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_start_range_ns"
+        },
+        {
+          "caller_identity": "duration_aw_show@0010d97c",
+          "caller": "duration_aw_show",
+          "caller_entry": "0010d97c",
+          "callsite": "0010d998",
+          "api": "hrtimer_active",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_active"
+        },
+        {
+          "caller_identity": "duration_aw_show@0010d97c",
+          "caller": "duration_aw_show",
+          "caller_entry": "0010d97c",
+          "callsite": "0010d9a8",
+          "api": "__hrtimer_get_remaining",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::__hrtimer_get_remaining"
+        },
+        {
+          "caller_identity": "activate_aw_store@0010dac4",
+          "caller": "activate_aw_store",
+          "caller_entry": "0010dac4",
+          "callsite": "0010db70",
+          "api": "hrtimer_cancel",
+          "api_family_by_name": "quiescence_or_deregistration",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_cancel"
+        },
+        {
+          "caller_identity": "audio_timer_func@0010dcc4",
+          "caller": "audio_timer_func",
+          "caller_entry": "0010dcc4",
+          "callsite": "0010dd34",
+          "api": "hrtimer_start_range_ns",
+          "api_family_by_name": "scheduling",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::hrtimer_start_range_ns"
+        }
+      ],
+      "pairing_status": "UNRESOLVED_NO_OWNERSHIP_OR_PATH_PAIRING_ASSERTED"
+    },
+    "firmware": {
+      "api_counts_by_role": {
+        "request": {
+          "request_firmware": 2,
+          "request_firmware_nowait": 2
+        },
+        "release": {
+          "release_firmware": 8
+        }
+      },
+      "direct_import_presence": {
+        "release_firmware": true,
+        "request_firmware": true,
+        "request_firmware_nowait": true
+      },
+      "callsite_evidence": [
+        {
+          "caller_identity": "rtp_work_routine@00109c48",
+          "caller": "rtp_work_routine",
+          "caller_entry": "00109c48",
+          "callsite": "00109cbc",
+          "api": "request_firmware",
+          "api_family_by_name": "firmware_request_or_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::request_firmware"
+        },
+        {
+          "caller_identity": "rtp_work_routine@00109c48",
+          "caller": "rtp_work_routine",
+          "caller_entry": "00109c48",
+          "callsite": "00109d38",
+          "api": "release_firmware",
+          "api_family_by_name": "firmware_request_or_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::release_firmware"
+        },
+        {
+          "caller_identity": "rtp_work_routine@00109c48",
+          "caller": "rtp_work_routine",
+          "caller_entry": "00109c48",
+          "callsite": "00109dcc",
+          "api": "release_firmware",
+          "api_family_by_name": "firmware_request_or_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::release_firmware"
+        },
+        {
+          "caller_identity": "ram_update_store@0010b228",
+          "caller": "ram_update_store",
+          "caller_entry": "0010b228",
+          "callsite": "0010b2a0",
+          "api": "request_firmware_nowait",
+          "api_family_by_name": "firmware_request_or_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::request_firmware_nowait"
+        },
+        {
+          "caller_identity": "ram_load@0010b2e0",
+          "caller": "ram_load",
+          "caller_entry": "0010b2e0",
+          "callsite": "0010b33c",
+          "api": "release_firmware",
+          "api_family_by_name": "firmware_request_or_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::release_firmware"
+        },
+        {
+          "caller_identity": "ram_load@0010b2e0",
+          "caller": "ram_load",
+          "caller_entry": "0010b2e0",
+          "callsite": "0010b45c",
+          "api": "release_firmware",
+          "api_family_by_name": "firmware_request_or_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::release_firmware"
+        },
+        {
+          "caller_identity": "ram_load@0010b2e0",
+          "caller": "ram_load",
+          "caller_entry": "0010b2e0",
+          "callsite": "0010b4ac",
+          "api": "release_firmware",
+          "api_family_by_name": "firmware_request_or_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::release_firmware"
+        },
+        {
+          "caller_identity": "ram_load@0010b2e0",
+          "caller": "ram_load",
+          "caller_entry": "0010b2e0",
+          "callsite": "0010b584",
+          "api": "release_firmware",
+          "api_family_by_name": "firmware_request_or_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::release_firmware"
+        },
+        {
+          "caller_identity": "rtp_osc_cali@0010c7f0",
+          "caller": "rtp_osc_cali",
+          "caller_entry": "0010c7f0",
+          "callsite": "0010c83c",
+          "api": "request_firmware",
+          "api_family_by_name": "firmware_request_or_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::request_firmware"
+        },
+        {
+          "caller_identity": "rtp_osc_cali@0010c7f0",
+          "caller": "rtp_osc_cali",
+          "caller_entry": "0010c7f0",
+          "callsite": "0010c8d4",
+          "api": "release_firmware",
+          "api_family_by_name": "firmware_request_or_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::release_firmware"
+        },
+        {
+          "caller_identity": "rtp_osc_cali@0010c7f0",
+          "caller": "rtp_osc_cali",
+          "caller_entry": "0010c7f0",
+          "callsite": "0010c960",
+          "api": "release_firmware",
+          "api_family_by_name": "firmware_request_or_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::release_firmware"
+        },
+        {
+          "caller_identity": "ram_work_routine@0010e190",
+          "caller": "ram_work_routine",
+          "caller_entry": "0010e190",
+          "callsite": "0010e1cc",
+          "api": "request_firmware_nowait",
+          "api_family_by_name": "firmware_request_or_release",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::request_firmware_nowait"
+        }
+      ],
+      "pairing_status": "UNRESOLVED_NO_OWNERSHIP_OR_PATH_PAIRING_ASSERTED"
+    },
+    "latency_qos": {
+      "api_counts_by_role": {
+        "acquire_or_create": {
+          "cpu_latency_qos_add_request": 3
+        },
+        "release_or_remove": {
+          "cpu_latency_qos_remove_request": 3
+        },
+        "state_query": {
+          "cpu_latency_qos_request_active": 2
+        }
+      },
+      "direct_import_presence": {
+        "cpu_latency_qos_add_request": true,
+        "cpu_latency_qos_remove_request": true,
+        "cpu_latency_qos_request_active": true
+      },
+      "callsite_evidence": [
+        {
+          "caller_identity": "tiktap_work_routine@00108c68",
+          "caller": "tiktap_work_routine",
+          "caller_entry": "00108c68",
+          "callsite": "00108e10",
+          "api": "cpu_latency_qos_request_active",
+          "api_family_by_name": "latency_request_lifecycle",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::cpu_latency_qos_request_active"
+        },
+        {
+          "caller_identity": "tiktap_work_routine@00108c68",
+          "caller": "tiktap_work_routine",
+          "caller_entry": "00108c68",
+          "callsite": "00108e24",
+          "api": "cpu_latency_qos_add_request",
+          "api_family_by_name": "latency_request_lifecycle",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::cpu_latency_qos_add_request"
+        },
+        {
+          "caller_identity": "tiktap_work_routine@00108c68",
+          "caller": "tiktap_work_routine",
+          "caller_entry": "00108c68",
+          "callsite": "00109070",
+          "api": "cpu_latency_qos_request_active",
+          "api_family_by_name": "latency_request_lifecycle",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::cpu_latency_qos_request_active"
+        },
+        {
+          "caller_identity": "tiktap_work_routine@00108c68",
+          "caller": "tiktap_work_routine",
+          "caller_entry": "00108c68",
+          "callsite": "00109080",
+          "api": "cpu_latency_qos_remove_request",
+          "api_family_by_name": "latency_request_lifecycle",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::cpu_latency_qos_remove_request"
+        },
+        {
+          "caller_identity": "rtp_work_routine@00109c48",
+          "caller": "rtp_work_routine",
+          "caller_entry": "00109c48",
+          "callsite": "0010a05c",
+          "api": "cpu_latency_qos_add_request",
+          "api_family_by_name": "latency_request_lifecycle",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::cpu_latency_qos_add_request"
+        },
+        {
+          "caller_identity": "rtp_work_routine@00109c48",
+          "caller": "rtp_work_routine",
+          "caller_entry": "00109c48",
+          "callsite": "0010a218",
+          "api": "cpu_latency_qos_remove_request",
+          "api_family_by_name": "latency_request_lifecycle",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::cpu_latency_qos_remove_request"
+        },
+        {
+          "caller_identity": "rtp_osc_cali@0010c7f0",
+          "caller": "rtp_osc_cali",
+          "caller_entry": "0010c7f0",
+          "callsite": "0010ca54",
+          "api": "cpu_latency_qos_add_request",
+          "api_family_by_name": "latency_request_lifecycle",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::cpu_latency_qos_add_request"
+        },
+        {
+          "caller_identity": "rtp_osc_cali@0010c7f0",
+          "caller": "rtp_osc_cali",
+          "caller_entry": "0010c7f0",
+          "callsite": "0010cbe0",
+          "api": "cpu_latency_qos_remove_request",
+          "api_family_by_name": "latency_request_lifecycle",
+          "reference_type": "UNCONDITIONAL_CALL",
+          "raw_ghidra_target": "<EXTERNAL>::cpu_latency_qos_remove_request"
+        }
+      ],
+      "pairing_status": "UNRESOLVED_NO_OWNERSHIP_OR_PATH_PAIRING_ASSERTED"
+    }
+  },
+  "focus_function_state_effect_index": {
+    "aw8693x_creat_node@00103258": {
+      "function_id": "aw8693x_creat_node@00103258",
+      "loads": 4,
+      "stores": 3,
+      "ordered_load_store_count": 7,
+      "pcode_path": "pcode/0001_00103258_aw8693x_creat_node.jsonl",
+      "pcode_sha256": "c81a3d7d36348aaf0bf54c9c7749e7a439fc4259f1914a2ce0eb92971630182f",
+      "decompiled_path": "decompiled/0001_00103258_aw8693x_creat_node.c",
+      "decompiled_sha256": "c3d64bb4473b3a14b16fdc76a2752ffdbaa61ab75c8e5f117d0e3062a4330eec"
+    },
+    "rtp_auto_sin_store@00106ed0": {
+      "function_id": "rtp_auto_sin_store@00106ed0",
+      "loads": 12,
+      "stores": 11,
+      "ordered_load_store_count": 23,
+      "pcode_path": "pcode/0060_00106ed0_rtp_auto_sin_store.jsonl",
+      "pcode_sha256": "c787608fb9952cf4a5271ae9a17ff7a344132c5d635ead5c36f012530c143f8d",
+      "decompiled_path": "decompiled/0060_00106ed0_rtp_auto_sin_store.c",
+      "decompiled_sha256": "a44a38e6f8d89b85456a0be62ac155d496c34ca25d9305d13fc25dcc3299b2e2"
+    },
+    "i2c_w_bytes@00107114": {
+      "function_id": "i2c_w_bytes@00107114",
+      "loads": 12,
+      "stores": 13,
+      "ordered_load_store_count": 25,
+      "pcode_path": "pcode/0062_00107114_i2c_w_bytes.jsonl",
+      "pcode_sha256": "c99155cd0f5e1ae6b5f878fb32276296173ef8027fd9e652bc5dcc61a20425df",
+      "decompiled_path": "decompiled/0062_00107114_i2c_w_bytes.c",
+      "decompiled_sha256": "e0733366e6c7e49569159eee3c292fb9a65a772d931866442eff796d9f197dda"
+    },
+    "aw_i2c_probe@001073c0": {
+      "function_id": "aw_i2c_probe@001073c0",
+      "loads": 81,
+      "stores": 136,
+      "ordered_load_store_count": 217,
+      "pcode_path": "pcode/0064_001073c0_aw_i2c_probe.jsonl",
+      "pcode_sha256": "a8c59307cde86c8d4dea111408d151ecc9ee3010bbc2195e95677d6403d05673",
+      "decompiled_path": "decompiled/0064_001073c0_aw_i2c_probe.c",
+      "decompiled_sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a"
+    },
+    "aw_remove@0010823c": {
+      "function_id": "aw_remove@0010823c",
+      "loads": 13,
+      "stores": 6,
+      "ordered_load_store_count": 19,
+      "pcode_path": "pcode/0065_0010823c_aw_remove.jsonl",
+      "pcode_sha256": "7bda9d53ad865de7a2e8903d6e811e196de0d6673933188ef3cb77e4621d610c",
+      "decompiled_path": "decompiled/0065_0010823c_aw_remove.c",
+      "decompiled_sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbebd34e9c198fdd6ef17cb6c804e8438"
+    },
+    "irq_config@00108368": {
+      "function_id": "irq_config@00108368",
+      "loads": 12,
+      "stores": 5,
+      "ordered_load_store_count": 17,
+      "pcode_path": "pcode/0066_00108368_irq_config.jsonl",
+      "pcode_sha256": "04054cfd840b8e04c637cc92b79952a5f13f8ea3e44e143b46dd702fcdece559",
+      "decompiled_path": "decompiled/0066_00108368_irq_config.c",
+      "decompiled_sha256": "6e1f30fc5e0a16a35a24fa262156061375522d47b4877ea78d6a06ba71fdcc40"
+    },
+    "vibrator_init@00108468": {
+      "function_id": "vibrator_init@00108468",
+      "loads": 7,
+      "stores": 20,
+      "ordered_load_store_count": 27,
+      "pcode_path": "pcode/0067_00108468_vibrator_init.jsonl",
+      "pcode_sha256": "5ec9c7a9bc0add3da38365214bb13f6b25d390bd9227faf3c734c0ce1d008adb",
+      "decompiled_path": "decompiled/0067_00108468_vibrator_init.c",
+      "decompiled_sha256": "15429439cf9e786b13eedb60b08ef9331d42e3325fcb9a7caa2feca441cffe83"
+    },
+    "haptic_init@00108608": {
+      "function_id": "haptic_init@00108608",
+      "loads": 32,
+      "stores": 19,
+      "ordered_load_store_count": 51,
+      "pcode_path": "pcode/0068_00108608_haptic_init.jsonl",
+      "pcode_sha256": "5ff39f47c7b597e9acc12ab83af50515601a21db40a57a0341bf51303c0bd790",
+      "decompiled_path": "decompiled/0068_00108608_haptic_init.c",
+      "decompiled_sha256": "802cb5f280b74b3f64b754539ed4a8e1ecd065bde98d166795746f48966ed14a"
+    },
+    "ram_work_init@0010887c": {
+      "function_id": "ram_work_init@0010887c",
+      "loads": 4,
+      "stores": 7,
+      "ordered_load_store_count": 11,
+      "pcode_path": "pcode/0069_0010887c_ram_work_init.jsonl",
+      "pcode_sha256": "fff573b75254d4b1d62a6573dd62f4da45ca8dafcdc1ff37fadfd4b17e6ee31a",
+      "decompiled_path": "decompiled/0069_0010887c_ram_work_init.c",
+      "decompiled_sha256": "cfe32f55276e6ee4db4f9d95d9efd8c44e3fc619519901d47ef0c5ad8e24c51e"
+    },
+    "tiktap_work_routine@00108c68": {
+      "function_id": "tiktap_work_routine@00108c68",
+      "loads": 49,
+      "stores": 27,
+      "ordered_load_store_count": 76,
+      "pcode_path": "pcode/0072_00108c68_tiktap_work_routine.jsonl",
+      "pcode_sha256": "9f8f7e0029fad39a702a435449ccbb0778c10d2d98a48a41aa032ff2b4d2cd5d",
+      "decompiled_path": "decompiled/0072_00108c68_tiktap_work_routine.c",
+      "decompiled_sha256": "fb061fba7b83c12bf4da86448aa293de830531c2ba6f1490c75ef96d83863a14"
+    },
+    "brightness_set@0010960c": {
+      "function_id": "brightness_set@0010960c",
+      "loads": 6,
+      "stores": 7,
+      "ordered_load_store_count": 13,
+      "pcode_path": "pcode/0076_0010960c_brightness_set.jsonl",
+      "pcode_sha256": "8dd552f2a8d8c260df12293997d10ac175dea84b6278530994543ef2aae32e6a",
+      "decompiled_path": "decompiled/0076_0010960c_brightness_set.c",
+      "decompiled_sha256": "905cc7c96cfa8574d762238f843b15b418b7ccb2086280fefd558e7900b95ac1"
+    },
+    "vibrator_timer_func@001096b4": {
+      "function_id": "vibrator_timer_func@001096b4",
+      "loads": 3,
+      "stores": 3,
+      "ordered_load_store_count": 6,
+      "pcode_path": "pcode/0077_001096b4_vibrator_timer_func.jsonl",
+      "pcode_sha256": "3179422dfeaaf52d29e45346e3f6444e13ec980a9a0e11a50500bec42730bb5a",
+      "decompiled_path": "decompiled/0077_001096b4_vibrator_timer_func.c",
+      "decompiled_sha256": "6a34a570abb0b90b2ebb3f4f1bbc29b8ddb0fb0e2bcb6893ca0f6e3ed7d30192"
+    },
+    "vibrator_work_routine@001096ec": {
+      "function_id": "vibrator_work_routine@001096ec",
+      "loads": 71,
+      "stores": 10,
+      "ordered_load_store_count": 81,
+      "pcode_path": "pcode/0078_001096ec_vibrator_work_routine.jsonl",
+      "pcode_sha256": "0ee224a06fe26cbd1c2a3cce6efdf4d87314dc277444565c667e01267c73887e",
+      "decompiled_path": "decompiled/0078_001096ec_vibrator_work_routine.c",
+      "decompiled_sha256": "9038ac726bdd9743c991b30f2f448ad05b4ac26732b999998971fd4483aded55"
+    },
+    "rtp_work_routine@00109c48": {
+      "function_id": "rtp_work_routine@00109c48",
+      "loads": 88,
+      "stores": 25,
+      "ordered_load_store_count": 113,
+      "pcode_path": "pcode/0079_00109c48_rtp_work_routine.jsonl",
+      "pcode_sha256": "3a9b9a96554bb789da63e3b2bc851760d62007a6edf15dea779291f5075f60fa",
+      "decompiled_path": "decompiled/0079_00109c48_rtp_work_routine.c",
+      "decompiled_sha256": "dc8f79dadbae7edb897f10d63762f0aa9a9ffd92c246c89dd8d563051280761d"
+    },
+    "duration_show@0010a2e8": {
+      "function_id": "duration_show@0010a2e8",
+      "loads": 5,
+      "stores": 4,
+      "ordered_load_store_count": 9,
+      "pcode_path": "pcode/0082_0010a2e8_duration_show.jsonl",
+      "pcode_sha256": "6a55d39cf8e3fb502d4f28dbb82c045c06650af3ea3a95cb3259fb4a38a16ab6",
+      "decompiled_path": "decompiled/0082_0010a2e8_duration_show.c",
+      "decompiled_sha256": "3818d9611aec8728b679d66d73ab326dd4607d9fe8e52afef6ab45ad837b6547"
+    },
+    "activate_store@0010a430": {
+      "function_id": "activate_store@0010a430",
+      "loads": 16,
+      "stores": 8,
+      "ordered_load_store_count": 24,
+      "pcode_path": "pcode/0085_0010a430_activate_store.jsonl",
+      "pcode_sha256": "2a46954be4e5f0e99f94bd21785169d64a810426e6a8829a39d0e2f2fec8f566",
+      "decompiled_path": "decompiled/0085_0010a430_activate_store.c",
+      "decompiled_sha256": "ab376fcf0a9d14e237a680d170ce7213ec265702f865022726501a98dbd89c62"
+    },
+    "aw_rtp_store@0010af38": {
+      "function_id": "aw_rtp_store@0010af38",
+      "loads": 20,
+      "stores": 8,
+      "ordered_load_store_count": 28,
+      "pcode_path": "pcode/0101_0010af38_aw_rtp_store.jsonl",
+      "pcode_sha256": "d959ab43976bce66831283b484cf5e387acd405a43f9bfee4a3166b2eebd4a65",
+      "decompiled_path": "decompiled/0101_0010af38_aw_rtp_store.c",
+      "decompiled_sha256": "4543005d7b14c430f6cf650348e7bb2b1ecd77fb011c6086897ebf8224f33434"
+    },
+    "ram_update_store@0010b228": {
+      "function_id": "ram_update_store@0010b228",
+      "loads": 11,
+      "stores": 7,
+      "ordered_load_store_count": 18,
+      "pcode_path": "pcode/0103_0010b228_ram_update_store.jsonl",
+      "pcode_sha256": "5d182ce93500b5c4e14c53b1e4ad5ef52a6cff89c78b61d658ace5c1fe3f0160",
+      "decompiled_path": "decompiled/0103_0010b228_ram_update_store.c",
+      "decompiled_sha256": "c0c963b0261095d9822598b6ce60fc0baf70a624b8aa03868564411aa0a68cdc"
+    },
+    "ram_load@0010b2e0": {
+      "function_id": "ram_load@0010b2e0",
+      "loads": 30,
+      "stores": 15,
+      "ordered_load_store_count": 45,
+      "pcode_path": "pcode/0104_0010b2e0_ram_load.jsonl",
+      "pcode_sha256": "b78e56fcbd8943caff6eece612a1ae2581cfe76062ac328eceb81773bf6acaca",
+      "decompiled_path": "decompiled/0104_0010b2e0_ram_load.c",
+      "decompiled_sha256": "9090a42910667067f987d61fe3fc0a0b329d3d2312dbde5383cea87c8d26f99d"
+    },
+    "rtp_osc_cali@0010c7f0": {
+      "function_id": "rtp_osc_cali@0010c7f0",
+      "loads": 65,
+      "stores": 23,
+      "ordered_load_store_count": 88,
+      "pcode_path": "pcode/0124_0010c7f0_rtp_osc_cali.jsonl",
+      "pcode_sha256": "7ed64caf3290d97c28a1fbc2b01209eac4cc323919b9cb6d2ea0ebe18e49f47c",
+      "decompiled_path": "decompiled/0124_0010c7f0_rtp_osc_cali.c",
+      "decompiled_sha256": "3a16db1c23ff164e1c9d6486dfdea5b37c25d29f340f9d8562eb602149345ed6"
+    },
+    "haptic_audio_store@0010cd9c": {
+      "function_id": "haptic_audio_store@0010cd9c",
+      "loads": 40,
+      "stores": 33,
+      "ordered_load_store_count": 73,
+      "pcode_path": "pcode/0128_0010cd9c_haptic_audio_store.jsonl",
+      "pcode_sha256": "cbcad11bf7fe7a1637675e7f43f131fc21fef6943b5bc25f37277591753c2ad3",
+      "decompiled_path": "decompiled/0128_0010cd9c_haptic_audio_store.c",
+      "decompiled_sha256": "8e3fab12b9f882d4c0363d17e8a58326320897549e64fc14f9c25f946805def1"
+    },
+    "audio_off@0010d148": {
+      "function_id": "audio_off@0010d148",
+      "loads": 17,
+      "stores": 10,
+      "ordered_load_store_count": 27,
+      "pcode_path": "pcode/0129_0010d148_audio_off.jsonl",
+      "pcode_sha256": "1c020992a7b5bd8707873e1be70f6ec8c9f55fed9292e0429ec23b15412f4e01",
+      "decompiled_path": "decompiled/0129_0010d148_audio_off.c",
+      "decompiled_sha256": "f602e27a46e22b9ce3bcd1e9964c6731c90d7e6e0aaf3ddeed8f9b0d2786353d"
+    },
+    "awrw_store@0010d620": {
+      "function_id": "awrw_store@0010d620",
+      "loads": 42,
+      "stores": 32,
+      "ordered_load_store_count": 74,
+      "pcode_path": "pcode/0137_0010d620_awrw_store.jsonl",
+      "pcode_sha256": "c9090bb1ee038ff6d0bf0500e1179709b800adfc6f2946a85b7077175917ef4b",
+      "decompiled_path": "decompiled/0137_0010d620_awrw_store.c",
+      "decompiled_sha256": "b5475d5c15088ac406355a599123002ec413b47e9eb766f237c9bbe249eb180d"
+    },
+    "duration_aw_show@0010d97c": {
+      "function_id": "duration_aw_show@0010d97c",
+      "loads": 5,
+      "stores": 4,
+      "ordered_load_store_count": 9,
+      "pcode_path": "pcode/0138_0010d97c_duration_aw_show.jsonl",
+      "pcode_sha256": "0531532d9e471dd3e3fabac539605666b9c24c65275b4941ea474afab59b2f8c",
+      "decompiled_path": "decompiled/0138_0010d97c_duration_aw_show.c",
+      "decompiled_sha256": "8753f9132861aff87287678c297a42f372c152031a28548e5669593678efba3b"
+    },
+    "activate_aw_store@0010dac4": {
+      "function_id": "activate_aw_store@0010dac4",
+      "loads": 12,
+      "stores": 7,
+      "ordered_load_store_count": 19,
+      "pcode_path": "pcode/0141_0010dac4_activate_aw_store.jsonl",
+      "pcode_sha256": "66f3691048d75ceb3a581f51f14833c4ab0cbbce4e370773de4e10beadead298",
+      "decompiled_path": "decompiled/0141_0010dac4_activate_aw_store.c",
+      "decompiled_sha256": "4fd5581ff7c33262f681ea7e3fe365532d6b76882c2536a80389e4846dbf7ffd"
+    },
+    "audio_timer_func@0010dcc4": {
+      "function_id": "audio_timer_func@0010dcc4",
+      "loads": 5,
+      "stores": 3,
+      "ordered_load_store_count": 8,
+      "pcode_path": "pcode/0145_0010dcc4_audio_timer_func.jsonl",
+      "pcode_sha256": "8d798c6fd1430ecbbae466b8f7ecfc076b890dcbff5ed734bb2761e3bf6e2385",
+      "decompiled_path": "decompiled/0145_0010dcc4_audio_timer_func.c",
+      "decompiled_sha256": "9fd27c0057ec9fdd307f34e7a981cd7731bdc3059a95a78ff063f8da8272b6a6"
+    },
+    "audio_work_routine@0010dd50": {
+      "function_id": "audio_work_routine@0010dd50",
+      "loads": 71,
+      "stores": 28,
+      "ordered_load_store_count": 99,
+      "pcode_path": "pcode/0146_0010dd50_audio_work_routine.jsonl",
+      "pcode_sha256": "d62fbe0c279503b9e5dc44f2d79455db5e8bf8c0684b3bd76116618a0905da83",
+      "decompiled_path": "decompiled/0146_0010dd50_audio_work_routine.c",
+      "decompiled_sha256": "d06d1f14bb57390c92a450ba88c5bf078cd6faf8054f701c83e57502db991ef6"
+    },
+    "ram_work_routine@0010e190": {
+      "function_id": "ram_work_routine@0010e190",
+      "loads": 4,
+      "stores": 3,
+      "ordered_load_store_count": 7,
+      "pcode_path": "pcode/0147_0010e190_ram_work_routine.jsonl",
+      "pcode_sha256": "aea36c87627c4f6ba4ac01afcfc2d79fe4d5320246bd08e450d828a0c2f22d7b",
+      "decompiled_path": "decompiled/0147_0010e190_ram_work_routine.c",
+      "decompiled_sha256": "155bbdfa785c32033a5c333def5159c22ffe0f21ae5f2120e8c70824fbe4f76b"
+    },
+    "richtap_file_unlocked_ioctl@0010e374": {
+      "function_id": "richtap_file_unlocked_ioctl@0010e374",
+      "loads": 60,
+      "stores": 11,
+      "ordered_load_store_count": 71,
+      "pcode_path": "pcode/0151_0010e374_richtap_file_unlocked_ioctl.jsonl",
+      "pcode_sha256": "7a52589170302bbe19d6172d98080c334ea783f0df17fc249f98530ed2be9b78",
+      "decompiled_path": "decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c",
+      "decompiled_sha256": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824"
+    }
+  },
+  "observed_surface_asymmetries_for_review": [
+    {
+      "resource_group": "workqueue",
+      "observation": "alloc_workqueue has a stock call reference; destroy_workqueue has no direct import or call reference in the Ghidra stock export.",
+      "status": "REVIEW_REQUIRED_NOT_A_LEAK_CONCLUSION"
+    },
+    {
+      "resource_group": "page_allocation",
+      "observation": "get_free_pages_noprof and free_pages call references have different counts; pointer identity and all success/failure paths are not paired here.",
+      "status": "REVIEW_REQUIRED_NOT_A_LEAK_CONCLUSION"
+    },
+    {
+      "resource_group": "gpio",
+      "observation": "devm_gpio_request_one and gpio_free both appear in stock call references; managed ownership and explicit frees require path-level review.",
+      "status": "REVIEW_REQUIRED_NOT_A_DOUBLE_FREE_CONCLUSION"
+    },
+    {
+      "resource_group": "irq",
+      "observation": "devm_request_threaded_irq and devm_free_irq both appear; failure and remove paths are not paired by this inventory.",
+      "status": "REVIEW_REQUIRED_NOT_A_DOUBLE_FREE_CONCLUSION"
+    },
+    {
+      "resource_group": "sysfs_group",
+      "observation": "sysfs_create_group is imported and called; sysfs_remove_group is not directly imported in the stock export.",
+      "status": "REVIEW_REQUIRED_NO_CLEANUP_CLAIM"
+    },
+    {
+      "resource_group": "led_class_device",
+      "observation": "devm_led_classdev_register_ext is imported and called; explicit unregister counterpart is not directly imported.",
+      "status": "REVIEW_REQUIRED_NO_CLEANUP_CLAIM"
+    },
+    {
+      "resource_group": "firmware",
+      "observation": "Synchronous and nowait firmware requests and release_firmware callsites coexist; callback completion, error exits, and removal synchronization remain unpaired.",
+      "status": "REVIEW_REQUIRED_NO_FIRMWARE_LIFETIME_CLAIM"
+    }
+  ],
+  "policy": [
+    "Counts describe direct Ghidra call references, not reachable executions or balanced runtime operations.",
+    "API names and missing counterparts do not establish leaks, double frees, or cleanup defects.",
+    "P-Code loads/stores remain raw varnodes; no device-object field types or ownership are inferred.",
+    "MP5 remains open until per-path object identity, callback completion, and teardown ordering are reviewed against Assembly/P-Code/relocations."
+  ],
+  "known_open_blockers": [
+    "MP1 resolves the 0x7cc2eb16 functionality signature and source chain; the other 154 CALLIND pointer origins and 3 computed-target hypotheses remain open.",
+    "All work, timer, IRQ, firmware, page, GPIO, file mapping, and queue ownership relations need path-specific proof.",
+    "Candidate source is absent; no candidate-level Joern, relational oracle, Docker build, or independent review exists yet."
+  ]
+}
