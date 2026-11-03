@@ -4,6 +4,51 @@
 
 #include <linux/types.h>
 #include <linux/interrupt.h>
+#include <linux/compiler.h>
+
+#define HAPTIC_RICHTAP_FIFO_BYTES 0x4000U
+#define HAPTIC_RICHTAP_FIFO_NODE_BYTES 0x400U
+#define HAPTIC_RICHTAP_FIFO_NODE_COUNT 16U
+#define HAPTIC_RICHTAP_FIFO_PAYLOAD_OFFSET 0x18U
+#define HAPTIC_RICHTAP_FIFO_PAYLOAD_BYTES 1000U
+#define HAPTIC_RICHTAP_RTP_BUFFER_BYTES 16000U
+
+static inline bool haptic_richtap_fifo_head_valid(const void *head)
+{
+	return head && (((unsigned long)head &
+			 (HAPTIC_RICHTAP_FIFO_BYTES - 1U)) == 0UL);
+}
+
+static inline bool haptic_richtap_fifo_node_valid(const void *head,
+						  const void *node)
+{
+	unsigned long base = (unsigned long)head;
+	unsigned long address = (unsigned long)node;
+	unsigned long offset;
+
+	if (!haptic_richtap_fifo_head_valid(head) || !node || address < base)
+		return false;
+	offset = address - base;
+	return offset < HAPTIC_RICHTAP_FIFO_BYTES &&
+	       (offset & (HAPTIC_RICHTAP_FIFO_NODE_BYTES - 1U)) == 0UL;
+}
+
+static inline bool haptic_richtap_fifo_next_valid(const void *head,
+						  const void *node,
+						  const void *next)
+{
+	unsigned long offset;
+	const void *expected;
+
+	if (!haptic_richtap_fifo_node_valid(head, node))
+		return false;
+	offset = (unsigned long)node - (unsigned long)head;
+	expected = offset == HAPTIC_RICHTAP_FIFO_BYTES -
+			    HAPTIC_RICHTAP_FIFO_NODE_BYTES ?
+		   head : (const void *)((unsigned long)node +
+					 HAPTIC_RICHTAP_FIFO_NODE_BYTES);
+	return next == expected;
+}
 
 struct aw_haptic;
 struct attribute_group;
@@ -51,5 +96,6 @@ void haptic_lifetime_irq_stop_lock(void);
 void haptic_lifetime_irq_stop_unlock(void);
 void haptic_lifetime_richtap_stream_lock(void);
 void haptic_lifetime_richtap_stream_unlock(void);
+void haptic_lifetime_richtap_fifo_reset(void *state);
 
 #endif

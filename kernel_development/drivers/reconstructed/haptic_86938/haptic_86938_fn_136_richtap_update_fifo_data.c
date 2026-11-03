@@ -4,6 +4,8 @@
 #include <linux/string.h>
 #include <linux/types.h>
 
+#include "haptic_86938_internal.h"
+
 struct aw_haptic;
 
 struct richtap_fifo_node {
@@ -26,7 +28,8 @@ struct aw_haptic {
 	struct aw_haptic_func *func;
 	u8 reserved_5d0[0x38];
 	u8 *rtp_data;
-	u8 reserved_610[0x10];
+	struct richtap_fifo_node *rtp_fifo_head;
+	u8 reserved_618[8];
 	struct richtap_fifo_node * volatile rtp_ptr;
 	u8 reserved_628[0x90];
 	volatile s16 rtp_cnt;
@@ -51,73 +54,64 @@ _Static_assert(__builtin_offsetof(struct richtap_fifo_node, payload) == 0x18,
 _Static_assert(__builtin_offsetof(struct aw_haptic_func, set_rtp_data) == 0xd0,
 	       "Richtap callback offset");
 
-void richtap_update_fifo_data(struct aw_haptic *aw, u32 length)
+bool richtap_update_fifo_data(struct aw_haptic *aw, u32 length)
 {
 	struct richtap_fifo_node *fifo;
-	struct richtap_fifo_node *next_fifo;
-	size_t remaining;
-	u32 remaining_u32;
-	int copied = 0;
+	struct richtap_fifo_node *next_fifo = NULL;
+	struct richtap_fifo_node *head;
+	u32 copied = 0;
+	u32 visited = 0;
 	int retries = 3;
 
-	for (;;) {
-		fifo = aw->rtp_ptr;
-		if (fifo->state == (u8)'U') {
-			s16 fifo_size = fifo->data_size;
-			s16 fifo_count = aw->rtp_cnt;
-			remaining = (long)fifo_size - (long)fifo_count;
-			remaining_u32 = (u32)remaining;
-#if defined(__aarch64__)
-			register unsigned long count_register asm("x9") =
-				(unsigned long)(long)fifo_count;
-			register long destination_offset asm("x8");
-			asm volatile("sxtw %0, %w2\n\t"
-				      "and %w1, %w1, #0xffff // %x3"
-				      : "=r"(destination_offset), "+r"(count_register)
-				      : "r"(copied), "r"(remaining)
-				      : "cc");
-			unsigned long fifo_offset = count_register;
-#else
-			long destination_offset = (long)copied;
-			unsigned long fifo_offset = (u16)fifo_count;
-#endif
+	if (!aw || length > HAPTIC_RICHTAP_RTP_BUFFER_BYTES || !aw->rtp_data)
+		goto invalid_fifo;
 
-			if (length <= remaining_u32) {
-				if ((u32)fifo_offset > 1000U)
-					goto bounds_failure;
-				u16 copy_offset = (u16)aw->rtp_cnt;
-				if (copy_offset > 1000U)
-					goto bounds_failure;
-				fifo = aw->rtp_ptr;
-				memcpy(aw->rtp_data + destination_offset,
-				       &fifo->payload[copy_offset], length);
-				copied += length;
-				aw->rtp_cnt = (s16)(aw->rtp_cnt + (s16)length);
+	for (;;) {
+		u8 state;
+
+		head = READ_ONCE(aw->rtp_fifo_head);
+		fifo = READ_ONCE(aw->rtp_ptr);
+		if (!haptic_richtap_fifo_node_valid(head, fifo))
+			goto invalid_fifo;
+		state = READ_ONCE(fifo->state);
+		if (state == (u8)'U') {
+			s16 fifo_size = READ_ONCE(fifo->data_size);
+			s16 fifo_count = READ_ONCE(aw->rtp_cnt);
+			u32 remaining;
+			u32 request_remaining;
+			u32 take;
+
+			if (fifo_size < 0 ||
+			    (u32)fifo_size > HAPTIC_RICHTAP_FIFO_PAYLOAD_BYTES ||
+			    fifo_count < 0 || fifo_count > fifo_size ||
+			    copied > length)
+				goto invalid_fifo;
+			remaining = (u32)(fifo_size - fifo_count);
+			request_remaining = length - copied;
+			take = min(request_remaining, remaining);
+			if (take < request_remaining) {
+				next_fifo = READ_ONCE(fifo->next);
+				if (!haptic_richtap_fifo_next_valid(head, fifo,
+								    next_fifo))
+					goto invalid_fifo;
+			}
+			if (take)
+				memcpy(aw->rtp_data + copied,
+				       &fifo->payload[fifo_count], take);
+			copied += take;
+			if (take == request_remaining) {
+				WRITE_ONCE(aw->rtp_cnt,
+					   (s16)(fifo_count + take));
 				goto deliver;
 			}
 
-#if defined(__aarch64__)
-			asm goto("cmp %w0, #1001\n\t"
-				 "b.hs %l[bounds_failure]"
-				 : : "r"(fifo_offset) : "cc" : bounds_failure);
-#else
-			if (fifo_offset >= 1001UL)
-				goto bounds_failure;
-#endif
-			u16 copy_offset = (u16)aw->rtp_cnt;
-			if (copy_offset > 1000U)
-				goto bounds_failure;
-			fifo = aw->rtp_ptr;
-			memcpy(aw->rtp_data + destination_offset,
-			       &fifo->payload[copy_offset], remaining);
-			copied += remaining_u32;
-			length -= remaining_u32;
-			aw->rtp_ptr->state = 0xffU;
-			aw->rtp_ptr->data_size = 0;
-			next_fifo = aw->rtp_ptr->next;
-			aw->rtp_cnt = 0;
-			aw->rtp_ptr = next_fifo;
-		} else if (fifo->state == 0xaaU) {
+			WRITE_ONCE(fifo->state, 0xffU);
+			WRITE_ONCE(fifo->data_size, 0);
+			WRITE_ONCE(aw->rtp_cnt, 0);
+			WRITE_ONCE(aw->rtp_ptr, next_fifo);
+			if (++visited >= HAPTIC_RICHTAP_FIFO_NODE_COUNT)
+				goto deliver;
+		} else if (state == 0xaaU) {
 			goto deliver;
 		} else {
 			if (retries < 1) {
@@ -128,19 +122,15 @@ void richtap_update_fifo_data(struct aw_haptic *aw, u32 length)
 			usleep_range_state(1000, 1000, 2);
 		}
 
-		if ((length == 0U) || (aw->rtp_loop == 0U))
+		if ((copied >= length) || !READ_ONCE(aw->rtp_loop))
 			goto deliver;
 	}
 
 deliver:
 	aw->func->set_rtp_data(aw, aw->rtp_data, (u32)copied);
-	return;
+	return true;
 
-bounds_failure:
-#if defined(__aarch64__)
-	asm volatile("brk #0x5512");
-	__builtin_unreachable();
-#else
-	__builtin_trap();
-#endif
+invalid_fifo:
+	haptic_lifetime_richtap_fifo_reset(aw);
+	return false;
 }

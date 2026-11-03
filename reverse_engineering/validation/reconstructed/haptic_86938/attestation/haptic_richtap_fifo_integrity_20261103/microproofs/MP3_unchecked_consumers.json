@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "microproof_id": "MP3",
+  "title": "Unchecked Consumers",
+  "disposition": "OBSERVED_UNCHECKED_DEREFERENCES",
+  "claim": "In the current candidate snapshot, helper and worker read the cursor node fields and follow node->next without validating that a pointer is within the FIFO pool or that it is the expected ring successor; both consume user-writable data_size as a copy bound.",
+  "evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_136_richtap_update_fifo_data.c",
+      "sha256": "ac116df6363c353a9846cc8adde4c1562d65143d0b7205dfa33a0edb1dbaf685",
+      "locator": "richtap_update_fifo_data body",
+      "observation": "Reads fifo->state/data_size, copies payload, then loads aw->rtp_ptr->next and stores it as the new cursor; no pointer-range or exact-successor check appears in this function.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_137_richtap_rtp_work.c",
+      "sha256": "09b73a031b1d81e4791f767644cf9fc7ce3131127be81c36a8c91c2f738285d6",
+      "locator": "richtap_rtp_work loop around state, node_size, memcpy and fifo->next",
+      "observation": "Reads RTP_CURSOR->state/data_size, copies payload and assigns fifo->next to RTP_CURSOR without validation.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0074_richtap_update_fifo_data_0010946c.asm",
+      "sha256": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2",
+      "locator": "0x667c..0x6728",
+      "observation": "Stock loads cursor, state, signed size and next from node + 0x8; bounds trap only covers the legacy count/copy offset path.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0070_richtap_rtp_work_001088f8.asm",
+      "sha256": "393de37c1ba2b68f4e42e90f4bd72515fc7650b1542bc48aa14af747012cfa83",
+      "locator": "0x5b14..0x5bb0",
+      "observation": "Stock reads node state and signed size, copies payload, then loads next at +0x8.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0074_0010946c_richtap_update_fifo_data.c",
+      "sha256": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e",
+      "locator": "whole function export",
+      "observation": "Stock decompilation corroborates unchecked next traversal and payload copy.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0070_001088f8_richtap_rtp_work.c",
+      "sha256": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5",
+      "locator": "whole function export",
+      "observation": "Stock decompilation corroborates direct cursor dereference and size-derived copy.",
+      "basis": "direct_static_observation"
+    }
+  ],
+  "inferences": [
+    "Because the FIFO pages are exposed by the stock mapping, a writable mapper can race or alter the node metadata consumed by these kernel paths.",
+    "An invalid next pointer can cause kernel dereference outside the FIFO allocation; malformed size/cursor values can cause invalid copy lengths or kernel faults. This is a static risk analysis, not a reproduced exploit."
+  ],
+  "unknowns": [
+    "No runtime reproduction, exploitability assessment, or user-space permission policy is available."
+  ],
+  "obligations_before_completion": [],
+  "scope": "Richtap shared FIFO used by richtap_update_fifo_data and richtap_rtp_work; offline NX809J stock evidence only.",
+  "hardware_execution": false,
+  "promotion": false
+}

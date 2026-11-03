@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "microproof_id": "MP1",
+  "title": "FIFO Geometry",
+  "disposition": "OBSERVED_STOCK_LAYOUT",
+  "claim": "Stock probe allocates an order-2 page block (0x4000 bytes) and initializes a circular set of 16 nodes at base + n*0x400, with each next pointer stored at node + 0x8 and the final pointer returning to base. Candidate node layout places payload at +0x18, yielding 0x3e8 (1000) bytes per node.",
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+      "sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb",
+      "locator": "aw_i2c_probe+0xb30..+0xe5c; 0x50f0..0x521c",
+      "observation": "get_free_pages is called with order 2; writes node links at offsets 0x8, 0x408, ... 0x3c08; final link stores base at final node + 0x8.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+      "sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a",
+      "locator": "lines 258-280 (Ghidra listing)",
+      "observation": "Decompilation enumerates consecutive links at +0x400 strides and wraparound.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_136_richtap_update_fifo_data.c",
+      "sha256": "ac116df6363c353a9846cc8adde4c1562d65143d0b7205dfa33a0edb1dbaf685",
+      "locator": "struct richtap_fifo_node and static_asserts",
+      "observation": "Candidate declares next at +0x8 and payload at +0x18.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0074_richtap_update_fifo_data_0010946c.asm",
+      "sha256": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2",
+      "locator": "function entry and payload accesses around 0x66e8..0x6728",
+      "observation": "Stock helper accesses next at node + 0x8 and payload at node + 0x18.",
+      "basis": "direct_static_observation"
+    }
+  ],
+  "inferences": [
+    "16 KiB / 1 KiB stride = 16 nodes.",
+    "0x400 stride minus 0x18 header = 0x3e8 = 1000 payload bytes."
+  ],
+  "unknowns": [],
+  "obligations_before_completion": [],
+  "scope": "Richtap shared FIFO used by richtap_update_fifo_data and richtap_rtp_work; offline NX809J stock evidence only.",
+  "hardware_execution": false,
+  "promotion": false
+}

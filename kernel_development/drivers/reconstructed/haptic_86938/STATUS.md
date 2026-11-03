@@ -3,11 +3,17 @@
 ## Current canonical snapshot — 2026-11-03
 
 - Stock module SHA-256: `05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e`.
-- Lifetime-hardened candidate SHA-256: `256b3aee58b7d409ee7ee0faf6d1a7b1cfb666f53fc36c6d1b9931f3fa610e0e` (6,715,688 bytes), bound in `reconstruction_map.json` and synchronized with the Docker curated snapshot.
-- Two independent canonical Docker builds produced byte-identical current modules for target kernel commit `3356b35306d35d5a480e3b63df1a9f065b5d9f55`; inputs and logs are in [the current build report](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_mode_serialization_20261103/docker_builds.json).
+- Lifetime-hardened candidate SHA-256: `3dad43a65e611dfe56afb946aba6206975c9a3648eccc19a074723b021412a2b` (6,705,480 bytes), bound in `reconstruction_map.json` and synchronized with the Docker curated snapshot.
+- Two independent canonical Docker builds produced byte-identical candidate modules for target kernel commit `3356b35306d35d5a480e3b63df1a9f065b5d9f55`; the FIFO integrity attestation below records source identity, build results and gate dispositions.
 - The current candidate has the same 93 undefined imports and target vermagic as the immediately prior candidate; strict stock import parity remains false: `gpio_free` is absent and nine lifetime-support imports are additional. The prior stock ABI audit is in [module_abi_audit.json](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_firmware_revalidation_20261103/module_abi_audit.json); the current-versus-prior symbol inventory is [here](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_mode_serialization_20261103/undefined_import_parity.txt).
-- Twenty-one function mappings remain declared hardening deviations with semantic equivalence not established; a distinct independent whole-driver review is pending.
+- Twenty-two function mappings remain declared hardening deviations with semantic equivalence not established; a distinct independent whole-driver review is pending.
 - The module remains **INCOMPLETE** as a full reconstruction/replacement candidate. Full C-level semantic equivalence, runtime concurrency, runtime firmware-request/unload behavior, whole-driver independent review and NX809J hardware behavior remain unverified; the pinned target statically holds a module reference through the async callback. No hardware load is claimed.
+
+## FIFO metadata integrity hardening — 2026-11-03
+
+Stock evidence shows that the 16 KiB Richtap pool is writable through `richtap_file_mmap`, and both the IRQ path and RTP worker consume its shared node metadata. The helper and worker now validate the cursor against the trusted pool, enforce 0x400-byte node alignment and the fixed ring successor, bound each node to 1,000 payload bytes and the transfer to 16,000 bytes, and stop/reset through trusted kernel pointers on malformed state. This is an intentional hardening deviation from stock; it is not promoted as stock-equivalent behavior.
+
+The actual helper passes a Docker-hosted GCC harness with `-Werror`, AddressSanitizer and UndefinedBehaviorSanitizer. A bounded model passes 4,544,759 checks. The pinned Docker build is reproducible and scoped Joern gates pass. Assembly equality and KCFI gates remain failed for the two changed functions as expected from the declared code deviation. These results do not prove mmap producer ordering, runtime concurrency, hardware behavior or full-driver equivalence. The pre-edit MP0–MP6 files are preserved as baseline evidence and identified as such in the [attestation README](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_integrity_20261103/README.md); post-edit results are separately bound in the [validation report](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_integrity_20261103/post_patch_validation.json).
 
 ## Static revalidation 2026-11-03 — ioctl 0x5209 versus threaded IRQ
 

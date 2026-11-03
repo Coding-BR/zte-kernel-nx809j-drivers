@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T12:46:20.028829+00:00",
+  "passed": true,
+  "method": "exhaustive finite-domain address, s16-size, count-boundary, copy-window and ring-traversal model",
+  "inputs": {
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_136_richtap_update_fifo_data.c": "b0955fdcd2d554b2edcd95e1d708a7055e2f7a30bfebb926481c93b2d076ad34",
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_internal.h": "cb8817dfb05175928002bea271068c408befcfbb9d45a739ae58a2778eebf960"
+  },
+  "domain": {
+    "fifo_pool_bytes": 16384,
+    "node_stride_bytes": 1024,
+    "node_count": 16,
+    "payload_bytes": 1000,
+    "rtp_buffer_bytes": 16000,
+    "data_size": "all signed 16-bit values",
+    "count": "all signed 16-bit sizes with boundary representatives for each size",
+    "request_lengths": [
+      0,
+      1,
+      999,
+      1000,
+      15999,
+      16000,
+      16001
+    ],
+    "node_addresses": "every byte address from one node before the pool to one node after its end",
+    "successor_addresses": "every candidate byte address for every one of the 16 fixed nodes"
+  },
+  "checks": 4544759,
+  "invariants": [
+    "only the 16 stride-aligned node starts inside the 0x4000-byte pool are accepted",
+    "each fixed node has exactly one accepted ring successor, with final-node wrap to head",
+    "data_size is accepted only in 0..1000",
+    "count is accepted only in 0..data_size",
+    "copy source end never exceeds payload offset 1000",
+    "copy destination end never exceeds request length or 16000-byte RTP buffer",
+    "a call drains at most 16 nodes before returning"
+  ],
+  "limits": [
+    "This model checks the stated arithmetic contract, not concurrent userspace writes or C memory ordering.",
+    "The ASan/UBSan host harness executes the C helper for representative valid and malformed cases.",
+    "Worker/IRQ integration is covered by the pinned Docker compile and static call/assembly review, not this model."
+  ]
+}

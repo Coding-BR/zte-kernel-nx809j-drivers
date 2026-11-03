@@ -465,6 +465,37 @@ void haptic_lifetime_richtap_stream_unlock(void)
 	mutex_unlock(&haptic_richtap_stream_lock);
 }
 
+struct haptic_richtap_fifo_reset_node {
+	u8 state;
+	u8 reserved_01;
+	s16 data_size;
+	u32 reserved_04;
+	struct haptic_richtap_fifo_reset_node *next;
+};
+
+void haptic_lifetime_richtap_fifo_reset(void *state)
+{
+	struct haptic_richtap_fifo_reset_node *head;
+	struct haptic_richtap_fifo_reset_node **cursor;
+
+	if (!state)
+		return;
+	head = READ_ONCE(*(struct haptic_richtap_fifo_reset_node **)
+			 ((char *)state + 0x610));
+	cursor = (struct haptic_richtap_fifo_reset_node **)
+		 ((char *)state + 0x620);
+	if (haptic_richtap_fifo_head_valid(head)) {
+		WRITE_ONCE(head->data_size, 0);
+		WRITE_ONCE(head->state, (u8)0xff);
+		WRITE_ONCE(*(s16 *)((char *)state + 0x6b8), 0);
+		WRITE_ONCE(*cursor, head);
+	} else {
+		WRITE_ONCE(*(s16 *)((char *)state + 0x6b8), 0);
+		WRITE_ONCE(*cursor, (struct haptic_richtap_fifo_reset_node *)0);
+	}
+	WRITE_ONCE(*(u32 *)((char *)state + 0x6bc), 0);
+}
+
 irqreturn_t irq_handle(int irq, void *data)
 {
 	irqreturn_t ret;

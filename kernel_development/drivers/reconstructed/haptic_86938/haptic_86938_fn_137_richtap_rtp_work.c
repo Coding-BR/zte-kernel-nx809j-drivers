@@ -92,12 +92,13 @@ _Static_assert(__builtin_offsetof(struct aw_haptic, rtp_work_state) == 0x6c0,
 	       "RTP work state offset");
 
 extern u32 richtap_rtp_start(struct aw_haptic *aw);
-extern void richtap_update_fifo_data(struct aw_haptic *aw, u32 length);
+extern bool richtap_update_fifo_data(struct aw_haptic *aw, u32 length);
 
 #define WORK_FIELD(type, offset) \
 	(*(type *)(work_base + (offset)))
 #define RTP_LENGTH (*rtp_len_ptr)
 #define RTP_DATA WORK_FIELD(u8 *, -0x40)
+#define RTP_HEAD WORK_FIELD(struct richtap_fifo_node *, -0x38)
 #define RTP_CURSOR WORK_FIELD(struct richtap_fifo_node *, -0x28)
 #define RTP_COUNT WORK_FIELD(volatile s16, 0x70)
 #define RTP_LOOP WORK_FIELD(volatile u32, 0x74)
@@ -165,47 +166,52 @@ void richtap_rtp_work(struct work_struct *work)
 			haptic_lifetime_irq_stop_unlock();
 			return;
 		}
-		state = RTP_CURSOR->state;
+		if (!haptic_richtap_fifo_node_valid(RTP_HEAD, RTP_CURSOR) ||
+		    RTP_LENGTH > HAPTIC_RICHTAP_RTP_BUFFER_BYTES ||
+		    !RTP_DATA) {
+			haptic_lifetime_richtap_fifo_reset(aw);
+			haptic_lifetime_irq_stop_unlock();
+			return;
+		}
+		state = READ_ONCE(RTP_CURSOR->state);
 		if (state == (u8)'U') {
-			s32 node_size = RTP_CURSOR->data_size;
-			u32 end = copied + (u32)node_size;
+			struct richtap_fifo_node *fifo = RTP_CURSOR;
+			s32 node_size = READ_ONCE(fifo->data_size);
+			u32 remaining;
 
-			if (end <= RTP_LENGTH) {
-				struct richtap_fifo_node *fifo;
+			if (node_size < 0 ||
+			    node_size > HAPTIC_RICHTAP_FIFO_PAYLOAD_BYTES ||
+			    copied > RTP_LENGTH) {
+				haptic_lifetime_richtap_fifo_reset(aw);
+				haptic_lifetime_irq_stop_unlock();
+				return;
+			}
+			remaining = RTP_LENGTH - copied;
 
-				memcpy(RTP_DATA + copied,
-				       RTP_CURSOR->payload,
-				       (size_t)(s64)node_size);
-				fifo = RTP_CURSOR;
-				fifo->state = (u8)drained_state;
-				copied += (s32)fifo->data_size;
-				RTP_CURSOR->data_size = 0;
-				fifo = RTP_CURSOR;
-				RTP_COUNT = 0;
-				RTP_CURSOR = fifo->next;
-			} else {
-				u32 remaining = RTP_LENGTH - copied;
+			if ((u32)node_size <= remaining) {
+				struct richtap_fifo_node *next_fifo =
+					READ_ONCE(fifo->next);
 
-				memcpy(RTP_DATA + copied,
-				       RTP_CURSOR->payload,
-				       (size_t)remaining);
-#if defined(__aarch64__)
-				asm volatile("ldr w8, [%[length]]\n\t"
-					     "sub w9, w8, %w[copied]\n\t"
-					     "mov %w[copied], w8\n\t"
-					     "strh w9, [%[base], #0x70]"
-					     : [copied] "+r"(copied)
-					     : [length] "r"(rtp_len_ptr),
-					       [base] "r"(work_base)
-					     : "x8", "x9", "cc", "memory");
-#else
-				{
-					u32 length = RTP_LENGTH;
-
-					RTP_COUNT = (s16)(length - copied);
-					copied = length;
+				if (!haptic_richtap_fifo_next_valid(RTP_HEAD, fifo,
+								    next_fifo)) {
+					haptic_lifetime_richtap_fifo_reset(aw);
+					haptic_lifetime_irq_stop_unlock();
+					return;
 				}
-#endif
+				if (node_size)
+					memcpy(RTP_DATA + copied, fifo->payload,
+					       (size_t)node_size);
+				WRITE_ONCE(fifo->state, (u8)drained_state);
+				WRITE_ONCE(fifo->data_size, 0);
+				copied += (u32)node_size;
+				WRITE_ONCE(RTP_COUNT, 0);
+				WRITE_ONCE(RTP_CURSOR, next_fifo);
+			} else {
+				if (remaining)
+					memcpy(RTP_DATA + copied, fifo->payload,
+					       (size_t)remaining);
+				WRITE_ONCE(RTP_COUNT, (s16)remaining);
+				copied = RTP_LENGTH;
 			}
 		} else if (state == 0xaaU) {
 			haptic_lifetime_irq_stop_unlock();
@@ -243,14 +249,26 @@ void richtap_rtp_work(struct work_struct *work)
 
 	RICHTAP_FUNC(set_rtp_data)(aw, RTP_DATA, copied);
 	if (RICHTAP_FIELD_11 == 1U) {
-		RTP_LOOP = 1U;
+		WRITE_ONCE(RTP_LOOP, 1U);
 		for (;;) {
+			if (!haptic_richtap_fifo_node_valid(RTP_HEAD, RTP_CURSOR)) {
+				haptic_lifetime_richtap_fifo_reset(aw);
+				RICHTAP_FUNC(set_rtp_aei)(aw, 0U);
+				RICHTAP_FUNC(irq_clear)(aw);
+				haptic_lifetime_irq_stop_unlock();
+				return;
+			}
 			if (RICHTAP_FUNC(rtp_get_fifo_afs)(aw) != 0U ||
 			    RICHTAP_FIELD_17 != 2U ||
-			    RTP_CURSOR->state != (u8)'U')
+			    READ_ONCE(RTP_CURSOR->state) != (u8)'U')
 				break;
 
-			richtap_update_fifo_data(aw, RTP_LENGTH >> 2);
+			if (!richtap_update_fifo_data(aw, RTP_LENGTH >> 2)) {
+				RICHTAP_FUNC(set_rtp_aei)(aw, 0U);
+				RICHTAP_FUNC(irq_clear)(aw);
+				haptic_lifetime_irq_stop_unlock();
+				return;
+			}
 			if ((RICHTAP_FUNC(get_glb_state)(aw) & 0xfU) == 0U)
 				break;
 		}
@@ -259,7 +277,7 @@ void richtap_rtp_work(struct work_struct *work)
 	} else {
 		RICHTAP_FUNC(set_rtp_aei)(aw, 1U);
 		RICHTAP_FUNC(irq_clear)(aw);
-		RTP_LOOP = 1U;
+		WRITE_ONCE(RTP_LOOP, 1U);
 	}
 	haptic_lifetime_irq_stop_unlock();
 }

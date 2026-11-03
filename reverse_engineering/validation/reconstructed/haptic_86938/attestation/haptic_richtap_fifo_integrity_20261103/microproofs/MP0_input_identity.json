@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "microproof_id": "MP0",
+  "title": "Input Identity",
+  "disposition": "BOUND_INPUTS_ONLY",
+  "claim": "The review is bound to the NX809J stock haptic module, preserved stock assembly/Ghidra exports, current reconstructed sources, map, and FIFO-integrity job. This proves input identity only; it does not prove semantic equivalence.",
+  "evidence": [
+    {
+      "path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+      "sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+      "locator": "SHA-256 of file",
+      "observation": "Stock reference module identity.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+      "sha256": "71f8a8954ded5d379b1e97a61ce03c70dbb6886b8933aa9b7c82953af255ebbb",
+      "locator": "SHA-256 of file",
+      "observation": "Map snapshot after reopening helper and worker for static validation.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_136_richtap_update_fifo_data.c",
+      "sha256": "ac116df6363c353a9846cc8adde4c1562d65143d0b7205dfa33a0edb1dbaf685",
+      "locator": "whole file",
+      "observation": "Candidate helper snapshot.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_137_richtap_rtp_work.c",
+      "sha256": "09b73a031b1d81e4791f767644cf9fc7ce3131127be81c36a8c91c2f738285d6",
+      "locator": "whole file",
+      "observation": "Candidate worker snapshot.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/hard_driver_job.haptic_86938_richtap_fifo_integrity_20261103.json",
+      "sha256": "ff0cb1d4a48df9f7c7e7a898b6514367b4c51a663509bc65968f90c1f80d8703",
+      "locator": "whole file",
+      "observation": "Pinned stock hash, function identities, Docker image/volume and Joern scope.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_integrity_20261103/plan/input_manifest.json",
+      "sha256": "0c48beb5b6c5e9fe9594b099ffc28a4941d5aedef61867d1112fe4fc9ad25817",
+      "locator": "whole file",
+      "observation": "Plan input manifest records source-tree and Ghidra input hashes.",
+      "basis": "direct_static_observation"
+    }
+  ],
+  "inferences": [],
+  "unknowns": [
+    "No runtime or device behavior is established by these inputs."
+  ],
+  "obligations_before_completion": [],
+  "scope": "Richtap shared FIFO used by richtap_update_fifo_data and richtap_rtp_work; offline NX809J stock evidence only.",
+  "hardware_execution": false,
+  "promotion": false
+}

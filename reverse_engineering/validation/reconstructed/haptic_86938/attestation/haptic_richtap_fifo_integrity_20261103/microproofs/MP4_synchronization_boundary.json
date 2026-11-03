@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "microproof_id": "MP4",
+  "title": "Synchronization Boundary",
+  "disposition": "INFERENCE_SHARED_USER_WRITES",
+  "claim": "The candidate serializes kernel worker/IRQ operations with a kernel mutex, but that lock does not synchronize writes performed directly through a userspace mapping of the FIFO pages.",
+  "evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_137_richtap_rtp_work.c",
+      "sha256": "09b73a031b1d81e4791f767644cf9fc7ce3131127be81c36a8c91c2f738285d6",
+      "locator": "RTP loop and haptic_lifetime_irq_stop_lock/unlock calls",
+      "observation": "Kernel worker uses a mutex around FIFO accesses.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+      "sha256": "d67278c19f7ca86caf46c0dc9f67189852796606c67812250b72e3af814ee936",
+      "locator": "irq_handle wrapper and ioctl lock sequence",
+      "observation": "IRQ and selected ioctl paths use kernel mutexes; userspace mmap stores do not acquire these driver mutexes.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0152_richtap_file_mmap_0010e92c.asm",
+      "sha256": "1a6d1588a566588ae834a68371cd43ff6e395bf97ce46645b48ebb7aa8e66f0f",
+      "locator": "remap_pfn_range call at 0xbbb4",
+      "observation": "FIFO pages are mapped directly into a process address space.",
+      "basis": "direct_static_observation"
+    }
+  ],
+  "inferences": [
+    "Kernel-side mutex coverage cannot make mapped node metadata immutable or prevent userspace from changing it while the worker/IRQ reads it."
+  ],
+  "unknowns": [
+    "Whether the intended userspace producer follows a publication protocol or uses an independent synchronization mechanism is unknown."
+  ],
+  "obligations_before_completion": [],
+  "scope": "Richtap shared FIFO used by richtap_update_fifo_data and richtap_rtp_work; offline NX809J stock evidence only.",
+  "hardware_execution": false,
+  "promotion": false
+}

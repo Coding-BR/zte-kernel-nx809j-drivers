@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "microproof_id": "MP5",
+  "title": "Hardening Contract",
+  "disposition": "PROPOSED_NOT_IMPLEMENTED",
+  "claim": "Before any user-derived node metadata is dereferenced or used as a copy bound, validate the cursor against the trusted 0x4000-byte pool, require 0x400 alignment, require next to equal the fixed ring successor, and require 0 <= data_size <= 1000 and 0 <= cursor_count <= data_size. On invalid state, stop RTP, disable AEI, clear the IRQ, reset cursor/count/loop only through trusted kernel pointers, and return without copying.",
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+      "sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb",
+      "locator": "0x513c..0x5214",
+      "observation": "Fixed circular order needed to calculate the only valid successor.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_136_richtap_update_fifo_data.c",
+      "sha256": "ac116df6363c353a9846cc8adde4c1562d65143d0b7205dfa33a0edb1dbaf685",
+      "locator": "copy loop and current legacy bounds_failure",
+      "observation": "Existing guard checks do not establish node pointer topology or the full data_size contract.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_137_richtap_rtp_work.c",
+      "sha256": "09b73a031b1d81e4791f767644cf9fc7ce3131127be81c36a8c91c2f738285d6",
+      "locator": "copy loop and stream restart/AEI enable",
+      "observation": "Worker must abort before starting/restarting RTP or enabling AEI when validation fails.",
+      "basis": "direct_static_observation"
+    }
+  ],
+  "inferences": [
+    "The expected successor can be computed from (node - head) / 0x400 and wraps from offset 0x3c00 to head."
+  ],
+  "unknowns": [],
+  "obligations_before_completion": [
+    "Implement and review the guard before changing source.",
+    "Keep exact semantic promotion withdrawn for any hardened deviation.",
+    "Run pinned Joern and two clean canonical Docker builds after source changes.",
+    "Record ABI/import and assembly differences; do not infer stock equivalence from successful compilation."
+  ],
+  "scope": "Richtap shared FIFO used by richtap_update_fifo_data and richtap_rtp_work; offline NX809J stock evidence only.",
+  "hardware_execution": false,
+  "promotion": false
+}

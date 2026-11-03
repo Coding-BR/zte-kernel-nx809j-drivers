@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "microproof_id": "MP2",
+  "title": "Writable Mapping",
+  "disposition": "OBSERVED_SHARED_MAPPING",
+  "claim": "Stock richtap_file_mmap checks a 0x4000-byte mapping, derives page protection from current->mm->def_flags | 0xfb, uses FIFO base at state + 0x610, and calls remap_pfn_range for 0x4000 bytes. The mask 0xfb contains the VM_WRITE bit (bit 1).",
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0152_richtap_file_mmap_0010e92c.asm",
+      "sha256": "1a6d1588a566588ae834a68371cd43ff6e395bf97ce46645b48ebb7aa8e66f0f",
+      "locator": "richtap_file_mmap+0x14..+0xa8; 0xbb40..0xbbb4",
+      "observation": "Assembly forms protection mask 0xfb, checks length 0x4000, loads FIFO base from state + 0x610 and calls remap_pfn_range with length 0x4000.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0152_0010e92c_richtap_file_mmap.c",
+      "sha256": "6a62ae37c5c18c7377f1c72aa36baf7f3fa9372e09f6b1d95098fdeede63ba4e",
+      "locator": "function export",
+      "observation": "Ghidra export is retained, but function-level conclusions here rely on stock assembly because the decompilation is incomplete.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/pcode/0152_0010e92c_richtap_file_mmap.jsonl",
+      "sha256": "0fa34aff947cab1cb4bf9e65cd9cf4c541bd54ae96be56f3d2db849a314dd0fc",
+      "locator": "whole JSONL export",
+      "observation": "Preserved p-code input identity; no additional claim beyond inspected assembly.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src_nx809j_oout_20261030:/src/kernel/kernel_platform/common/include/linux/mm.h",
+      "sha256": "ceaf0811056bce3010927a38015291a86df282e414fec2311d88eea2e0afa63c",
+      "locator": "lines 277-278; source commit 3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+      "observation": "Pinned NX809J kernel source defines VM_READ as 0x00000001 and VM_WRITE as 0x00000002.",
+      "basis": "read_only_docker_source_volume"
+    }
+  ],
+  "inferences": [
+    "A process with access to this mapping can write the mapped FIFO pages, including node metadata, subject to device-node/open policy."
+  ],
+  "unknowns": [
+    "The device-node permissions and the set of processes allowed to mmap are not established by this module evidence."
+  ],
+  "obligations_before_completion": [],
+  "scope": "Richtap shared FIFO used by richtap_update_fifo_data and richtap_rtp_work; offline NX809J stock evidence only.",
+  "hardware_execution": false,
+  "promotion": false
+}

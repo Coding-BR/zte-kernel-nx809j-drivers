@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T12:45:30.299186+00:00",
+  "passed": true,
+  "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+  "sources": {
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_136_richtap_update_fifo_data.c": "b0955fdcd2d554b2edcd95e1d708a7055e2f7a30bfebb926481c93b2d076ad34",
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_internal.h": "cb8817dfb05175928002bea271068c408befcfbb9d45a739ae58a2778eebf960"
+  },
+  "harness_sha256": "5de689a40b48e337d2d6c1a4796e9ced4db297ea66c5f2ef876a477c1be8d365",
+  "compiler_flags": [
+    "-std=gnu11",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-O1",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer"
+  ],
+  "scenarios": [
+    "partial offset and cross-node drain",
+    "maximum 16000-byte transfer",
+    "last-node wrap and bounded zero-size ring",
+    "unaligned, below-pool and end-of-pool cursor rejection",
+    "negative and oversized data_size",
+    "negative and excessive cursor count",
+    "wrong aligned and out-of-pool next pointer rejection",
+    "16001-byte request rejection"
+  ],
+  "returncode": 0,
+  "stdout": "PASS: FIFO bounds, ring topology, wrap, malformed metadata, and bounded traversal\n",
+  "stderr": "",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_richtap_fifo_integrity_20261103\\host_harness:/harness:ro",
+    "-v",
+    "C:\\Users\\adria\\Desktop\\drivers\\zte-kernel-nx809j-drivers\\kernel_development\\drivers\\reconstructed\\haptic_86938:/source:ro",
+    "--entrypoint",
+    "sh",
+    "nubia-sm8850-kernel-builder:nx809j-repro",
+    "-c",
+    "\nset -eu\nulimit -c 0\ngcc -std=gnu11 -Wall -Wextra -Werror -O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer -I/harness/host_include -I/source /harness/fifo_integrity_host_harness.c /source/haptic_86938_fn_136_richtap_update_fifo_data.c -o /tmp/fifo-integrity-host\n/tmp/fifo-integrity-host\n"
+  ]
+}

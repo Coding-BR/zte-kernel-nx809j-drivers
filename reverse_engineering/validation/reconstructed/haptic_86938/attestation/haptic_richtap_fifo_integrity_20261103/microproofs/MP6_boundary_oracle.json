@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "microproof_id": "MP6",
+  "title": "Boundary Oracle",
+  "disposition": "PLANNED_NOT_RUN",
+  "claim": "The review oracle must reject malformed pointers, ring links, sizes and cursor counts before any payload copy; valid baseline ring entries must remain accepted. No runtime or host test has been run for these new boundary cases yet.",
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_integrity_20261103/plan/input_manifest.json",
+      "sha256": "0c48beb5b6c5e9fe9594b099ffc28a4941d5aedef61867d1112fe4fc9ad25817",
+      "locator": "whole file",
+      "observation": "Binds the current source/map/Ghidra inputs before any code edit.",
+      "basis": "direct_static_observation"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_integrity_20261103/plan/hard_protocol_plan.json",
+      "sha256": "86358cbe71aa4bc69cd7123077a9dea17d95af3c0aff1406a6e85fe1c9b107f9",
+      "locator": "required_gates",
+      "observation": "Plan requires state/effect, bounded-model, host harness, independent review and kernel-lab evidence; readiness is not a pass.",
+      "basis": "direct_static_observation"
+    }
+  ],
+  "inferences": [],
+  "unknowns": [
+    "The legitimate userspace publication order and concurrent payload mutation semantics are unknown."
+  ],
+  "obligations_before_completion": [
+    "Cases: null cursor; cursor below head; cursor at or beyond head+0x4000; cursor in-range but unaligned; expected final-node wrap; next points outside pool; next points to wrong aligned node; data_size -1, 0, 1000, 1001; count -1, size, size+1; remaining output length 0 and one byte.",
+    "Run deterministic host boundary harness and sanitizer if source implementation is added.",
+    "KUnit/lockdep/KCSAN and hardware runtime remain pending and must be reported as such."
+  ],
+  "scope": "Richtap shared FIFO used by richtap_update_fifo_data and richtap_rtp_work; offline NX809J stock evidence only.",
+  "hardware_execution": false,
+  "promotion": false
+}
