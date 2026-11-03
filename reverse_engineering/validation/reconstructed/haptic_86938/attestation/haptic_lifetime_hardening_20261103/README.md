@@ -25,6 +25,10 @@ Two clean builds in the canonical Docker environment produced byte-identical mod
 
 The prior audit compared the old candidate to the fresh output and therefore reported candidate-content and section-layout mismatches. This candidate has now been bound to the reproducible build; the final Docker audit report is `docker/driver_audit_final.json` and its Markdown companion is `docker/driver_audit_final.md`.
 
+## VMA reference-count contract
+
+The exact kernel source volume at commit `3356b35306d35d5a480e3b63df1a9f065b5d9f55` was checked: `mm/vma.c:411-412` invokes `vm_ops->open` while creating a cloned VMA, and `mm/vma.c:1681-1682` invokes it for a split VMA. Searching the kernel `mm/` tree found no such call in the initial `call_mmap` path. The driver therefore takes the first VMA reference directly in `haptic_lifetime_attach_vma`; `haptic_vma_open` increments only for later cloned/split mappings. This confirms the initial mapping is not double-counted.
+
 ## Remaining gates
 
 - Independent review of the 19 deliberate hardening deviations.

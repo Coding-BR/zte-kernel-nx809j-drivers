@@ -62,5 +62,16 @@
   "runtime_verified": false,
   "hardware_verified": false,
   "whole_driver_status": "INCOMPLETE",
-  "known_build_gate": "KMI import parity remains false because lifetime hardening adds imports; final audit has no other driver errors."
+  "known_build_gate": "KMI import parity remains false because lifetime hardening adds imports; final audit has no other driver errors.",
+  "static_kernel_contracts": {
+    "kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "vma_open_callback": {
+      "initial_mapping_open_called_by_mm": false,
+      "explicit_initial_reference_acquired_by": "haptic_lifetime_attach_vma",
+      "clone_open_evidence": "kernel_platform/common/mm/vma.c:411-412 invokes vm_ops->open on the cloned VMA",
+      "split_vma_open_evidence": "kernel_platform/common/mm/vma.c:1681-1682 invokes vm_ops->open for the new split VMA",
+      "mm_source_search": "Only those two vm_ops->open callsites are present under mm/; the initial mmap path is call_mmap and does not call vm_ops->open.",
+      "interpretation": "The explicit reference acquired by haptic_lifetime_attach_vma accounts for the first mapping; haptic_vma_open accounts for cloned/split VMA instances."
+    }
+  }
 }
