@@ -1,12 +1,12 @@
 # Status do Driver `zte_charger_policy`
 
-Estado: `static_verified` (gates 0-7 PASS; gates 8-10 incompletos).
+Estado: gates 0-7 foram aprovados historicamente para um artefato anterior; o modulo atual aguarda revalidacao hash-bound. Gates 8-10 incompletos.
 
 ## Artefato atual
 
 - Arquivo: `zte_charger_policy.ko`
-- SHA-256: `04f4a2aec2a9dcc1a98313e60eedcba05d34419ef82721bb8b7fece9840a8d5b`
-- Tamanho: `300960` bytes
+- SHA-256: 1dc77ef1d5755fb218d9fcffefd6b078ca0ffcca679cffa6aff4029c184442c4
+- Tamanho: 344928 bytes
 - Kernel alvo: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k`
 
 ## Evidencias aprovadas
@@ -34,3 +34,9 @@ Estado: `static_verified` (gates 0-7 PASS; gates 8-10 incompletos).
 Nao existe validacao supervisionada deste candidato no smartphone. O modulo nao deve ser chamado de "100% reconstruido" e nao deve ser carregado automaticamente. Ainda faltam revisao independente (gate 8), teste controlado em hardware (gate 9) e promocao final (gate 10).
 
 Consulte `validation/zte_charger_policy/cycle_validation.json` e o guia de harness antes de qualquer teste fisico.
+
+## Auditoria de vida util/sincronizacao — 2026-11-03
+
+O probe agenda probe_work para 5 segundos depois; falhas podem reagendar esse trabalho. A remocao desregistra o notifier e libera policy, mas nao cancela nem drena probe_work ou o timeout_work recorrente e nao destroi suas workqueues. Um unbind durante a janela inicial ou durante retry pode deixar um callback acessar policy apos devm_kfree; o caminho de timeout tem o mesmo risco. O pseudocodigo Ghidra e o assembly stock confirmam a mesma ordem de agendamento e liberacao. E um risco estatico herdado do stock; nenhuma falha foi reproduzida em runtime.
+
+O modulo atual e o snapshot Docker curado compartilham SHA-256 1dc77ef1d5755fb218d9fcffefd6b078ca0ffcca679cffa6aff4029c184442c4 (344928 bytes), mas o hash anterior registrado neste status era diferente. As atestacoes de gates anteriores nao sao transferidas automaticamente para esta imagem; uma revalidacao completa do binario atual continua pendente. Veja a auditoria de vida util e sincronizacao (../../../../reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_risk_audit_20261103/README.md).

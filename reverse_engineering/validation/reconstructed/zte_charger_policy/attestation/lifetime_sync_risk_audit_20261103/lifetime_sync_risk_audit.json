@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "review_id": "zte_charger_policy_lifetime_sync_risk_audit_20261103",
+  "review_date": "2026-11-03",
+  "result": "POSSIBLE_USE_AFTER_FREE_WHILE_DELAYED_WORK_PENDING",
+  "runtime_failure_reproduced": false,
+  "candidate_identity": {
+    "source_path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c",
+    "source_sha256": "fdfbf6fa0e730b35623b38e69631a89f1f1c769053fee2481a381eda94cbb707",
+    "map_path": "kernel_development/drivers/reconstructed/zte_charger_policy/reconstruction_map.json",
+    "map_sha256": "1739e7111386a62ad3c5e39bc517f021849e1c8bd2b46b057535a03bfcd1f233",
+    "module_path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.ko",
+    "module_sha256": "1dc77ef1d5755fb218d9fcffefd6b078ca0ffcca679cffa6aff4029c184442c4",
+    "module_size_bytes": 344928,
+    "docker_curated_source_map_module_match": true,
+    "historical_status_module_sha256": "04f4a2aec2a9dcc1a98313e60eedcba05d34419ef82721bb8b7fece9840a8d5b",
+    "current_module_has_fresh_full_gate_attestation": false
+  },
+  "stock_identity": {
+    "module_path": "reference_modules/stock/zte_charger_policy.ko",
+    "module_sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c"
+  },
+  "findings": [
+    {
+      "id": "probe_and_timeout_work_not_drained",
+      "severity": "high",
+      "confidence": "static_control_flow",
+      "trigger": "Platform device unbind/removal while delayed work is queued or executing",
+      "sequence": [
+        "charger_policy_probe initializes probe_work and schedules it after five seconds.",
+        "charger_policy_probe_work may retry by rescheduling probe_work after five seconds.",
+        "Successful initialization queues timeout_work, which may reschedule itself.",
+        "charger_policy_remove unregisters the notifier and wakeup source, then frees policy.",
+        "charger_policy_remove does not cancel or drain either delayed work item and does not destroy either workqueue."
+      ],
+      "consequence": "A pending or racing callback may dereference the freed policy structure; during module unload, callback text lifetime is also not quiesced.",
+      "stock_behavior": "Ghidra decompilation and stock assembly show the same delayed queue setup and remove/free sequence.",
+      "candidate_source_behavior": "Current reconstruction source preserves the same lifecycle sequence; current source and exact assembly include hashes match the Docker curated snapshot.",
+      "source_anchors": [
+        "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c:1498",
+        "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c:1525",
+        "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c:1545",
+        "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c:1728",
+        "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c:1729",
+        "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c:1759",
+        "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c:1764"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/decompiled/0026_001023ec_charger_policy_probe.c",
+      "sha256": "13c272f00f606c570805b4c8fcb3fc78904f6e73239176346e77166522c9e7af"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/decompiled/0027_00102b90_charger_policy_remove.c",
+      "sha256": "48abaf59a12b4300f2da38cdb377e335501b26e82d4d6ca3a69702518d4a30dc"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/decompiled/0028_00102c00_charger_policy_probe_work.c",
+      "sha256": "b80b227123e9c0ff171e96fedba531b7e8f517678534cd4c48237de5348637bd"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0026_charger_policy_probe_001023ec.asm",
+      "sha256": "c25c437204706189a08bec0dc94f1726facc4fc086714e4f7c76e553cb57a8c8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0027_charger_policy_remove_00102b90.asm",
+      "sha256": "60c8bdf31c946a54c57e674455736026dc84c21af8232d035638d9fe43a11eda"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0028_charger_policy_probe_work_00102c00.asm",
+      "sha256": "d0e0b4f78c14ff409b8917d8af1803fe663b7aa42db00834263fdca7a85e89e1"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0029_charger_policy_timeout_handler_work_00102f34.asm",
+      "sha256": "3067f9db8128f3b5a068efda552bd95cb8b82c5269f4c238f9c83077d70c28f6"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/charger_policy_probe_exact.inc",
+      "sha256": "a23ec197e597f794fbcd9aeae0e13d63c8a06e4b71f10a4c66d22ea143d003f4"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/charger_policy_probe_work_exact.inc",
+      "sha256": "06d98734daa74f77bb2e283eaba7578e6c40c58c8b036eb947256203082fab5c"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/charger_policy_remove_exact.inc",
+      "sha256": "5176234e83fbabeec5a8251c69b666d9752ffce12b5482e2769a5cd4d4bee8da"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/charger_policy_timeout_handler_work_exact.inc",
+      "sha256": "7fc865cbba0b4efcef1509cd76090239b939f2239d7b59eec3cf71be20bfe56b"
+    }
+  ],
+  "build": "Not run; evidence-only review with no source changes.",
+  "hardware_validation": "Not run.",
+  "interpretation": "The teardown ordering is present in stock and preserved by the reconstruction. A current module image is present and byte-matches the Docker curated copy, but its SHA-256 differs from the prior status and historical promotion artifacts; no fresh full gate pass is asserted for this image."
+}
