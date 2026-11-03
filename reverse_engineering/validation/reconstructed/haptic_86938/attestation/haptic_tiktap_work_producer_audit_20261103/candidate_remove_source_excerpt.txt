@@ -1,0 +1,38 @@
+	/* Close both user entry points before any callback-owned resource is freed. */
+	published = haptic_lifetime_block_file_access(haptic);
+	led_cdev = (struct led_classdev *)(haptic + 0xa8);
+	if (READ_ONCE(*(struct device **)(haptic + 0xf8))) {
+		led_classdev_unregister(led_cdev);
+		/* The managed release runs after remove; make its documented NULL guard idempotent. */
+		WRITE_ONCE(led_cdev->dev, NULL);
+	}
+
+	workqueue = *(struct workqueue_struct **)(haptic + 0x448);
+	/* ram_work_init runs only after the private workqueue was created. */
+	if (workqueue)
+		cancel_delayed_work_sync((struct delayed_work *)(haptic + 0x3c0));
+	/* request_firmware_nowait has no cancel handle; drain its tracked callbacks. */
+	haptic_lifetime_wait_ram_callbacks();
+	if (workqueue)
+		cancel_delayed_work_sync((struct delayed_work *)(haptic + 0x3c0));
+
+	/* Close all FIFO/TikTap I2C workers while the IRQ and state are available. */
+	if (published) {
+		cancel_work_sync((struct work_struct *)(haptic + 0x628));
+		cancel_work_sync((struct work_struct *)(haptic + 0x648));
+		cancel_work_sync((struct work_struct *)(haptic + 0x668));
+	}
+
+	/* Allocation-failure probe paths release IRQ when WQ exists. */
+	if ((published || !workqueue) && !(READ_ONCE(haptic[0x15]) & 1)) {
+		reset_desc = gpio_to_desc(*(int *)(haptic + 0x50));
+		irq = gpiod_to_irq(reset_desc);
+		devm_free_irq(&client->dev, irq, haptic);
+	}
+
+	/* Timers and work callbacks refuse rearming after the shutdown gate. */
+	hrtimer_cancel((struct hrtimer *)(haptic + 0x520));
+	hrtimer_cancel((struct hrtimer *)(haptic + 0x330));
+	cancel_work_sync((struct work_struct *)(haptic + 0x560));
+	cancel_work_sync((struct work_struct *)(haptic + 0x3a0));
+	cancel_work_sync((struct work_struct *)(haptic + 0x428));

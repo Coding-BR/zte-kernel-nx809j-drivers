@@ -1,0 +1,18 @@
+Richtap stop work pointer: state + 0x668
+    b5d0: 54001d41     	b.ne	0xb978 <richtap_file_unlocked_ioctl+0x424>
+    b5d4: f9422661     	ldr	x1, [x19, #0x448]
+    b5d8: 9119a262     	add	x2, x19, #0x668
+    b5dc: 52800400     	mov	w0, #0x20               // =32
+    b5e0: 94000000     	bl	0xb5e0 <richtap_file_unlocked_ioctl+0x8c>
+		000000000000b5e0:  R_AARCH64_CALL26	queue_work_on
+    b5e4: 140000a6     	b	0xb87c <richtap_file_unlocked_ioctl+0x328>
+
+Richtap RTP work pointer: state + 0x648; branch returns to shared queue_work_on
+    bac0: d63f0100     	blr	x8
+    bac4: f9422661     	ldr	x1, [x19, #0x448]
+    bac8: 91192262     	add	x2, x19, #0x648
+    bacc: 17fffec4     	b	0xb5dc <richtap_file_unlocked_ioctl+0x88>
+    bad0: f9419260     	ldr	x0, [x19, #0x320]
+    bad4: 90000001     	adrp	x1, 0xb000 <audio_work_routine+0xd0>
+		000000000000bad4:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x78a
+

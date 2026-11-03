@@ -1,0 +1,33 @@
+    547c: 910cc260     	add	x0, x19, #0x330
+    5480: 94000000     	bl	0x5480 <aw_remove+0x64>
+		0000000000005480:  R_AARCH64_CALL26	hrtimer_cancel
+    5484: b9405260     	ldr	w0, [x19, #0x50]
+    5488: 94000000     	bl	0x5488 <aw_remove+0x6c>
+		0000000000005488:  R_AARCH64_CALL26	gpio_to_desc
+    548c: 94000000     	bl	0x548c <aw_remove+0x70>
+		000000000000548c:  R_AARCH64_CALL26	gpiod_to_irq
+    5490: 2a0003e1     	mov	w1, w0
+    5494: 91008280     	add	x0, x20, #0x20
+    5498: aa1303e2     	mov	x2, x19
+    549c: 94000000     	bl	0x549c <aw_remove+0x80>
+		000000000000549c:  R_AARCH64_CALL26	devm_free_irq
+    54a0: b9405260     	ldr	w0, [x19, #0x50]
+    54a4: 37f80040     	tbnz	w0, #0x1f, 0x54ac <aw_remove+0x90>
+    54a8: 94000000     	bl	0x54a8 <aw_remove+0x8c>
+		00000000000054a8:  R_AARCH64_CALL26	gpio_free
+    54ac: 91192260     	add	x0, x19, #0x648
+    54b0: 94000000     	bl	0x54b0 <aw_remove+0x94>
+		00000000000054b0:  R_AARCH64_CALL26	cancel_work_sync
+    54b4: f9430660     	ldr	x0, [x19, #0x608]
+    54b8: 94000000     	bl	0x54b8 <aw_remove+0x9c>
+		00000000000054b8:  R_AARCH64_CALL26	kfree
+    54bc: f9430a68     	ldr	x8, [x19, #0x610]
+    54c0: d2c01009     	mov	x9, #0x8000000000       // =549755813888
+    54c4: d378dd08     	lsl	x8, x8, #8
+    54c8: 8b882128     	add	x8, x9, x8, asr #8
+    54cc: d346fd08     	lsr	x8, x8, #6
+    54d0: 927acd08     	and	x8, x8, #0x3ffffffffffffc0
+    54d4: 14000013     	b	0x5520 <aw_remove+0x104>
+    54d8: b25f7be9     	mov	x9, #-0x200000000       // =-8589934592
+    54dc: f2b80009     	movk	x9, #0xc000, lsl #16
+    54e0: 8b090108     	add	x8, x8, x9

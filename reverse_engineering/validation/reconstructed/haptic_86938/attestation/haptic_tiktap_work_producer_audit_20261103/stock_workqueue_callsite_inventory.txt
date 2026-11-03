@@ -1,0 +1,34 @@
+Stock Ghidra whole-module callsites for Linux workqueue submission APIs (one call per line):
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0060_00106ed0_rtp_auto_sin_store.c:39: queue_work_on(0x20,*(undefined8 *)(lVar3 + 0x3a0),lVar3 + 0x2f8);
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0069_0010887c_ram_work_init.c:12: queue_delayed_work_on(0x20,_system_wq,param_1 + 0x3c0,2000);
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0076_0010960c_brightness_set.c:15: queue_work_on(0x20,*(undefined8 *)(param_1 + 0x3a0),param_1 + 0x380);
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0077_001096b4_vibrator_timer_func.c:6: queue_work_on(0x20,*(undefined8 *)(param_1 + 0x118),param_1 + 0xf8);
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0085_0010a430_activate_store.c:36: queue_work_on(0x20,*(undefined8 *)(lVar3 + 0x3a0),lVar3 + 0x380);
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0101_0010af38_aw_rtp_store.c:49: queue_work_on(0x20,*(undefined8 *)(lVar4 + 0x3a0),lVar4 + 0x2f8);
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0104_0010b2e0_ram_load.c:38: queue_delayed_work_on(0x20,_system_wq,param_2 + 0x3c0,0xfa);
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0141_0010dac4_activate_aw_store.c:28: queue_work_on(0x20,*(undefined8 *)(lVar2 + 0x3a0),lVar2 + 0x380);
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0145_0010dcc4_audio_timer_func.c:5: queue_work_on(0x20,*(undefined8 *)(param_1 + -0xd8),param_1 + 0x40);
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c:237: queue_work_on(0x20,uVar2,lVar6);
+
+Corresponding stock AArch64 CALL26 relocations:
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0060_rtp_auto_sin_store_00106ed0.asm:57: 0000000000004164:  R_AARCH64_CALL26	queue_work_on
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0069_ram_work_init_0010887c.asm:40: 0000000000005ac0:  R_AARCH64_CALL26	queue_delayed_work_on
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0076_brightness_set_0010960c.asm:44: 0000000000006858:  R_AARCH64_CALL26	queue_work_on
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0077_vibrator_timer_func_001096b4.asm:16: 00000000000068b4:  R_AARCH64_CALL26	queue_work_on
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0085_activate_store_0010a430.asm:84: 0000000000007714:  R_AARCH64_CALL26	queue_work_on
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0101_aw_rtp_store_0010af38.asm:108: 0000000000008260:  R_AARCH64_CALL26	queue_work_on
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0104_ram_load_0010b2e0.asm:56: 0000000000008540:  R_AARCH64_CALL26	queue_delayed_work_on
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0141_activate_aw_store_0010dac4.asm:70: 000000000000ad70:  R_AARCH64_CALL26	queue_work_on
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0145_audio_timer_func_0010dcc4.asm:16: 000000000000aec4:  R_AARCH64_CALL26	queue_work_on
+reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0151_richtap_file_unlocked_ioctl_0010e374.asm:48: 000000000000b5e0:  R_AARCH64_CALL26	queue_work_on
+
+Stock Ghidra references to the tiktap callback and +0x628 field:
+0064_001073c0_aw_i2c_probe.c:328: *(undefined8 *)(lVar7 + 0x628) = 0xfffffffe00000;
+0064_001073c0_aw_i2c_probe.c:331: *(code **)(lVar7 + 0x640) = tiktap_work_routine;
+0072_00108c68_tiktap_work_routine.c:2: void tiktap_work_routine(long param_1)
+0072_00108c68_tiktap_work_routine.c:23: lVar9 = param_1 + -0x628;
+0072_00108c68_tiktap_work_routine.c:81: _printk(&DAT_00111076,"haptic_hv",0xe7e,"tiktap_work_routine",*pbVar11);
+0072_00108c68_tiktap_work_routine.c:103: _printk(puVar5,"haptic_hv",uVar6,"tiktap_work_routine",bVar1);
+0072_00108c68_tiktap_work_routine.c:115: _printk(&DAT_0010ff6e,"haptic_hv",0xea7,"tiktap_work_routine",iVar10,pbVar11[1],
+0072_00108c68_tiktap_work_routine.c:117: _printk(&DAT_00111967,"haptic_hv",0xeab,"tiktap_work_routine",(long)*(short *)(pbVar11 + 2),
+0072_00108c68_tiktap_work_routine.c:147: _printk(&DAT_0010f16e,"haptic_hv",0xe96,"tiktap_work_routine");
