@@ -2,7 +2,7 @@
 
 ## Conclusion
 
-This historical attestation bound HAP-RICHTAP-04 to candidate `7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098`. Its static conclusion was valid for that hash only. The latest current-candidate revalidation is [vma_lifetime_revalidation_current_candidate.json](vma_lifetime_revalidation_current_candidate.json), bound to `3dad43a65e611dfe56afb946aba6206975c9a3648eccc19a074723b021412a2b`. Neither report claims runtime race freedom.
+This historical attestation bound HAP-RICHTAP-04 to candidate `7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098`. Its static conclusion was valid for that hash only. At the time, the latest revalidation was [vma_lifetime_revalidation_current_candidate.json](vma_lifetime_revalidation_current_candidate.json), bound to `3dad43a65e611dfe56afb946aba6206975c9a3648eccc19a074723b021412a2b`. It has since been superseded by the [current-candidate revalidation for `53ee12ee…`](../haptic_richtap_vma_current_candidate_revalidation_20261103/README.md). Neither report claims runtime race freedom.
 
 On successful `remap_pfn_range`, `richtap_file_mmap` calls `haptic_lifetime_attach_vma` before ending its active file operation. That helper takes the initial VMA reference explicitly. The pinned kernel does not invoke `.open` for the initial `call_mmap` path; it does invoke `.open` when cloning and splitting VMAs. `haptic_vma_open` increments the page-lifetime count for those copies. When the device is removed, active file operations are drained before `haptic_lifetime_retire_state` clears state offset `+0x610`; if VMA references remain, the page address moves to `retired_pages` rather than being freed. The last `.close` callback frees the pages and drops the VMA lifetime reference.
 

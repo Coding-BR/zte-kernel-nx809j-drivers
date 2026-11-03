@@ -1,0 +1,100 @@
+
+/repo/kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000007838 <haptic_vma_close>:
+    7838:      	paciasp
+    783c:      	stp	x29, x30, [sp, #-0x20]!
+    7840:      	stp	x20, x19, [sp, #0x10]
+    7844:      	mov	x29, sp
+    7848:      	ldr	x19, [x0, #0x60]
+    784c:      	add	x0, x19, #0x8
+    7850:      	bl	0x7850 <haptic_vma_close+0x18>
+		0000000000007850:  R_AARCH64_CALL26	mutex_lock
+    7854:      	ldr	w8, [x19, #0x5c]
+    7858:      	cbz	w8, 0x7918 <haptic_vma_close+0xe0>
+    785c:      	subs	w8, w8, #0x1
+    7860:      	str	w8, [x19, #0x5c]
+    7864:      	b.ne	0x78c0 <haptic_vma_close+0x88>
+    7868:      	ldrb	w8, [x19, #0x68]
+    786c:      	tbz	w8, #0x0, 0x78c0 <haptic_vma_close+0x88>
+    7870:      	ldr	x20, [x19, #0x60]
+    7874:      	add	x0, x19, #0x8
+    7878:      	str	xzr, [x19, #0x60]
+    787c:      	bl	0x787c <haptic_vma_close+0x44>
+		000000000000787c:  R_AARCH64_CALL26	mutex_unlock
+    7880:      	cbz	x20, 0x78c8 <haptic_vma_close+0x90>
+    7884:      	lsl	x8, x20, #8
+    7888:      	mov	x9, #0x8000000000       // =549755813888
+    788c:      	add	x8, x9, x8, asr #8
+    7890:      	lsr	x8, x8, #6
+    7894:      	and	x8, x8, #0x3ffffffffffffc0
+    7898:      	b	0x7970 <haptic_vma_close+0x138>
+    789c:      	mov	x9, #-0x200000000       // =-8589934592
+    78a0:      	movk	x9, #0xc000, lsl #16
+    78a4:      	add	x8, x8, x9
+    78a8:      	mov	w9, #0x4000             // =16384
+    78ac:      	stclr	x9, [x8]
+    78b0:      	mov	x0, x20
+    78b4:      	mov	w1, #0x2                // =2
+    78b8:      	bl	0x78b8 <haptic_vma_close+0x80>
+		00000000000078b8:  R_AARCH64_CALL26	free_pages
+    78bc:      	b	0x78c8 <haptic_vma_close+0x90>
+    78c0:      	add	x0, x19, #0x8
+    78c4:      	bl	0x78c4 <haptic_vma_close+0x8c>
+		00000000000078c4:  R_AARCH64_CALL26	mutex_unlock
+    78c8:      	cbz	x19, 0x7950 <haptic_vma_close+0x118>
+    78cc:      	b	0x7928 <haptic_vma_close+0xf0>
+    78d0:      	mov	w8, #-0x1               // =-1
+    78d4:      	ldaddl	w8, w8, [x19]
+    78d8:      	cmp	w8, #0x1
+    78dc:      	b.ne	0x7948 <haptic_vma_close+0x110>
+    78e0:      	dmb	ishld
+    78e4:      	ldr	w8, [x19, #0x58]
+    78e8:      	cbnz	w8, 0x78fc <haptic_vma_close+0xc4>
+    78ec:      	ldr	w8, [x19, #0x5c]
+    78f0:      	cbnz	w8, 0x78fc <haptic_vma_close+0xc4>
+    78f4:      	ldr	x8, [x19, #0x60]
+    78f8:      	cbz	x8, 0x790c <haptic_vma_close+0xd4>
+    78fc:      	brk	#0x800
+    7900:      	mov	x0, x19
+    7904:      	bl	0x7904 <haptic_vma_close+0xcc>
+		0000000000007904:  R_AARCH64_CALL26	kfree
+    7908:      	b	0x7950 <haptic_vma_close+0x118>
+    790c:      	ldr	x8, [x19, #0x50]
+    7910:      	cbz	x8, 0x7900 <haptic_vma_close+0xc8>
+    7914:      	b	0x78fc <haptic_vma_close+0xc4>
+    7918:      	brk	#0x800
+    791c:      	ldr	w8, [x19, #0x5c]
+    7920:      	cbnz	w8, 0x785c <haptic_vma_close+0x24>
+    7924:      	b	0x7868 <haptic_vma_close+0x30>
+    7928:      	mov	w9, #0x1                // =1
+    792c:      	prfm	pstl1strm, [x19]
+    7930:      	ldxr	w8, [x19]
+    7934:      	sub	w10, w8, w9
+    7938:      	stlxr	w11, w10, [x19]
+    793c:      	cbnz	w11, 0x7930 <haptic_vma_close+0xf8>
+    7940:      	cmp	w8, #0x1
+    7944:      	b.eq	0x78e0 <haptic_vma_close+0xa8>
+    7948:      	cmp	w8, #0x0
+    794c:      	b.le	0x7960 <haptic_vma_close+0x128>
+    7950:      	ldp	x20, x19, [sp, #0x10]
+    7954:      	ldp	x29, x30, [sp], #0x20
+    7958:      	autiasp
+    795c:      	ret
+    7960:      	mov	x0, x19
+    7964:      	mov	w1, #0x3                // =3
+    7968:      	bl	0x7968 <haptic_vma_close+0x130>
+		0000000000007968:  R_AARCH64_CALL26	refcount_warn_saturate
+    796c:      	b	0x7950 <haptic_vma_close+0x118>
+    7970:      	mov	x9, #-0x200000000       // =-8589934592
+    7974:      	movk	x9, #0xc000, lsl #16
+    7978:      	add	x8, x8, x9
+    797c:      	mov	w9, #0x4000             // =16384
+    7980:      	prfm	pstl1strm, [x8]
+    7984:      	ldxr	x10, [x8]
+    7988:      	bic	x10, x10, x9
+    798c:      	stxr	w11, x10, [x8]
+    7990:      	cbnz	w11, 0x7984 <haptic_vma_close+0x14c>
+    7994:      	b	0x78b0 <haptic_vma_close+0x78>

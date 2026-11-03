@@ -1,0 +1,51 @@
+
+/repo/kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000006cc4 <haptic_lifetime_attach_vma>:
+    6cc4:      	paciasp
+    6cc8:      	stp	x29, x30, [sp, #-0x20]!
+    6ccc:      	stp	x20, x19, [sp, #0x10]
+    6cd0:      	mov	x29, sp
+    6cd4:      	mov	x19, x0
+    6cd8:      	add	x0, x0, #0x8
+    6cdc:      	mov	x20, x1
+    6ce0:      	bl	0x6ce0 <haptic_lifetime_attach_vma+0x1c>
+		0000000000006ce0:  R_AARCH64_CALL26	mutex_lock
+    6ce4:      	b	0x6d3c <haptic_lifetime_attach_vma+0x78>
+    6ce8:      	mov	w8, #0x1                // =1
+    6cec:      	ldadd	w8, w8, [x19]
+    6cf0:      	cbz	w8, 0x6d54 <haptic_lifetime_attach_vma+0x90>
+    6cf4:      	add	w9, w8, #0x1
+    6cf8:      	orr	w8, w9, w8
+    6cfc:      	tbnz	w8, #0x1f, 0x6d34 <haptic_lifetime_attach_vma+0x70>
+    6d00:      	ldr	w8, [x19, #0x5c]
+    6d04:      	add	x0, x19, #0x8
+    6d08:      	add	w8, w8, #0x1
+    6d0c:      	str	w8, [x19, #0x5c]
+    6d10:      	adrp	x8, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006d10:  R_AARCH64_ADR_PREL_PG_HI21	.rodata
+    6d14:      	add	x8, x8, #0x0
+		0000000000006d14:  R_AARCH64_ADD_ABS_LO12_NC	.rodata
+    6d18:      	str	x19, [x20, #0x60]
+    6d1c:      	str	x8, [x20, #0x48]
+    6d20:      	bl	0x6d20 <haptic_lifetime_attach_vma+0x5c>
+		0000000000006d20:  R_AARCH64_CALL26	mutex_unlock
+    6d24:      	ldp	x20, x19, [sp, #0x10]
+    6d28:      	ldp	x29, x30, [sp], #0x20
+    6d2c:      	autiasp
+    6d30:      	ret
+    6d34:      	mov	w1, #0x1                // =1
+    6d38:      	b	0x6d58 <haptic_lifetime_attach_vma+0x94>
+    6d3c:      	prfm	pstl1strm, [x19]
+    6d40:      	ldxr	w8, [x19]
+    6d44:      	add	w9, w8, #0x1
+    6d48:      	stxr	w10, w9, [x19]
+    6d4c:      	cbnz	w10, 0x6d40 <haptic_lifetime_attach_vma+0x7c>
+    6d50:      	cbnz	w8, 0x6cf4 <haptic_lifetime_attach_vma+0x30>
+    6d54:      	mov	w1, #0x2                // =2
+    6d58:      	mov	x0, x19
+    6d5c:      	bl	0x6d5c <haptic_lifetime_attach_vma+0x98>
+		0000000000006d5c:  R_AARCH64_CALL26	refcount_warn_saturate
+    6d60:      	b	0x6d00 <haptic_lifetime_attach_vma+0x3c>

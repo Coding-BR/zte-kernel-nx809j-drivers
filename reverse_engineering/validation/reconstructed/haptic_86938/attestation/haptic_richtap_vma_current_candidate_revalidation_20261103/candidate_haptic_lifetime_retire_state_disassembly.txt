@@ -1,0 +1,134 @@
+
+/repo/kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000006ed0 <haptic_lifetime_retire_state>:
+    6ed0:      	paciasp
+    6ed4:      	stp	x29, x30, [sp, #-0x30]!
+    6ed8:      	stp	x22, x21, [sp, #0x10]
+    6edc:      	stp	x20, x19, [sp, #0x20]
+    6ee0:      	mov	x29, sp
+    6ee4:      	mov	x21, x0
+    6ee8:      	adrp	x0, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006ee8:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x3d0
+    6eec:      	add	x0, x0, #0x0
+		0000000000006eec:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x3d0
+    6ef0:      	bl	0x6ef0 <haptic_lifetime_retire_state+0x20>
+		0000000000006ef0:  R_AARCH64_CALL26	mutex_lock
+    6ef4:      	adrp	x22, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006ef4:  R_AARCH64_ADR_PREL_PG_HI21	.bss+0x50
+    6ef8:      	ldr	x19, [x22]
+		0000000000006ef8:  R_AARCH64_LDST64_ABS_LO12_NC	.bss+0x50
+    6efc:      	cbz	x19, 0x6f0c <haptic_lifetime_retire_state+0x3c>
+    6f00:      	ldr	x8, [x19, #0x50]
+    6f04:      	cmp	x8, x21
+    6f08:      	b.eq	0x6fa4 <haptic_lifetime_retire_state+0xd4>
+    6f0c:      	ldr	x20, [x21, #0x610]
+    6f10:      	mov	x19, xzr
+    6f14:      	str	xzr, [x21, #0x610]
+    6f18:      	adrp	x0, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006f18:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x3d0
+    6f1c:      	add	x0, x0, #0x0
+		0000000000006f1c:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x3d0
+    6f20:      	bl	0x6f20 <haptic_lifetime_retire_state+0x50>
+		0000000000006f20:  R_AARCH64_CALL26	mutex_unlock
+    6f24:      	cbz	x20, 0x6f60 <haptic_lifetime_retire_state+0x90>
+    6f28:      	lsl	x8, x20, #8
+    6f2c:      	mov	x9, #0x8000000000       // =549755813888
+    6f30:      	add	x8, x9, x8, asr #8
+    6f34:      	lsr	x8, x8, #6
+    6f38:      	and	x8, x8, #0x3ffffffffffffc0
+    6f3c:      	b	0x705c <haptic_lifetime_retire_state+0x18c>
+    6f40:      	mov	x9, #-0x200000000       // =-8589934592
+    6f44:      	movk	x9, #0xc000, lsl #16
+    6f48:      	add	x8, x8, x9
+    6f4c:      	mov	w9, #0x4000             // =16384
+    6f50:      	stclr	x9, [x8]
+    6f54:      	mov	x0, x20
+    6f58:      	mov	w1, #0x2                // =2
+    6f5c:      	bl	0x6f5c <haptic_lifetime_retire_state+0x8c>
+		0000000000006f5c:  R_AARCH64_CALL26	free_pages
+    6f60:      	cbz	x19, 0x7038 <haptic_lifetime_retire_state+0x168>
+    6f64:      	b	0x7010 <haptic_lifetime_retire_state+0x140>
+    6f68:      	mov	w8, #-0x1               // =-1
+    6f6c:      	ldaddl	w8, w8, [x19]
+    6f70:      	cmp	w8, #0x1
+    6f74:      	b.ne	0x7030 <haptic_lifetime_retire_state+0x160>
+    6f78:      	dmb	ishld
+    6f7c:      	ldr	w8, [x19, #0x58]
+    6f80:      	cbnz	w8, 0x6f94 <haptic_lifetime_retire_state+0xc4>
+    6f84:      	ldr	w8, [x19, #0x5c]
+    6f88:      	cbnz	w8, 0x6f94 <haptic_lifetime_retire_state+0xc4>
+    6f8c:      	ldr	x8, [x19, #0x60]
+    6f90:      	cbz	x8, 0x6ffc <haptic_lifetime_retire_state+0x12c>
+    6f94:      	brk	#0x800
+    6f98:      	mov	x0, x19
+    6f9c:      	bl	0x6f9c <haptic_lifetime_retire_state+0xcc>
+		0000000000006f9c:  R_AARCH64_CALL26	kfree
+    6fa0:      	b	0x7038 <haptic_lifetime_retire_state+0x168>
+    6fa4:      	add	x0, x19, #0x8
+    6fa8:      	bl	0x6fa8 <haptic_lifetime_retire_state+0xd8>
+		0000000000006fa8:  R_AARCH64_CALL26	mutex_lock
+    6fac:      	ldr	w8, [x19, #0x58]
+    6fb0:      	cbnz	w8, 0x7008 <haptic_lifetime_retire_state+0x138>
+    6fb4:      	ldr	x20, [x21, #0x610]
+    6fb8:      	str	xzr, [x21, #0x610]
+    6fbc:      	ldr	w8, [x19, #0x5c]
+    6fc0:      	str	xzr, [x19, #0x50]
+    6fc4:      	cbz	w8, 0x6fec <haptic_lifetime_retire_state+0x11c>
+    6fc8:      	cbz	x20, 0x6fec <haptic_lifetime_retire_state+0x11c>
+    6fcc:      	add	x0, x19, #0x8
+    6fd0:      	str	x20, [x19, #0x60]
+    6fd4:      	bl	0x6fd4 <haptic_lifetime_retire_state+0x104>
+		0000000000006fd4:  R_AARCH64_CALL26	mutex_unlock
+    6fd8:      	adrp	x0, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006fd8:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x3d0
+    6fdc:      	add	x0, x0, #0x0
+		0000000000006fdc:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x3d0
+    6fe0:      	str	xzr, [x22]
+		0000000000006fe0:  R_AARCH64_LDST64_ABS_LO12_NC	.bss+0x50
+    6fe4:      	bl	0x6fe4 <haptic_lifetime_retire_state+0x114>
+		0000000000006fe4:  R_AARCH64_CALL26	mutex_unlock
+    6fe8:      	b	0x6f64 <haptic_lifetime_retire_state+0x94>
+    6fec:      	add	x0, x19, #0x8
+    6ff0:      	bl	0x6ff0 <haptic_lifetime_retire_state+0x120>
+		0000000000006ff0:  R_AARCH64_CALL26	mutex_unlock
+    6ff4:      	str	xzr, [x22]
+		0000000000006ff4:  R_AARCH64_LDST64_ABS_LO12_NC	.bss+0x50
+    6ff8:      	b	0x6f18 <haptic_lifetime_retire_state+0x48>
+    6ffc:      	ldr	x8, [x19, #0x50]
+    7000:      	cbz	x8, 0x6f98 <haptic_lifetime_retire_state+0xc8>
+    7004:      	b	0x6f94 <haptic_lifetime_retire_state+0xc4>
+    7008:      	brk	#0x800
+    700c:      	b	0x6fb4 <haptic_lifetime_retire_state+0xe4>
+    7010:      	mov	w9, #0x1                // =1
+    7014:      	prfm	pstl1strm, [x19]
+    7018:      	ldxr	w8, [x19]
+    701c:      	sub	w10, w8, w9
+    7020:      	stlxr	w11, w10, [x19]
+    7024:      	cbnz	w11, 0x7018 <haptic_lifetime_retire_state+0x148>
+    7028:      	cmp	w8, #0x1
+    702c:      	b.eq	0x6f78 <haptic_lifetime_retire_state+0xa8>
+    7030:      	cmp	w8, #0x0
+    7034:      	b.le	0x704c <haptic_lifetime_retire_state+0x17c>
+    7038:      	ldp	x20, x19, [sp, #0x20]
+    703c:      	ldp	x22, x21, [sp, #0x10]
+    7040:      	ldp	x29, x30, [sp], #0x30
+    7044:      	autiasp
+    7048:      	ret
+    704c:      	mov	x0, x19
+    7050:      	mov	w1, #0x3                // =3
+    7054:      	bl	0x7054 <haptic_lifetime_retire_state+0x184>
+		0000000000007054:  R_AARCH64_CALL26	refcount_warn_saturate
+    7058:      	b	0x7038 <haptic_lifetime_retire_state+0x168>
+    705c:      	mov	x9, #-0x200000000       // =-8589934592
+    7060:      	movk	x9, #0xc000, lsl #16
+    7064:      	add	x8, x8, x9
+    7068:      	mov	w9, #0x4000             // =16384
+    706c:      	prfm	pstl1strm, [x8]
+    7070:      	ldxr	x10, [x8]
+    7074:      	bic	x10, x10, x9
+    7078:      	stxr	w11, x10, [x8]
+    707c:      	cbnz	w11, 0x7070 <haptic_lifetime_retire_state+0x1a0>
+    7080:      	b	0x6f54 <haptic_lifetime_retire_state+0x84>

@@ -1,0 +1,44 @@
+
+/repo/kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000077a8 <haptic_vma_open>:
+    77a8:      	paciasp
+    77ac:      	stp	x29, x30, [sp, #-0x20]!
+    77b0:      	str	x19, [sp, #0x10]
+    77b4:      	mov	x29, sp
+    77b8:      	ldr	x19, [x0, #0x60]
+    77bc:      	add	x0, x19, #0x8
+    77c0:      	bl	0x77c0 <haptic_vma_open+0x18>
+		00000000000077c0:  R_AARCH64_CALL26	mutex_lock
+    77c4:      	b	0x780c <haptic_vma_open+0x64>
+    77c8:      	mov	w8, #0x1                // =1
+    77cc:      	ldadd	w8, w8, [x19]
+    77d0:      	cbz	w8, 0x7824 <haptic_vma_open+0x7c>
+    77d4:      	add	w9, w8, #0x1
+    77d8:      	orr	w8, w9, w8
+    77dc:      	tbnz	w8, #0x1f, 0x7804 <haptic_vma_open+0x5c>
+    77e0:      	ldr	w8, [x19, #0x5c]
+    77e4:      	add	x0, x19, #0x8
+    77e8:      	add	w8, w8, #0x1
+    77ec:      	str	w8, [x19, #0x5c]
+    77f0:      	bl	0x77f0 <haptic_vma_open+0x48>
+		00000000000077f0:  R_AARCH64_CALL26	mutex_unlock
+    77f4:      	ldr	x19, [sp, #0x10]
+    77f8:      	ldp	x29, x30, [sp], #0x20
+    77fc:      	autiasp
+    7800:      	ret
+    7804:      	mov	w1, #0x1                // =1
+    7808:      	b	0x7828 <haptic_vma_open+0x80>
+    780c:      	prfm	pstl1strm, [x19]
+    7810:      	ldxr	w8, [x19]
+    7814:      	add	w9, w8, #0x1
+    7818:      	stxr	w10, w9, [x19]
+    781c:      	cbnz	w10, 0x7810 <haptic_vma_open+0x68>
+    7820:      	cbnz	w8, 0x77d4 <haptic_vma_open+0x2c>
+    7824:      	mov	w1, #0x2                // =2
+    7828:      	mov	x0, x19
+    782c:      	bl	0x782c <haptic_vma_open+0x84>
+		000000000000782c:  R_AARCH64_CALL26	refcount_warn_saturate
+    7830:      	b	0x77e0 <haptic_vma_open+0x38>
