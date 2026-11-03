@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T02:12:02.8927498Z",
+  "driver": "zte_tpd",
+  "review_scope": [
+    "syna_dev_disconnect",
+    "syna_dev_process_unexpected_reset",
+    "syna_dev_helper_work",
+    "syna_dev_remove",
+    "syna_dev_probe",
+    "syna_dev_connect"
+  ],
+  "result": "PASS_STATIC_REVIEW_NO_NEW_DEFECT",
+  "concern": "The stock disconnect body destroys the reflash workqueue before disabling and freeing the IRQ; an in-flight IRQ/reset callback could appear to queue work into a destroyed queue.",
+  "evidence_chain": [
+    "Stock Ghidra at 0x00112b04 confirms cancel_delayed_work_sync(TCM+0x3c8), flush and destroy of TCM+0x430, then IRQ disable callback and devm_free_irq. The 392-byte/98-instruction stock body remains retained under the exact symbol.",
+    "The stock reset callback at 0x00113a9c queues only the helper work item (TCM+0x528) on the helper queue (TCM+0x548). The helper worker is the producer that can schedule delayed reflash work on TCM+0x430.",
+    "The reconstructed reset callback and helper scheduling share syna_dev_helper_work_lock. syna_dev_helper_workqueue_stop detaches the helper queue under that lock, closing future admission.",
+    "syna_dev_remove calls helper_workqueue_stop, cancel_work_sync on TCM+0x528, flushes and destroys the helper queue before cdev removal reaches syna_dev_disconnect. The helper is therefore drained before the exact disconnect body cancels and destroys the reflash queue.",
+    "Probe rollback and connect-allocation rollback reach disconnect before probe allocates the helper queue. The TCM remove callback is invoked at the end of normal remove, after the same helper-stop/drain sequence."
+  ],
+  "conclusion": "No use-after-destroy defect is established for the recovered module call paths. Keep the 392-byte stock disconnect body and current HARDENED_STOCK_DEVIATION classification unchanged; no source edit or canonical rebuild was warranted by this review.",
+  "status_preserved": "HARDENED_STOCK_DEVIATION",
+  "evidence_sha256": {
+    "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_disconnect.c": "3446cdc7b12d264cbd7129a7ed6574239dcaec0dc8427b316c4c20eec9dee1fb",
+    "kernel_development/drivers/reconstructed/zte_tpd/syna_tpd_charger_lifecycle.c": "18fe1fa03cc5106a758bad21cd1a666a2463c6d246b8b783ad8326655c07d78f",
+    "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_remove.c": "de97dcca3a629b6099b66e8b977c9ffbea130d07f9cfd1779c8392363941adae",
+    "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_process_unexpected_reset.c": "9708384b5354187f4dd2061b51ecfda3086fc2d2af45a4a0d523a58ad06d4013",
+    "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_helper_work.c": "b7cc4e1fe42fe5248538d0633c004c85c405cfa164eec4da00d4c9123eacc3c6",
+    "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_probe.c": "a499f12641e99b76e0df5b27889be91f889ff327d502ac9afb410a3bef5f514e",
+    "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_connect_wrapper.c": "5fcc72fc8875410a750cdb587729dbe367b98295c5bcd75647f1e2b3b63f3e09",
+    "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0160_00112b04_syna_dev_disconnect.c": "a940308579e8b4b154778c474b2a6bbfde4d262a280b767bc5fe0b3819d6b17e",
+    "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0167_00113a9c_syna_dev_process_unexpected_reset.c": "cc8e0ebd5dc4b195fb5121268d4aa723c739086e7eb612b1b6863929db3ce872",
+    "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0165_00113590_syna_dev_helper_work.c": "40e1a1ae3c348a9f4dd0204bc4cb8bc7dd5feb91400b0b14b0a19934450989b6",
+    "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0156_00112038_syna_dev_probe.c": "01403b177143bebaa14e6c9389f5b5e025a3c23874b97eccefc44c443a810cb2",
+    "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0159_00112714_syna_dev_connect.c": "63257617cd6e8af8f1546830aa257a1972fb899e1b38a08afc316d3140046485",
+    "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0157_001125bc_syna_dev_remove.c": "c1c85634dafff1b54db38f2401b869bc9e6335607ec61559d96e3992edc007ff"
+  },
+  "limits": [
+    "This is a static call-path and ordering review; IRQ/workqueue concurrency was not exercised on Android or NX809J hardware.",
+    "The conclusion applies to the enumerated recovered in-module paths; behavior of an external caller not represented in the module evidence is not proven."
+  ]
+}
