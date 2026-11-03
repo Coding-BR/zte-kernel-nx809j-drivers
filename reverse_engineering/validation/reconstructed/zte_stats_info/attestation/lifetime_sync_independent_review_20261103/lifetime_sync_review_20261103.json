@@ -1,0 +1,141 @@
+{
+  "schema_version": "1.0",
+  "review_id": "zte_stats_info_lifetime_sync_independent_review_20261103",
+  "review_date": "2026-11-03",
+  "result": "CURRENT_MODULE_FUNCTION_PARITY_PASS_8_OF_8; STOCK_LIFETIME_RISKS_DOCUMENTED; OVERALL_DRIVER_INCOMPLETE",
+  "scope": {
+    "mode": "offline static source, Ghidra stock, target assembly, and Docker kernel source review",
+    "source_changed": false,
+    "module_changed": false,
+    "reconstruction_map_changed": false,
+    "hardware_or_netlink_execution": false,
+    "module_load_or_unload_attempted": false,
+    "build_rerun": false,
+    "build_rerun_reason": "No driver source change; current module assembly was directly extracted and compared."
+  },
+  "identities": {
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_stats_info/zte_stats_info.c",
+      "sha256": "9e093b3da29492bf52b2811341879939ca88d68d8604cd650d6393b40703f6e4"
+    },
+    "candidate_module": {
+      "path": "kernel_development/drivers/reconstructed/zte_stats_info/zte_stats_info.ko",
+      "sha256": "62e8d2607d53dd8079bff1340aac4381450599ddc7ed46ab9e2a12794f4f22c1",
+      "size_bytes": 328352
+    },
+    "reconstruction_map": {
+      "path": "kernel_development/drivers/reconstructed/zte_stats_info/reconstruction_map.json",
+      "sha256": "bf85fe9e77c74f8a3452771282d1f61c1c707ff9b67fdadf62e6b7843a1c7913"
+    },
+    "stock_module": {
+      "path": "reference_modules/stock/zte_stats_info.ko",
+      "sha256": "20f5f60ddbdc5412de08a5ec0a62d34bfe3dd8cebba0cb54cda6ffc7bdb64d96",
+      "size_bytes": 27008
+    },
+    "stock_ghidra_function_inventory_sha256": "9772a1ed717ba27acd7fb52809a901ee5f6dd80bf416651052e2d173dfc29f21",
+    "docker_curated_copy_matches_candidate_source_module_and_map": true
+  },
+  "current_candidate_assembly_comparison": {
+    "tool": "workspace_tools/reconstruction_pipeline/compare_function_assembly.py",
+    "extractor": "workspace_tools/reconstruction_pipeline/extract_module_assembly.py",
+    "docker_image": "nubia-sm8850-kernel-builder:latest",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "stock_module_sha256": "20f5f60ddbdc5412de08a5ec0a62d34bfe3dd8cebba0cb54cda6ffc7bdb64d96",
+    "candidate_module_sha256": "62e8d2607d53dd8079bff1340aac4381450599ddc7ed46ab9e2a12794f4f22c1",
+    "passed": true,
+    "functions_checked": 8,
+    "checks": ["normalized_aarch64_instructions", "relocations", "section", "symbol_size"],
+    "functions": [
+      {"name": "__zte_lock_task_sighand", "instruction_count": 33, "symbol_size_bytes": 132, "passed": true},
+      {"name": "init_module", "instruction_count": 55, "symbol_size_bytes": 220, "passed": true},
+      {"name": "zte_add_del_listener", "instruction_count": 162, "symbol_size_bytes": 648, "passed": true},
+      {"name": "zte_cgroupstats_user_cmd", "instruction_count": 2, "symbol_size_bytes": 8, "passed": true},
+      {"name": "zte_mk_reply", "instruction_count": 71, "symbol_size_bytes": 284, "passed": true},
+      {"name": "zte_parse", "instruction_count": 57, "symbol_size_bytes": 228, "passed": true},
+      {"name": "zte_prepare_reply", "instruction_count": 67, "symbol_size_bytes": 268, "passed": true},
+      {"name": "zte_taskstats_user_cmd", "instruction_count": 473, "symbol_size_bytes": 1892, "passed": true}
+    ],
+    "evidence_files": [
+      "assembly/stock/manifest.json",
+      "assembly/candidate/manifest.json",
+      "assembly/comparison.json"
+    ]
+  },
+  "target_kernel_source": {
+    "repository_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "module_loader_check": "kernel/module/main.c:780-797 rejects normal deletion with -EBUSY when module init exists and module exit is absent",
+    "genetlink_unregister_api": "net/netlink/genetlink.c:855-870",
+    "config": {
+      "CONFIG_MODULE_UNLOAD": "y",
+      "CONFIG_MODULE_FORCE_UNLOAD": "not set"
+    }
+  },
+  "findings": [
+    {
+      "id": "TASK_AND_MM_REFERENCE_BALANCE",
+      "severity": "none_observed",
+      "classification": "balanced_lifetime",
+      "summary": "PID lookup is RCU-protected while get_task_struct acquires the reference; put_task_struct balances it. get_task_mm/mmput are paired. Credential and real_parent reads are RCU-protected.",
+      "candidate_matches_stock": true
+    },
+    {
+      "id": "SIGHAND_LOCK_LIFETIME",
+      "severity": "none_observed",
+      "classification": "balanced_rcu_spinlock_scope",
+      "summary": "The helper retries the sighand pointer under RCU and spin_lock_irqsave; TGID aggregation holds siglock through thread-group traversal and releases it on the return paths reviewed.",
+      "candidate_matches_stock": true
+    },
+    {
+      "id": "PER_CPU_LIST_LOCKING",
+      "severity": "none_observed_for_list_memory_safety",
+      "classification": "serialized_per_cpu_list_access",
+      "summary": "Each per-CPU list and its entry frees are protected by its rw_semaphore; lists are initialized before the Generic Netlink family is registered.",
+      "candidate_matches_stock": true
+    },
+    {
+      "id": "LISTENER_ORPHAN_ON_SOCKET_CLOSE",
+      "severity": "moderate",
+      "classification": "stock_inherited_memory_lifetime_leak",
+      "condition": "A privileged client registers a CPU mask and closes its Netlink socket without explicit deregistration.",
+      "summary": "Entries keyed by snd_portid are freed only by explicit deregistration or allocation-error cleanup. The family has no unbind/socket-close cleanup callback, and the module has no exit path; stale entries persist until reboot.",
+      "candidate_matches_stock": true,
+      "runtime_reproduced": false
+    },
+    {
+      "id": "PARTIAL_REGISTER_ROLLBACK_REMOVES_EXISTING_ENTRY",
+      "severity": "moderate",
+      "classification": "stock_inherited_non_transactional_rollback",
+      "condition": "Registration spans multiple CPUs, an entry already exists on an earlier CPU, and a later per-CPU allocation fails.",
+      "summary": "The error cleanup walks the full requested mask and removes the first matching portid, including a pre-existing entry skipped as a duplicate by this request. Per-CPU semaphores protect list integrity but do not make the multi-CPU operation atomic.",
+      "candidate_matches_stock": true,
+      "runtime_reproduced": false
+    },
+    {
+      "id": "NO_MODULE_EXIT_OR_GENL_UNREGISTER",
+      "severity": "low_on_target_normal_unload_path",
+      "classification": "effectively_pinned_stock_module",
+      "summary": "Stock registers the family in init_module and has no exit/unregister function. The exact target kernel rejects normal unload for init-without-exit modules; forced unload is disabled in the target config. No ordinary unload path was found that would leave a dangling family.",
+      "candidate_matches_stock": true,
+      "runtime_reproduced": false
+    }
+  ],
+  "status_decision": {
+    "overall_driver": "INCOMPLETE",
+    "independent_review_gate": "PENDING_SEPARATE_SESSION_REVIEW",
+    "reason": "This report is a detailed review in the continuing session; the existing STATUS.md gate explicitly calls for review by another session/LLM.",
+    "hardware_gate": "INCOMPLETE",
+    "promotion": "NOT_ALLOWED",
+    "historical_full_validation_candidate_sha256": "51894b326a94465c3189fff6f3c1c72b409f4e9eb23e950ab8654478f1c7cd54",
+    "historical_full_validation_size_bytes": 329608,
+    "current_hash_scope_note": "Full build/harness evidence remains bound to the historical candidate. This review rechecked current 62e8... at function assembly level only."
+  },
+  "evidence_paths": [
+    "reverse_engineering/validation/reconstructed/zte_stats_info/offline_static/ghidra_stock",
+    "reverse_engineering/validation/reconstructed/zte_stats_info/offline_static/stock_assembly",
+    "reverse_engineering/validation/reconstructed/zte_stats_info/attestation/lifetime_sync_independent_review_20261103/assembly",
+    "kernel_development/config/target_kernel.json",
+    "kernel_development/config/nx809j_target_kernel_20260711.config"
+  ]
+}
