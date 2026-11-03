@@ -1,0 +1,26 @@
+
+/repo/kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+000000000000276c <vibrator_timer_func>:
+    276c:      	paciasp
+    2770:      	stp	x29, x30, [sp, #-0x20]!
+    2774:      	str	x19, [sp, #0x10]
+    2778:      	mov	x29, sp
+    277c:      	mov	x19, x0
+    2780:      	bl	0x2780 <vibrator_timer_func+0x14>
+		0000000000002780:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    2784:      	tbnz	w0, #0x0, 0x27a0 <vibrator_timer_func+0x34>
+    2788:      	ldr	x1, [x19, #0x118]
+    278c:      	sub	x8, x19, #0x2f0
+    2790:      	add	x2, x19, #0xf8
+    2794:      	mov	w0, #0x20               // =32
+    2798:      	str	wzr, [x8]
+    279c:      	bl	0x279c <vibrator_timer_func+0x30>
+		000000000000279c:  R_AARCH64_CALL26	queue_work_on
+    27a0:      	mov	w0, wzr
+    27a4:      	ldr	x19, [sp, #0x10]
+    27a8:      	ldp	x29, x30, [sp], #0x20
+    27ac:      	autiasp
+    27b0:      	ret

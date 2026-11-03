@@ -1,0 +1,29 @@
+
+/repo/kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+00000000000068f8 <haptic_lifetime_misc_register>:
+    68f8:      	paciasp
+    68fc:      	stp	x29, x30, [sp, #-0x20]!
+    6900:      	str	x19, [sp, #0x10]
+    6904:      	mov	x29, sp
+    6908:      	mov	x19, x0
+    690c:      	bl	0x690c <haptic_lifetime_misc_register+0x14>
+		000000000000690c:  R_AARCH64_CALL26	misc_register
+    6910:      	adrp	x8, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006910:  R_AARCH64_ADR_PREL_PG_HI21	richtap_misc
+    6914:      	add	x8, x8, #0x0
+		0000000000006914:  R_AARCH64_ADD_ABS_LO12_NC	richtap_misc
+    6918:      	cmp	x19, x8
+    691c:      	b.ne	0x6930 <haptic_lifetime_misc_register+0x38>
+    6920:      	cmp	w0, #0x0
+    6924:      	adrp	x9, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006924:  R_AARCH64_ADR_PREL_PG_HI21	.bss+0x64
+    6928:      	cset	w8, eq
+    692c:      	strb	w8, [x9]
+		000000000000692c:  R_AARCH64_LDST8_ABS_LO12_NC	.bss+0x64
+    6930:      	ldr	x19, [sp, #0x10]
+    6934:      	ldp	x29, x30, [sp], #0x20
+    6938:      	autiasp
+    693c:      	ret

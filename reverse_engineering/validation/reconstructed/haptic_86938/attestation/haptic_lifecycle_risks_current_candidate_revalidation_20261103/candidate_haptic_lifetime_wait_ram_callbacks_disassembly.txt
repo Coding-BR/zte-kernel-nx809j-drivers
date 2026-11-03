@@ -1,0 +1,70 @@
+
+/repo/kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000007088 <haptic_lifetime_wait_ram_callbacks>:
+    7088:      	paciasp
+    708c:      	sub	sp, sp, #0x50
+    7090:      	stp	x29, x30, [sp, #0x30]
+    7094:      	stp	x20, x19, [sp, #0x40]
+    7098:      	add	x29, sp, #0x30
+    709c:      	mrs	x8, SP_EL0
+    70a0:      	adrp	x20, 0x7000 <haptic_lifetime_retire_state+0x130>
+		00000000000070a0:  R_AARCH64_ADR_PREL_PG_HI21	.bss+0x68
+    70a4:      	ldr	x8, [x8, #0x710]
+    70a8:      	stur	x8, [x29, #-0x8]
+    70ac:      	ldr	w8, [x20]
+		00000000000070ac:  R_AARCH64_LDST32_ABS_LO12_NC	.bss+0x68
+    70b0:      	cbz	w8, 0x711c <haptic_lifetime_wait_ram_callbacks+0x94>
+    70b4:      	mov	x0, sp
+    70b8:      	mov	w1, wzr
+    70bc:      	stp	xzr, xzr, [sp, #0x18]
+    70c0:      	stp	xzr, xzr, [sp, #0x8]
+    70c4:      	str	xzr, [sp]
+    70c8:      	bl	0x70c8 <haptic_lifetime_wait_ram_callbacks+0x40>
+		00000000000070c8:  R_AARCH64_CALL26	init_wait_entry
+    70cc:      	adrp	x0, 0x7000 <haptic_lifetime_retire_state+0x130>
+		00000000000070cc:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x460
+    70d0:      	add	x0, x0, #0x0
+		00000000000070d0:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x460
+    70d4:      	mov	x1, sp
+    70d8:      	mov	w2, #0x2                // =2
+    70dc:      	bl	0x70dc <haptic_lifetime_wait_ram_callbacks+0x54>
+		00000000000070dc:  R_AARCH64_CALL26	prepare_to_wait_event
+    70e0:      	ldr	w8, [x20]
+		00000000000070e0:  R_AARCH64_LDST32_ABS_LO12_NC	.bss+0x68
+    70e4:      	cbz	w8, 0x710c <haptic_lifetime_wait_ram_callbacks+0x84>
+    70e8:      	adrp	x19, 0x7000 <haptic_lifetime_retire_state+0x130>
+		00000000000070e8:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x460
+    70ec:      	add	x19, x19, #0x0
+		00000000000070ec:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x460
+    70f0:      	bl	0x70f0 <haptic_lifetime_wait_ram_callbacks+0x68>
+		00000000000070f0:  R_AARCH64_CALL26	schedule
+    70f4:      	mov	x1, sp
+    70f8:      	mov	x0, x19
+    70fc:      	mov	w2, #0x2                // =2
+    7100:      	bl	0x7100 <haptic_lifetime_wait_ram_callbacks+0x78>
+		0000000000007100:  R_AARCH64_CALL26	prepare_to_wait_event
+    7104:      	ldr	w8, [x20]
+		0000000000007104:  R_AARCH64_LDST32_ABS_LO12_NC	.bss+0x68
+    7108:      	cbnz	w8, 0x70f0 <haptic_lifetime_wait_ram_callbacks+0x68>
+    710c:      	adrp	x0, 0x7000 <haptic_lifetime_retire_state+0x130>
+		000000000000710c:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x460
+    7110:      	add	x0, x0, #0x0
+		0000000000007110:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x460
+    7114:      	mov	x1, sp
+    7118:      	bl	0x7118 <haptic_lifetime_wait_ram_callbacks+0x90>
+		0000000000007118:  R_AARCH64_CALL26	finish_wait
+    711c:      	mrs	x8, SP_EL0
+    7120:      	ldr	x8, [x8, #0x710]
+    7124:      	ldur	x9, [x29, #-0x8]
+    7128:      	cmp	x8, x9
+    712c:      	b.ne	0x7144 <haptic_lifetime_wait_ram_callbacks+0xbc>
+    7130:      	ldp	x20, x19, [sp, #0x40]
+    7134:      	ldp	x29, x30, [sp, #0x30]
+    7138:      	add	sp, sp, #0x50
+    713c:      	autiasp
+    7140:      	ret
+    7144:      	bl	0x7144 <haptic_lifetime_wait_ram_callbacks+0xbc>
+		0000000000007144:  R_AARCH64_CALL26	__stack_chk_fail
