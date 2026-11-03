@@ -3,6 +3,7 @@
 #include <linux/kernel.h>
 #include <linux/string.h>
 #include <linux/types.h>
+#include <asm/barrier.h>
 
 #include "haptic_86938_internal.h"
 
@@ -105,8 +106,8 @@ bool richtap_update_fifo_data(struct aw_haptic *aw, u32 length)
 				goto deliver;
 			}
 
-			WRITE_ONCE(fifo->state, 0xffU);
 			WRITE_ONCE(fifo->data_size, 0);
+			smp_store_release(&fifo->state, (u8)0xff);
 			WRITE_ONCE(aw->rtp_cnt, 0);
 			WRITE_ONCE(aw->rtp_ptr, next_fifo);
 			if (++visited >= HAPTIC_RICHTAP_FIFO_NODE_COUNT)

@@ -3,6 +3,7 @@
 #include <linux/string.h>
 #include <linux/types.h>
 #include <linux/workqueue.h>
+#include <asm/barrier.h>
 
 #include "haptic_86938_internal.h"
 
@@ -201,8 +202,8 @@ void richtap_rtp_work(struct work_struct *work)
 				if (node_size)
 					memcpy(RTP_DATA + copied, fifo->payload,
 					       (size_t)node_size);
-				WRITE_ONCE(fifo->state, (u8)drained_state);
 				WRITE_ONCE(fifo->data_size, 0);
+				smp_store_release(&fifo->state, (u8)drained_state);
 				copied += (u32)node_size;
 				WRITE_ONCE(RTP_COUNT, 0);
 				WRITE_ONCE(RTP_CURSOR, next_fifo);

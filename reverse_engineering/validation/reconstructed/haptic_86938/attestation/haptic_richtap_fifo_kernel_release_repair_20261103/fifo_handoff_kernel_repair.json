@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "review_id": "haptic_richtap_fifo_kernel_release_repair_20261103",
+  "review_date": "2026-11-03",
+  "result": "KERNEL_TO_HAL_FREE_NODE_RELEASE_ORDERED; HAL_TO_KERNEL_PUBLICATION_UNPAIRED; STATIC_ONLY",
+  "device": {
+    "model": "NX809J",
+    "adb_connected": true,
+    "root_confirmed": true,
+    "service": "vendor.qti.hardware.vibrator.service",
+    "service_pid": 5737,
+    "stock_module_listed_loaded": "haptic_86938",
+    "latest_proc_maps_probe": "permission_denied_even_under_su",
+    "candidate_module_loaded": false,
+    "haptic_effect_triggered": false,
+    "runtime_race_reproduced": false
+  },
+  "producer": {
+    "artifact": "/vendor/lib64/libaacvibrator.so",
+    "role": "vendor vibrator HAL shared library running inside vendor.qti.hardware.vibrator.service; not a standalone app",
+    "sha256": "8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61",
+    "backing_device": "/dev/awinic_haptic",
+    "previously_observed_mapping_bytes": 16384,
+    "mapping_evidence": "haptic_richtap_device_hal_producer_20261103",
+    "writer": "write_data_to_buffer(tiktap_operation*, signed char)",
+    "state_load_vma": "0x1c208",
+    "payload_store_vma": "0x1c38c",
+    "data_size_update_vma": "0x1c398",
+    "ready_state_store_vma": "0x1c22c",
+    "ready_state": "0x55 ('U')",
+    "ready_state_store_is_release": false,
+    "kernel_shares_hal_pthread_mutex": false
+  },
+  "kernel_candidate": {
+    "previous_sha256": "53ee12ee85c0d39eb05515e81b7eff5abe14af4480a4b7376ddbebc902427bb3",
+    "candidate_sha256": "7e99600da7ce2a265ada7f25bbcb0157ddaf310b66a0523333058ffaab99f3e8",
+    "candidate_bytes": 6720000,
+    "changed_sources": {
+      "haptic_86938_fn_136_richtap_update_fifo_data.c": "8e8688f2609c168b2cd3bf668e8512af1b65d8d4a58620e1ead776ed8f191511",
+      "haptic_86938_fn_137_richtap_rtp_work.c": "943818e278e925db38d8cf7b7748f83a67fbb2a5eae6339d8db3f1e8c403b926",
+      "haptic_86938_lifetime.c": "4ea538fdec18451e8cc9abcf0dca2e2386898df5ccf794eca449fd26552cdd92"
+    },
+    "changed_paths": [
+      "richtap_update_fifo_data: clear data_size, then smp_store_release(state, 0xff)",
+      "richtap_rtp_work: clear data_size, then smp_store_release(state, 0xff)",
+      "haptic_lifetime_richtap_fifo_reset: preserve size-before-state and use smp_store_release"
+    ],
+    "disassembly_offsets": {
+      "richtap_update_fifo_data_size_clear": "0x8364",
+      "richtap_update_fifo_data_release_store": "0x836c",
+      "richtap_rtp_work_size_clear": "0x858c",
+      "richtap_rtp_work_release_store": "0x8594",
+      "fifo_reset_size_clear": "0x74b4",
+      "fifo_reset_release_store": "0x74bc"
+    },
+    "reverse_handoff_release_acquire_pair": false,
+    "reconstruction_map_sha256": "78edd6c046bc58cbfb710f5c885c693a6c5c9afba197c69f98f0fbb68d772a6a"
+  },
+  "limitations": [
+    "Static interleaving only; no runtime reproduction.",
+    "HAL-to-kernel publication remains without a verified release/acquire pair.",
+    "Candidate remains offline-only and whole-driver completion is not established.",
+    "Fresh /proc/5737/maps read was denied; mapping identity relies on the earlier hash-bound device probe."
+  ]
+}

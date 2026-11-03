@@ -19,6 +19,7 @@
 #include <linux/sysfs.h>
 #include <linux/wait.h>
 #include <linux/workqueue.h>
+#include <asm/barrier.h>
 
 #include "haptic_86938_internal.h"
 
@@ -491,7 +492,7 @@ void haptic_lifetime_richtap_fifo_reset(void *state)
 		 ((char *)state + 0x620);
 	if (haptic_richtap_fifo_head_valid(head)) {
 		WRITE_ONCE(head->data_size, 0);
-		WRITE_ONCE(head->state, (u8)0xff);
+		smp_store_release(&head->state, (u8)0xff);
 		WRITE_ONCE(*(s16 *)((char *)state + 0x6b8), 0);
 		WRITE_ONCE(*cursor, head);
 	} else {
