@@ -3,11 +3,19 @@
 ## Current canonical snapshot — 2026-11-03
 
 - Stock module SHA-256: `05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e`.
-- Lifetime-hardened candidate SHA-256: `d4aecdd65186729587fc5625efc243c9dd3c0d04b70fc61babe79af24e4722e0` (6,700,632 bytes), bound in `reconstruction_map.json` and matching the current Docker-curated module.
-- Two clean canonical Docker builds produced byte-identical modules at `d4aecdd65186729587fc5625efc243c9dd3c0d04b70fc61babe79af24e4722e0`. Candidate hash, target vermagic, runtime content and section layout match the fresh builds. The candidate audit remains incomplete because strict undefined-symbol parity reports one missing stock import (`gpio_free`) and nine additional lifetime-support imports; see `../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_stop_work_teardown_revalidation_20261103/canonical_postpromotion_audit.json`.
-- Twenty-one function mappings now explicitly record `NOT_ESTABLISHED_HARDENED_DEVIATION`; these remain outside the stock-equivalent count. Independent review is pending.
-- The module remains **INCOMPLETE** as a full reconstruction/replacement candidate. Full C-level semantic equivalence, runtime concurrency, firmware-unload behavior and NX809J hardware behavior are unverified. Current-hash static reviews are recorded in `../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_probe_interface_publication_20261103/README.md` and `../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_stop_work_teardown_revalidation_20261103/README.md`; independent whole-driver review remains pending.
+- Lifetime-hardened candidate SHA-256: `7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098` (6,700,096 bytes), bound in `reconstruction_map.json` and synchronized to the Docker curated tree.
+- Two independent clean canonical Docker builds produced byte-identical modules with this exact SHA-256. The source change drains work items at `+0x628`, `+0x648` and `+0x668` before `devm_free_irq`; the built disassembly confirms that ordering. The source is bound by SHA-256 `59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55`.
+- The strict reconstruction audit remains incomplete. ABI comparison still reports one stock import absent (`gpio_free`) and nine additional lifetime-support imports; the candidate is therefore not stock-equivalent. See the prepromotion build record and the canonical postpromotion audit in `../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_workers_before_irq_revalidation_20261103/`.
+- Twenty-one function mappings retain `NOT_ESTABLISHED_HARDENED_DEVIATION`; independent review is pending.
+- The module remains **INCOMPLETE** as a full reconstruction/replacement candidate. Runtime concurrency, firmware-unload behavior, whole-driver independent review and NX809J hardware behavior remain unverified. No hardware load is claimed.
 
+## Update 2026-11-03 — Richtap/TikTap worker teardown
+
+The source closes user file access, waits for active RAM callbacks, then synchronously drains the TikTap/Richtap workers at `+0x628`, `+0x648` and `+0x668` before releasing the IRQ. Static inspection found ioctl producers for `+0x648` (`0x520a`) and `+0x668` (`0x5212`); the teardown blocks and drains those user operations first. No queue producer for `+0x628` was found in the reconstructed source. The module disassembly confirms all three cancellation calls precede `devm_free_irq`, and destroys the workqueue before retiring state. This is offline static evidence; it does not establish runtime race freedom.
+
+## Remaining gates
+
+Full C-level semantic equivalence, strict ABI parity, independent whole-driver review, kernel concurrency validation and controlled NX809J hardware validation remain open.
 
 ## Historical checkpoint — 2026-11-02 (superseded by the 2026-11-03 snapshot above)
 

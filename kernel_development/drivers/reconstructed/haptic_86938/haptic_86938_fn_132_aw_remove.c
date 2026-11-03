@@ -34,9 +34,6 @@ void aw_remove(struct i2c_client *client)
 
 	/* Close both user entry points before any callback-owned resource is freed. */
 	published = haptic_lifetime_block_file_access(haptic);
-	/* The stop worker performs I2C; file blocking drains its ioctl producer. */
-	if (published)
-		cancel_work_sync((struct work_struct *)(haptic + 0x668));
 	led_cdev = (struct led_classdev *)(haptic + 0xa8);
 	if (READ_ONCE(*(struct device **)(haptic + 0xf8))) {
 		led_classdev_unregister(led_cdev);
@@ -53,6 +50,13 @@ void aw_remove(struct i2c_client *client)
 	if (workqueue)
 		cancel_delayed_work_sync((struct delayed_work *)(haptic + 0x3c0));
 
+	/* Close all FIFO/TikTap I2C workers while the IRQ and state are available. */
+	if (published) {
+		cancel_work_sync((struct work_struct *)(haptic + 0x628));
+		cancel_work_sync((struct work_struct *)(haptic + 0x648));
+		cancel_work_sync((struct work_struct *)(haptic + 0x668));
+	}
+
 	/* Allocation-failure probe paths release IRQ when WQ exists. */
 	if ((published || !workqueue) && !(READ_ONCE(haptic[0x15]) & 1)) {
 		reset_desc = gpio_to_desc(*(int *)(haptic + 0x50));
@@ -66,22 +70,12 @@ void aw_remove(struct i2c_client *client)
 	cancel_work_sync((struct work_struct *)(haptic + 0x560));
 	cancel_work_sync((struct work_struct *)(haptic + 0x3a0));
 	cancel_work_sync((struct work_struct *)(haptic + 0x428));
-	if (published) {
-		cancel_work_sync((struct work_struct *)(haptic + 0x628));
-		cancel_work_sync((struct work_struct *)(haptic + 0x648));
-		cancel_work_sync((struct work_struct *)(haptic + 0x668));
-	}
 	/* Catch timers armed by a callback that was already executing at shutdown. */
 	hrtimer_cancel((struct hrtimer *)(haptic + 0x520));
 	hrtimer_cancel((struct hrtimer *)(haptic + 0x330));
 	cancel_work_sync((struct work_struct *)(haptic + 0x560));
 	cancel_work_sync((struct work_struct *)(haptic + 0x3a0));
 	cancel_work_sync((struct work_struct *)(haptic + 0x428));
-	if (published) {
-		cancel_work_sync((struct work_struct *)(haptic + 0x628));
-		cancel_work_sync((struct work_struct *)(haptic + 0x648));
-		cancel_work_sync((struct work_struct *)(haptic + 0x668));
-	}
 
 	if (workqueue) {
 		destroy_workqueue(workqueue);

@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T09:03:28.185801+00:00",
+  "driver": "haptic_86938",
+  "scope": "static lifetime revalidation of aw_remove FIFO/TikTap workers before IRQ release",
+  "stock_module": {
+    "path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+  },
+  "candidate_module": {
+    "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "sha256": "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098",
+    "size_bytes": 6700096,
+    "disposition": "LIFETIME_HARDENED_CANDIDATE_NOT_STOCK_EQUIVALENT"
+  },
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c",
+    "sha256": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55"
+  },
+  "reconstruction_map": {
+    "path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "sha256": "0a0b70756d7c7ab8de28d5232f6ad11a4637f72f2328e94f52bfa6918cb68edb"
+  },
+  "static_order": [
+    {
+      "operation": "cancel_work_sync",
+      "state_offset": "0x628",
+      "callback": "tiktap_work_routine",
+      "before": "devm_free_irq"
+    },
+    {
+      "operation": "cancel_work_sync",
+      "state_offset": "0x648",
+      "callback": "richtap_rtp_work",
+      "producer": "ioctl 0x520a",
+      "before": "devm_free_irq"
+    },
+    {
+      "operation": "cancel_work_sync",
+      "state_offset": "0x668",
+      "callback": "richtap_stop_work",
+      "producer": "ioctl 0x5212",
+      "before": "devm_free_irq"
+    },
+    {
+      "operation": "destroy_workqueue",
+      "state_offset": "0x448",
+      "before": "haptic_lifetime_retire_state"
+    }
+  ],
+  "docker_build": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "bindgen_volume": "nx809j_bindgen_0695",
+    "clang_revision": "clang-r536225",
+    "parallelism": 8,
+    "work_roots": [
+      "C:/haptic_rw_1103/haptic_86938",
+      "C:/hwkr_post_1103/haptic_86938"
+    ]
+  },
+  "clean_builds": {
+    "prepromotion_pair": {
+      "passed": true,
+      "reproducible": true,
+      "sha256": [
+        "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098",
+        "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098"
+      ]
+    },
+    "postpromotion_pair": {
+      "passed": true,
+      "reproducible": true,
+      "sha256": [
+        "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098",
+        "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098"
+      ]
+    },
+    "candidate_matches_postpromotion_build": true
+  },
+  "canonical_audit": {
+    "status": "incomplete_or_failed",
+    "failed_checks": [
+      "undefined_symbols_match"
+    ],
+    "errors": [
+      "module parity check failed: undefined_symbols_match"
+    ],
+    "missing_stock_imports": [
+      "gpio_free"
+    ],
+    "additional_candidate_imports": [
+      "__init_waitqueue_head",
+      "__wake_up",
+      "destroy_workqueue",
+      "finish_wait",
+      "init_wait_entry",
+      "led_classdev_unregister",
+      "prepare_to_wait_event",
+      "refcount_warn_saturate",
+      "schedule"
+    ],
+    "kernel_source_identity_passed": true,
+    "traceability_passed": true,
+    "hardware_verified": []
+  },
+  "evidence_hashes": {
+    "docker_llvm_objdump_fifo_workers.txt": "58cc80bf128b11f0ba7be13eb28199088295adc7834f2c930df8e8d4da7ce08f",
+    "prepromotion_build_audit.json": "0ba508d9198104d94fbfe67b6922b49c9720ddcdbcf3fcc840583e1f3923d36b",
+    "canonical_postpromotion_audit.json": "58c751263c0871f881a196cea984695a3f32cde4bfbfba7d0474f97faf2890df",
+    "source_tree_sync_dry_run.json": "0720018f01e1ead3af9ee4d6446a9428df19104a6625d0e1346770aee0aef5ed"
+  },
+  "source_sync_dry_run": {
+    "applied": false,
+    "passed": false,
+    "missing_from_curated": 0,
+    "content_mismatch": 0,
+    "unexpected_curated_evidence": 29,
+    "removed": 0
+  },
+  "limitations": [
+    "No runtime or hardware validation.",
+    "Whole-driver independent review pending.",
+    "Strict undefined-symbol parity remains unresolved; candidate is not stock-equivalent."
+  ]
+}
