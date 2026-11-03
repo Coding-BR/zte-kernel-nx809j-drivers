@@ -23,6 +23,9 @@ Two isolated builds from the Docker curated/haptic_86938 snapshot completed succ
 
 The refreshed module ABI audit remains incomplete. Target vermagic and symbol CRC checks pass; strict stock import parity does not (gpio_free is missing and nine lifetime-support imports are additional). See module_abi_audit.json.
 
+## Module code during the asynchronous callback
+
+The pinned target firmware loader acquires a module reference with `try_module_get(module)` before scheduling the request. Its worker invokes the completion callback and calls `module_put(fw_work->module)` afterward. With `THIS_MODULE` passed by the candidate, this statically keeps callback code resident until completion. It does not preserve per-device state after unbind; the driver's tracked callback counter and remove-time drain cover that separate lifetime. Runtime unload/unbind behavior was not tested.
 ## Evidence
 
 - ram_firmware_lifetime_revalidation.json: binding, stock path, candidate disposition, and limits.

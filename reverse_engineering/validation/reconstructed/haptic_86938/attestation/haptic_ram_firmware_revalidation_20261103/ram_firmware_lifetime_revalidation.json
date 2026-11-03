@@ -65,7 +65,8 @@
     "asynchronous_api": "The pinned target request_firmware_nowait implementation schedules work on the system workqueue, saves the caller context, invokes the callback asynchronously, and provides no cancellation handle.",
     "candidate": "The helper counts each admitted request before submission; the tracked completion callback suppresses ram_load after shutdown, releases firmware, and decrements/wakes the count. Synchronous submission errors roll back the count.",
     "teardown": "aw_remove closes file and sysfs admission, cancels delayed work, waits for tracked RAM callbacks, cancels delayed work again, drains other workers, then destroys the private queue and retires state.",
-    "sysfs_gate": "The LED child is not registered on the missing-workqueue probe path; on normal probe, LED child unregister synchronously drains its kernfs callbacks before callback and state teardown."
+    "sysfs_gate": "The LED child is not registered on the missing-workqueue probe path; on normal probe, LED child unregister synchronously drains its kernfs callbacks before callback and state teardown.",
+    "module_unload_reference": "The candidate passes THIS_MODULE. The pinned target loader try_module_gets the module before scheduling, invokes the completion callback, and module_puts afterward. This protects callback code; the tracked driver counter separately protects per-device state on unbind. Runtime unload/unbind behavior remains untested."
   },
   "target_kernel_files": [
     {
