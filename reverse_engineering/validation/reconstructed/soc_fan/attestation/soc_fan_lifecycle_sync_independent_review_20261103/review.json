@@ -1,0 +1,196 @@
+{
+  "schema_version": "1.0",
+  "driver": "soc_fan",
+  "batch": "soc_fan_lifecycle_sync_independent_review_20261103",
+  "generated_utc": "2026-11-03T04:25:00Z",
+  "review_kind": "fresh_hash_bound_static_cross_function_review",
+  "reviewer": "Codex static reviewer; no separate human reviewer",
+  "review_status": "PASS_WITH_DECLARED_HARDENING_DEVIATIONS",
+  "independent_review": "PASS_WITH_DECLARED_HARDENING_DEVIATION",
+  "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
+  "scope": {
+    "source_path": "kernel_development/drivers/reconstructed/soc_fan/soc_fan.c",
+    "source_sha256": "b17527a96c707843703b759282948357f60e6cc8d7b4dd278fbad4ec196e5678",
+    "stock_module_path": "reference_modules/full_vendor_boot/soc_fan.ko",
+    "stock_module_sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
+    "candidate_module_path": "kernel_development/drivers/reconstructed/soc_fan/soc_fan.ko",
+    "candidate_module_sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076",
+    "map_sha256_before_review": "2fcb62aacd2e8ee44ac62bc84848fe76bddee1facdad85a701ef03a72b205e2",
+    "map_sha256_after_review": "27733a70bf76a5f0000d29c89b426ede3ed3384dbea940b6cad8e373653984aa",
+    "docker": {
+      "curated_root": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/soc_fan",
+      "source_sha256": "b17527a96c707843703b759282948357f60e6cc8d7b4dd278fbad4ec196e5678",
+      "candidate_module_sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076",
+      "map_sha256_before_review": "2fcb62aacd2e8ee44ac62bc84848fe76bddee1facdad85a701ef03a72b205e2",
+      "map_sha256_after_review": "27733a70bf76a5f0000d29c89b426ede3ed3384dbea940b6cad8e373653984aa",
+      "builder_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+      "kernel_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+      "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k"
+    }
+  },
+  "reviewed_mappings": [
+    {
+      "stock_function": "nb_fan_probe",
+      "stock_entry": "0010052c",
+      "review_result": "The stock probe's final operation is sysfs_create_group. On each error edge, the wrapper cancels an initialized timer, drops the created kobject, clears drvdata and clears the global pointer only when it still names this device. The stock probe does not enable the regulator before successful publication, so there is no regulator enable reference to drain on probe failure. Failed sysfs attribute creation rolls back files in the target kernel's sysfs implementation."
+    },
+    {
+      "stock_function": "nb_fan_remove",
+      "stock_entry": "00100a54",
+      "review_result": "The hardened teardown removes the sysfs group, synchronously cancels the hrtimer, serializes fan shutdown and regulator-reference draining, then clears drvdata, drops the kobject and clears the global pointer. Device-managed resources are released after remove returns, in reverse registration order; the IRQ is therefore released before the earlier devm allocation containing its context."
+    },
+    {
+      "stock_function": "nb_fan_gpio_proc",
+      "stock_entry": "00100dac",
+      "review_result": "GPIO and IRQ acquisitions use device-managed APIs. The IRQ is disabled after registration during probe. On probe failure or device detach, devres releases the later IRQ registration before the earlier GPIO and context allocations."
+    },
+    {
+      "stock_function": "fan_enable_show",
+      "stock_entry": "0010109c",
+      "review_result": "The enabled-state read is protected by the same chip+0x18 mutex used by the writer."
+    },
+    {
+      "stock_function": "fan_enable_store",
+      "stock_entry": "00101114",
+      "review_result": "The enabled flag, current level and pending level transitions are serialized under chip+0x18. This closes the two stale-pending-level interleavings recorded in the earlier review."
+    },
+    {
+      "stock_function": "fan_level_set",
+      "stock_entry": "0010127c",
+      "review_result": "All current call sites are reached with chip+0x18 held: fan_enable_store, fan_level_store, fan_speed_show and nb_fan_remove. Regulator enable/disable calls go through ownership-counting wrappers. The helper itself does not acquire the mutex, so these paths do not recursively lock it."
+    },
+    {
+      "stock_function": "fan_level_show",
+      "stock_entry": "001014c0",
+      "review_result": "Enabled state and the selected current/pending level are read under chip+0x18, producing one serialized snapshot."
+    },
+    {
+      "stock_function": "fan_level_store",
+      "stock_entry": "0010150c",
+      "review_result": "Both the disabled pending-level write and enabled PWM transition are inside chip+0x18. Input parsing and range validation happen before the lock and do not access shared state."
+    },
+    {
+      "stock_function": "fan_speed_show",
+      "stock_entry": "001017f4",
+      "review_result": "The stock sampling path already holds chip+0x18 across its timer sampling sequence. The hardened candidate routes regulator changes through the ownership-counting wrappers. Neither the hrtimer callback nor the IRQ handler takes chip+0x18, so the one-second sampling wait does not create a lock cycle with those callbacks."
+    }
+  ],
+  "cross_function_contract": {
+    "mutex": "chip+0x18 serializes enable, level, PWM, sampling and remove state transitions; the reviewed paths introduce no nested lock order.",
+    "sysfs_teardown": "The target kernel removes the attribute files through kernfs removal, which drains active operations before the context is torn down. sysfs_create_group rolls back files created before a failed attribute insertion.",
+    "timer_teardown": "hrtimer_cancel retries while the callback is running and returns after cancellation; global chip is cleared only after this synchronization.",
+    "irq_and_context_lifetime": "The IRQ handler uses its dev_id context and an atomic counter. The managed IRQ is registered after the context allocation and is released first by reverse-order devres cleanup after remove returns.",
+    "timer_irq_shared_state": "The stock IRQ increments the aligned 32-bit counter at fan_state+0x04 with an exclusive-monitor loop. The candidate timer callback uses atomic_set/atomic_read for that counter and READ_ONCE/WRITE_ONCE for the byte phase and sampled scalar. The callback remains 70 instructions/280 bytes with matching instructions and relocations in the current comparison report."
+  },
+  "static_validation": {
+    "canonical_build": "A fresh directed audit ran two clean Docker builds. Both were reproducible and produced candidate SHA-256 65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076, matching the repository, Docker curated module and reconstruction map. Source identity and mapping review passed.",
+    "function_assembly": "15 mapped functions reviewed; 6 strict assembly comparisons pass and 9 fail only in the declared lifecycle/sysfs hardening functions. The timer callback remains exact.",
+    "kcfi": "The current attestation reports 9/9 selected KCFI type IDs matching.",
+    "repository_docker_inventory": "The post-sync inventory reports 24/24 repository/Docker candidate, source snapshot, build input and map matches; 24 Ghidra inventories covering 1039 functions; zero structural findings.",
+    "full_driver_audit": "Not static_verified; static_verified is empty. The directed audit has one failed check, undefined_symbols_match, caused by the declared import-surface changes from devm GPIO/IRQ/regulator APIs, hrtimer_cancel and kobject_put. The candidate remains a hardened deviation and is not stock-exact."
+  },
+  "residual_risks": [
+    "If regulator_disable fails during remove, the wrapper retains the positive enable count and teardown logs then stops draining. devm_regulator_get cleanup calls regulator_put only; it does not disable the regulator, so the rail may remain enabled.",
+    "The module uses a single global chip pointer. This review does not establish safe operation with multiple matching platform devices.",
+    "The stock fan_level_set flow can mask a regulator_enable error if a later PWM apply succeeds; this behavior is present in the stock Ghidra body and was not changed by this hardening review.",
+    "No KCSAN run, runtime test or NX809J hardware validation was performed. Static evidence does not prove runtime behavior or full functional equivalence.",
+    "This review is a separate static pass by Codex, not a second human review."
+  ],
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_timer_shared_state_atomicity_20261103/timer_state_access_review.json",
+      "sha256": "a67f2085e1592a1492422632f8fa8529bdbdd9f80f476fc77279a8160ce6fb7d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_timer_shared_state_atomicity_20261103/assembly_comparison.json",
+      "sha256": "927e0c2e600f63e082dc90ab08016053e194538a537196cbe8a55172628a8bc0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_timer_shared_state_atomicity_20261103/driver_audit.json",
+      "sha256": "50c40e60301bf148d0e275dc01b0b7a130e6b9e6ae072c1a802f2f577b83af6b"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_timer_shared_state_atomicity_20261103/candidate_sync.json",
+      "sha256": "bb1be1b0f19b73eadf79adf65ebd27e0e8524655d045711dc548d8f384f7d1f0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/docker_validation.json",
+      "sha256": "29bcc0c3642edc36debd253ca113f7554be376aa4661c53401a4ce6876b6e817"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/docker_validation.md",
+      "sha256": "11c430914200912d70c06d75aed14d026423ee286352cbddb39320dd838421a8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/driver_inventory_after_map_sync.json",
+      "sha256": "2bde4ac9262d237860b16a6ca6425cf6a377ca9023b96c5e9457a00665cf7079"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/driver_inventory_after_map_sync.md",
+      "sha256": "8070d0cf89a712283aece76302c45ca1dfd96a9d0b0f6870357bd29e2cf16ca7"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json",
+      "sha256": "0c5f3ce5e2ae4633e3b759a7842f6ff825af835d9ff01283c709ceff86139338"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/sysfs_state_lock_review.json",
+      "sha256": "ab897dea18901efebd6d4b028e136e6f1dd8e8221b11b5fe79b612ae65bc78fa"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/functions.jsonl",
+      "sha256": "6cbe150cc75ce7ec8e42f7975b8ca63eb2e6d179f112792149f477fb9da44998"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/calls.jsonl",
+      "sha256": "476bb7156695005a5f71d7c901df30a8357bfc110b3dda63a6cd82ba6c9b19d1"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled",
+      "files": [
+        { "name": "0000_001004ec_fan_speed_irq_proc.c", "sha256": "83d97325953e1acd2e740bfbe8db3f729f19153202a878da033bd8044156bb21" },
+        { "name": "0001_0010052c_nb_fan_probe.c", "sha256": "3d7712cb5dd75959d41d602c9ff1976621f4a168aed2d161954a861be24d86ed" },
+        { "name": "0002_00100a54_nb_fan_remove.c", "sha256": "18527b61687144d07809fa27053237e9e26776914c6843cd5546223282b98c24" },
+        { "name": "0004_00100dac_nb_fan_gpio_proc.c", "sha256": "994c904617fb82eb80c8323d11aeecbc6216900b1ba9ec5e35e19102531c86b8" },
+        { "name": "0005_00100f80_fan_hrtimer_hander.c", "sha256": "f76e4c6e803aa6f41ec20ec0b10f18860e4d8a24ceeb898ec738fce03f2d0111" },
+        { "name": "0006_0010109c_fan_enable_show.c", "sha256": "24bcee970718e2052ac10b386e8c9affa7cd1ed9cabe5e27b0f790deae3e98e5" },
+        { "name": "0007_00101114_fan_enable_store.c", "sha256": "5b6149b67826e24ae8c66a81d5a2a61fac8a035c6199f5c3d01927cc43747645" },
+        { "name": "0008_0010127c_fan_level_set.c", "sha256": "62f504499ebf5c93bad596af8b1c5932685c7ed35c0e5235a40a6cb7e5679513" },
+        { "name": "0009_001014c0_fan_level_show.c", "sha256": "97182949c50ed76d66e7c3e1c8266d49e6bb8798dbdc31ada4f1bf2f0391b1b9" },
+        { "name": "0010_0010150c_fan_level_store.c", "sha256": "7a54a7f43f1bf81be1e1efebee87c0ca878e648a2c53eab23f1d9ad67d89b31b" },
+        { "name": "0012_001017f4_fan_speed_show.c", "sha256": "ccbf9a0c0552c24ca3ac3195c2f5cdd6d44b28cda4007b7ffbf595c47213c5a5" }
+      ]
+    },
+    {
+      "path": "reference_modules/full_vendor_boot/soc_fan.ko",
+      "sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/soc_fan/soc_fan.c",
+      "sha256": "b17527a96c707843703b759282948357f60e6cc8d7b4dd278fbad4ec196e5678"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/soc_fan/soc_fan.ko",
+      "sha256": "65ee4afb56a9aa01c665fa33ba984d26683234e06cafae0b72e2eba9f6464076"
+    },
+    {
+      "path": "reference kernel sources in the read-only Docker volume nubia_sm8850_kernel_src_nx809j_oout_20261030",
+      "sha256s": {
+        "fs/sysfs/group.c": "ecbd38d79ea3513b7138d42a0ca7104f41ca28bac95c139529c131440925e64b",
+        "fs/kernfs/dir.c": "f1a463c8976410a37aed61f3677a35afe044fce51fda50d60ed9f6e4869bb1e9",
+        "drivers/base/devres.c": "39dee6dfc6f46c7ac8ab2a6b79b8fc7f12136db892e5b7bb733cee89c7d41f24",
+        "drivers/regulator/devres.c": "bdcec035dcb73a822f7e9c98e8c548a181c4ae77d1635df5b324ca5339a8f8eb",
+        "kernel/time/hrtimer.c": "1c58df0d5c9931504450d7a74f0c641d0c394724adf8c55f9d7e17167f3443ed",
+        "kernel/irq/devres.c": "fb75fdd63d44cd3a71edfcc437b8857424d3df40a4c593ed6d782c68cc31fae1"
+      }
+    }
+  ],
+  "map_updates": {
+    "mapping_count": 9,
+    "status": "candidate_hardening_deviation",
+    "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+    "independent_review": "PASS_WITH_DECLARED_HARDENING_DEVIATION",
+    "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
+    "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "driver": "soc_fan",
-  "generated_utc": "2026-11-03T03:11:47+00:00",
+  "generated_utc": "2026-11-03T00:11:47-03:00",
   "stock_sha256": "4da6fb10051f99abf84552f6f0dd7ef2dc21f331871ec9988ce2e922e0012793",
   "source_sha256": "b17527a96c707843703b759282948357f60e6cc8d7b4dd278fbad4ec196e5678",
   "ghidra_export": "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko",
@@ -36,9 +36,9 @@
       "stock_entry": "0010052c",
       "source_file": "soc_fan.c",
       "source_function": "nb_fan_probe",
-      "status": "HARDENED_STOCK_DEVIATION",
-      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
-      "independent_review": "PENDING",
+      "status": "candidate_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PASS_WITH_DECLARED_HARDENING_DEVIATION",
       "evidence": [
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0001_0010052c_nb_fan_probe.c",
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/pcode/0001_0010052c_nb_fan_probe.jsonl",
@@ -57,11 +57,12 @@
         "assembly-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/assembly_comparison.json",
         "candidate-assembly:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_assembly/manifest.json",
         "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json",
-        "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json"
+        "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json",
+        "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json"
       ],
       "review_scope": "lifecycle_hardening_offline",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
       "mapping_basis": "Revisão do corpo stock via Ghidra pseudocode/P-Code e source; contrato de devres, sysfs, hrtimer e regulator conferido no kernel NX809J. Rebuild Docker reproduzível requerido; revisão independente e hardware pendentes.",
       "mapping_note": "O corpo stock foi preservado como nb_fan_probe_stock_exact, trocando regulator_get por devm_regulator_get; o wrapper nb_fan_probe desfaz timer inicializado, kobject, drvdata e o ponteiro global em qualquer retorno de erro. Divergência intencional do stock; não declarar OFFLINE_EXACT nesta revisão. Evidência detalhada em reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json e build em reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/driver_audit.json."
     },
@@ -70,9 +71,9 @@
       "stock_entry": "00100a54",
       "source_file": "soc_fan.c",
       "source_function": "nb_fan_remove",
-      "status": "HARDENED_STOCK_DEVIATION",
-      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
-      "independent_review": "PENDING",
+      "status": "candidate_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PASS_WITH_DECLARED_HARDENING_DEVIATION",
       "evidence": [
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0002_00100a54_nb_fan_remove.c",
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/pcode/0002_00100a54_nb_fan_remove.jsonl",
@@ -91,11 +92,12 @@
         "assembly-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/assembly_comparison.json",
         "candidate-assembly:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_assembly/manifest.json",
         "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json",
-        "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json"
+        "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json",
+        "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json"
       ],
       "review_scope": "lifecycle_hardening_offline",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
       "mapping_basis": "Revisão do corpo stock via Ghidra pseudocode/P-Code e source; contrato de devres, sysfs, hrtimer e regulator conferido no kernel NX809J. Rebuild Docker reproduzível requerido; revisão independente e hardware pendentes.",
       "mapping_note": "Remove o grupo sysfs e drena callbacks, cancela o hrtimer, tenta desligar o nível do fan, drena as referências de enable do regulador, limpa drvdata, libera o kobject e despublica chip. Divergência intencional do stock; não declarar OFFLINE_EXACT nesta revisão. Evidência detalhada em reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json e build em reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/driver_audit.json."
     },
@@ -126,9 +128,9 @@
       "stock_entry": "00100dac",
       "source_file": "soc_fan.c",
       "source_function": "nb_fan_gpio_proc",
-      "status": "HARDENED_STOCK_DEVIATION",
-      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
-      "independent_review": "PENDING",
+      "status": "candidate_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PASS_WITH_DECLARED_HARDENING_DEVIATION",
       "evidence": [
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0004_00100dac_nb_fan_gpio_proc.c",
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/pcode/0004_00100dac_nb_fan_gpio_proc.jsonl",
@@ -147,11 +149,12 @@
         "assembly-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/assembly_comparison.json",
         "candidate-assembly:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_assembly/manifest.json",
         "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json",
-        "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json"
+        "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json",
+        "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json"
       ],
       "review_scope": "lifecycle_hardening_offline",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
       "mapping_basis": "Revisão do corpo stock via Ghidra pseudocode/P-Code e source; contrato de devres, sysfs, hrtimer e regulator conferido no kernel NX809J. Rebuild Docker reproduzível requerido; revisão independente e hardware pendentes.",
       "mapping_note": "Substitui gpio_request e request_threaded_irq por variantes devm; o driver core libera IRQ e GPIO antes da memória devm do chip. Divergência intencional do stock; não declarar OFFLINE_EXACT nesta revisão. Evidência detalhada em reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json e build em reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/driver_audit.json."
     },
@@ -189,9 +192,9 @@
       "stock_entry": "0010109c",
       "source_file": "soc_fan.c",
       "source_function": "fan_enable_show",
-      "status": "HARDENED_STOCK_DEVIATION",
-      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
-      "independent_review": "PENDING",
+      "status": "candidate_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PASS_WITH_DECLARED_HARDENING_DEVIATION",
       "evidence": [
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0006_0010109c_fan_enable_show.c",
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/pcode/0006_0010109c_fan_enable_show.jsonl",
@@ -207,11 +210,12 @@
         "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json",
         "assembly-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/assembly_comparison.json",
         "candidate-assembly:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_assembly/manifest.json",
-        "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json"
+        "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json",
+        "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json"
       ],
       "review_scope": "sysfs_state_serialization_hardening",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/sysfs_state_lock_review.json",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
       "mapping_basis": "Ghidra stock ordering plus explicit concurrent interleaving review, two reproducible pinned Docker builds, full function assembly comparison and KCFI type comparison; independent review and hardware remain pending.",
       "mapping_note": "Locks around the enabled-state read. Intentional concurrency hardening; not stock-exact. See reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/sysfs_state_lock_review.json, reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/assembly_comparison.json and reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/driver_audit.json."
     },
@@ -220,9 +224,9 @@
       "stock_entry": "00101114",
       "source_file": "soc_fan.c",
       "source_function": "fan_enable_store",
-      "status": "HARDENED_STOCK_DEVIATION",
-      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
-      "independent_review": "PENDING",
+      "status": "candidate_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PASS_WITH_DECLARED_HARDENING_DEVIATION",
       "evidence": [
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0007_00101114_fan_enable_store.c",
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/pcode/0007_00101114_fan_enable_store.jsonl",
@@ -238,11 +242,12 @@
         "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json",
         "assembly-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/assembly_comparison.json",
         "candidate-assembly:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_assembly/manifest.json",
-        "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json"
+        "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json",
+        "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json"
       ],
       "review_scope": "sysfs_state_serialization_hardening",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/sysfs_state_lock_review.json",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
       "mapping_basis": "Ghidra stock ordering plus explicit concurrent interleaving review, two reproducible pinned Docker builds, full function assembly comparison and KCFI type comparison; independent review and hardware remain pending.",
       "mapping_note": "Locks before enabled comparison/publication and holds the mutex through the state transition and pending-level handling. Intentional concurrency hardening; not stock-exact. See reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/sysfs_state_lock_review.json, reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/assembly_comparison.json and reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/driver_audit.json."
     },
@@ -251,9 +256,9 @@
       "stock_entry": "0010127c",
       "source_file": "soc_fan.c",
       "source_function": "fan_level_set",
-      "status": "HARDENED_STOCK_DEVIATION",
-      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
-      "independent_review": "PENDING",
+      "status": "candidate_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PASS_WITH_DECLARED_HARDENING_DEVIATION",
       "evidence": [
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0008_0010127c_fan_level_set.c",
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/pcode/0008_0010127c_fan_level_set.jsonl",
@@ -272,11 +277,12 @@
         "assembly-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/assembly_comparison.json",
         "candidate-assembly:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_assembly/manifest.json",
         "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json",
-        "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json"
+        "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json",
+        "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json"
       ],
       "review_scope": "lifecycle_hardening_offline",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
       "mapping_basis": "Revisão do corpo stock via Ghidra pseudocode/P-Code e source; contrato de devres, sysfs, hrtimer e regulator conferido no kernel NX809J. Rebuild Docker reproduzível requerido; revisão independente e hardware pendentes.",
       "mapping_note": "HARDENED_STOCK_DEVIATION: regulator enable references are routed through ownership-counting wrappers and drained during teardown. The current-level byte is published with WRITE_ONCE and read with READ_ONCE by the timer diagnostic; function-level assembly differs from stock intentionally due to regulator wrapper calls. See reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json and reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/sysfs_state_lock_review.json."
     },
@@ -285,9 +291,9 @@
       "stock_entry": "001014c0",
       "source_file": "soc_fan.c",
       "source_function": "fan_level_show",
-      "status": "HARDENED_STOCK_DEVIATION",
-      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
-      "independent_review": "PENDING",
+      "status": "candidate_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PASS_WITH_DECLARED_HARDENING_DEVIATION",
       "evidence": [
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0009_001014c0_fan_level_show.c",
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/pcode/0009_001014c0_fan_level_show.jsonl",
@@ -303,11 +309,12 @@
         "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json",
         "assembly-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/assembly_comparison.json",
         "candidate-assembly:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_assembly/manifest.json",
-        "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json"
+        "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json",
+        "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json"
       ],
       "review_scope": "sysfs_state_serialization_hardening",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/sysfs_state_lock_review.json",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
       "mapping_basis": "Ghidra stock ordering plus explicit concurrent interleaving review, two reproducible pinned Docker builds, full function assembly comparison and KCFI type comparison; independent review and hardware remain pending.",
       "mapping_note": "Locks around enabled and selected-level reads for a coherent snapshot; may wait behind RPM sampling. Intentional concurrency hardening; not stock-exact. See reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/sysfs_state_lock_review.json, reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/assembly_comparison.json and reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/driver_audit.json."
     },
@@ -316,9 +323,9 @@
       "stock_entry": "0010150c",
       "source_file": "soc_fan.c",
       "source_function": "fan_level_store",
-      "status": "HARDENED_STOCK_DEVIATION",
-      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
-      "independent_review": "PENDING",
+      "status": "candidate_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PASS_WITH_DECLARED_HARDENING_DEVIATION",
       "evidence": [
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0010_0010150c_fan_level_store.c",
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/pcode/0010_0010150c_fan_level_store.jsonl",
@@ -334,11 +341,12 @@
         "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json",
         "assembly-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/assembly_comparison.json",
         "candidate-assembly:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_assembly/manifest.json",
-        "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json"
+        "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json",
+        "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json"
       ],
       "review_scope": "sysfs_state_serialization_hardening",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/sysfs_state_lock_review.json",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
       "mapping_basis": "Ghidra stock ordering plus explicit concurrent interleaving review, two reproducible pinned Docker builds, full function assembly comparison and KCFI type comparison; independent review and hardware remain pending.",
       "mapping_note": "Locks before checking enabled and serializes both the deferred-level write and PWM application. Intentional concurrency hardening; not stock-exact. See reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/sysfs_state_lock_review.json, reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/assembly_comparison.json and reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/driver_audit.json."
     },
@@ -367,9 +375,9 @@
       "stock_entry": "001017f4",
       "source_file": "soc_fan.c",
       "source_function": "fan_speed_show",
-      "status": "HARDENED_STOCK_DEVIATION",
-      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
-      "independent_review": "PENDING",
+      "status": "candidate_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PASS_WITH_DECLARED_HARDENING_DEVIATION",
       "evidence": [
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/decompiled/0012_001017f4_fan_speed_show.c",
         "reverse_engineering/validation/reconstructed/soc_fan/offline_static/ghidra_stock/soc_fan.ko/pcode/0012_001017f4_fan_speed_show.jsonl",
@@ -388,11 +396,12 @@
         "assembly-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/assembly_comparison.json",
         "candidate-assembly:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_assembly/manifest.json",
         "kcfi-compare:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/kcfi_comparison.json",
-        "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json"
+        "candidate-sync:reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_sysfs_serialization_hardening_20261102/candidate_sync.json",
+        "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json"
       ],
       "review_scope": "lifecycle_hardening_offline",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_sync_independent_review_20261103/review.json",
       "mapping_basis": "Revisão do corpo stock via Ghidra pseudocode/P-Code e source; contrato de devres, sysfs, hrtimer e regulator conferido no kernel NX809J. Rebuild Docker reproduzível requerido; revisão independente e hardware pendentes.",
       "mapping_note": "Os dois callsites stock em assembly passam pelos wrappers de regulador para manter a contagem das referências durante a leitura de RPM. Divergência intencional do stock; não declarar OFFLINE_EXACT nesta revisão. Evidência detalhada em reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/lifecycle_hardening_review.json e build em reverse_engineering/validation/reconstructed/soc_fan/attestation/soc_fan_lifecycle_hardening_20261102/driver_audit.json."
     },
