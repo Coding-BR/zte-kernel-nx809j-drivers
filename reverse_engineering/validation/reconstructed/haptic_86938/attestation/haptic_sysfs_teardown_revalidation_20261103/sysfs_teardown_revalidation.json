@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T08:01:45Z",
+  "driver": "haptic_86938",
+  "scope": "sysfs_and_Richtap_ioctl_teardown_admission",
+  "disposition": "STATIC_PATH_VERIFIED_RUNTIME_UNVERIFIED",
+  "candidate_sha256": "116f401d4f5d708f93d4c9cce26f516d1e0c0ac4a37c44aace2b0d6d453da051",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "target_kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+  "kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+  "docker_build_evidence": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_partial_probe_teardown_20261103/docker_builds.json",
+  "source_sync_evidence": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_partial_probe_teardown_20261103/source_sync.json",
+  "source_evidence": [
+    {
+      "sha256": "cdff4fcf77ffe8ec41c0de72b4b470f0faac12c3e0153de384401e7280fe1f29",
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c"
+    },
+    {
+      "sha256": "3513b2c71193f4e401c6b5a9f6ed9e36282950a82ebe1ace5b606849b7a22194",
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c"
+    },
+    {
+      "sha256": "91b9b01affd7ca2139ae30cc921273edb52612d3a9a585d41023ab3c7de05454",
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_126_aw8693x_creat_node.c"
+    },
+    {
+      "sha256": "9e3bb6174b6457d295f229944e55bb8db4ab79fb980f160585354577d4da36c8",
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_068_vibrator_init_exact.S"
+    },
+    {
+      "sha256": "2d62efdb25732d8ec9e086d55b7566f40880b59bc2d355d47deabe0b4143f236",
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_068_vibrator_init_semantic_model.c"
+    },
+    {
+      "sha256": "f959c4710eb03b975b8cfdae63a658c1f8c3a60356af7cc2057cbbcecc517835",
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_035_richtap_file_open.c"
+    },
+    {
+      "sha256": "e605160f2f845f1e6ab1a3db091bbfddb2c3405db6b315589de7936f97f0d5c5",
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_034_richtap_file_release.c"
+    }
+  ],
+  "prior_static_findings": [
+    {
+      "sha256": "6fc1dd7f03305938b3fdb3803fa32c24dd56a338eb92ed896e9ed9adc8291ec5",
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/sysfs_store_callback_teardown_review.json"
+    },
+    {
+      "sha256": "21f3ebf504e8d3fc94a39e90f9aced506a173e083a357255d005ea66cab34bb8",
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/sysfs_show_callback_teardown_review.json"
+    },
+    {
+      "sha256": "83695b6bc4c9db71301a3ee472cb62dd69d34d6a4c73b2962ff52ecd3d1539c6",
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/richtap_ioctl_requeue_lifetime_review.json"
+    }
+  ],
+  "kernel_source_evidence": [
+    {
+      "path": "drivers/leds/led-class.c",
+      "claim": "led_classdev_unregister flushes LED brightness work, then calls device_unregister",
+      "sha256": "2b98602bc67c37f535a532c1c711641d1d684465ded10de75dda472815fb5340"
+    },
+    {
+      "path": "drivers/base/core.c",
+      "claim": "device_unregister synchronously invokes device_del, ending in kobject_del",
+      "sha256": "64397a878c094bb860d8cbb7d08c5c0380d4656bc53e0f777e31f1f6666dc882"
+    },
+    {
+      "path": "lib/kobject.c",
+      "claim": "kobject_del invokes the kobject removal path",
+      "sha256": "0161a3faaa770cf7a724f94773104a5ab33c5dbafe525729276360cd8120d4ab"
+    },
+    {
+      "path": "fs/sysfs/dir.c",
+      "claim": "sysfs_remove_dir invokes kernfs_remove on the kobject tree",
+      "sha256": "baa94bbf4d3d857a986089d9d6a0dcdd71623d574ab49dd56bdb3cdd15755aa7"
+    },
+    {
+      "path": "fs/kernfs/dir.c",
+      "claim": "kernfs_remove deactivates nodes and waits for active users to drain",
+      "sha256": "f1a463c8976410a37aed61f3677a35afe044fce51fda50d60ed9f6e4869bb1e9"
+    },
+    {
+      "path": "drivers/char/misc.c",
+      "claim": "misc_open and misc_deregister serialize through misc_mtx",
+      "sha256": "0e6017b294d6dbd395c383de3d17a9171ef898de65fc52bbc98e883295b4922a"
+    }
+  ],
+  "review": [
+    "aw_remove calls haptic_lifetime_block_file_access before callback-owned teardown. That helper sets the global shutdown gate, clears g_aw_haptic, marks the sidecar dying, deregisters the misc device, and waits for active file operations. The ioctl wrapper enters/exits the active-operation count; operations attempted after dying is set fail before reaching the stock exact body.",
+    "Both generic vibrator and AW-specific sysfs groups use the LED child device kobject stored at state+0xf8: the stock-derived vibrator_init model and aw8693x_creat_node establish the two group attachments.",
+    "aw_remove then calls led_classdev_unregister on the LED class device before canceling work or freeing state. In the pinned kernel source, unregister flushes LED brightness work and calls device_unregister; device_del calls kobject_del; sysfs removal reaches kernfs_remove, which deactivates the subtree and waits for active callbacks.",
+    "Therefore existing sysfs callbacks drain before aw_remove proceeds to work cancellation and state release, while new callbacks cannot start after child device removal. The prior static sysfs and ioctl requeue findings are closed for this exact candidate hash."
+  ],
+  "limitations": [
+    "Static path review only; no runtime unbind/ioctl/sysfs stress, lockdep, KCSAN, or NX809J hardware validation was performed.",
+    "Independent review remains pending; this scoped disposition does not mark the whole haptic driver complete.",
+    "No source changed in this revalidation, so no additional Docker build was required; the candidate hash is bound to the two identical canonical Docker builds above."
+  ]
+}
