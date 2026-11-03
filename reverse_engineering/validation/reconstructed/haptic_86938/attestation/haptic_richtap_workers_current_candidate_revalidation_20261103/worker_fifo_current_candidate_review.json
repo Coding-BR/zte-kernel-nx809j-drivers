@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_richtap_workers_current_candidate_revalidation_20261103",
+  "date": "2026-11-03",
+  "status": "KERNEL_CONSUMER_SERIALIZATION_CONFIRMED; CROSS_BOUNDARY_PUBLICATION_UNRESOLVED",
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "functions": {
+      "richtap_rtp_work": {
+        "ghidra_entry": "001088f8",
+        "decompiled_sha256": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5",
+        "assembly_sha256": "393de37c1ba2b68f4e42e90f4bd72515fc7650b1542bc48aa14af747012cfa83"
+      },
+      "richtap_update_fifo_data": {
+        "ghidra_entry": "0010946c",
+        "decompiled_sha256": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e",
+        "assembly_sha256": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2"
+      }
+    }
+  },
+  "candidate": {
+    "module_sha256": "7e99600da7ce2a265ada7f25bbcb0157ddaf310b66a0523333058ffaab99f3e8",
+    "module_bytes": 6720000,
+    "repository_and_curated_match": true,
+    "target_kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "llvm_objdump": "18.1.3",
+    "read_only_curated_module_disassembly_sha256": "9bb61cdd7d1fe082fc1b6512e2a961dfcaf37ea44a8eaa82b8713b123a1612b0",
+    "source_sha256": {
+      "haptic_86938_fn_136_richtap_update_fifo_data.c": "8e8688f2609c168b2cd3bf668e8512af1b65d8d4a58620e1ead776ed8f191511",
+      "haptic_86938_fn_137_richtap_rtp_work.c": "943818e278e925db38d8cf7b7748f83a67fbb2a5eae6339d8db3f1e8c403b926",
+      "haptic_86938_lifetime.c": "4ea538fdec18451e8cc9abcf0dca2e2386898df5ccf794eca449fd26552cdd92"
+    }
+  },
+  "findings": [
+    {
+      "id": "HAP-RICHTAP-KERNEL-CONSUMER-SERIALIZATION",
+      "result": "CONFIRMED_STATICALLY_FOR_CANDIDATE_7E99600D",
+      "details": "irq_handle takes the global IRQ/stop mutex around irq_handle_stock_exact; that stock body calls richtap_update_fifo_data. richtap_rtp_work takes the same mutex around kernel FIFO cursor/count mutation, drops it during the producer wait, and reacquires it for playback and callbacks. This serializes the two in-kernel consumers. It is a hardening deviation from stock.",
+      "evidence": [
+        "candidate_7e99600_fifo_functions_objdump.txt",
+        "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+        "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_137_richtap_rtp_work.c",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0070_richtap_rtp_work_001088f8.asm",
+        "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0074_richtap_update_fifo_data_0010946c.asm"
+      ]
+    },
+    {
+      "id": "HAP-RICHTAP-HAL-TO-KERNEL-PUBLICATION",
+      "result": "UNRESOLVED",
+      "details": "The HAL publishes U after payload and size with an ordinary byte store; the candidate consumer loads state with READ_ONCE/ldrb and does not perform an acquire. Kernel-only mutexes do not include the userspace producer.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_device_hal_producer_20261103/README.md",
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_kernel_release_repair_20261103/producer_lib_writer_disassembly.txt",
+        "candidate_7e99600_fifo_functions_objdump.txt"
+      ]
+    },
+    {
+      "id": "HAP-RICHTAP-KERNEL-TO-HAL-FREE-NODE-PUBLICATION",
+      "result": "UNRESOLVED",
+      "details": "Candidate stlrb release stores publish free-node state, but the HAL reads that state with ordinary loads; a matching userspace acquire is absent.",
+      "evidence": [
+        "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_kernel_release_repair_20261103/producer_lib_writer_disassembly.txt",
+        "candidate_7e99600_fifo_functions_objdump.txt"
+      ]
+    }
+  ],
+  "memory_model_sources": [
+    {
+      "url": "https://docs.kernel.org/core-api/wrappers/memory-barriers.html",
+      "claim": "The kernel documentation states that observing another CPU's access order is not guaranteed unless the first CPU also uses a matching memory barrier."
+    },
+    {
+      "url": "https://support.arm.com/documentation/102336/0100/Memory-ordering",
+      "claim": "Armv8-A is weakly ordered; independent accesses may be observed in an order different from program order."
+    },
+    {
+      "url": "https://support.arm.com/documentation/102336/0101/Load-Acquire-and-Store-Release-instructions",
+      "claim": "Arm describes the ordering guarantee in terms of a Store-Release preceding a Load-Acquire."
+    }
+  ],
+  "repository_map_scan": {
+    "strict_json_parse": "PASS",
+    "reconstructed_map_files": 24,
+    "function_mappings_total": 1039
+  },
+  "disposition": {
+    "map_statuses": "candidate_under_static_validation",
+    "independent_review": "PENDING",
+    "runtime_or_hardware_validation": "NOT_PERFORMED",
+    "source_changed": false,
+    "kernel_rebuild": "NOT_REQUIRED"
+  }
+}
