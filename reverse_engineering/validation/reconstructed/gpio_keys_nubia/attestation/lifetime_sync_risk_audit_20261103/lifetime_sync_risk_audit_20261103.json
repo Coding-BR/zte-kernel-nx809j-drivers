@@ -1,0 +1,154 @@
+{
+  "schema_version": "1.0",
+  "driver": "gpio_keys_nubia",
+  "reviewed_utc": "2026-11-03T16:18:55Z",
+  "review_type": "static_lifetime_and_synchronization_second_pass",
+  "reviewer": "Codex second-pass review; not a distinct human peer review",
+  "verdict": "STATIC_TEARDOWN_ORDER_PASS_WITH_STOCK_SYNCHRONIZATION_RISKS_OPEN",
+  "artifacts": {
+    "candidate_module": {
+      "path": "kernel_development/drivers/reconstructed/gpio_keys_nubia/gpio_keys_nubia.ko",
+      "sha256": "95e2b7d8352c3039e154f56f32da8f45e3a513b3706d3ebcb2269886424f14cc",
+      "size_bytes": 232336
+    },
+    "stock_module": {
+      "path": "reference_modules/full_vendor_boot/gpio_keys_nubia.ko",
+      "sha256": "8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3",
+      "size_bytes": 42728
+    },
+    "source": {
+      "path": "kernel_development/drivers/reconstructed/gpio_keys_nubia/gpio_keys_nubia.c",
+      "sha256": "3953ffd4ff9f3d917cea4a1d710e2bbefc1cb8f5a23881aa14409b133b9f4f38"
+    },
+    "reconstruction_map": {
+      "path": "kernel_development/drivers/reconstructed/gpio_keys_nubia/reconstruction_map.json",
+      "sha256": "492d65bf2dfbf1dd99310248130d675e559cbbd245221bedf0876794749ed337"
+    },
+    "docker_snapshot": {
+      "path": "kernel-docker-workspace/engenharia/curated/gpio_keys_nubia",
+      "module_source_and_map_match_repository": true
+    },
+    "assembly_review": {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/current_candidate_assembly_review_20261102",
+      "mapping_review_sha256": "0b23ffe2251af69081ec4591fe243ab84469c3a52c4cd0d1597e9cbd0d12b485",
+      "comparison_sha256": "507e55703c302b56bb3273e821b5ece536afb2baf4cce94f5d1e83cf0a8cf53e",
+      "candidate_manifest_sha256": "c10a04d2f2de2a41ef1c363f83e8c36eecdff9e30265f1df200b00a5860b4e87",
+      "stock_manifest_sha256": "af8c0cce01a4fbf6372902e2c2e631658862f3bf383a8a9e4632b3ffeba51270"
+    }
+  },
+  "static_validation": {
+    "function_assembly": {
+      "passed": true,
+      "checked_functions": 24,
+      "failures": 0,
+      "checks": [
+        "normalized AArch64 instructions",
+        "relocations",
+        "sections",
+        "symbol sizes"
+      ]
+    },
+    "canonical_docker_audit": {
+      "status": "static_verified",
+      "two_clean_reproducible_builds_recorded": true,
+      "fresh_build_needed": false,
+      "reason": "No source or build input changed in this audit."
+    },
+    "target_kernel": {
+      "source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+      "docker_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+      "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390"
+    }
+  },
+  "lifetime_review": {
+    "detach_and_probe_unwind": "PASS_STATIC_ORDER",
+    "probe_callsite_order_stock": [
+      "devm_input_allocate_device at 0x001007bc",
+      "initialize button timer/work before cleanup registration",
+      "__devm_add_action(gpio_keys_quiesce_key) at 0x00100dac",
+      "devm_request_any_context_irq at 0x00100df8 and 0x00100f5c",
+      "input_register_device at 0x001012a0"
+    ],
+    "pinned_kernel_release_semantics": [
+      "drivers/base/devres.c releases devres entries in reverse order",
+      "kernel/irq/devres.c routes managed IRQ release through free_irq",
+      "kernel/irq/manage.c synchronizes in-flight IRQ handlers during free_irq",
+      "the registered quiesce action synchronously drains the button timer or delayed work",
+      "managed input-device unregistration and final reference release occur later in devres unwind",
+      "drivers/base/dd.c removes device groups before device_unbind_cleanup releases devres"
+    ],
+    "quiesce_behavior": {
+      "gpio_backed_button": "cancel_delayed_work_sync(work at bdata+0x50)",
+      "irq_only_button": "timer_delete_sync(timer at bdata+0x20)",
+      "stock_candidate_body_equivalence": true
+    },
+    "memory_safety_issue_found": false,
+    "scope_limit": "Static path analysis only; no forced probe failure or live unbind test was run."
+  },
+  "synchronization_review": {
+    "irq_only_isr_and_timer": {
+      "status": "PASS_STATIC",
+      "evidence": "Both stock bodies acquire the same per-button spinlock with IRQ save around key_pressed and timer state."
+    },
+    "gpio_delayed_work_teardown": {
+      "status": "PASS_STATIC_ORDER",
+      "evidence": "Managed IRQs are released and synchronized before quiesce calls cancel_delayed_work_sync."
+    },
+    "open_findings": [
+      {
+        "id": "GPIO_KEYS_GLOBAL_REPORT_CACHE_RACE",
+        "classification": "POTENTIAL_STOCK_INHERITED_RACE",
+        "severity": "medium",
+        "condition": "The secondary-GPIO report path is active (gpion >= 0) and report paths overlap.",
+        "observation": "gpio_keys_gpio_report_event loads and stores the shared nb_key_is_need_report.stat_rec state. It is called from gpio_keys_gpio_work_func, gpio_keys_open and gpio_keys_resume. The worker holds only a per-button report_lock; open and resume do not use that same lock, and locks on separate buttons cannot serialize a global variable.",
+        "possible_effect": "A concurrent state comparison can suppress or duplicate an input transition.",
+        "runtime_reproduced": false,
+        "evidence": [
+          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0004_00101684_gpio_keys_gpio_report_event.c",
+          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0002_00101578_gpio_keys_open.c",
+          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0005_0010181c_gpio_keys_gpio_work_func.c",
+          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0021_001023c0_gpio_keys_resume.c",
+          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/stock_assembly/0004_gpio_keys_gpio_report_event_00101684.asm"
+        ]
+      },
+      {
+        "id": "GPIO_KEYS_SUSPENDED_FLAG_CROSS_CONTEXT",
+        "classification": "POTENTIAL_STOCK_INHERITED_RACE",
+        "severity": "low_medium",
+        "observation": "gpio_keys_gpio_isr reads bdata.suspended in IRQ context while suspend/resume bodies write the byte in PM context. The stock bodies show no shared lock or explicit READ_ONCE/WRITE_ONCE barrier pair.",
+        "possible_effect": "A stale state observation may change the immediate wake-event reporting path during suspend/resume transitions.",
+        "runtime_reproduced": false,
+        "evidence": [
+          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0006_00101878_gpio_keys_gpio_isr.c",
+          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0010_00101b04_gpio_keys_suspend.c",
+          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0021_001023c0_gpio_keys_resume.c"
+        ]
+      },
+      {
+        "id": "GPIO_KEYS_SHUTDOWN_ASYNC_DRAIN",
+        "classification": "OPEN_SHUTDOWN_WINDOW_OBSERVATION",
+        "severity": "low",
+        "observation": "gpio_keys_shutdown delegates to gpio_keys_suspend and does not itself cancel the timer or delayed work. This callback does not free device state; detach cleanup is handled separately by devres.",
+        "possible_effect": "An event callback may remain pending during the interval between driver shutdown and system poweroff.",
+        "runtime_reproduced": false,
+        "evidence": [
+          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0001_00101530_gpio_keys_shutdown.c",
+          "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/stock_assembly/0001_gpio_keys_shutdown_00101530.asm"
+        ]
+      }
+    ]
+  },
+  "overall_status": {
+    "driver_status": "STAGE5_STATIC_PARTIAL",
+    "full_reconstruction": "INCOMPLETE",
+    "distinct_independent_review": "OPEN",
+    "security_review": "OPEN",
+    "gpio_hardware_validation": "NOT_RUN"
+  },
+  "changes": {
+    "driver_source_changed": false,
+    "candidate_module_changed": false,
+    "fresh_module_build_run": false,
+    "gpio_hardware_actions_run": false
+  }
+}

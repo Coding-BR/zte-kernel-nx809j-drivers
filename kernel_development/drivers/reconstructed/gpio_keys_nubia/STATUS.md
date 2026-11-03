@@ -98,3 +98,25 @@ Evidencias principais:
 O `.ko` curado e um **candidato parcial para analise offline**. Nao e permitido
 declara-lo 100% reconstruido enquanto os gates restantes nao estiverem em
 `PASS` com evidencia verificavel.
+
+## Auditoria estática de vida útil e sincronização — 2026-11-03
+
+O candidato `95e2b7d8352c3039e154f56f32da8f45e3a513b3706d3ebcb2269886424f14cc`
+continua ligado ao módulo, fonte, mapa e snapshot Docker atuais. A comparação
+hash-bound passa 24/24 funções contra o stock. No kernel alvo, o devres libera
+em ordem inversa: as IRQs são sincronizadas primeiro, a ação
+`gpio_keys_quiesce_key` drena timer/work depois, e o input device gerenciado é
+desregistrado/liberado mais tarde. Não foi encontrado UAF estático no caminho
+normal de detach ou no unwind do probe.
+
+Permanecem abertos dois riscos potenciais herdados do stock: o cache global
+`nb_key_is_need_report.stat_rec` é acessado por worker/open/resume sob locks
+diferentes, e a flag `suspended` é lida pelo IRQ enquanto PM a escreve sem lock
+comum. O callback shutdown chama suspend, mas não drena timer/work; isso fica
+registrado como janela de shutdown, sem evidência de memória liberada nesse
+callback. Nenhum desses pontos foi reproduzido em hardware.
+
+Esta auditoria não mudou fonte nem módulo; o rebuild Docker não era necessário.
+O estado permanece **STAGE5_STATIC_PARTIAL / INCOMPLETO**. Revisão humana
+independente, segurança e validação GPIO no aparelho continuam pendentes.
+Evidência: `reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/lifetime_sync_risk_audit_20261103/`.
