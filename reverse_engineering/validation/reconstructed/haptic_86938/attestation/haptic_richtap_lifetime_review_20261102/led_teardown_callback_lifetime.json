@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0",
+  "review_id": "HAP-LED-LIFETIME-20261102",
+  "generated_local_date": "2026-11-02",
+  "parent_review": "HAP-RICHTAP-LIFETIME-20261102",
+  "driver": "haptic_86938",
+  "status": "POST_REMOVE_LED_UNREGISTER_CAN_QUEUE_DRIVER_WORK_STATIC_CONDITIONAL",
+  "binding": {
+    "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "candidate_module_sha256": "175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c",
+    "target_kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "target_kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "source_mount_mode": "read-only"
+  },
+  "target_kernel_files": [
+    {
+      "path": "kernel/kernel_platform/common/drivers/leds/led-class.c",
+      "sha256": "2b98602bc67c37f535a532c1c711641d1d684465ded10de75dda472815fb5340",
+      "locations": ["581-614 led_classdev_unregister", "616-650 devm LED registration/release"],
+      "observations": [
+        "devm_led_classdev_release calls led_classdev_unregister",
+        "unregister sets LED_UNREGISTERING and calls led_set_brightness(LED_OFF) unless LED_RETAIN_AT_SHUTDOWN is set",
+        "unregister flushes led_cdev->set_brightness_work, then unregisters the LED device"
+      ]
+    },
+    {
+      "path": "kernel/kernel_platform/common/drivers/leds/led-core.c",
+      "sha256": "15fcdd25bc6a810ffd03b09eb5e5b8580024b6db418e899610b847d4bde62bad",
+      "locations": ["47-55 __led_set_brightness", "304-337 led_set_brightness and led_set_brightness_nopm"],
+      "observations": [
+        "when brightness_set is present, __led_set_brightness invokes it synchronously",
+        "the driver callback can enqueue a separate driver work item before the LED class device is unregistered"
+      ]
+    },
+    {
+      "path": "kernel/kernel_platform/common/drivers/base/dd.c",
+      "sha256": "405ff5610410ddc30dec483423f54c9be46c8d307f930989cfd44860a1185930",
+      "locations": ["547-567 device_remove and device_unbind_cleanup", "698-724 remove/unbind call paths"],
+      "observations": [
+        "the bus or driver remove callback runs in device_remove",
+        "device_unbind_cleanup calls devres_release_all after device_remove returns"
+      ]
+    },
+    {
+      "path": "kernel/kernel_platform/common/include/linux/gfp_types.h",
+      "sha256": "7a1859355beccb5185b9a8a0f2884dc22abab15d4e7f5bc1b4244758e03a5876",
+      "locations": ["35-36 GFP flag bit enumeration", "76 __GFP_ZERO bit", "304 __GFP_ZERO definition", "388 GFP_KERNEL definition"],
+      "observations": [
+        "the stock probe passes allocation flags 0xdc0 to devm_kmalloc; this includes the __GFP_ZERO bit",
+        "the embedded LED classdev flags start at zero unless the driver sets them"
+      ]
+    }
+  ],
+  "stock_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+      "sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb",
+      "locations": ["0x4610-0x4620 state allocation, size 0x6f8, GFP flags 0xdc0", "0x4678-0x4684 state/client relationship"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0067_vibrator_init_00108468.asm",
+      "sha256": "ef8e5b8fe1da3e00657a631214dadb3558d3d7abd52aa9a1ba0ebe3de105e698",
+      "locations": ["0x56ac-0x56d4 LED name/callback setup and devm_led_classdev_register_ext", "0x572c-0x5744 initialization of work at state+0x428 and its callback"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0076_brightness_set_0010960c.asm",
+      "sha256": "8ba9fd53bfb1092eb6519065c074d863e80e3c29c8dcc809222c0109941187b7",
+      "locations": ["0x6824 checks state+0x6 bit 0", "0x684c-0x6858 queues state+0x428 on workqueue state+0x448"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0078_vibrator_work_routine_001096ec.asm",
+      "sha256": "ce970653f5cc7fa1fd977ecaf2695fa37af2e4ff2dbe46ea9f480c4902ea3a4b",
+      "locations": ["entry derives state as work-0x428", "callback locks state and accesses chip operations and fields"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0104_ram_load_0010b2e0.asm",
+      "sha256": "f2c47b883c3140880a8f3e07425a98945fb568d02cdced3b62ec0b6a469e9091",
+      "locations": ["0x87c4 sets state+0x6 to 1 on successful RAM firmware update"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+      "sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562",
+      "locations": ["aw_remove cancels state+0x428 before returning", "no LED unregister or second state+0x428 cancellation follows that point"]
+    }
+  ],
+  "candidate_evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_103_brightness_set.c",
+      "sha256": "64c3c668196ab2dd4b23206757608e41d6a2c3e22dfd44cc300ae82c50bfe706",
+      "observation": "semantic source mirror matches the stock callback offsets and queue_work_on arguments"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c",
+      "sha256": "14da2f127a98cc9810286b26b6dea32d70a2404adc27743d1186d2723c5136bf",
+      "observation": "candidate remove cancels state+0x428 before misc deregistration and has no LED devres teardown step"
+    }
+  ],
+  "execution_order": [
+    "Probe allocates the 0x6f8-byte state with zeroing flags; vibrator_init embeds led_classdev at state+0xa8 and registers it as a managed LED on the I2C device.",
+    "A successful ram_load sets state+0x6 to 1. The stock brightness_set callback uses that bit as its admission condition and queues state+0x428 on state+0x448.",
+    "aw_remove synchronously cancels state+0x428 and returns without unregistering the managed LED.",
+    "The target driver core invokes devres_release_all after remove returns. The LED devres release calls led_classdev_unregister.",
+    "Unless LED_RETAIN_AT_SHUTDOWN is set, LED unregister calls led_set_brightness(LED_OFF). The target LED core directly invokes brightness_set when present.",
+    "With state+0x6 still set, brightness_set can queue state+0x428 after aw_remove has already canceled it. The LED core flushes only its own set_brightness_work; it does not drain this driver work item."
+  ],
+  "finding": {
+    "id": "HAP-LED-01",
+    "title": "managed LED unregister can resubmit vibrator work after remove cancellation",
+    "severity": "high",
+    "confidence": "high_static_conditional",
+    "condition": "successful RAM initialization leaves state+0x6 bit 0 set at unbind, and the LED is not marked LED_RETAIN_AT_SHUTDOWN; the reviewed driver init does not set that retain flag",
+    "status": "POST_REMOVE_CALLBACK_CAN_QUEUE_STATE_WORK",
+    "impact": "the vibrator worker can run after remove has returned, access state and chip operations during teardown, or race the devres release of the state allocation",
+    "runtime_reproduced": false,
+    "hardware_tested": false
+  },
+  "limits": [
+    "This is a statically confirmed callback and workqueue path with a readiness-state condition; scheduler-dependent runtime manifestation has not been reproduced.",
+    "The conclusion is bound to the pinned target kernel source and the stock module evidence listed above.",
+    "The existing per-device workqueue release review separately records that aw_remove does not destroy the queue at state+0x448.",
+    "No reconstruction source changed and no Docker rebuild was run for this read-only review."
+  ],
+  "hardening_follow_up": [
+    "Keep the stock-exact candidate unchanged and implement fixes in a separately identified hardening candidate.",
+    "Set a per-device dying gate before teardown and make brightness_set refuse new queue submissions once teardown starts.",
+    "Unregister the LED interface while state remains valid, then stop asynchronous producers and synchronously drain state+0x428 after the LED callback can no longer enqueue it.",
+    "Drain or otherwise lifetime-pin firmware callbacks before releasing state, then destroy the per-device workqueue before devres frees its owning state."
+  ]
+}

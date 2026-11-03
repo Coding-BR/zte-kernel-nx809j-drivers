@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0",
+  "review_id": "HAP-RAM-FW-LIFETIME-20261102",
+  "generated_local_date": "2026-11-02",
+  "parent_review": "HAP-RICHTAP-LIFETIME-20261102",
+  "driver": "haptic_86938",
+  "status": "ASYNC_CALLBACK_LIFETIME_RISK_CONFIRMED_STATIC_RUNTIME_UNVERIFIED",
+  "binding": {
+    "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "candidate_module_sha256": "175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c",
+    "target_kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "target_kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_image": "nubia-sm8850-kernel-builder:latest",
+    "docker_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "source_mount_mode": "read-only"
+  },
+  "target_kernel_files": [
+    {
+      "path": "kernel/kernel_platform/common/drivers/base/firmware_loader/main.c",
+      "sha256": "271dab9b1aaea7f53b44b2b438b3466f988e0692c0529b7094bfbfa049e94a2f",
+      "locations": ["1329-1339", "1347-1385", "1412-1418"],
+      "observed_contract": [
+        "request_firmware_nowait copies the caller context into a separately allocated firmware_work object",
+        "the firmware work item is scheduled with schedule_work on the kernel system workqueue",
+        "the worker invokes the callback with the saved context and releases only the module and device references afterward",
+        "the API returns no work handle to the requesting driver for cancellation"
+      ]
+    },
+    {
+      "path": "kernel/kernel_platform/common/drivers/base/dd.c",
+      "sha256": "405ff5610410ddc30dec483423f54c9be46c8d307f930989cfd44860a1185930",
+      "locations": ["device_remove around 560-570", "device_unbind_cleanup around 545", "device_release_driver_internal around 1265-1280"],
+      "observed_contract": [
+        "driver remove is invoked during device_remove",
+        "device_unbind_cleanup then calls devres_release_all after the remove callback returns"
+      ]
+    },
+    {
+      "path": "kernel/kernel_platform/common/drivers/leds/led-class.c",
+      "sha256": "2b98602bc67c37f535a532c1c711641d1d684465ded10de75dda472815fb5340",
+      "locations": ["device_create_with_groups in led_classdev_register_ext around 525-540", "devm registration and unregister around 618-674"],
+      "observed_contract": [
+        "the LED child device is created with led_cdev as driver data",
+        "devm LED registration installs an unregister release action"
+      ]
+    }
+  ],
+  "stock_assembly_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+      "sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb",
+      "locations": ["devm_kmalloc and clientdata state initialization; ram_work_init call chain"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+      "sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562",
+      "locations": ["0x5454-0x5458 cancel_delayed_work_sync(state+0x3c0)", "remove has no firmware-request callback drain"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0069_ram_work_init_0010887c.asm",
+      "sha256": "3433ecddba333ca7da5880d2c13d2c87522181c9c353a988021f6710c7199ea3",
+      "locations": ["0x5a98-0x5ac0 initialize delayed work callback at state+0x3c0 and queue it after 2000 ms"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0103_ram_update_store_0010b228.asm",
+      "sha256": "5e98b4b789ea94af33b22941273690f1e91bbc245654dc8fe3360eecf7ea21af",
+      "locations": ["0x8438 load LED device driver data", "0x8464 form callback context by subtracting 0xa8", "0x8470-0x8480 pass ram_load to request_firmware_nowait"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0104_ram_load_0010b2e0.asm",
+      "sha256": "f2c47b883c3140880a8f3e07425a98945fb568d02cdced3b62ec0b6a469e9091",
+      "locations": ["0x84e0 retain callback context", "0x852c-0x8540 retry by queueing state+0x3c0 on system_wq", "0x8768-0x87d4 dereference state operations and call get_ram_num"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0147_ram_work_routine_0010e190.asm",
+      "sha256": "13054948ab64c7f71db498509b16afa399303690f8f4874034c4c1cde209a3bc",
+      "locations": ["0xb38c pass work-0x3c0 as callback context", "0xb39c-0xb3ac pass ram_load to request_firmware_nowait"]
+    }
+  ],
+  "candidate_semantic_reference_sha256": {
+    "haptic_86938_fn_067_ram_work_init.c": "a337e7a48139df77ca1424ea8433026e71001f648edf9b05c99019dbf05afbee",
+    "haptic_86938_fn_082_ram_work_routine.c": "f7fb2828981775f43a249e1586e5964ba7fd4c22d815bbd8d8fd83299c16ed27",
+    "haptic_86938_fn_083_ram_load.c": "30527b298f497433acd79f0a626469519a26ca62c33b12af8a6d058cbd0cf4a6",
+    "haptic_86938_fn_093_ram_update_store.c": "353326daedfc21ab6e3da11fc04c1f160bfaa5fef1690e3741f5bc070d1e92a0"
+  },
+  "finding": {
+    "id": "HAP-FW-01",
+    "title": "asynchronous RAM firmware callback can outlive remove",
+    "severity": "high",
+    "confidence": "high_static",
+    "status": "REQUEST_CONTEXT_AND_CALLBACK_PATH_CONFIRMED; REMOVE_DOES_NOT_DRAIN_FIRMWARE_WORK",
+    "paths": [
+      {
+        "origin": "ram_work_init -> ram_work_routine",
+        "evidence": "probe schedules delayed work at state+0x3c0; the worker passes work-0x3c0 as the raw context to request_firmware_nowait with ram_load as callback"
+      },
+      {
+        "origin": "ram_update_store",
+        "evidence": "a second stock request_firmware_nowait call also names ram_load as callback and derives its context from the LED child device driver-data pointer"
+      }
+    ],
+    "teardown_interaction": [
+      "aw_remove begins by canceling only the delayed work at state+0x3c0",
+      "request_firmware_nowait allocates and schedules a separate firmware_work item on the system workqueue; the driver receives no cancellation handle",
+      "the firmware worker invokes ram_load with the saved raw context; remove does not wait for that callback",
+      "driver-core devres_release_all runs after remove returns, releasing the devm state allocation",
+      "ram_load dereferences the state on success, and on failure it can queue delayed work at state+0x3c0 again while its retry counter is at most 0x14"
+    ],
+    "impact": "The pending callback can access released device state or requeue work after remove already canceled the embedded delayed work.",
+    "runtime_reproduced": false,
+    "hardware_tested": false
+  },
+  "limits": [
+    "The conclusion is a static lifetime path from stock assembly and exact target-kernel source; no runtime race reproduction was performed.",
+    "No reconstruction source was changed, so this review required no Docker rebuild.",
+    "The exact callback ordering depends on scheduler timing; this report does not claim every remove triggers the path."
+  ],
+  "hardening_follow_up": [
+    "Track outstanding firmware requests per device and ensure callback completion is part of the remove drain before devres releases state.",
+    "Prevent ram_load from touching hardware or requeueing delayed work after the device enters a dying state.",
+    "Apply the same callback lifetime tracking to every request_firmware_nowait caller, including the sysfs ram_update_store path."
+  ]
+}

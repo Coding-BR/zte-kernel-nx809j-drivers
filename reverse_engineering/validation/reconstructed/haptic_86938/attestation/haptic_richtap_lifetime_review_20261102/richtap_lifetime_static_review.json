@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.0",
+  "review_id": "HAP-RICHTAP-LIFETIME-20261102",
+  "generated_local_date": "2026-11-02",
+  "driver": "haptic_86938",
+  "status": "STATIC_LIFETIME_RISKS_CONFIRMED_RUNTIME_UNVERIFIED",
+  "scope": [
+    "aw_i2c_probe publication of richtap_misc and g_aw_haptic",
+    "richtap_file_open and richtap_file_release",
+    "richtap_file_unlocked_ioctl work and buffer access",
+    "richtap_file_mmap PFN mapping",
+    "richtap_stop_work state access",
+    "aw_remove teardown ordering"
+  ],
+  "binding": {
+    "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "candidate_module_sha256": "175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c",
+    "target_kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "target_kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "target_kernel_source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git",
+    "docker_image": "nubia-sm8850-kernel-builder:latest",
+    "docker_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "docker_source_mount": "read-only"
+  },
+  "target_kernel_files": [
+    {
+      "path_in_source_volume": "kernel/kernel_platform/common/drivers/char/misc.c",
+      "sha256": "0e6017b294d6dbd395c383de3d17a9171ef898de65fc52bbc98e883295b4922a",
+      "reviewed_symbols": ["misc_open", "misc_register", "misc_deregister"],
+      "observations": [
+        "misc_open invokes the driver open callback while holding misc_mtx",
+        "misc_register releases misc_mtx before returning",
+        "misc_deregister removes the list entry and device node, then unlocks; it has no wait for already-open files"
+      ]
+    },
+    {
+      "path_in_source_volume": "kernel/kernel_platform/common/mm/memory.c",
+      "sha256": "a94600840f0c9ead07d4a61dbe8d3ea7712f9445cdf00af0b9cec6ce0fb18d46",
+      "reviewed_symbols": ["remap_pfn_range_internal", "remap_pfn_range_notrack", "remap_pfn_range"],
+      "observations": [
+        "remap_pfn_range_internal marks mappings VM_IO and VM_PFNMAP",
+        "the target source describes VM_PFNMAP entries as raw PFN mappings without an associated struct page"
+      ]
+    }
+  ],
+  "stock_assembly_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+      "sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb",
+      "locations": ["0x5334 misc_register", "0x5338 clear return register", "0x533c-0x5340 store haptic pointer into g_aw_haptic", "0x5004 alloc_workqueue", "0x50fc state+0x610 page pointer", "work callback initialized at state+0x680"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+      "sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562",
+      "locations": ["0x54ac cancel_work_sync(state+0x648)", "0x54b4-0x54b8 free state+0x608 buffer", "0x54ec-0x54f4 free_pages(state+0x610, order 2)", "0x5500 misc_deregister", "no cancellation call for state+0x668 in this function"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0151_richtap_file_unlocked_ioctl_0010e374.asm",
+      "sha256": "1c28ebb056e308409fe6892d83aa68aba8bba8a732e8f12b18c6024203dbe0ad",
+      "locations": ["command 0x5212 at 0xb5c8-0xb5d0", "state+0x448 queue pointer and state+0x668 work item at 0xb5d4-0xb5e0", "command 0x5209 copy-from-user path"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0152_richtap_file_mmap_0010e92c.asm",
+      "sha256": "1a6d1588a566588ae834a68371cd43ff6e395bf97ce46645b48ebb7aa8e66f0f",
+      "locations": ["mapping length 0x4000 at 0xbb68", "load backing pointer from state+0x610 at 0xbb70", "remap_pfn_range relocation at 0xbbb4"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0153_richtap_file_open_0010ea28.asm",
+      "sha256": "e5e1d2e60b782a6c5460e0c8b1c8b7a711d0a30474867db64401bfaccaaa60cb",
+      "locations": ["try_module_get at 0xbc24", "load g_aw_haptic at 0xbc34", "write file->private_data at 0xbc38"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0154_richtap_file_release_0010ea78.asm",
+      "sha256": "d1af3ad42062bedcc592de3a2128ba99de50bf7db7e6587cc75b3ebdbfa920be",
+      "locations": ["module_put relocation at 0xbc6c", "no per-device reference release in this function"]
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0071_richtap_stop_work_00108ba0.asm",
+      "sha256": "255cbe283df945f8e4e62cde2df21f5a94656377412befc2c4be2ad26edc3f14",
+      "locations": ["stock worker callback for state+0x668; candidate source derives the state base as work-0x668 and reads state operations"]
+    }
+  ],
+  "candidate_semantic_reference_sha256": {
+    "haptic_86938_fn_143_aw_i2c_probe_semantic_model.c": "693e52a0318cd0bc5a1b962310923383e5fbd5f39cbb3674cc5c90e2d6a33b8f",
+    "haptic_86938_fn_132_aw_remove.c": "14da2f127a98cc9810286b26b6dea32d70a2404adc27743d1186d2723c5136bf",
+    "haptic_86938_fn_134_richtap_file_unlocked_ioctl.c": "91086f14f35b02db927f7b44518598353339f470de4b068174f0012322a5b736",
+    "haptic_86938_fn_133_richtap_file_mmap.c": "3415076bdb476e6b3398955286bafadc4c1e7f490055e02624ec1e7787b98388",
+    "haptic_86938_fn_035_richtap_file_open.c": "8ee629d2f0a5f1c0cf38631bb55d10609d1cfc927039f287339970cb50f489d7",
+    "haptic_86938_fn_034_richtap_file_release.c": "b2096c04e54c242489c4cb2d42669f8d3c3418b3bc75a2f257bccf596929f350",
+    "haptic_86938_fn_112_richtap_stop_work.c": "1b4df1b9e7c716d4f4554270a39e9def79c5ecc723e505eff3a7d25846d85127",
+    "haptic_86938_globals.c": "742147506cc03f2f21a11f75ba01e236908642d1deb8a837a1cbd250b76155fa"
+  },
+  "findings": [
+    {
+      "id": "HAP-RICHTAP-01",
+      "title": "misc-device publication precedes state-pointer publication",
+      "severity": "high",
+      "confidence": "high_static",
+      "status": "ORDERING_RACE_CONFIRMED_BY_STOCK_ASSEMBLY_AND_TARGET_KERNEL_SOURCE",
+      "impact": "An open callback can successfully store a null first-probe global or stale state pointer in file->private_data before the probe stores the new device pointer.",
+      "runtime_reproduced": false
+    },
+    {
+      "id": "HAP-RICHTAP-02",
+      "title": "open file descriptors can outlive resource teardown",
+      "severity": "high",
+      "confidence": "high_static",
+      "status": "UNPINNED_DEVICE_STATE_AND_RESOURCE_RELEASE_BEFORE_MISC_DEREGISTRATION",
+      "impact": "An already-open file can race removal or invoke the ioctl after resources are released; ioctl 0x5209 accesses the freed buffer at state+0x608.",
+      "runtime_reproduced": false
+    },
+    {
+      "id": "HAP-RICHTAP-03",
+      "title": "Richtap stop work at state+0x668 is not canceled by aw_remove",
+      "severity": "high",
+      "confidence": "high_static",
+      "status": "QUEUE_PATH_AND_MISSING_REMOVE_CANCELLATION_CONFIRMED",
+      "impact": "ioctl 0x5212 queues a worker whose state base is derived from the embedded work address; removal has no matching cancel_work_sync for this item and does not close admission before resource teardown.",
+      "runtime_reproduced": false
+    },
+    {
+      "id": "HAP-RICHTAP-04",
+      "title": "mapped PFNs are released while userspace mappings may persist",
+      "severity": "high",
+      "confidence": "high_static",
+      "status": "MAP_AND_FREE_ORDER_CONFIRMED_VMA_LIFETIME_UNTRACKED_IN_REVIEWED_FOPS",
+      "impact": "The 0x4000-byte VM_PFNMAP can retain the physical mapping after free_pages returns its backing pages to the allocator; allocator reuse and user-visible effect were not exercised.",
+      "runtime_reproduced": false
+    }
+  ],
+  "limits": [
+    "This report records stock behavior and the current stock-matching candidate; it is not a hardware test.",
+    "The target misc.c and mm/memory.c were read from the pinned Docker kernel-source volume and their hashes are recorded above.",
+    "No source reconstruction files were changed and no Docker rebuild was run for this read-only review.",
+    "No CVE, exploitability, or deterministic crash claim is made.",
+    "The absence of destroy_workqueue in aw_remove is recorded as an open release surface, not independently labeled a leak."
+  ],
+  "hardening_follow_up": [
+    "Publish initialized per-device state before misc_register and handle a failed registration.",
+    "Close new admission during removal and guard each file operation with a per-device lifetime reference and dying state.",
+    "Drain both Richtap work items at offsets +0x648 and +0x668 before releasing state or destroying the queue.",
+    "Tie page allocation lifetime to VMA references or use a mapping interface that retains page references.",
+    "Keep hardening changes separately identified from stock-equivalent reconstruction and revalidate them in the canonical Docker build."
+  ]
+}

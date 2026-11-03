@@ -1,0 +1,74 @@
+# Richtap lifetime static review
+
+Date: 2026-11-02  
+Driver: `haptic_86938`  
+Verdict: `STATIC_LIFETIME_RISKS_CONFIRMED; RUNTIME_UNVERIFIED`
+
+## Scope and binding
+
+This review follows the stock AArch64 instruction/relocation exports for `aw_i2c_probe`, `aw_remove`, Richtap `open`, `release`, `mmap`, `unlocked_ioctl`, and `richtap_stop_work`. It also inspects the exact target kernel source volume used by the canonical Docker build: kernel release `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k`, source commit `3356b35306d35d5a480e3b63df1a9f065b5d9f55`. The source volume was mounted read-only.
+
+The report is bound to stock module SHA-256 `05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e` and current candidate SHA-256 `175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c`. The existing whole-module review says the Richtap callback bodies and fops relocations match stock. No reconstruction source was changed in this review, so no rebuild was needed.
+
+## Findings
+
+### HAP-RICHTAP-01 — publication race during probe
+
+Stock `aw_i2c_probe` calls `misc_register`, then immediately stores the device pointer into `g_aw_haptic`. The target kernel's `misc_register` releases `misc_mtx` before returning. `misc_open` takes that mutex and invokes the driver `.open` callback while holding it. The stock `richtap_file_open` reads `g_aw_haptic` and stores it directly in `file->private_data` without a null or readiness check. An opener can therefore run after registration unlocks and before the following global store. On first probe the global is zero-initialized, so the successful open can retain a null state pointer; subsequent file operations dereference it.
+
+This is a high-confidence static ordering race. Runtime reproduction has not been performed.
+
+### HAP-RICHTAP-02 — open descriptors outlive freed device resources
+
+Stock `richtap_file_open` stores a raw device-state pointer in `file->private_data`. The stock `aw_remove` cancels several workers, frees the buffer at state offset `+0x608`, releases the four-page region at `+0x610`, and only afterward calls `misc_deregister`. The target kernel implementation of `misc_deregister` removes the misc-device list entry and device node; it does not drain existing file descriptors. The driver's `release` drops the module reference but does not hold or release a per-device state reference. No dying-state admission check is present in the ioctl path.
+
+An open descriptor can consequently race removal while the resources are being freed and can continue to call file operations after deregistration. In particular, ioctl `0x5209` accesses the `+0x608` buffer. The raw state pointer is also not pinned by the module reference: the latter keeps module code resident, while the device state follows the I2C device lifetime.
+
+This is a high-confidence static lifetime defect path. Actual kernel manifestation has not been tested on hardware.
+
+### HAP-RICHTAP-03 — work item at `+0x668` is not drained by remove
+
+Stock ioctl command `0x5212` queues the work item at state offset `+0x668` on the queue at `+0x448`. Probe initializes that work item's callback as `richtap_stop_work`; the callback derives its state pointer by subtracting `0x668` from the work address and then accesses state fields and operations. `aw_remove` calls `cancel_work_sync` for the neighboring work item at `+0x648`, but the stock assembly contains no cancellation for `+0x668`. Because open descriptors remain usable and admission is not closed before resource release, the work can be submitted during teardown. The workqueue itself is also not destroyed in this remove body; this review records that as an unpaired release surface without inferring a leak from the missing call alone.
+
+### HAP-RICHTAP-04 — PFN mapping can outlive the pages
+
+Stock `richtap_file_mmap` maps 0x4000 bytes beginning at the PFN derived from state offset `+0x610`, through `remap_pfn_range`. `aw_remove` frees the order-2 page allocation before deregistering the misc device. The target kernel's `remap_pfn_range_internal` marks this mapping `VM_PFNMAP` and documents that these are raw PFN mappings without an associated `struct page`. The driver has no visible VMA open/close callbacks or page-lifetime reference accounting in the reviewed file operations. An existing mapping may therefore retain access to a PFN after the backing allocation is returned to the allocator.
+
+This is a high-confidence page-lifetime risk from the static path; user-visible impact depends on runtime mapping and allocator reuse and has not been exercised.
+
+### HAP-FW-01 — asynchronous RAM firmware callback can outlive remove
+
+The stock delayed-work initializer queues `state+0x3c0` after 2000 ms. Its worker passes `work-0x3c0` as the raw context to `request_firmware_nowait` and supplies `ram_load` as the callback. The target kernel copies that context into a separate firmware-work object, schedules it on the system workqueue, and later calls `ram_load` with the saved pointer. The driver receives no handle for canceling that firmware-work object. The firmware loader's extra device reference protects the `struct device`; it does not pin the driver's devm state pointer held as callback context.
+
+`aw_remove` cancels the delayed work at `+0x3c0` at entry but does not drain the separate firmware callback. The driver core releases devres after the remove callback returns. A still-pending callback can therefore access the state during/after teardown; on a missing-firmware path, `ram_load` can also queue `state+0x3c0` again after remove's cancellation. A second stock request path from `ram_update_store` uses the same callback and is included in the machine-readable evidence.
+
+This is a high-confidence static lifetime path; reproduction is scheduler-dependent and has not been attempted on hardware. Exact stock assembly hashes and target-kernel `firmware_loader/main.c`, `drivers/base/dd.c`, and `drivers/leds/led-class.c` hashes are recorded in `ram_firmware_callback_lifetime.json`.
+### HAP-WQ-01 — probe-created workqueue has no stock release path
+
+Stock `aw_i2c_probe` calls `alloc_workqueue`, stores the returned non-NULL pointer at state offset `+0x448`, and checks that allocation succeeded. The complete stock `aw_remove` body does not load that pointer or call `destroy_workqueue`. A search of the full stock assembly export finds one direct `alloc_workqueue` relocation and no `destroy_workqueue` relocation. The exact target kernel header describes the allocation API as returning an allocated workqueue pointer and declares a separate `destroy_workqueue` API; its implementation unregisters and drains the queue.
+
+Combining the pointer store, the absence of a release path in `aw_remove`, and the module-wide stock relocation search supports a per-unbind workqueue resource leak. The earlier MP5 count alone was insufficient; this addendum records the object location and teardown path. The indirect-call target audit is still incomplete, so the report states that limit explicitly.
+## Recommended hardening sequence
+
+1. Initialize and publish per-device state before registering the misc device; check registration failure and unwind it.
+2. Add a per-device dying/admission gate and explicit references for each open file. Deregistration should prevent new opens; in-flight operations must drain before state resources are freed. Existing file descriptors should return `-ENODEV` after teardown begins.
+3. Prevent all Richtap work submissions once teardown begins, then synchronously cancel both work items at `+0x648` and `+0x668` before destroying their queue or releasing state.
+4. Track VMA lifetime and defer freeing the PFN pages until the last mapping closes, or replace the mapping with a page-backed interface that holds references.
+5. Keep this hardening as a separately reviewed deviation from the stock-exact reconstruction, then bind its Docker build and behavioral checks to a new candidate hash.
+
+## Evidence and limits
+
+The machine-readable evidence, including SHA-256 bindings for the stock assembly, candidate semantic references, and target-kernel files, is in `richtap_lifetime_static_review.json`. The relevant target kernel code is also linked by commit at [drivers/char/misc.c](https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube/blob/3356b35306d35d5a480e3b63df1a9f065b5d9f55/kernel_platform/common/drivers/char/misc.c) and [mm/memory.c](https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube/blob/3356b35306d35d5a480e3b63df1a9f065b5d9f55/kernel_platform/common/mm/memory.c). Upstream v6.12 misc-device behavior is also documented in [Linux drivers/char/misc.c](https://github.com/torvalds/linux/blob/v6.12/drivers/char/misc.c).
+
+This is static evidence from the stock module and the pinned target-kernel source. It does not include KUnit, KASAN, KCSAN, lockdep, controlled device testing, or a hardening patch. It does not claim a runtime crash, exploitability, or a hardware-verified result.
+### HAP-LED-01 — managed LED teardown can queue canceled work again
+
+The stock probe allocates the state with flags 0xdc0, including __GFP_ZERO, and vibrator_init registers the LED class device embedded at state+0xa8 as a managed child of the I2C device. The brightness callback is installed before probe finishes. After successful RAM loading, ram_load sets state+0x6 bit 0.
+
+aw_remove calls cancel_work_sync for state+0x428 and then returns without unregistering the managed LED. The pinned driver core releases devres after remove returns. Its LED release calls led_classdev_unregister; unless LED_RETAIN_AT_SHUTDOWN is set, that routine calls led_set_brightness(LED_OFF). The target LED core directly invokes the driver's brightness_set callback when it is present. The callback sees the still-set state+0x6 bit and can queue state+0x428 again on state+0x448.
+
+The LED core flushes its own set_brightness_work, not the driver's state+0x428 work. This creates a conditional post-remove submission that can run during teardown or race devres release of the state. The driver init does not set LED_RETAIN_AT_SHUTDOWN, and the embedded flags begin zeroed. This is the seventh static lifetime risk in this review series; it is conditional on successful RAM initialization and remains runtime-unverified. Full evidence and hashes are in led_teardown_callback_lifetime.json.
+
+## LED teardown hardening follow-up
+
+In a separate hardening candidate, set a per-device dying gate before teardown and have brightness_set reject new submissions once teardown starts. Unregister the LED while its state is still valid, stop all asynchronous producers, and cancel state+0x428 only after the LED callback can no longer queue it. Drain firmware callbacks and destroy state+0x448 before devres releases the state allocation. Keep this separate from the stock-exact reconstruction.

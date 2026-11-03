@@ -15,6 +15,16 @@ The current comparison and its extraction manifests are in `attestation/current_
 
 The driver remains **INCOMPLETE** as a full source reconstruction and replacement candidate. The map declares `partial_c_microtasks`; exact assembly coverage and two predicate-equivalence findings do not establish full C-level semantic equivalence, callback lifetime/concurrency safety, or behavior on the NX809J. The current per-function review artifact records dispositions for all 160 identities, but does not name a distinct human reviewer for a whole-driver sign-off. Kernel-level KUnit/Lockdep/KCSAN and controlled hardware validation remain open; no hardware load is claimed.
 
+## Update 2026-11-02 — Richtap lifetime static review
+
+A read-only review bound to the current candidate and stock assembly found four high-confidence static lifetime risks: the misc device is registered before `g_aw_haptic` is published; open file descriptors are not drained by `misc_deregister` while `aw_remove` frees the Richtap buffer and pages first; ioctl `0x5212` can queue work at `+0x668`, which this remove body does not cancel; and PFN mappings can outlive the pages released by remove. The exact target kernel `misc.c` and `mm/memory.c` were inspected from the Docker source volume at source commit `3356b35306d35d5a480e3b63df1a9f065b5d9f55`. Runtime manifestation remains unverified. No reconstruction source changed. See the [Richtap lifetime review](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/README.md).
+
+## Update 2026-11-02 — asynchronous RAM firmware callback lifetime
+
+A second static review confirmed that `ram_work_routine` and `ram_update_store` submit `ram_load` through `request_firmware_nowait` with raw state context. The pinned kernel schedules a separate firmware work item and calls the callback later; `aw_remove` cancels only the embedded delayed work, while driver-core devres releases state after remove returns. The failure callback can also reschedule the delayed work after cancellation. The firmware review adds a fifth lifetime risk; runtime behavior remains unverified. See the [RAM firmware callback review](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/ram_firmware_callback_lifetime.json).
+## Update 2026-11-02 — per-device workqueue release
+
+The stock probe stores a successful `alloc_workqueue` result at state offset `+0x448`; the complete `aw_remove` body and stock assembly export contain no direct `destroy_workqueue` path. The target API uses a separate destroy operation to drain and release the allocated queue. This supports a per-unbind resource leak finding and is the sixth static lifetime risk; the whole-module indirect-call audit remains open. Runtime resource retention is untested. See the [workqueue release review](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/workqueue_release_review.json).
 ## Dated function-scoped checkpoints
 ## Update 2026-11-02 — aw8693x_play_mode
 
@@ -82,3 +92,7 @@ The repaired stock Ghidra export contains 160/160 exact name-and-size identities
 The earlier `get_ram_num@00106020` function-scoped hard-protocol run passed its automated core gates, but its report remains bound to the candidate hash recorded in that report. The current full-function assembly review independently confirms the current candidate body; whole-driver semantic, kernel-concurrency, sanitizer and hardware gates remain open.
 
 The current verdict is based on the canonical Docker audit plus the hash-bound assembly and Richtap relocation review above. Static verification does not authorize deployment or a 100% reconstruction claim.
+
+## Update 2026-11-02 — managed LED teardown can requeue vibrator work
+
+The stock remove callback cancels state+0x428 before returning. Target driver-core cleanup releases the managed LED afterward; target led-class unregister sets the LED off and invokes the driver's synchronous brightness_set callback. On the successful-RAM path, the callback still sees state+0x6 set and can requeue state+0x428. The LED framework flushes only its own work item, so the driver work can race teardown and devres state release. This is the seventh conditional static lifetime risk; runtime manifestation is unverified. No source changed and no rebuild was needed. See the [LED teardown callback review](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/led_teardown_callback_lifetime.json).
