@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_richtap_userspace_fifo_publication_review_20261103",
+  "result": "OPEN_PROTOCOL_ASSUMPTION_NO_RUNTIME_FAILURE_ASSERTED",
+  "candidate_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "docker_curated_candidate_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+  "observations": [
+    "Probe allocates order-2 pages (0x4000 bytes) and links sixteen 0x400-byte FIFO nodes; the mmap body maps exactly 0x4000 bytes from state+0x610 using remap_pfn_range.",
+    "Stock RTP work and the threaded IRQ inspect node state for U; the worker and FIFO helper read length/payload and set consumed nodes to 0xff.",
+    "The stock richtap_write body returns the supplied count and does not publish FIFO nodes. The ioctl 0x5209 path copies a separate RTP buffer to state+0x608; it is not the mapped FIFO producer.",
+    "The mapped producer therefore lies outside the kernel sources available in this repository. A scoped search of source files outside reverse_engineering/validation found no userspace Richtap producer implementation.",
+    "The candidate IRQ/worker mutex serializes kernel consumers and state transitions; a userspace producer does not take that mutex. No release/acquire publication contract can be established from the available client sources. The stock consumer paths use ordinary state loads; the candidate preserves those stock bodies."
+  ],
+  "interpretation": "Potential publication-order assumption remains unverified. This review does not establish a race or runtime failure. Adding only a kernel-side acquire/barrier without the userspace producer contract would not prove correct publication and could diverge from stock.",
+  "required_next_evidence": "Obtain the userspace Richtap client source or hash-bound client binary/disassembly, identify its FIFO state/payload stores and barriers, then compare that protocol with the kernel consumer. If unavailable, keep this gate explicitly open.",
+  "build": "Not run: evidence-only review; no reconstruction source changed.",
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+      "sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0152_richtap_file_mmap_0010e92c.asm",
+      "sha256": "1a6d1588a566588ae834a68371cd43ff6e395bf97ce46645b48ebb7aa8e66f0f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0150_0010e368_richtap_write.c",
+      "sha256": "60c29c92e1e2085093cd193f73eb27b58dac8d0d5a840f04d93899fbe14519ac"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0070_001088f8_richtap_rtp_work.c",
+      "sha256": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c",
+      "sha256": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_137_richtap_rtp_work.c",
+      "sha256": "09b73a031b1d81e4791f767644cf9fc7ce3131127be81c36a8c91c2f738285d6"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_136_richtap_update_fifo_data.c",
+      "sha256": "ac116df6363c353a9846cc8adde4c1562d65143d0b7205dfa33a0edb1dbaf685"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_004_richtap_write.c",
+      "sha256": "6c76503759e3e5596c8d0a8b15a5d12253b538f3a31025b54bd49f240b95760f"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+      "sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca"
+    },
+    {
+      "path": "docker_curated/haptic_86938.ko",
+      "sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca"
+    }
+  ]
+}
