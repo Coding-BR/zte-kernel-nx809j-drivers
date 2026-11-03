@@ -6,7 +6,7 @@
 
 The audit compared the stock module SHA-256 in the JSON manifest with the preserved Ghidra output and AArch64 relocations. It enumerated all ten direct workqueue-submission callsites in the whole-module decompilation and all ten corresponding `CALL26` relocations: eight `queue_work_on` and two `queue_delayed_work_on`. The stock ELF has no other imported submission API. None of those callsites submits the item at `state + 0x628`. The two delayed-work sites use `state + 0x3c0`; the Richtap ioctl sites select `state + 0x648` or `state + 0x668`.
 
-Stock `aw_i2c_probe` initializes the work item at `+0x628` and stores `tiktap_work_routine` at `+0x640`, the callback slot. Docker `llvm-readelf` identifies that function as a `LOCAL` ELF symbol. The stock remove assembly drains `+0x648` and contains no cancellation of `+0x628`. The reconstructed candidate explicitly drains `+0x628` before state retirement.
+Stock `aw_i2c_probe` initializes the work item at `+0x628` and stores `tiktap_work_routine` at `+0x640`, the callback slot. Docker `llvm-readelf` identifies that function as a `LOCAL` ELF symbol. The stock remove assembly drains `+0x648` and contains no cancellation of `+0x628`. The candidate-module disassembly produced with Docker `llvm-objdump` confirms `cancel_work_sync` for `+0x628`, `+0x648`, and `+0x668` before `devm_free_irq`, workqueue destruction, and state retirement. The exact function output is preserved in `docker_candidate_aw_remove_disassembly.txt`.
 
 ## Scope
 
