@@ -1,0 +1,290 @@
+{
+  "schema_version": "1.0",
+  "driver": "haptic_86938",
+  "review_date": "2026-11-03",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "candidate_sha256": "6d5b7e9d5b108668a58f51b93be3350ea5116d8f5034d6cd3ac215490d8a14f6",
+  "ghidra_call_export": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/calls.jsonl",
+  "ghidra_direct_call_inventory": {
+    "cancel_delayed_work_sync": [
+      {
+        "caller": "aw_remove",
+        "caller_entry": "0010823c",
+        "callsite": "00108278"
+      }
+    ],
+    "cancel_work_sync": [
+      {
+        "caller": "aw_remove",
+        "caller_entry": "0010823c",
+        "callsite": "00108280"
+      },
+      {
+        "caller": "aw_remove",
+        "caller_entry": "0010823c",
+        "callsite": "00108290"
+      },
+      {
+        "caller": "aw_remove",
+        "caller_entry": "0010823c",
+        "callsite": "00108298"
+      },
+      {
+        "caller": "aw_remove",
+        "caller_entry": "0010823c",
+        "callsite": "001082d0"
+      }
+    ],
+    "hrtimer_cancel": [
+      {
+        "caller": "activate_aw_store",
+        "caller_entry": "0010dac4",
+        "callsite": "0010db70"
+      },
+      {
+        "caller": "activate_store",
+        "caller_entry": "0010a430",
+        "callsite": "0010a514"
+      },
+      {
+        "caller": "aw_remove",
+        "caller_entry": "0010823c",
+        "callsite": "00108288"
+      },
+      {
+        "caller": "aw_remove",
+        "caller_entry": "0010823c",
+        "callsite": "001082a0"
+      },
+      {
+        "caller": "haptic_audio_store",
+        "caller_entry": "0010cd9c",
+        "callsite": "0010cff0"
+      }
+    ],
+    "hrtimer_start_range_ns": [
+      {
+        "caller": "audio_timer_func",
+        "caller_entry": "0010dcc4",
+        "callsite": "0010dd34"
+      },
+      {
+        "caller": "haptic_audio_store",
+        "caller_entry": "0010cd9c",
+        "callsite": "0010d0a0"
+      },
+      {
+        "caller": "vibrator_work_routine",
+        "caller_entry": "001096ec",
+        "callsite": "00109a6c"
+      }
+    ],
+    "queue_delayed_work_on": [
+      {
+        "caller": "ram_load",
+        "caller_entry": "0010b2e0",
+        "callsite": "0010b360"
+      },
+      {
+        "caller": "ram_work_init",
+        "caller_entry": "0010887c",
+        "callsite": "001088e0"
+      }
+    ],
+    "queue_work_on": [
+      {
+        "caller": "activate_aw_store",
+        "caller_entry": "0010dac4",
+        "callsite": "0010db90"
+      },
+      {
+        "caller": "activate_store",
+        "caller_entry": "0010a430",
+        "callsite": "0010a534"
+      },
+      {
+        "caller": "audio_timer_func",
+        "caller_entry": "0010dcc4",
+        "callsite": "0010dce4"
+      },
+      {
+        "caller": "aw_rtp_store",
+        "caller_entry": "0010af38",
+        "callsite": "0010b080"
+      },
+      {
+        "caller": "brightness_set",
+        "caller_entry": "0010960c",
+        "callsite": "00109678"
+      },
+      {
+        "caller": "richtap_file_unlocked_ioctl",
+        "caller_entry": "0010e374",
+        "callsite": "0010e400"
+      },
+      {
+        "caller": "rtp_auto_sin_store",
+        "caller_entry": "00106ed0",
+        "callsite": "00106f84"
+      },
+      {
+        "caller": "vibrator_timer_func",
+        "caller_entry": "001096b4",
+        "callsite": "001096d4"
+      }
+    ],
+    "request_firmware": [
+      {
+        "caller": "rtp_osc_cali",
+        "caller_entry": "0010c7f0",
+        "callsite": "0010c83c"
+      },
+      {
+        "caller": "rtp_work_routine",
+        "caller_entry": "00109c48",
+        "callsite": "00109cbc"
+      }
+    ],
+    "request_firmware_nowait": [
+      {
+        "caller": "ram_update_store",
+        "caller_entry": "0010b228",
+        "callsite": "0010b2a0"
+      },
+      {
+        "caller": "ram_work_routine",
+        "caller_entry": "0010e190",
+        "callsite": "0010e1cc"
+      }
+    ]
+  },
+  "workqueue_targets": [
+    {
+      "caller": "rtp_auto_sin_store",
+      "work_offset": "0x3a0",
+      "queue_offset": "0x448",
+      "drain": "cancel_work_sync(+0x3a0)"
+    },
+    {
+      "caller": "brightness_set",
+      "work_offset": "0x428",
+      "queue_offset": "0x448",
+      "drain": "cancel_work_sync(+0x428); LED child unregistration drains active callback"
+    },
+    {
+      "caller": "vibrator_timer_func",
+      "work_offset": "0x428",
+      "queue_offset": "0x448",
+      "drain": "cancel timer(+0x330), cancel work(+0x428), repeat timer/work drain"
+    },
+    {
+      "caller": "activate_store",
+      "work_offset": "0x428",
+      "queue_offset": "0x448",
+      "drain": "LED sysfs child unregistration, then cancel_work_sync(+0x428)"
+    },
+    {
+      "caller": "aw_rtp_store",
+      "work_offset": "0x3a0",
+      "queue_offset": "0x448",
+      "drain": "LED sysfs child unregistration, then cancel_work_sync(+0x3a0)"
+    },
+    {
+      "caller": "activate_aw_store",
+      "work_offset": "0x428",
+      "queue_offset": "0x448",
+      "drain": "LED sysfs child unregistration, then cancel_work_sync(+0x428)"
+    },
+    {
+      "caller": "audio_timer_func",
+      "work_offset": "0x560",
+      "queue_offset": "0x448",
+      "drain": "cancel timer(+0x520), cancel work(+0x560), repeat timer/work drain"
+    },
+    {
+      "caller": "richtap_file_unlocked_ioctl",
+      "work_offsets_by_command": {
+        "0x520a": "0x648",
+        "0x5212": "0x668"
+      },
+      "queue_offset": "0x448",
+      "drain": "close misc admission, wait active ioctl operations, cancel both work items"
+    }
+  ],
+  "delayed_work_targets": [
+    {
+      "caller": "ram_work_init",
+      "offset": "0x3c0",
+      "trigger": "probe initialization, 2 second delay",
+      "drain": "cancel_delayed_work_sync(+0x3c0), wait tracked firmware callbacks, cancel again"
+    },
+    {
+      "caller": "ram_load",
+      "offset": "0x3c0",
+      "trigger": "firmware callback retry",
+      "drain": "shutdown gate plus tracked callback drain and second delayed-work cancel"
+    }
+  ],
+  "timer_targets": [
+    {
+      "caller": "vibrator_work_routine",
+      "timer_offset": "0x330",
+      "can_rearm_from": "work item +0x428",
+      "drain": "cancel timer, cancel work synchronously, cancel timer again"
+    },
+    {
+      "caller": "haptic_audio_store",
+      "timer_offset": "0x520",
+      "entry_surface": "LED child sysfs",
+      "drain": "LED child unregistration drains active sysfs operations; timer canceled twice"
+    },
+    {
+      "caller": "audio_timer_func",
+      "timer_offset": "0x520",
+      "can_rearm": true,
+      "drain": "shutdown gate; cancel timer/work; repeat timer/work drain"
+    }
+  ],
+  "synchronous_firmware_callers": [
+    "rtp_osc_cali",
+    "rtp_work_routine"
+  ],
+  "asynchronous_firmware_callers": [
+    {
+      "caller": "ram_update_store",
+      "stock_callsite": "0010b2a0",
+      "candidate_path": "haptic_lifetime_request_ram_firmware",
+      "drain": "tracked callback count reaches zero before state release"
+    },
+    {
+      "caller": "ram_work_routine",
+      "stock_callsite": "0010e1cc",
+      "candidate_path": "haptic_lifetime_request_ram_firmware",
+      "drain": "tracked callback count reaches zero before state release"
+    }
+  ],
+  "work_item_reconciliation": {
+    "cancelled_by_hardened_remove": [
+      "0x3a0",
+      "0x428",
+      "0x560",
+      "0x628",
+      "0x648",
+      "0x668"
+    ],
+    "cancel_passes": 2,
+    "workqueue_destroy_offset": "0x448",
+    "tiktap_item_offset": "0x628",
+    "tiktap_disposition": "Initialized with tiktap_work_routine in probe evidence, but no direct queue_work_on/queue_delayed_work_on caller in the full exported Ghidra call inventory. Remove cancels it defensively; enqueue origin remains unresolved."
+  },
+  "other_lifetime_gates": {
+    "misc_fds": "misc_deregister plus active file-operation drain before work cancellation/free",
+    "irq": "devm_free_irq synchronously before final work drain",
+    "sysfs": "both groups reside on LED child; unregister/child device removal before state resource release",
+    "fifo_pages": "transfer to sidecar while VMAs remain; release on last VMA close",
+    "probe_remove_global_gate": "one transition mutex spans complete stock probe and complete remove"
+  },
+  "static_review_disposition": "No unmatched direct work enqueue identified for active items. TikTap work initialization lacks a direct enqueue caller in the exported Ghidra call list and remains a documented uncertainty.",
+  "runtime_stress_verified": false,
+  "independent_review": "PENDING"
+}

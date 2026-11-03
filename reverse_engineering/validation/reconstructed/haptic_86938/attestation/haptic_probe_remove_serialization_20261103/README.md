@@ -24,6 +24,12 @@ Both stock sysfs groups are created on the LED child device at state offset `+0x
 
 The driver registers only system-sleep PM callbacks through `SET_SYSTEM_SLEEP_PM_OPS`. Stock `aw_i2c_suspend` takes the embedded state mutex and invokes stop; `aw_i2c_resume` is a no-op. The pinned device PM callback path and driver remove path use the same per-device `device_lock`, so system-sleep callbacks serialize with remove. This does not claim runtime-PM behavior or replace hardware concurrency testing.
 
+## Stock asynchronous-call reconciliation
+
+The Ghidra call export is reconciled against every hardening cancel/drain. It records eight `queue_work_on` callsites, two `queue_delayed_work_on` callsites, three `hrtimer_start_range_ns` callsites, and two each for synchronous and asynchronous firmware requests. The active queue targets map to work items `+0x3a0`, `+0x428`, `+0x560`, `+0x648`, and `+0x668`; the remove cancels each twice after closing its relevant entry surface. Delayed RAM work at `+0x3c0` is canceled, its asynchronous callbacks are drained, then it is canceled again. Timers `+0x330` and `+0x520` are canceled around synchronous work drains to catch rearming.
+
+One work item remains unusual: probe initializes `tiktap_work_routine` at `+0x628`, but the exported Ghidra call inventory contains no direct work-queue enqueue targeting it. The remove cancels `+0x628` defensively. Its producer path remains unresolved and is listed explicitly in `async_teardown_ledger.json`; the static inventory does not claim the absence of every indirect or external trigger.
+
 ## Limits
 
 This is static synchronization hardening. Runtime unbind/reprobe stress, lockdep, KCSAN, target hardware behavior, and an independent review remain open. The haptic driver is still incomplete and the new wrappers are not stock-equivalent. The strict import-parity audit may flag lifetime-only imports; see the final report for the exact result.
