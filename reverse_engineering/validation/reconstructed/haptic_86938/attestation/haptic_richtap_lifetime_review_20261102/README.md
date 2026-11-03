@@ -94,3 +94,9 @@ The complete inventory finds four work submitters: activate_store and activate_a
 The two groups also expose 38 show callbacks (33 generic and 5 AW-specific), all bound to exact candidate sources and stock assembly. Eleven contain indirect calls through the chip callback table. Confirmed paths include RAM/register/sequence reads through I2C; loop and sequence getters also update cached state. duration_show and duration_aw_show read the embedded hrtimer, while f0_show, cali_show, and vbat_monitor_show take a mutex that aw_remove does not take. The managed LED unregister still happens after aw_remove returns, so these synchronous callbacks are not quiesced before internal resources and hardware are torn down.
 
 No direct workqueue or asynchronous firmware submission relocation appears in the show bodies. Indirect helper chains beyond the five hash-bound I2C getters are not expanded here. This is a static overlap finding; runtime behavior is untested. See sysfs_show_callback_teardown_review.json.
+
+### HAP-TIMER-WQ-01 — hrtimer callbacks can queue work after the sole remove drain
+
+Stock aw_remove cancels the audio work item at state+0x560 before canceling its producer hrtimer at +0x520. The audio timer callback queues +0x560 and rearms itself. The vibrator work item at +0x428 is likewise canceled before its producer timer at +0x330; vibrator_timer_func queues +0x428. If either timer callback is active across this ordering, it can submit work after cancel_work_sync has returned. The later hrtimer_cancel waits for the timer callback, but aw_remove does not cancel the newly submitted work a second time.
+
+haptic_init and vibrator_init bind both timer callbacks and work routines to these offsets; haptic_audio_store and vibrator_work_routine arm the timers. This is a high-confidence static ordering path, not a reproduced runtime failure. The IRQ handler has no direct workqueue relocation. See timer_work_teardown_review.json.
