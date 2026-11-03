@@ -19,6 +19,9 @@ extern struct miscdevice richtap_misc;
 int aw_i2c_probe(struct i2c_client *client);
 void haptic_lifetime_transition_begin(void);
 void haptic_lifetime_transition_end(void);
+int haptic_lifetime_misc_register(struct miscdevice *misc);
+void haptic_lifetime_free_probe_irq_if_requested(struct device *dev,
+						 unsigned int irq, void *dev_id);
 irqreturn_t irq_handle(int irq, void *data);
 void vibrator_work_routine(struct work_struct *work);
 void rtp_work_routine(struct work_struct *work);
@@ -35,7 +38,7 @@ int haptic_lifetime_enter_file(struct file *file,
 void haptic_lifetime_exit_file(struct haptic_lifetime *lifetime);
 void haptic_lifetime_attach_vma(struct haptic_lifetime *lifetime,
 				struct vm_area_struct *vma);
-void haptic_lifetime_block_file_access(void *state);
+bool haptic_lifetime_block_file_access(void *state);
 void haptic_lifetime_retire_state(void *state);
 void haptic_lifetime_wait_ram_callbacks(void);
 int haptic_lifetime_request_ram_firmware(void *state);

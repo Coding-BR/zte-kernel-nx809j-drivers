@@ -41,6 +41,8 @@ static DEFINE_MUTEX(haptic_lifecycle_transition_lock);
 static DEFINE_MUTEX(haptic_ram_callback_lock);
 static DEFINE_MUTEX(haptic_irq_stop_lock);
 static struct haptic_lifetime *active_lifetime;
+static void *haptic_partial_probe_state;
+static bool haptic_misc_registered;
 static atomic_t haptic_shutdown = ATOMIC_INIT(1);
 static atomic_t haptic_ram_callbacks = ATOMIC_INIT(0);
 static DECLARE_WAIT_QUEUE_HEAD(haptic_ram_callbacks_idle);
@@ -86,11 +88,13 @@ bool haptic_lifetime_is_shutting_down(void)
 int aw_i2c_probe(struct i2c_client *client)
 {
 	int ret;
+	void *state;
 
 	/* Serialize the singleton shutdown gate across probe and remove. */
 	mutex_lock(&haptic_lifecycle_transition_lock);
 	mutex_lock(&haptic_lifetime_registry_lock);
-	if (active_lifetime || READ_ONCE(g_aw_haptic)) {
+	if (active_lifetime || READ_ONCE(g_aw_haptic) ||
+	    haptic_partial_probe_state) {
 		mutex_unlock(&haptic_lifetime_registry_lock);
 		mutex_unlock(&haptic_lifecycle_transition_lock);
 		return -EBUSY;
@@ -99,8 +103,16 @@ int aw_i2c_probe(struct i2c_client *client)
 	mutex_unlock(&haptic_lifetime_registry_lock);
 
 	ret = aw_i2c_probe_stock_exact(client);
-	if (ret)
+	if (ret) {
 		atomic_set(&haptic_shutdown, 1);
+	} else {
+		state = i2c_get_clientdata(client);
+		if (state && READ_ONCE(g_aw_haptic) != state) {
+			mutex_lock(&haptic_lifetime_registry_lock);
+			haptic_partial_probe_state = state;
+			mutex_unlock(&haptic_lifetime_registry_lock);
+		}
+	}
 	mutex_unlock(&haptic_lifecycle_transition_lock);
 	return ret;
 }
@@ -113,6 +125,23 @@ void haptic_lifetime_transition_begin(void)
 void haptic_lifetime_transition_end(void)
 {
 	mutex_unlock(&haptic_lifecycle_transition_lock);
+}
+
+int haptic_lifetime_misc_register(struct miscdevice *misc)
+{
+	int ret = misc_register(misc);
+
+	if (misc == &richtap_misc)
+		WRITE_ONCE(haptic_misc_registered, !ret);
+	return ret;
+}
+
+void haptic_lifetime_free_probe_irq_if_requested(struct device *dev,
+						 unsigned int irq, void *dev_id)
+{
+	/* irq_config sets state+0x15 bit 0 when it deliberately skipped request. */
+	if (!(READ_ONCE(*(u8 *)((char *)dev_id + 0x15)) & 1))
+		devm_free_irq(dev, irq, dev_id);
 }
 
 int haptic_lifetime_file_open(struct file *file)
@@ -242,14 +271,18 @@ void haptic_lifetime_attach_vma(struct haptic_lifetime *lifetime,
 	mutex_unlock(&lifetime->lock);
 }
 
-void haptic_lifetime_block_file_access(void *state)
+bool haptic_lifetime_block_file_access(void *state)
 {
 	struct haptic_lifetime *lifetime;
+	bool published;
 
 	atomic_set(&haptic_shutdown, 1);
 	mutex_lock(&haptic_lifetime_registry_lock);
-	if (READ_ONCE(g_aw_haptic) == state)
+	published = READ_ONCE(g_aw_haptic) == state;
+	if (published)
 		WRITE_ONCE(g_aw_haptic, NULL);
+	if (haptic_partial_probe_state == state)
+		haptic_partial_probe_state = NULL;
 	lifetime = active_lifetime;
 	if (lifetime && lifetime->state == state) {
 		mutex_lock(&lifetime->lock);
@@ -261,9 +294,13 @@ void haptic_lifetime_block_file_access(void *state)
 	mutex_unlock(&haptic_lifetime_registry_lock);
 
 	/* misc_open uses the same core mutex, so this also drains in-flight opens. */
-	misc_deregister(&richtap_misc);
+	if (published && READ_ONCE(haptic_misc_registered)) {
+		WRITE_ONCE(haptic_misc_registered, false);
+		misc_deregister(&richtap_misc);
+	}
 	if (lifetime)
 		wait_event(lifetime->idle, READ_ONCE(lifetime->active_ops) == 0);
+	return published;
 }
 
 void haptic_lifetime_retire_state(void *state)

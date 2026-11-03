@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T07:48:55Z",
+  "driver": "haptic_86938",
+  "scope": "partial_probe_remove_teardown",
+  "status": "STATIC_HARDENING_BUILD_REPRODUCIBLE_DRIVER_INCOMPLETE",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "candidate_sha256": "116f401d4f5d708f93d4c9cce26f516d1e0c0ac4a37c44aace2b0d6d453da051",
+  "candidate_size_bytes": 6694976,
+  "target_kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+  "findings": [
+    {
+      "id": "HAP-PROBE-PARTIAL-PUBLICATION",
+      "severity": "high",
+      "stock_path": "aw_i2c_probe returns 0 after workqueue/RTP/pages allocation failure without setting g_aw_haptic; misc_register and Richtap work initialization are only on complete path",
+      "evidence": [
+        "offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+        "offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm"
+      ],
+      "risk": "remove previously called misc_deregister on a zero-initialized misc list and canceled work items that were not initialized",
+      "fix": "remove gates misc deregistration on tracked successful registration, base/optional work cancellation on initialized state, and buffer free on publication; partial state is tracked until remove and blocks a second singleton probe",
+      "residual": "The stock probe still returns success for partial initialization; the candidate contains the teardown and singleton hazard but does not convert the degraded bind into a probe error."
+    },
+    {
+      "id": "HAP-PROBE-DEVM-DOUBLE-RELEASE",
+      "severity": "high",
+      "stock_path": "probe calls devm_gpio_request_one for both lines and later calls gpio_free at assembly offsets 0x4f74 and 0x4f80; remove also manually frees both",
+      "evidence": [
+        "offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+        "Docker source: drivers/gpio/gpiolib-legacy.c devm_gpio_release; drivers/gpio/gpiolib.c gpiod_free"
+      ],
+      "risk": "manual gpio_free leaves devres actions armed; later release calls gpio_free again and drops GPIO module/device references twice",
+      "fix": "probe cleanup call instructions are NOPs and remove no longer frees managed GPIOs; devres performs one release after probe failure or remove."
+    },
+    {
+      "id": "HAP-PROBE-IRQ-WORK-ALLOC-STATE",
+      "severity": "high",
+      "stock_path": "irq_config records skip state in state+0x15 bit 0; allocation-failure cleanup calls devm_free_irq only after private workqueue exists; ram_work_init and Richtap work init are conditional",
+      "evidence": [
+        "offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+        "offline_static/stock_assembly/0066_irq_config_00108368.asm",
+        "offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm"
+      ],
+      "fix": "probe IRQ cleanup wrapper honors skip bit; remove frees IRQ only when requested and not already released by allocation cleanup; RAM delayed work is canceled only if workqueue creation passed; Richtap work offsets are canceled only for published state."
+    },
+    {
+      "id": "HAP-PROBE-STALE-RTP-POINTER",
+      "severity": "high",
+      "stock_path": "pages allocation failure frees state+0x608 but leaves the field non-NULL before returning 0",
+      "evidence": [
+        "offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+        "offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm"
+      ],
+      "fix": "remove skips kfree(state+0x608) for unpublished partial state; complete published state retains normal free."
+    }
+  ],
+  "docker": {
+    "two_clean_builds_match": true,
+    "module_sha256": "116f401d4f5d708f93d4c9cce26f516d1e0c0ac4a37c44aace2b0d6d453da051",
+    "module_size_bytes": 6694976,
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "build_report": "docker_builds.json",
+    "source_sync_report": "source_sync.json"
+  },
+  "abi": {
+    "target_vermagic_match": true,
+    "target_modversions_match": true,
+    "module_symvers_crc_count": 93,
+    "mismatched_crc_symbols": [],
+    "missing_crc_symbols": [],
+    "stock_import_parity": false,
+    "intentional_missing_stock_imports": [
+      "gpio_free"
+    ],
+    "additional_hardening_imports": [
+      "__init_waitqueue_head",
+      "__wake_up",
+      "destroy_workqueue",
+      "finish_wait",
+      "init_wait_entry",
+      "led_classdev_unregister",
+      "prepare_to_wait_event",
+      "refcount_warn_saturate",
+      "schedule"
+    ],
+    "report": "module_abi_audit.json"
+  },
+  "offline_audit": {
+    "verdict": "INCOMPLETE",
+    "passed_gates": 1,
+    "total_gates": 10,
+    "blockers": [
+      "no run contains both stock and Ghidra evidence",
+      "engineering run is missing",
+      "no assembly manifest found",
+      "mapping is not reviewed: activate_aw_show"
+    ],
+    "report": "canonical_audit.json"
+  },
+  "limitations": [
+    "No hardware execution, unbind/reprobe stress, lockdep, or KCSAN was performed.",
+    "Strict stock import parity is intentionally not claimed: the hardened candidate removes gpio_free and adds lifecycle imports.",
+    "Partial initialization still returns success from the stock probe body; runtime behavior while that degraded device remains bound is not established.",
+    "Independent review and the remaining offline reconstruction gates are open."
+  ]
+}

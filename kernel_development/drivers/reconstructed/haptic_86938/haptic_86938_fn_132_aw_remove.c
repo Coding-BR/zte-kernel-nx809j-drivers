@@ -19,8 +19,8 @@ void aw_remove(struct i2c_client *client)
 	struct led_classdev *led_cdev;
 	struct workqueue_struct *workqueue;
 	struct gpio_desc *reset_desc;
-	int gpio;
 	int irq;
+	bool published;
 
 	haptic_lifetime_transition_begin();
 	haptic = i2c_get_clientdata(client);
@@ -33,7 +33,7 @@ void aw_remove(struct i2c_client *client)
 	       "aw_remove");
 
 	/* Close both user entry points before any callback-owned resource is freed. */
-	haptic_lifetime_block_file_access(haptic);
+	published = haptic_lifetime_block_file_access(haptic);
 	led_cdev = (struct led_classdev *)(haptic + 0xa8);
 	if (READ_ONCE(*(struct device **)(haptic + 0xf8))) {
 		led_classdev_unregister(led_cdev);
@@ -41,14 +41,21 @@ void aw_remove(struct i2c_client *client)
 		WRITE_ONCE(led_cdev->dev, NULL);
 	}
 
+	workqueue = *(struct workqueue_struct **)(haptic + 0x448);
+	/* ram_work_init runs only after the private workqueue was created. */
+	if (workqueue)
+		cancel_delayed_work_sync((struct delayed_work *)(haptic + 0x3c0));
 	/* request_firmware_nowait has no cancel handle; drain its tracked callbacks. */
-	cancel_delayed_work_sync((struct delayed_work *)(haptic + 0x3c0));
 	haptic_lifetime_wait_ram_callbacks();
-	cancel_delayed_work_sync((struct delayed_work *)(haptic + 0x3c0));
+	if (workqueue)
+		cancel_delayed_work_sync((struct delayed_work *)(haptic + 0x3c0));
 
-	reset_desc = gpio_to_desc(*(int *)(haptic + 0x50));
-	irq = gpiod_to_irq(reset_desc);
-	devm_free_irq(&client->dev, irq, haptic);
+	/* Allocation-failure probe paths release IRQ when WQ exists. */
+	if ((published || !workqueue) && !(READ_ONCE(haptic[0x15]) & 1)) {
+		reset_desc = gpio_to_desc(*(int *)(haptic + 0x50));
+		irq = gpiod_to_irq(reset_desc);
+		devm_free_irq(&client->dev, irq, haptic);
+	}
 
 	/* Timers and work callbacks refuse rearming after the shutdown gate. */
 	hrtimer_cancel((struct hrtimer *)(haptic + 0x520));
@@ -56,35 +63,35 @@ void aw_remove(struct i2c_client *client)
 	cancel_work_sync((struct work_struct *)(haptic + 0x560));
 	cancel_work_sync((struct work_struct *)(haptic + 0x3a0));
 	cancel_work_sync((struct work_struct *)(haptic + 0x428));
-	cancel_work_sync((struct work_struct *)(haptic + 0x628));
-	cancel_work_sync((struct work_struct *)(haptic + 0x648));
-	cancel_work_sync((struct work_struct *)(haptic + 0x668));
+	if (published) {
+		cancel_work_sync((struct work_struct *)(haptic + 0x628));
+		cancel_work_sync((struct work_struct *)(haptic + 0x648));
+		cancel_work_sync((struct work_struct *)(haptic + 0x668));
+	}
 	/* Catch timers armed by a callback that was already executing at shutdown. */
 	hrtimer_cancel((struct hrtimer *)(haptic + 0x520));
 	hrtimer_cancel((struct hrtimer *)(haptic + 0x330));
 	cancel_work_sync((struct work_struct *)(haptic + 0x560));
 	cancel_work_sync((struct work_struct *)(haptic + 0x3a0));
 	cancel_work_sync((struct work_struct *)(haptic + 0x428));
-	cancel_work_sync((struct work_struct *)(haptic + 0x628));
-	cancel_work_sync((struct work_struct *)(haptic + 0x648));
-	cancel_work_sync((struct work_struct *)(haptic + 0x668));
+	if (published) {
+		cancel_work_sync((struct work_struct *)(haptic + 0x628));
+		cancel_work_sync((struct work_struct *)(haptic + 0x648));
+		cancel_work_sync((struct work_struct *)(haptic + 0x668));
+	}
 
-	workqueue = *(struct workqueue_struct **)(haptic + 0x448);
 	if (workqueue) {
 		destroy_workqueue(workqueue);
 		*(struct workqueue_struct **)(haptic + 0x448) = NULL;
 	}
 
-	gpio = *(int *)(haptic + 0x50);
-	if (gpio >= 0)
-		gpio_free(gpio);
-
-	kfree(*(void **)(haptic + 0x608));
-	*(void **)(haptic + 0x608) = NULL;
+	/* A partial probe may already have freed +0x608 on page allocation failure. */
+	if (published) {
+		kfree(*(void **)(haptic + 0x608));
+		*(void **)(haptic + 0x608) = NULL;
+	}
 	haptic_lifetime_retire_state(haptic);
 
-	gpio = *(int *)(haptic + 0x5c);
-	if (gpio >= 0)
-		gpio_free(gpio);
+	/* devm_gpio_request_one owns both GPIO releases after remove returns. */
 	haptic_lifetime_transition_end();
 }

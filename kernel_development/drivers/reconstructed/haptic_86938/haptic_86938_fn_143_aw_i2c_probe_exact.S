@@ -876,12 +876,10 @@ aw_i2c_probe_stock_exact:
     .reloc .-4, R_AARCH64_CALL26, _printk
     .inst 0xb9405260
     .inst 0x37f80040
-    .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, gpio_free
+    .inst 0xd503201f
     .inst 0xb9405e60
     .inst 0x37f80040
-    .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, gpio_free
+    .inst 0xd503201f
     .inst 0xaa1403e0
     .inst 0xaa1303e1
     .inst 0x94000000
@@ -1165,7 +1163,7 @@ aw_i2c_probe_stock_exact:
     .inst 0xf9032268
     .inst 0xb906be7f
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, misc_register
+    .reloc .-4, R_AARCH64_CALL26, haptic_lifetime_misc_register
     .inst 0x2a1f03e0
     .inst 0x90000008
     .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, g_aw_haptic
@@ -1229,7 +1227,7 @@ aw_i2c_probe_stock_exact:
     .inst 0xaa1403e0
     .inst 0xaa1303e2
     .inst 0x94000000
-    .reloc .-4, R_AARCH64_CALL26, devm_free_irq
+    .reloc .-4, R_AARCH64_CALL26, haptic_lifetime_free_probe_irq_if_requested
     .inst 0x2a1f03f5
     .inst 0x17fffedf
     .inst 0xb25f7be9
