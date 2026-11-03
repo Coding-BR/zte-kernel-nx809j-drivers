@@ -1,0 +1,185 @@
+{
+  "schema_version": "1.0",
+  "review_id": "HAP-RICHTAP-03-STOP-WORK-CALLBACKS-20261102",
+  "generated_local_date": "2026-11-02",
+  "driver": "haptic_86938",
+  "status": "UN_DRAINED_STOP_WORK_CALLS_I2C_AND_USES_DEVICE_STATE_AFTER_IRQ_RELEASE; STATIC_PATH_CONFIRMED; RUNTIME_UNVERIFIED",
+  "binding": {
+    "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "candidate_module_sha256": "175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c",
+    "target_kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "target_kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "reconstruction_map": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+      "sha256": "97b0404507e15d07a16f7f669eefa2b0f80418ac4a8e427df64551880e981143"
+    },
+    "prior_reviews": [
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/richtap_lifetime_static_review.json",
+        "sha256": "ed5dbcab856530b13a5bb923a6b97a95cb8b9ad8a43c2ef7f7af96df2a4efdda",
+        "finding": "HAP-RICHTAP-03"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/richtap_ioctl_requeue_lifetime_review.json",
+        "sha256": "83695b6bc4c9db71301a3ee472cb62dd69d34d6a4c73b2962ff52ecd3d1539c6",
+        "finding": "HAP-RICHTAP-05; cross-reference for 0x5212 command dispatch"
+      }
+    ]
+  },
+  "docker_stock_elf_inspection": {
+    "stock_module_path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "container_image": "nubia-sm8850-kernel-builder:latest",
+    "container_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "container_image_digest": "nubia-sm8850-kernel-builder@sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "tool": "llvm-readelf 18.1.3",
+    "mount_mode": "read-only",
+    "commands": [
+      "docker run --rm --mount type=bind,source=reference_modules/full_vendor_boot,target=/stock,readonly nubia-sm8850-kernel-builder:latest llvm-readelf -rW /stock/haptic_86938.ko",
+      "docker run --rm --mount type=bind,source=reference_modules/full_vendor_boot,target=/stock,readonly nubia-sm8850-kernel-builder:latest llvm-readelf -sW /stock/haptic_86938.ko"
+    ],
+    "stock_rela_data_targets": [
+      {
+        "table_offset": "0x38",
+        "slot_index": 7,
+        "relocation": "R_AARCH64_ABS64 .text + 0xf2c",
+        "resolved_symbol": "aw8693x_stop",
+        "symbol_size": 452
+      },
+      {
+        "table_offset": "0xf0",
+        "slot_index": 30,
+        "relocation": "R_AARCH64_ABS64 .text + 0x2864",
+        "resolved_symbol": "aw8693x_irq_clear",
+        "symbol_size": 124
+      },
+      {
+        "table_offset": "0x110",
+        "slot_index": 34,
+        "relocation": "R_AARCH64_ABS64 .text + 0x2ca0",
+        "resolved_symbol": "aw8693x_set_rtp_aei",
+        "symbol_size": 48
+      }
+    ],
+    "interpretation": "The stock ELF relocations and symbol table resolve the three callback slots used by richtap_stop_work to these exact stock functions."
+  },
+  "mapped_evidence": [
+    {
+      "function": "richtap_stop_work",
+      "stock_entry": "00108ba0",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_112_richtap_stop_work.c",
+      "candidate_source_sha256": "1b4df1b9e7c716d4f4554270a39e9def79c5ecc723e505eff3a7d25846d85127",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0071_richtap_stop_work_00108ba0.asm",
+      "stock_assembly_sha256": "255cbe283df945f8e4e62cde2df21f5a94656377412befc2c4be2ad26edc3f14",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0071_00108ba0_richtap_stop_work.c",
+      "stock_ghidra_decompilation_sha256": "ded7c7d4f14825b14120c2d0e45dc9abb6a5001e55f6ca28bd71b5cfa38718a0"
+    },
+    {
+      "function": "aw8693x_irq_clear",
+      "stock_entry": "00105684",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_058_aw8693x_irq_clear.c",
+      "candidate_source_sha256": "0b811f940f4b1a2245961c5cfefd1155fd0f3a7f5dcb36c73badb7972c4c51c4",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0028_aw8693x_irq_clear_00105684.asm",
+      "stock_assembly_sha256": "07526fe9db6fc00a7da99bd0dbc6ad4db3f270fc36b7a7576ce97bab894d29d8",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0028_00105684_aw8693x_irq_clear.c",
+      "stock_ghidra_decompilation_sha256": "2686ca9470ea094b320deceaceacd75c2c200ff9ee7cce912dcc749c85dd9585"
+    },
+    {
+      "function": "aw8693x_stop",
+      "stock_entry": "00103d4c",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_118_aw8693x_stop.c",
+      "candidate_source_sha256": "b4eacd8636a7168c5035fc3e8428c3146948dd03bcd348888eb2e9a641d306e0",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0007_aw8693x_stop_00103d4c.asm",
+      "stock_assembly_sha256": "e981210fc1a403ed4030ca227b02dafc83b8c564329829f23c26bccfdccf88fd",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0007_00103d4c_aw8693x_stop.c",
+      "stock_ghidra_decompilation_sha256": "017483a186ed349feecb572aef77ccd37e10c47e391785485563cf16fc092300"
+    },
+    {
+      "function": "aw8693x_set_rtp_aei",
+      "stock_entry": "00105ac0",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_040_aw8693x_set_rtp_aei.c",
+      "candidate_source_sha256": "0464d414b7463072ece502e769f9f391f740f03a412b19fe7f670fd9a5d0f04b",
+      "candidate_arm64_include": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_040_aw8693x_set_rtp_aei_arm64.inc",
+      "candidate_arm64_include_sha256": "c250320ee09646c103f55d0cccad19eaa9eeb94c40b1ea42fce745119d91ea97",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0032_aw8693x_set_rtp_aei_00105ac0.asm",
+      "stock_assembly_sha256": "9d85048e3ac7ae7ed593e4948b169e7a79c39ee561fb2b9a4a7e62de2701ab5c",
+      "stock_ghidra_decompilation": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0032_00105ac0_aw8693x_set_rtp_aei.c",
+      "stock_ghidra_decompilation_sha256": "12d3e35959326e1254505191b54e2f7cc3c112c973d65fcf16216875e5221b21"
+    },
+    {
+      "function": "aw_remove",
+      "stock_entry": "0010823c",
+      "candidate_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c",
+      "candidate_source_sha256": "14da2f127a98cc9810286b26b6dea32d70a2404adc27743d1186d2723c5136bf",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+      "stock_assembly_sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562"
+    },
+    {
+      "function_table_source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_func_list.c",
+      "function_table_source_sha256": "0ee497171297c04685479fe0f6379efaf4e5febee2502b1cc41cb1a4f4f43a35",
+      "reconstruction_map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json"
+    }
+  ],
+  "worker_effects": {
+    "state_and_mutex": "The stock worker derives state as work-0x668, locks state+0x2f0, invokes the first two callbacks, unlocks, invokes the third callback with value 0, then stores zero to state+0x6bc.",
+    "callback_sequence": [
+      {
+        "work_instruction": "richtap_stop_work+0x30 loads callback from ops+0xf0",
+        "stock_target": "aw8693x_irq_clear",
+        "effect": "I2C read of register 0x02 followed by logging the status byte."
+      },
+      {
+        "work_instruction": "richtap_stop_work+0x58 loads callback from ops+0x38",
+        "stock_target": "aw8693x_stop",
+        "effect": "I2C register writes and a polling loop that reads register 0x3f with sleeps until standby or retry exhaustion."
+      },
+      {
+        "work_instruction": "richtap_stop_work+0x88 loads callback from ops+0x110 and passes 0",
+        "stock_target": "aw8693x_set_rtp_aei",
+        "effect": "Masked I2C write to register 0x03."
+      }
+    ],
+    "final_state_write": "The worker stores zero to state+0x6bc at richtap_stop_work+0xac."
+  },
+  "remove_order": [
+    {
+      "location": "aw_remove+0x80",
+      "operation": "devm_free_irq"
+    },
+    {
+      "location": "aw_remove+0x94",
+      "operation": "cancel_work_sync(state+0x648)"
+    },
+    {
+      "location": "aw_remove+0xe4",
+      "operation": "misc_deregister"
+    },
+    {
+      "operation": "No cancel_work_sync(state+0x668) appears in the complete stock aw_remove body."
+    },
+    {
+      "operation": "The target driver core releases devres state after the remove callback returns; the earlier HAP-RICHTAP-02 review is bound to the same pinned kernel source."
+    }
+  ],
+  "finding_refinement": {
+    "id": "HAP-RICHTAP-03",
+    "title": "the un-drained Richtap stop worker can continue hardware operations and use device state during teardown",
+    "severity": "high",
+    "confidence": "high_static_callpath_and_stock_elf_relocation",
+    "condition": "ioctl 0x5212 has queued state+0x668 and the worker has not finished when aw_remove releases the IRQ and proceeds without draining this item.",
+    "impact": "The worker can issue I2C operations after IRQ release and may continue to access its mutex, callback table and state+0x6bc after the remove callback returns and devres releases the owning state.",
+    "runtime_reproduced": false,
+    "hardware_tested": false,
+    "separate_from_hap_richtap_05": "This worker does not read the RTP buffer/pages; HAP-RICHTAP-05 covers the distinct +0x648 worker path into state+0x608/+0x610."
+  },
+  "hardening_follow_up": [
+    "Close ioctl admission and synchronize in-flight file operations before teardown.",
+    "After all producers are stopped, synchronously drain state+0x668 before freeing state or releasing hardware resources.",
+    "Keep hardening in a separate candidate from stock-exact reconstruction."
+  ],
+  "limits": [
+    "The callback identities are resolved from the stock ELF .rela.data relocations and symbol table with llvm-readelf in the pinned builder image; the module was mounted read-only.",
+    "The finding is conditional on an outstanding 0x5212 work item overlapping teardown; no runtime schedule was reproduced.",
+    "No reconstruction source changed; Docker was used for read-only ELF evidence, and a kernel rebuild was not needed."
+  ]
+}
