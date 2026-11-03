@@ -1,0 +1,282 @@
+
+/repo/kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000008444 <richtap_rtp_work>:
+    8444:      	paciasp
+    8448:      	stp	x29, x30, [sp, #-0x60]!
+    844c:      	stp	x28, x27, [sp, #0x10]
+    8450:      	stp	x26, x25, [sp, #0x20]
+    8454:      	stp	x24, x23, [sp, #0x30]
+    8458:      	stp	x22, x21, [sp, #0x40]
+    845c:      	stp	x20, x19, [sp, #0x50]
+    8460:      	mov	x29, sp
+    8464:      	bl	0x8464 <richtap_rtp_work+0x20>
+		0000000000008464:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    8468:      	tbnz	w0, #0x0, 0x85c4 <richtap_rtp_work+0x180>
+    846c:      	bl	0x846c <richtap_rtp_work+0x28>
+		000000000000846c:  R_AARCH64_CALL26	haptic_lifetime_irq_stop_lock
+    8470:      	bl	0x8470 <richtap_rtp_work+0x2c>
+		0000000000008470:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    8474:      	tbnz	w0, #0x0, 0x85c0 <richtap_rtp_work+0x17c>
+    8478:      	str	wzr, [x0, #0x78]
+    847c:      	mov	x19, x0
+    8480:      	mov	w21, wzr
+    8484:      	ldur	x8, [x0, #-0x38]
+    8488:      	mov	w23, wzr
+    848c:      	sub	x20, x0, #0x648
+    8490:      	sub	x22, x0, #0x1f0
+    8494:      	mov	w24, #0xff              // =255
+    8498:      	stur	x8, [x0, #-0x28]
+    849c:      	bl	0x849c <richtap_rtp_work+0x58>
+		000000000000849c:  R_AARCH64_CALL26	haptic_lifetime_irq_stop_unlock
+    84a0:      	bl	0x84a0 <richtap_rtp_work+0x5c>
+		00000000000084a0:  R_AARCH64_CALL26	haptic_lifetime_irq_stop_lock
+    84a4:      	bl	0x84a4 <richtap_rtp_work+0x60>
+		00000000000084a4:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    84a8:      	tbnz	w0, #0x0, 0x85c0 <richtap_rtp_work+0x17c>
+    84ac:      	mov	w27, #0x3e80            // =16000
+    84b0:      	b	0x84c8 <richtap_rtp_work+0x84>
+    84b4:      	bl	0x84b4 <richtap_rtp_work+0x70>
+		00000000000084b4:  R_AARCH64_CALL26	haptic_lifetime_irq_stop_unlock
+    84b8:      	add	w23, w23, #0x1
+    84bc:      	bl	0x84bc <richtap_rtp_work+0x78>
+		00000000000084bc:  R_AARCH64_CALL26	haptic_lifetime_irq_stop_lock
+    84c0:      	bl	0x84c0 <richtap_rtp_work+0x7c>
+		00000000000084c0:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    84c4:      	tbnz	w0, #0x0, 0x85c0 <richtap_rtp_work+0x17c>
+    84c8:      	ldur	x8, [x19, #-0x38]
+    84cc:      	ldur	x28, [x19, #-0x28]
+    84d0:      	subs	x9, x28, x8
+    84d4:      	b.lo	0x85b8 <richtap_rtp_work+0x174>
+    84d8:      	cbz	x28, 0x85b8 <richtap_rtp_work+0x174>
+    84dc:      	cbz	x8, 0x85b8 <richtap_rtp_work+0x174>
+    84e0:      	and	x10, x8, #0x3fff
+    84e4:      	cbnz	x10, 0x85b8 <richtap_rtp_work+0x174>
+    84e8:      	tst	x9, #0xffffffffffffc3ff
+    84ec:      	b.ne	0x85b8 <richtap_rtp_work+0x174>
+    84f0:      	ldr	w10, [x22]
+    84f4:      	cmp	w10, w27
+    84f8:      	b.hi	0x85b8 <richtap_rtp_work+0x174>
+    84fc:      	ldur	x11, [x19, #-0x40]
+    8500:      	cbz	x11, 0x85b8 <richtap_rtp_work+0x174>
+    8504:      	ldrb	w11, [x28]
+    8508:      	cmp	w11, #0x55
+    850c:      	b.eq	0x853c <richtap_rtp_work+0xf8>
+    8510:      	cmp	w11, #0xaa
+    8514:      	b.eq	0x8608 <richtap_rtp_work+0x1c4>
+    8518:      	bl	0x8518 <richtap_rtp_work+0xd4>
+		0000000000008518:  R_AARCH64_CALL26	haptic_lifetime_irq_stop_unlock
+    851c:      	mov	w0, #0x1                // =1
+    8520:      	bl	0x8520 <richtap_rtp_work+0xdc>
+		0000000000008520:  R_AARCH64_CALL26	msleep
+    8524:      	ldr	w8, [x22]
+    8528:      	cmp	w21, w8
+    852c:      	b.hs	0x860c <richtap_rtp_work+0x1c8>
+    8530:      	cmp	w23, #0x1d
+    8534:      	b.ls	0x84b8 <richtap_rtp_work+0x74>
+    8538:      	b	0x860c <richtap_rtp_work+0x1c8>
+    853c:      	ldrsh	w25, [x28, #0x2]
+    8540:      	cmp	w25, #0x3e8
+    8544:      	b.hi	0x85b8 <richtap_rtp_work+0x174>
+    8548:      	subs	w26, w10, w21
+    854c:      	b.lo	0x85b8 <richtap_rtp_work+0x174>
+    8550:      	cmp	w26, w25
+    8554:      	b.lo	0x85e4 <richtap_rtp_work+0x1a0>
+    8558:      	mov	w11, #0x3c00            // =15360
+    855c:      	ldr	x26, [x28, #0x8]
+    8560:      	add	x10, x28, #0x400
+    8564:      	cmp	x9, x11
+    8568:      	csel	x8, x8, x10, eq
+    856c:      	cmp	x8, x26
+    8570:      	b.ne	0x85b8 <richtap_rtp_work+0x174>
+    8574:      	cbz	w25, 0x858c <richtap_rtp_work+0x148>
+    8578:      	ldur	x8, [x19, #-0x40]
+    857c:      	add	x1, x28, #0x18
+    8580:      	mov	x2, x25
+    8584:      	add	x0, x8, w21, uxtw
+    8588:      	bl	0x8588 <richtap_rtp_work+0x144>
+		0000000000008588:  R_AARCH64_CALL26	memcpy
+    858c:      	strb	w24, [x28]
+    8590:      	add	w21, w21, w25
+    8594:      	strh	wzr, [x28, #0x2]
+    8598:      	strh	wzr, [x19, #0x70]
+    859c:      	stur	x26, [x19, #-0x28]
+    85a0:      	ldr	w8, [x22]
+    85a4:      	cmp	w21, w8
+    85a8:      	b.hs	0x8608 <richtap_rtp_work+0x1c4>
+    85ac:      	cmp	w23, #0x1d
+    85b0:      	b.ls	0x84b4 <richtap_rtp_work+0x70>
+    85b4:      	b	0x8608 <richtap_rtp_work+0x1c4>
+    85b8:      	mov	x0, x20
+    85bc:      	bl	0x85bc <richtap_rtp_work+0x178>
+		00000000000085bc:  R_AARCH64_CALL26	haptic_lifetime_richtap_fifo_reset
+    85c0:      	bl	0x85c0 <richtap_rtp_work+0x17c>
+		00000000000085c0:  R_AARCH64_CALL26	haptic_lifetime_irq_stop_unlock
+    85c4:      	ldp	x20, x19, [sp, #0x50]
+    85c8:      	ldp	x22, x21, [sp, #0x40]
+    85cc:      	ldp	x24, x23, [sp, #0x30]
+    85d0:      	ldp	x26, x25, [sp, #0x20]
+    85d4:      	ldp	x28, x27, [sp, #0x10]
+    85d8:      	ldp	x29, x30, [sp], #0x60
+    85dc:      	autiasp
+    85e0:      	ret
+    85e4:      	cmp	w10, w21
+    85e8:      	b.eq	0x8600 <richtap_rtp_work+0x1bc>
+    85ec:      	ldur	x8, [x19, #-0x40]
+    85f0:      	add	x1, x28, #0x18
+    85f4:      	mov	x2, x26
+    85f8:      	add	x0, x8, w21, uxtw
+    85fc:      	bl	0x85fc <richtap_rtp_work+0x1b8>
+		00000000000085fc:  R_AARCH64_CALL26	memcpy
+    8600:      	strh	w26, [x19, #0x70]
+    8604:      	ldr	w21, [x22]
+    8608:      	bl	0x8608 <richtap_rtp_work+0x1c4>
+		0000000000008608:  R_AARCH64_CALL26	haptic_lifetime_irq_stop_unlock
+    860c:      	bl	0x860c <richtap_rtp_work+0x1c8>
+		000000000000860c:  R_AARCH64_CALL26	haptic_lifetime_irq_stop_lock
+    8610:      	bl	0x8610 <richtap_rtp_work+0x1cc>
+		0000000000008610:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    8614:      	tbnz	w0, #0x0, 0x85c0 <richtap_rtp_work+0x17c>
+    8618:      	mov	x0, x20
+    861c:      	bl	0x861c <richtap_rtp_work+0x1d8>
+		000000000000861c:  R_AARCH64_CALL26	richtap_rtp_start
+    8620:      	tbz	w0, #0x0, 0x85c0 <richtap_rtp_work+0x17c>
+    8624:      	ldur	x8, [x19, #-0x80]
+    8628:      	ldur	x1, [x19, #-0x40]
+    862c:      	mov	x0, x20
+    8630:      	mov	w2, w21
+    8634:      	mov	x23, x20
+    8638:      	ldr	x8, [x8, #0xd0]
+    863c:      	ldur	w16, [x8, #-0x4]
+    8640:      	movk	w17, #0xb29b
+    8644:      	movk	w17, #0xc6a7, lsl #16
+    8648:      	cmp	w16, w17
+    864c:      	b.eq	0x8654 <richtap_rtp_work+0x210>
+    8650:      	brk	#0x8228
+    8654:      	blr	x8
+    8658:      	sub	x8, x19, #0x637
+    865c:      	ldrb	w8, [x8]
+    8660:      	cmp	w8, #0x1
+    8664:      	b.ne	0x8780 <richtap_rtp_work+0x33c>
+    8668:      	sub	x20, x19, #0x631
+    866c:      	str	w8, [x19, #0x74]
+    8670:      	ldur	x9, [x19, #-0x38]
+    8674:      	ldur	x10, [x19, #-0x28]
+    8678:      	subs	x8, x10, x9
+    867c:      	b.lo	0x87e0 <richtap_rtp_work+0x39c>
+    8680:      	cbz	x10, 0x87e0 <richtap_rtp_work+0x39c>
+    8684:      	cbz	x9, 0x87e0 <richtap_rtp_work+0x39c>
+    8688:      	and	x9, x9, #0x3fff
+    868c:      	cbnz	x9, 0x87e0 <richtap_rtp_work+0x39c>
+    8690:      	tst	x8, #0xffffffffffffc3ff
+    8694:      	b.ne	0x87e0 <richtap_rtp_work+0x39c>
+    8698:      	ldur	x8, [x19, #-0x80]
+    869c:      	mov	x0, x23
+    86a0:      	ldr	x8, [x8, #0x170]
+    86a4:      	ldur	w16, [x8, #-0x4]
+    86a8:      	movk	w17, #0x3854
+    86ac:      	movk	w17, #0x784b, lsl #16
+    86b0:      	cmp	w16, w17
+    86b4:      	b.eq	0x86bc <richtap_rtp_work+0x278>
+    86b8:      	brk	#0x8228
+    86bc:      	blr	x8
+    86c0:      	tst	w0, #0xff
+    86c4:      	b.ne	0x8728 <richtap_rtp_work+0x2e4>
+    86c8:      	ldrb	w8, [x20]
+    86cc:      	cmp	w8, #0x2
+    86d0:      	b.ne	0x8728 <richtap_rtp_work+0x2e4>
+    86d4:      	ldur	x8, [x19, #-0x28]
+    86d8:      	ldrb	w8, [x8]
+    86dc:      	cmp	w8, #0x55
+    86e0:      	b.ne	0x8728 <richtap_rtp_work+0x2e4>
+    86e4:      	ldr	w8, [x22]
+    86e8:      	mov	x0, x23
+    86ec:      	lsr	w1, w8, #2
+    86f0:      	bl	0x86f0 <richtap_rtp_work+0x2ac>
+		00000000000086f0:  R_AARCH64_CALL26	richtap_update_fifo_data
+    86f4:      	ldur	x8, [x19, #-0x80]
+    86f8:      	tbz	w0, #0x0, 0x87ec <richtap_rtp_work+0x3a8>
+    86fc:      	ldr	x8, [x8, #0x160]
+    8700:      	mov	x0, x23
+    8704:      	ldur	w16, [x8, #-0x4]
+    8708:      	movk	w17, #0x3854
+    870c:      	movk	w17, #0x784b, lsl #16
+    8710:      	cmp	w16, w17
+    8714:      	b.eq	0x871c <richtap_rtp_work+0x2d8>
+    8718:      	brk	#0x8228
+    871c:      	blr	x8
+    8720:      	tst	w0, #0xf
+    8724:      	b.ne	0x8670 <richtap_rtp_work+0x22c>
+    8728:      	ldur	x8, [x19, #-0x80]
+    872c:      	mov	x0, x23
+    8730:      	ldr	x8, [x8, #0xf0]
+    8734:      	ldur	w16, [x8, #-0x4]
+    8738:      	movk	w17, #0x830
+    873c:      	movk	w17, #0x847a, lsl #16
+    8740:      	cmp	w16, w17
+    8744:      	b.eq	0x874c <richtap_rtp_work+0x308>
+    8748:      	brk	#0x8228
+    874c:      	blr	x8
+    8750:      	ldur	x8, [x19, #-0x80]
+    8754:      	mov	x0, x23
+    8758:      	mov	w1, #0x1                // =1
+    875c:      	ldr	x8, [x8, #0x110]
+    8760:      	ldur	w16, [x8, #-0x4]
+    8764:      	movk	w17, #0xdf6e
+    8768:      	movk	w17, #0x1d0a, lsl #16
+    876c:      	cmp	w16, w17
+    8770:      	b.eq	0x8778 <richtap_rtp_work+0x334>
+    8774:      	brk	#0x8228
+    8778:      	blr	x8
+    877c:      	b	0x85c0 <richtap_rtp_work+0x17c>
+    8780:      	ldur	x8, [x19, #-0x80]
+    8784:      	mov	x0, x23
+    8788:      	mov	w1, #0x1                // =1
+    878c:      	mov	w20, #0x1               // =1
+    8790:      	ldr	x8, [x8, #0x110]
+    8794:      	ldur	w16, [x8, #-0x4]
+    8798:      	movk	w17, #0xdf6e
+    879c:      	movk	w17, #0x1d0a, lsl #16
+    87a0:      	cmp	w16, w17
+    87a4:      	b.eq	0x87ac <richtap_rtp_work+0x368>
+    87a8:      	brk	#0x8228
+    87ac:      	blr	x8
+    87b0:      	ldur	x8, [x19, #-0x80]
+    87b4:      	mov	x0, x23
+    87b8:      	ldr	x8, [x8, #0xf0]
+    87bc:      	ldur	w16, [x8, #-0x4]
+    87c0:      	movk	w17, #0x830
+    87c4:      	movk	w17, #0x847a, lsl #16
+    87c8:      	cmp	w16, w17
+    87cc:      	b.eq	0x87d4 <richtap_rtp_work+0x390>
+    87d0:      	brk	#0x8228
+    87d4:      	blr	x8
+    87d8:      	str	w20, [x19, #0x74]
+    87dc:      	b	0x85c0 <richtap_rtp_work+0x17c>
+    87e0:      	mov	x0, x23
+    87e4:      	bl	0x87e4 <richtap_rtp_work+0x3a0>
+		00000000000087e4:  R_AARCH64_CALL26	haptic_lifetime_richtap_fifo_reset
+    87e8:      	ldur	x8, [x19, #-0x80]
+    87ec:      	ldr	x8, [x8, #0x110]
+    87f0:      	mov	x0, x23
+    87f4:      	mov	w1, wzr
+    87f8:      	ldur	w16, [x8, #-0x4]
+    87fc:      	movk	w17, #0xdf6e
+    8800:      	movk	w17, #0x1d0a, lsl #16
+    8804:      	cmp	w16, w17
+    8808:      	b.eq	0x8810 <richtap_rtp_work+0x3cc>
+    880c:      	brk	#0x8228
+    8810:      	blr	x8
+    8814:      	ldur	x8, [x19, #-0x80]
+    8818:      	mov	x0, x23
+    881c:      	ldr	x8, [x8, #0xf0]
+    8820:      	ldur	w16, [x8, #-0x4]
+    8824:      	movk	w17, #0x830
+    8828:      	movk	w17, #0x847a, lsl #16
+    882c:      	cmp	w16, w17
+    8830:      	b.eq	0x8838 <richtap_rtp_work+0x3f4>
+    8834:      	brk	#0x8228
+    8838:      	blr	x8
+    883c:      	b	0x85c0 <richtap_rtp_work+0x17c>

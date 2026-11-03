@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0",
+  "review_id": "haptic_richtap_consumer_serialization_revalidation_20261103",
+  "generated_utc": "2026-11-03T14:23:01.4996056Z",
+  "driver": "haptic_86938",
+  "result": "KERNEL_IRQ_AND_RTP_WORKER_SERIALIZED; USERSPACE_FIFO_PUBLICATION_ORDER_UNPROVEN",
+  "scope": "Static review of shared Richtap FIFO consumers in the current canonical candidate; no runtime or producer-protocol claim.",
+  "tooling": {
+    "docker_image": "nubia-sm8850-kernel-builder:latest",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "tool": "/usr/bin/llvm-objdump -dr --no-show-raw-insn",
+    "source_mount": "read-only"
+  },
+  "identity": {
+    "candidate_module": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+      "sha256": "53ee12ee85c0d39eb05515e81b7eff5abe14af4480a4b7376ddbebc902427bb3",
+      "size_bytes": 6706688
+    },
+    "docker_curated_module": {
+      "path": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/haptic_86938/haptic_86938.ko",
+      "sha256": "53ee12ee85c0d39eb05515e81b7eff5abe14af4480a4b7376ddbebc902427bb3",
+      "size_bytes": 6706688
+    },
+    "module_and_curated_hash_match": true,
+    "reconstruction_map": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+      "sha256": "7aec144f3dd5440745d52f448236a3842727c1bfe2b03a68efde0c5d67dc4f4b",
+      "size_bytes": 465010
+    },
+    "docker_curated_map": {
+      "path": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/haptic_86938/reconstruction_map.json",
+      "sha256": "7aec144f3dd5440745d52f448236a3842727c1bfe2b03a68efde0c5d67dc4f4b",
+      "size_bytes": 465010
+    },
+    "map_and_curated_hash_match": true,
+    "stock_module": {
+      "path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+      "sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+      "size_bytes": 189328
+    }
+  },
+  "stock_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0066_00108368_irq_config.c",
+      "sha256": "6e1f30fc5e0a16a35a24fa262156061375522d47b4877ea78d6a06ba71fdcc40",
+      "size_bytes": 1055
+    }
+  ],
+  "candidate_sources": [
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_136_richtap_update_fifo_data.c",
+      "sha256": "b0955fdcd2d554b2edcd95e1d708a7055e2f7a30bfebb926481c93b2d076ad34",
+      "size_bytes": 3871
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_137_richtap_rtp_work.c",
+      "sha256": "5dc937e31aa6073ea90dc64f2b1e8ebe09a671ee0c96a0a709b9c33f10083a03",
+      "size_bytes": 8736
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+      "sha256": "dc5f751668ad2c6e4d835c0c6c8f5997d439d8a03306db5ae5b403e8cd30403d",
+      "size_bytes": 15877
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_internal.h",
+      "sha256": "49e3eae90bebc0d2c53736e2cabeec370bbd7ab51fe48e48cf836088b0367132",
+      "size_bytes": 3654
+    }
+  ],
+  "candidate_disassembly": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_consumer_serialization_revalidation_20261103/candidate_irq_handle_disassembly.txt",
+      "sha256": "ee0c0c5679693fdfaa55e9c980b3fe561d416cac99ba8c36a64949a1837aa693",
+      "size_bytes": 2014
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_consumer_serialization_revalidation_20261103/candidate_irq_stop_lock_disassembly.txt",
+      "sha256": "e83bd3bb24399826e40953f7ba75ae118c5210d67c6f236c6556d5f87fc96917",
+      "size_bytes": 1279
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_consumer_serialization_revalidation_20261103/candidate_richtap_rtp_work_disassembly.txt",
+      "sha256": "9db7198b56fb8b6a40ea60855bfb656abb2658946927e81f47536c16c69f5e6f",
+      "size_bytes": 11691
+    }
+  ],
+  "findings": [
+    {
+      "id": "threaded_irq",
+      "claim": "Stock irq_config passes a NULL primary handler and irq_handle as the threaded function to devm_request_threaded_irq, with flags 0x2002.",
+      "evidence": "Hash-bound Ghidra decompilation at irq_config call site."
+    },
+    {
+      "id": "shared_mutex_identity",
+      "claim": "Current candidate irq_handle wrapper calls mutex_lock and mutex_unlock on relocation target .data+0x400 around irq_handle_stock_exact. haptic_lifetime_irq_stop_lock/unlock target the same .data+0x400 mutex.",
+      "evidence": "Current candidate ELF relocations in candidate_irq_handle_disassembly.txt and candidate_irq_stop_lock_disassembly.txt."
+    },
+    {
+      "id": "worker_coverage",
+      "claim": "richtap_rtp_work uses the same lock helper while accessing FIFO cursor/node state; its RTP service region calls richtap_update_fifo_data after acquiring the lock and exits through the unlock path. The polling sleep releases and reacquires this mutex.",
+      "evidence": "Current candidate worker relocations and control flow in candidate_richtap_rtp_work_disassembly.txt."
+    },
+    {
+      "id": "userspace_boundary",
+      "claim": "The kernel-private mutex serializes the IRQ thread and kernel worker, but it does not establish a release/acquire publication relation with a userspace writer to the mmap FIFO. Producer ordering remains unproven; no failure is asserted.",
+      "evidence": "Inference from lock scope in current candidate; prior userspace-publication scan is hash-bound to candidate 3dad43a6 and is retained as historical evidence only."
+    }
+  ],
+  "limits": [
+    "Static ELF/relocation review only.",
+    "No Lockdep, KCSAN, runtime stress, IRQ-latency measurement, module load, or NX809J hardware validation.",
+    "This review does not establish stock semantic equivalence; full-driver status remains INCOMPLETE."
+  ],
+  "historical_reports": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_fifo_serialization_20261103/richtap_irq_fifo_serialization.json",
+      "candidate_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+      "status": "historical; not the current candidate"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_integrity_20261103/userspace_publication_revalidation.json",
+      "candidate_sha256": "3dad43a65e611dfe56afb946aba6206975c9a3648eccc19a074723b021412a2b",
+      "status": "historical; protocol boundary remains open"
+    }
+  ]
+}
