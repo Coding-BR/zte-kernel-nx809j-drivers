@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_ram_firmware_current_candidate_revalidation_20261103",
+  "disposition": "HAP_FW_01_STATICALLY_ADDRESSED_CURRENT_CANDIDATE_RUNTIME_UNVERIFIED",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "candidate_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+  "docker_curated_candidate_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+  "target_kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+  "target_firmware_loader_sha256": "271dab9b1aaea7f53b44b2b438b3466f988e0692c0529b7094bfbfa049e94a2f",
+  "findings": [
+    "Both stock origins—delayed RAM work and ram_update_store—route through haptic_lifetime_request_ram_firmware. The candidate increments its callback counter before request_firmware_nowait and rolls it back on shutdown or synchronous submission error.",
+    "The pinned target schedules the callback only after request setup succeeds. On success it invokes the callback, then drops the device reference and module reference. The candidate passes THIS_MODULE.",
+    "The completion callback serializes with other RAM callbacks. After shutdown it releases firmware and skips ram_load; while active it calls ram_load. In either case it frees the request and decrements/wakes the callback counter after callback work ends.",
+    "The target release_firmware implementation checks fw before dereferencing or freeing it, so the shutdown callback path safely accepts the NULL firmware value used for failed requests.",
+    "Current aw_remove cancels delayed RAM work, waits for all tracked callbacks, cancels delayed work again, and only then destroys the private workqueue and retires device state."
+  ],
+  "conclusion": "The reviewed asynchronous callback/state lifetime path remains statically addressed in candidate 37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca. Runtime callback scheduling, allocation-fault injection, unbind races, and hardware behavior remain untested. This report does not close unrelated probe/driver risks.",
+  "build": "Not run: evidence-only revalidation; no source changed. Current module disassembly was produced read-only from the canonical Docker curated snapshot.",
+  "evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+      "sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+      "sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbebd34e9c198fdd6ef17cb6c804e8438"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+      "sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+      "sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0104_ram_load_0010b2e0.asm",
+      "sha256": "f2c47b883c3140880a8f3e07425a98945fb568d02cdced3b62ec0b6a469e9091"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0147_ram_work_routine_0010e190.asm",
+      "sha256": "13054948ab64c7f71db498509b16afa399303690f8f4874034c4c1cde209a3bc"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+      "sha256": "9a3222a3b44a6533ff0b95d799786bc3c3d4f8b4854febe6e46bf5a73a5b586b"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c",
+      "sha256": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_083_ram_load.c",
+      "sha256": "14ee7fb30d8cce303da5bbadd5e4217c388bc850c4b4e63b8c46cfd6e69084dc"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_082_ram_work_routine.c",
+      "sha256": "53a587c9d9bee3e60b8a074aee1b12c53aa4e3bcd442c502f5d600aa3e888d20"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_093_ram_update_store.c",
+      "sha256": "ea0da71006104c0bc809f0b83b6a09020844446e6bd993a87b238ef5227d4a3c"
+    },
+    {
+      "path": "reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_ram_firmware_current_candidate_revalidation_20261103\\docker_candidate_firmware_lifetime_disassembly.txt",
+      "sha256": "f775c0e1cae1e862fff7adfcefaeabe18d619ed47e01ad8dcf3abf1020f56b3f"
+    },
+    {
+      "path": "reverse_engineering\\validation\\reconstructed\\haptic_86938\\attestation\\haptic_ram_firmware_current_candidate_revalidation_20261103\\docker_target_firmware_loader_excerpt.txt",
+      "sha256": "bc9aafc83fbcbae50b792bad393023dde1fac4b655b00dae22d178552866e9ff"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+      "sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca"
+    },
+    {
+      "path": "docker_curated/haptic_86938.ko",
+      "sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca"
+    }
+  ]
+}
