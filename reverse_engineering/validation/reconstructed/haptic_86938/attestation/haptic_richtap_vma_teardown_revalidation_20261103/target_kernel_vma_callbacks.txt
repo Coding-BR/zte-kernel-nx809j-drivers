@@ -1,0 +1,137 @@
+kernel HEAD: 3356b35306d35d5a480e3b63df1a9f065b5d9f55
+
+FILE mm/vma.c sha256 d4a34240fafebcecdb7f48017d07a4cc11d276b0232357e9923d8354823f63d9
+411: 	if (new->vm_ops && new->vm_ops->open)
+412: 		new->vm_ops->open(new);
+629: 	return !vma->vm_ops || !vma->vm_ops->close;
+1681: 		if (new_vma->vm_ops && new_vma->vm_ops->open)
+1682: 			new_vma->vm_ops->open(new_vma);
+1713:  * there is a vm_ops->close() function, because that indicates that the
+
+FILE mm/mmap.c sha256 63f897f869c39a9cd587445f4796268989678965c1bb169ddd621f8246b6a56d
+--- VMA close dispatch and callers ---
+
+lines 328-339
+328:  * Close a vm structure and free it.
+329:  */
+330: void remove_vma(struct vm_area_struct *vma)
+331: {
+332: 	might_sleep();
+333: 	vma_close(vma);
+334: 	if (vma->vm_file)
+335: 		fput(vma->vm_file);
+336: 	mpol_put(vma_policy(vma));
+337: 	vm_area_free(vma);
+338: }
+339: 
+
+lines 624-635
+624: }
+625: 
+626: /* We can only remove VMAs when merging if they do not have a close hook. */
+627: static bool can_merge_remove_vma(struct vm_area_struct *vma)
+628: {
+629: 	return !vma->vm_ops || !vma->vm_ops->close;
+630: }
+631: 
+632: /*
+633:  * vma_merge_existing_range - Attempt to merge VMAs based on a VMA having its
+634:  * attributes modified.
+635:  *
+
+lines 1114-1125
+1114: 		return;
+1115: 
+1116: 	vms_clear_ptes(vms, mas_detach, true);
+1117: 	mas_set(mas_detach, 0);
+1118: 	mas_for_each(mas_detach, vma, ULONG_MAX)
+1119: 		vma_close(vma);
+1120: }
+1121: 
+1122: /*
+1123:  * vms_complete_munmap_vmas() - Finish the munmap() operation
+1124:  * @vms: The vma munmap struct
+1125:  * @mas_detach: The maple state of the detached vmas
+
+lines 1685-1696
+1685: 		*need_rmap_locks = false;
+1686: 	}
+1687: 	return new_vma;
+1688: 
+1689: out_vma_link:
+1690: 	vma_close(new_vma);
+1691: 
+1692: 	if (new_vma->vm_file)
+1693: 		fput(new_vma->vm_file);
+1694: 
+1695: 	unlink_anon_vmas(new_vma);
+1696: out_free_mempol:
+
+lines 1708-1719
+1708:  * They need to have the same vm_file, and the flags can only differ
+1709:  * in things that mprotect may change.
+1710:  *
+1711:  * NOTE! The fact that we share an anon_vma doesn't _have_ to mean that
+1712:  * we can merge the two vma's. For example, we refuse to merge a vma if
+1713:  * there is a vm_ops->close() function, because that indicates that the
+1714:  * driver is doing some kind of reference counting. But that doesn't
+1715:  * really matter for the anon_vma sharing case.
+1716:  */
+1717: static int anon_vma_compatible(struct vm_area_struct *a, struct vm_area_struct *b)
+1718: {
+1719: 	return a->vm_end == b->vm_start &&
+
+FILE include/linux/mm.h
+
+FILE include/linux/mm_types.h
+
+FILE mm/internal.h
+140-148
+140:  * If the VMA has a close hook then close it, and since closing it might leave
+141:  * it in an inconsistent state which makes the use of any hooks suspect, clear
+142:  * them down by installing dummy empty hooks.
+143:  */
+144: static inline void vma_close(struct vm_area_struct *vma)
+145: {
+146: 	if (vma->vm_ops && vma->vm_ops->close) {
+147: 		vma->vm_ops->close(vma);
+148: 
+142-150
+142:  * them down by installing dummy empty hooks.
+143:  */
+144: static inline void vma_close(struct vm_area_struct *vma)
+145: {
+146: 	if (vma->vm_ops && vma->vm_ops->close) {
+147: 		vma->vm_ops->close(vma);
+148: 
+149: 		/*
+150: 		 * The mapping is in an inconsistent state, and no further hooks
+143-151
+143:  */
+144: static inline void vma_close(struct vm_area_struct *vma)
+145: {
+146: 	if (vma->vm_ops && vma->vm_ops->close) {
+147: 		vma->vm_ops->close(vma);
+148: 
+149: 		/*
+150: 		 * The mapping is in an inconsistent state, and no further hooks
+151: 		 * may be invoked upon it.
+
+FILE mm/internal.h sha256: 469bb6ce11f57546351b713ed2d8c76f6b44039521813997d4986f0451cd695e
+139: /*
+140:  * If the VMA has a close hook then close it, and since closing it might leave
+141:  * it in an inconsistent state which makes the use of any hooks suspect, clear
+142:  * them down by installing dummy empty hooks.
+143:  */
+144: static inline void vma_close(struct vm_area_struct *vma)
+145: {
+146: 	if (vma->vm_ops && vma->vm_ops->close) {
+147: 		vma->vm_ops->close(vma);
+148: 
+149: 		/*
+150: 		 * The mapping is in an inconsistent state, and no further hooks
+151: 		 * may be invoked upon it.
+152: 		 */
+153: 		vma->vm_ops = &vma_dummy_vm_ops;
+154: 	}
+mm/internal.h sha256: 469bb6ce11f57546351b713ed2d8c76f6b44039521813997d4986f0451cd695e

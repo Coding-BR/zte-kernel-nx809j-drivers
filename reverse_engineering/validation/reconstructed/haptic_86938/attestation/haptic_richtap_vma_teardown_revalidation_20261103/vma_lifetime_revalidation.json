@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T09:09:13.318758+00:00",
+  "driver": "haptic_86938",
+  "finding": "HAP-RICHTAP-04",
+  "disposition": "STATICALLY_ADDRESSED_CURRENT_CANDIDATE_RUNTIME_UNVERIFIED",
+  "stock_module": {
+    "sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+  },
+  "candidate_module": {
+    "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "sha256": "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098",
+    "size_bytes": 6700096
+  },
+  "reconstruction_map": {
+    "path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "sha256": "e1a5a235c25d1b5b7f933f05de08296cb179dc344531bba57ba8262a03478016"
+  },
+  "source_sha256": {
+    "haptic_86938_fn_133_richtap_file_mmap.c": "45f44b7c153a6c68dcd053c5ff77a5a2e1a8a53ce5f9048c44c0cda389301c3c",
+    "haptic_86938_lifetime.c": "3d958fc19b04eeaa062f6a6bcf2d33345d5aff99aaad7afe266dbcbef0e2e718",
+    "haptic_86938_fn_132_aw_remove.c": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55"
+  },
+  "target_kernel": {
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "file_sha256": {
+      "kernel_platform/common/mm/vma.c": "d4a34240fafebcecdb7f48017d07a4cc11d276b0232357e9923d8354823f63d9",
+      "kernel_platform/common/mm/mmap.c": "63f897f869c39a9cd587445f4796268989678965c1bb169ddd621f8246b6a56d",
+      "kernel_platform/common/mm/internal.h": "469bb6ce11f57546351b713ed2d8c76f6b44039521813997d4986f0451cd695e"
+    },
+    "callbacks": {
+      "clone_open": "mm/vma.c:411-412",
+      "split_open": "mm/vma.c:1681-1682",
+      "munmap_vma_close": "mm/vma.c:1118-1119",
+      "close_dispatch": "mm/internal.h:144-148"
+    }
+  },
+  "lifetime_contract": {
+    "initial_vma_ref": "haptic_lifetime_attach_vma after remap_pfn_range success; initial mmap path does not call vm_ops.open",
+    "cloned_split_vmas": "haptic_vma_open increments refs and vma_refs",
+    "remove": "haptic_lifetime_retire_state clears state +0x610 and defers page free when vma_refs > 0",
+    "last_close": "haptic_vma_close releases retired pages at vma_refs == 0 while dying and drops VMA lifetime ref"
+  },
+  "candidate_disassembly": {
+    "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_vma_teardown_revalidation_20261103/docker_llvm_objdump_vma_lifetime.txt",
+    "sha256": "15e90f0d169365389f5e050e765e96b729cf8c65df597f82b75f1ab944e4398e",
+    "symbols": [
+      "richtap_file_mmap",
+      "haptic_lifetime_attach_vma",
+      "haptic_vma_open",
+      "haptic_vma_close",
+      "haptic_lifetime_retire_state",
+      "haptic_lifetime_block_file_access"
+    ]
+  },
+  "build_binding": {
+    "audit_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_workers_before_irq_revalidation_20261103/canonical_postpromotion_audit.json",
+    "audit_sha256": "58c751263c0871f881a196cea984695a3f32cde4bfbfba7d0474f97faf2890df",
+    "candidate_hash_matches": true,
+    "reproducible": true,
+    "build_sha256": [
+      "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098",
+      "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098"
+    ]
+  },
+  "prior_reviews": {
+    "lifetime_risk_review_sha256": "75c20e819b9ad9d6a4c165da7cccb4aa9998221dfe90dcad8b9ae1d880119023",
+    "lifetime_hardening_contract_sha256": "9ff03a62725c250718d5d90ea4bb8e46f35f2bc999e8cad4745d790fb78ac900"
+  },
+  "source_sync_dry_run": {
+    "path": "source_tree_sync_dry_run.json",
+    "sha256": "e14d871e9846144541b0ed22512ac9bf37957f1d8c3e5008c671b60be3ca50d5",
+    "applied": false,
+    "missing": 0,
+    "content_mismatch": 0,
+    "curated_only": 34
+  },
+  "limitations": [
+    "No runtime VMA unmap/unbind race validation.",
+    "No NX809J hardware validation.",
+    "Whole-driver independent review and strict ABI parity remain open."
+  ]
+}

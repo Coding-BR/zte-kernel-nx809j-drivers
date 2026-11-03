@@ -17,6 +17,12 @@ The source closes user file access, waits for active RAM callbacks, then synchro
 
 Full C-level semantic equivalence, strict ABI parity, independent whole-driver review, kernel concurrency validation and controlled NX809J hardware validation remain open.
 
+## Update 2026-11-03 — PFN-mapped FIFO VMA lifetime revalidation
+
+The current candidate `7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098` statically addresses HAP-RICHTAP-04. After a successful `remap_pfn_range`, `richtap_file_mmap` attaches the initial VMA to the sidecar lifetime context while the file operation is still active. The exact Docker kernel source at commit `3356b35306d35d5a480e3b63df1a9f065b5d9f55` confirms `vm_ops->open` runs for cloned and split VMAs and `vma_close` dispatches the close callback. At teardown, `haptic_lifetime_retire_state` clears the page address from device state and defers `free_pages` while VMA references remain; the last VMA close releases the retired pages and lifetime context.
+
+The current candidate disassembly contains the mmap attachment and retirement callbacks. This closes the previously reported page-use-after-free path by static reasoning for this candidate. No source changed in this review; runtime mapping/unbind races and NX809J hardware behavior remain untested. The lifetime hardening remains a declared deviation from stock semantics pending independent review. See `../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_vma_teardown_revalidation_20261103/README.md`.
+
 ## Historical checkpoint — 2026-11-02 (superseded by the 2026-11-03 snapshot above)
 
 - Stock module SHA-256: `05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e`.
