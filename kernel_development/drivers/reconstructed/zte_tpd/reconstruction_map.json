@@ -3477,7 +3477,8 @@
         "microtask:attestation/next797_change_tp_state_exact_v1/microtask_attestation.json:sha256:8c75e64034f6bbc536351720907f0e9b4cd52dd9ec8cc7d8451d178928546ff0",
         "canonical-build:attestation/workqueue_lifecycle_20261102/canonical_build_report.json:sha256:f7c0dc8d84a95b1714f7ac63c2c1d07895149d45b05e682145e7d7a016bb407c",
         "lifecycle-review:attestation/workqueue_lifecycle_20261102/lifecycle_review.json:sha256:e3392fa54ffeba53f9912ac8cecd0e3852048de11e97d16b3f99e53c6e5980fd",
-        "kcfi-comparison:attestation/workqueue_lifecycle_20261102/kcfi_comparison.json:sha256:384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce"
+        "kcfi-comparison:attestation/workqueue_lifecycle_20261102/kcfi_comparison.json:sha256:384ff6a87d8cab758de774f5c78de567f028a2d67e63146d166ca90938e06cce",
+        "lifecycle-current-review:attestation/syna_remove_lifetime_review_20261103/review.json:sha256:4241a8ecad0abef98651a1479e3dbd91c0b1c27fc2152226bef7650de5e167af"
       ],
       "mapping_basis": "Preserved stock Ghidra/P-Code and AArch64 evidence plus cross-function queue-producer inventory and canonical Docker build.",
       "review_scope": "tpd_workqueue_lifecycle_hardening",
@@ -3488,7 +3489,7 @@
       "stock_body_bytes": 376,
       "stock_entry": "00110320",
       "stock_function": "change_tp_state",
-      "mapping_note": "All main-workqueue submissions now pass through the lifecycle admission gate; the recovered state-change logic and locking remain otherwise unchanged. Historical exact-parity attestations remain preserved as evidence for the prior source revision; this source revision is intentionally different and is not claimed offline-exact. Runtime scheduling and NX809J hardware behavior remain unverified."
+      "mapping_note": "All main-workqueue submissions now pass through the lifecycle admission gate; the recovered state-change logic and locking remain otherwise unchanged. Historical exact-parity attestations remain preserved as evidence for the prior source revision; this source revision is intentionally different and is not claimed offline-exact. Runtime scheduling and NX809J hardware behavior remain unverified. The external panel notifier can reach this workqueue path after unregister returns because the stock provider does not drain already copied callbacks; see attestation/syna_remove_lifetime_review_20261103/review.json."
     },
     {
       "evidence": [
@@ -4598,7 +4599,8 @@
         "attestation:syna_dev_remove_null_guard_20261102/assembly_comparison.json:sha256:340e0bfc4c118a8545a4d9dbd5acea4c48125ee9e6b588739f135e327225b8f4",
         "attestation:syna_dev_remove_null_guard_20261102/kcfi_type_only_comparison.json:sha256:35640e7f5f9e75fb1e1b2b3d8d7762c82106dbd4b1c52b4152c57f267f3649f5",
         "lifecycle-review:attestation/syna_teardown_lifetime_review_20261103/lifetime_review.json:sha256:8327e29c31d15e2cbf09fc57ed405271c8d88fc8a0050706428598364942afa0",
-        "current-candidate-lifecycle-review:attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json:sha256:9e7594c345479f45d9ec236b20bfd109ba2a1d6240d2de5cbbad7ebbbd29d1df"
+        "current-candidate-lifecycle-review:attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json:sha256:9e7594c345479f45d9ec236b20bfd109ba2a1d6240d2de5cbbad7ebbbd29d1df",
+        "lifecycle-current-review:attestation/syna_remove_lifetime_review_20261103/review.json:sha256:4241a8ecad0abef98651a1479e3dbd91c0b1c27fc2152226bef7650de5e167af"
       ],
       "mapping_basis": "Stock Ghidra pseudocode/P-Code and AArch64 assembly were reviewed; the candidate adds early returns for null platform/context pointers before teardown side effects.",
       "review_scope": "offline_lifecycle_hardening",
@@ -4609,7 +4611,7 @@
       "stock_body_bytes": 308,
       "stock_entry": "001125bc",
       "stock_function": "syna_dev_remove",
-      "mapping_note": "HARDENED_STOCK_DEVIATION: retains cdev/workqueue/IRQ teardown ordering and returns safely for null pdev or missing TCM driver data. The six-scenario null-context host regression, canonical two-cycle build, KCFI type ID, and expected AArch64 delta are attested in syna_dev_remove_null_guard_20261102. Runtime/hardware remains unverified. Static teardown review 2026-11-03 traced event_data lock depth, IRQ drain, helper queue stop, and sequential duplicate disconnect; no new source change was justified. See the lifecycle-review evidence. Current-candidate review confirms sequential duplicate disconnect returns early after the connected-state byte clears; static-only. Report: attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json.",
+      "mapping_note": "HARDENED_STOCK_DEVIATION: retains cdev/workqueue/IRQ teardown ordering and returns safely for null pdev or missing TCM driver data. The six-scenario null-context host regression, canonical two-cycle build, KCFI type ID, and expected AArch64 delta are attested in syna_dev_remove_null_guard_20261102. Runtime/hardware remains unverified. Static teardown review 2026-11-03 traced event_data lock depth, IRQ drain, helper queue stop, and sequential duplicate disconnect; no new source change was justified. See the lifecycle-review evidence. Current-candidate review confirms sequential duplicate disconnect returns early after the connected-state byte clears; static-only. Report: attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json. Current-candidate notifier audit found that stock panel_event_notifier_unregister does not drain callbacks copied before unregister; a late callback can overlap TPD state/workqueue teardown. This is an open external-API lifetime risk, not closed by cdev quiesce. See attestation/syna_remove_lifetime_review_20261103/review.json.",
       "candidate_body_bytes": 336
     },
     {
@@ -5212,7 +5214,8 @@
         "host-harness:attestation/next179_syna_ts_panel_notifier_callback_exact_v1/exact_revalidation_20260830/host/host_harness_docker_report.json:sha256:7e20dddd8c4874de8edae1cd42d8fffa52c09d6b8c4f5485bdd9dd89ce6ee381",
         "canonical-build:attestation/next179_syna_ts_panel_notifier_callback_exact_v1/exact_revalidation_20260830/canonical_build_report.json:sha256:5861dba78f4e424f5bb9aed2c3fd19d50a4821b8e2027ea9e57af35dbc179aef",
         "kcfi-compare:attestation/next179_syna_ts_panel_notifier_callback_exact_v1/exact_revalidation_20260830/kcfi/kcfi_comparison.json:sha256:699141f5bbfb2a35869b94fd74ccb10d2a64aa3cf233b2bcb266e490225f5085",
-        "attestation:attestation/next179_syna_ts_panel_notifier_callback_exact_v1/exact_revalidation_20260830/microtask_attestation.json:sha256:SELF_HASH_NOT_APPLICABLE:status:OFFLINE_EXACT"
+        "attestation:attestation/next179_syna_ts_panel_notifier_callback_exact_v1/exact_revalidation_20260830/microtask_attestation.json:sha256:SELF_HASH_NOT_APPLICABLE:status:OFFLINE_EXACT",
+        "lifecycle-current-review:attestation/syna_remove_lifetime_review_20261103/review.json:sha256:4241a8ecad0abef98651a1479e3dbd91c0b1c27fc2152226bef7650de5e167af"
       ],
       "mapping_basis": "Ghidra decompilation and P-Code plus Joern, host sanitizer harness, canonical Docker build, KCFI and AArch64 comparison",
       "review_scope": "offline_exact_function_level",
@@ -5223,7 +5226,7 @@
       "stock_body_bytes": 300,
       "stock_entry": "00114914",
       "stock_function": "syna_ts_panel_notifier_callback",
-      "mapping_note": "Function-level offline parity is promoted. Stock and candidate ELF symbols contain 75 AArch64 instructions and 300 bytes; KCFI type ID 0x40116f97, section, symbol size and 18 resolved data relocations match. Joern strict analysis, two-cycle canonical Docker build and 6-path ASan/UBSan host harness pass. Hardware Android/NX809J validation remains deferred."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate ELF symbols contain 75 AArch64 instructions and 300 bytes; KCFI type ID 0x40116f97, section, symbol size and 18 resolved data relocations match. Joern strict analysis, two-cycle canonical Docker build and 6-path ASan/UBSan host harness pass. Hardware Android/NX809J validation remains deferred. Function-level exactness does not establish callback lifetime safety: the stock external notifier can invoke a callback copied before unregister after unregister returns. See attestation/syna_remove_lifetime_review_20261103/review.json."
     },
     {
       "evidence": [

@@ -1,0 +1,195 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T05:36:34Z",
+  "driver": "zte_tpd",
+  "scope": "Focused static teardown-lifetime audit of platform remove, panel notifier callback dispatch/unregister, report workqueue admission, IRQ/event buffer, and open cdev/input mappings.",
+  "decision": "OPEN_PANEL_NOTIFIER_CALLBACK_LIFETIME_RACE",
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
+    "sha256": "58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38",
+    "size": 7274192,
+    "curated_docker_snapshot_path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\zte_tpd.ko",
+    "curated_docker_snapshot_sha256": "58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38",
+    "byte_identical_to_curated_snapshot": true,
+    "canonical_build_report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/zte_touch_probe_dt_guard_20261103/canonical_build_report.json",
+    "canonical_build_cycles": 2,
+    "canonical_build_passed": true,
+    "source_changed_by_this_audit": false
+  },
+  "stock_tpd": {
+    "path": "reference_modules/stock/zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "panel_notifier_dependency": true
+  },
+  "stock_panel_notifier": {
+    "path": "reference_modules/full_vendor_boot/panel_event_notifier.ko",
+    "sha256": "b7ce336cb2e9adc911fb43ad6784219605061e2c4c93f4fc381c5aff7a256f2a",
+    "vermagic": "6.12.23-maybe-dirty-4k",
+    "exports": [
+      "panel_event_notification_trigger",
+      "panel_event_notifier_register",
+      "panel_event_notifier_unregister"
+    ],
+    "fresh_docker_assembly_passed": true
+  },
+  "stock_function_revalidation": {
+    "comparison": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_remove_lifetime_review_20261103/stock_exact_comparison.json",
+    "checked_functions": 6,
+    "passed": true,
+    "functions": [
+      "syna_dev_isr",
+      "syna_tcm_get_event_data",
+      "syna_tcm_buf_copy",
+      "syna_cdev_release",
+      "syna_release",
+      "syna_mmap"
+    ],
+    "meaning": "AArch64 instructions, relocations, section and symbol sizes matched for all six pairs; this does not settle external notifier lifetime."
+  },
+  "teardown_order": [
+    "syna_dev_remove calls syna_cdev_quiesce, then panel_event_notifier_unregister(cookie) when active_panel and cookie are present.",
+    "The remove path continues with sysfs/helper-workqueue cleanup, cdev retirement, syna_dev_disconnect (including managed IRQ/workqueue teardown), and object cleanup.",
+    "The registered panel callback can call change_tp_state, which touches the global tpd_cdev state lock and report-workqueue slot. The cdev quiesce gate does not serialize the external notifier callback.",
+    "The reconstructed notifier unregister has no in-flight callback drain, so a callback copied by trigger before unregister can begin after unregister returns and overlap later TPD teardown."
+  ],
+  "finding": {
+    "severity": "HIGH_STATIC_LIFETIME_RISK",
+    "confidence": "HIGH for callback-after-unregister window; runtime manifestation not exercised",
+    "mechanism": [
+      "Stock panel_event_notification_trigger locks its registry, copies callback/client_data, unlocks, performs the KCFI type check, then invokes the copied callback indirectly.",
+      "Stock panel_event_notifier_unregister locks the registry, zeros the slot fields, unlocks, and returns; it does not wait for a callback already copied by trigger.",
+      "Therefore unregister prevents later registry lookups but does not guarantee that no callback is executing or about to enter the TPD module when remove proceeds."
+    ],
+    "impact": "Possible callback use of TPD global state or workqueue during/after teardown; exact fault depends on callback timing and the concurrent device/module teardown path.",
+    "source_change": "None in this commit. A TPD-only entry counter cannot close the interval between dispatcher copying the function pointer and entering the callback."
+  },
+  "binary_observations": {
+    "trigger_symbol_size_bytes": 684,
+    "trigger_callback_dispatch_offsets": [
+      "lock/copy around 0x188-0x1d0",
+      "unlock at 0x1d4",
+      "indirect callback at 0x200"
+    ],
+    "unregister_symbol_size_bytes": 76,
+    "unregister_behavior": "takes registry mutex, clears callback/client/panel/tag fields, unlocks and returns; no wait/completion/refcount synchronization is present",
+    "callback_kcfi_type_id": "0x40116f97"
+  },
+  "docker_provider_caveat": {
+    "kernel_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "compatibility_provider": "kernel/kernel_platform/common/drivers/soc/qcom/zte_parity.c",
+    "compatibility_provider_sha256": "5bbd51872e9638526d5ce3abad80fd0a1a7a1de13f70f4beb5cd382c5d42edcb",
+    "provider_behavior": "The Docker source has a separate implementation with the same API names that calls callbacks while holding panel_client_mutex; unregister serializes on that mutex. This behavior must not be attributed to the stock external panel_event_notifier.ko.",
+    "header": "kernel/kernel_platform/common/include/linux/soc/qcom/panel_event_notifier.h",
+    "header_sha256": "e33f99fcb264365505d9bdc49125fa0e8b76994be7150ad4aeba63932f9f961d",
+    "abi_note": "The Docker header places panel at offset 8 and early_trigger at offset 24; stock notifier assembly reads panel at offset 16, while the stock TPD callback reads early_trigger at offset 12. Do not build a replacement against this header without resolving the legacy binary layout."
+  },
+  "recommended_fix_boundary": {
+    "owner": "the actual panel_event_notifier provider/API, or a provider-independent callback lifetime mechanism with a non-unloadable trampoline",
+    "required_contract": "Unregister must prevent new dispatch and wait for callbacks previously selected by trigger. A per-registration in-flight count must be incremented while holding the same registry lock used to select the callback; unregister marks the registration retiring under that lock and waits for the count to reach zero.",
+    "integration_gate": "Preserve the stock callback ABI/KCFI and notification offsets; identify whether the shipped provider is the external stock module or the Docker built-in compatibility provider before changing code.",
+    "validation_needed": [
+      "canonical Docker build against the intended export surface",
+      "trigger/unregister concurrency stress with KASAN/lockdep or a deterministic race harness",
+      "runtime module unload and NX809J panel-event teardown"
+    ]
+  },
+  "limitations": [
+    "Static binary/source review only; no race was run on hardware.",
+    "The current Docker compatibility provider and its header are not proven to be the target runtime provider.",
+    "This audit documents a lifecycle risk and does not declare zte_tpd teardown safe."
+  ],
+  "evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_remove.c",
+      "sha256": "de97dcca3a629b6099b66e8b977c9ffbea130d07f9cfd1779c8392363941adae",
+      "size": 2087
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_ts_panel_notifier_callback.c",
+      "sha256": "b51cfcfa69023196cb7a70cafea62db0d3474de99cb973c535de8447922e3cb5",
+      "size": 1563
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/change_tp_state.c",
+      "sha256": "e465f10f60cc7c3a60f740a646075edb3961ebd917998c998e67e36c16c9eb9d",
+      "size": 3036
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_workqueue_lifecycle.c",
+      "sha256": "3171a9dd5a3e36f4c354435cf98d06204a92f386c66df1d863ecb8bd97360c95",
+      "size": 4109
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_deinit.c",
+      "sha256": "a7c5c8b6aa00cc8fecd3a684776c869fce076396da5a01cb903d07e17c6f139e",
+      "size": 350
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/cleanup_module.c",
+      "sha256": "a02afad9f13478f10d1e18a255f41cea03d4e310ed96401c1e3c5e036ff8634e",
+      "size": 237
+    },
+    {
+      "path": "reference_modules/stock/zte_tpd.ko",
+      "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+      "size": 633536
+    },
+    {
+      "path": "reference_modules/full_vendor_boot/panel_event_notifier.ko",
+      "sha256": "b7ce336cb2e9adc911fb43ad6784219605061e2c4c93f4fc381c5aff7a256f2a",
+      "size": 17512
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_remove_lifetime_review_20261103/candidate_assembly/manifest.json",
+      "sha256": "87106afca3da08da14d26c4a870f59bcd99a85e97e4647071b2c26ce8bedb755",
+      "size": 15741
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_remove_lifetime_review_20261103/stock_assembly/manifest.json",
+      "sha256": "98302514eca13d99e2efa6d48668480162c1ebd8ca62406c2e211c05e5e7128f",
+      "size": 5537
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_remove_lifetime_review_20261103/stock_exact_comparison.json",
+      "sha256": "bddf2d201ca105ba9df5002641105cb188d9391ca86602a8a138839baf0dc612",
+      "size": 62071
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_remove_lifetime_review_20261103/panel_notifier_module_assembly/manifest.json",
+      "sha256": "cd1ace542e39293fbbf9d643358eacfb2e7d51b223a8feeb7cd9cc257fa18a24",
+      "size": 3220
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_remove_lifetime_review_20261103/panel_notifier_module_assembly/0000_panel_event_notification_trigger.asm",
+      "sha256": "988326136bf9638c4a5e66324b98a77e5efbbd9f9d2d6cda12f5e0ade3527018",
+      "size": 13034
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_remove_lifetime_review_20261103/panel_notifier_module_assembly/0001_panel_event_notifier_unregister.asm",
+      "sha256": "1e70d14abcce01b04557c12c6bb26a576ba20a994c07e160c046a2d65b03973d",
+      "size": 1268
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_remove_lifetime_review_20261103/panel_notifier_module_assembly/0002_panel_event_notifier_register.asm",
+      "sha256": "1dd60ee12fd06b402b3f4be6d23db9a80c1352815d345662aeeedf6ec054c481",
+      "size": 4198
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src_nx809j_oout_20261030:/kernel/kernel/decompiled/panel_event_notifier/panel_event_notification_trigger.c",
+      "sha256": "01e8057c5c38c05a59fdf40b7923065771c541b67623f7b4dfe813bf52dccb34"
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src_nx809j_oout_20261030:/kernel/kernel/decompiled/panel_event_notifier/panel_event_notifier_unregister.c",
+      "sha256": "7bc1abb40d2ed44b04724f67cddbfea92abbc8390c3d7e3871f78efdd012c76f"
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src_nx809j_oout_20261030:/kernel/kernel/kernel_platform/common/drivers/soc/qcom/zte_parity.c",
+      "sha256": "5bbd51872e9638526d5ce3abad80fd0a1a7a1de13f70f4beb5cd382c5d42edcb"
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src_nx809j_oout_20261030:/kernel/kernel/kernel_platform/common/include/linux/soc/qcom/panel_event_notifier.h",
+      "sha256": "e33f99fcb264365505d9bdc49125fa0e8b76994be7150ad4aeba63932f9f961d"
+    }
+  ]
+}
