@@ -505,24 +505,22 @@ long richtap_file_unlocked_ioctl(struct file *file, unsigned int command,
 	struct file proxy = {};
 	void *state;
 	long ret;
-	bool reset_rtp = command == 0x520a;
-	bool serialize_rtp_buffer = reset_rtp || command == 0x5209;
+	bool serialize_rtp = command == 0x5209 || command == 0x520a;
 
 	ret = haptic_lifetime_enter_file(file, &lifetime, &state);
 	if (ret)
 		return ret;
-	if (serialize_rtp_buffer) {
-		/* 0x5209 and 0x520a both reuse +0x608; drain its old consumer. */
+	if (serialize_rtp) {
+		/* Both commands reuse +0x608 and must serialize with the threaded IRQ. */
 		mutex_lock(&haptic_richtap_stream_lock);
 		cancel_work_sync((struct work_struct *)((char *)state + 0x648));
-	}
-	if (reset_rtp)
 		haptic_lifetime_irq_stop_lock();
+	}
 	proxy.private_data = state;
 	ret = richtap_file_unlocked_ioctl_stock_exact(&proxy, command, argument);
-	if (reset_rtp)
+	if (serialize_rtp)
 		haptic_lifetime_irq_stop_unlock();
-	if (serialize_rtp_buffer)
+	if (serialize_rtp)
 		mutex_unlock(&haptic_richtap_stream_lock);
 	haptic_lifetime_exit_file(lifetime);
 	return ret;

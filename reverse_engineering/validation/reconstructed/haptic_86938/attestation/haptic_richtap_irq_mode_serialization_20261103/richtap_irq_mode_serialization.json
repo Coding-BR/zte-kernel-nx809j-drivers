@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.0",
+  "review_id": "HAP-RICHTAP-08-IOCTL-THREADED-IRQ-MODE-TRANSITION",
+  "generated_local_date": "2026-11-03",
+  "driver": "haptic_86938",
+  "status": "STATIC_MODE_TRANSITION_RACE_HARDENED_CURRENT_CANDIDATE_RUNTIME_UNVERIFIED",
+  "finding": {
+    "id": "HAP-RICHTAP-08",
+    "title": "Richtap ioctl 0x5209 can overlap a running threaded IRQ during stop/restart",
+    "severity": "high_static",
+    "confidence": "high_static_call_paths_and_unshared_locks",
+    "stock_observation": "The mode-transition ioctl and the threaded IRQ use different per-device mutexes, or no common mutex in the Richtap FIFO branch. The ioctl performs aw8693x_stop and RTP mode/data programming while the IRQ handler may be executing chip callbacks and FIFO operations.",
+    "runtime_reproduced": false,
+    "hardware_tested": false,
+    "prior_rationale_revised": "The prior mode-transition note said the 0x5209 path needed IRQ service during richtap_rtp_start. Stock Ghidra instead shows a polling callback that reads register 0x3f directly over I2C; the poll itself does not await IRQ service. The existing RTP worker also holds the same shared IRQ mutex while calling richtap_rtp_start."
+  },
+  "binding": {
+    "stock_module": {
+      "path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+      "size_bytes": 189328,
+      "sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+    },
+    "candidate_module": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+      "size_bytes": 6715688,
+      "sha256": "256b3aee58b7d409ee7ee0faf6d1a7b1cfb666f53fc36c6d1b9931f3fa610e0e"
+    },
+    "candidate_curated_sha256": "256b3aee58b7d409ee7ee0faf6d1a7b1cfb666f53fc36c6d1b9931f3fa610e0e",
+    "prior_candidate_sha256": "37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca",
+    "candidate_source": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+      "size_bytes": 14873,
+      "sha256": "d67278c19f7ca86caf46c0dc9f67189852796606c67812250b72e3af814ee936"
+    },
+    "reconstruction_map": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+      "sha256": "f65c489e3067dc469872408ad3567e9f29264f85207f4a9f6e3410b17e1b73f8"
+    },
+    "status": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/STATUS.md",
+      "sha256": "f942f1a12062872ae14788dd7cfc13c516556ea225606bbba6c4755a3610ca30"
+    },
+    "docker_builds": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_mode_serialization_20261103/docker_builds.json",
+      "sha256": "8305aefdbd2ce2df36955c25d291a6ac0b807effe1fad4d3554d2d9c2d07b08e"
+    },
+    "candidate_disassembly": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_mode_serialization_20261103/docker_llvm_objdump_lock_coverage.txt",
+      "size_bytes": 28771,
+      "sha256": "2c0cd9c63481477a665f9a088332bc4260a3ac928f5423672c57b06a8c52c781"
+    },
+    "stock_evidence": [
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0066_irq_config_00108368.asm",
+        "size_bytes": 4289,
+        "sha256": "193472d744db86fbf869b0339e6de679fe4d73ce58b0d2320e07580b7fa76f65"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0066_00108368_irq_config.c",
+        "size_bytes": 1055,
+        "sha256": "6e1f30fc5e0a16a35a24fa262156061375522d47b4877ea78d6a06ba71fdcc40"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0073_irq_handle_00109090.asm",
+        "size_bytes": 15815,
+        "sha256": "3cf59ea3df996cd316b402838fbd56a6a02b56515562e4a3eaf955777822bff5"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c",
+        "size_bytes": 5406,
+        "sha256": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0151_richtap_file_unlocked_ioctl_0010e374.asm",
+        "size_bytes": 20439,
+        "sha256": "1c28ebb056e308409fe6892d83aa68aba8bba8a732e8f12b18c6024203dbe0ad"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c",
+        "size_bytes": 8861,
+        "sha256": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0148_richtap_rtp_start_0010e1dc.asm",
+        "size_bytes": 5990,
+        "sha256": "4564c12a37fbfccb680da5a678a52ad81f415133c06872859dfbd1c5e74c209b"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0148_0010e1dc_richtap_rtp_start.c",
+        "size_bytes": 1752,
+        "sha256": "b207ff0484bd501c67ac35950be6b9936e497cc6bc2aa6651f89c62ae719a9b3"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0042_0010620c_aw8693x_get_glb_state.c",
+        "size_bytes": 426,
+        "sha256": "285b1439f0366ec6997a51bb851c9665bfad658a11e624ad0abdec14d9e03add"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0007_00103d4c_aw8693x_stop.c",
+        "size_bytes": 1391,
+        "sha256": "017483a186ed349feecb572aef77ccd37e10c47e391785485563cf16fc092300"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_mode_transition_serialization_20261103/richtap_mode_buffer_serialization.json",
+        "size_bytes": 4493,
+        "sha256": "8e6c36595756fe11988ec965681c9e3a7fc085c11bdb095fd2cbecaf6e916aff"
+      }
+    ]
+  },
+  "stock_call_paths": {
+    "threaded_irq_registration": {
+      "function": "irq_config",
+      "stock_entry": "00108368",
+      "registration": "devm_request_threaded_irq(dev, irq, NULL, irq_handle, 0x2002, ...)",
+      "evidence": "The stock Ghidra decompilation and exact assembly show NULL primary handler and irq_handle as thread_fn."
+    },
+    "ioctl_0x5209": {
+      "function": "richtap_file_unlocked_ioctl",
+      "stock_entry": "0010e374",
+      "sequence": [
+        "mutex_lock(state+0x2f0)",
+        "function-table callback +0x38 (aw8693x_stop)",
+        "mutex_unlock(state+0x2f0)",
+        "copy_from_user(state+0x608, ..., 16000)",
+        "set RTP mode and gain",
+        "richtap_rtp_start",
+        "function-table callback +0xd0 (set_rtp_data)"
+      ]
+    },
+    "irq_execution": {
+      "function": "irq_handle",
+      "stock_entry": "00109090",
+      "observation": "The IRQ callback uses mutex state+0x370 in one branch; the Richtap RTP FIFO branch calls richtap_update_fifo_data and hardware callbacks without the +0x2f0 ioctl mutex."
+    },
+    "start_poll": {
+      "function": "richtap_rtp_start",
+      "stock_entry": "0010e1dc",
+      "poll_callback_slot": "+0x160 -> aw8693x_get_glb_state",
+      "register_read": "aw8693x_get_glb_state calls i2c_r_bytes for register 0x3f; no IRQ completion wait is present in the poll path."
+    }
+  },
+  "candidate_hardening": {
+    "commands_serialized": [
+      "0x5209",
+      "0x520a"
+    ],
+    "order": [
+      "haptic_lifetime_enter_file",
+      "mutex_lock(haptic_richtap_stream_lock)",
+      "cancel_work_sync(state+0x648)",
+      "mutex_lock(haptic_irq_stop_lock)",
+      "richtap_file_unlocked_ioctl_stock_exact",
+      "mutex_unlock(haptic_irq_stop_lock)",
+      "mutex_unlock(haptic_richtap_stream_lock)",
+      "haptic_lifetime_exit_file"
+    ],
+    "threaded_irq_order": [
+      "haptic_irq_stop_lock",
+      "irq_handle_stock_exact",
+      "haptic_irq_stop_unlock"
+    ],
+    "worker_order": [
+      "haptic_irq_stop_lock",
+      "FIFO updates and RTP-start callbacks",
+      "haptic_irq_stop_unlock"
+    ],
+    "stop_worker_order": [
+      "haptic_richtap_stream_lock",
+      "haptic_irq_stop_lock",
+      "stock stop callbacks",
+      "haptic_irq_stop_unlock",
+      "haptic_richtap_stream_unlock"
+    ],
+    "teardown_order": [
+      "shutdown/admission gate",
+      "drain active file operations",
+      "synchronize threaded IRQ and workers",
+      "destroy workqueue",
+      "retire state"
+    ]
+  },
+  "lock_order_review": {
+    "cycles_found": false,
+    "scope": "The audited ioctl, Richtap worker, stop worker and IRQ paths only.",
+    "copy_from_user_under_irq_mutex": true,
+    "polling_under_irq_mutex": true,
+    "latency_risk": "A userspace page fault during the fixed 16000-byte copy can extend the mutex hold and delay the threaded IRQ; runtime latency is unmeasured."
+  },
+  "build": {
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "two_independent_builds_byte_identical": true,
+    "module_sha256": "256b3aee58b7d409ee7ee0faf6d1a7b1cfb666f53fc36c6d1b9931f3fa610e0e",
+    "module_bytes": 6715688
+  },
+  "abi_status": {
+    "candidate_undefined_imports": 93,
+    "stock_undefined_imports": 85,
+    "strict_stock_import_parity": false,
+    "stock_only": [
+      "gpio_free"
+    ],
+    "candidate_only": [
+      "__init_waitqueue_head",
+      "__wake_up",
+      "destroy_workqueue",
+      "finish_wait",
+      "init_wait_entry",
+      "led_classdev_unregister",
+      "prepare_to_wait_event",
+      "refcount_warn_saturate",
+      "schedule"
+    ]
+  },
+  "reconstruction_disposition": {
+    "candidate_disposition": "LIFETIME_HARDENED_CANDIDATE_NOT_STOCK_EQUIVALENT",
+    "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+    "independent_review": "PENDING_INDEPENDENT_REVIEW",
+    "whole_driver": "INCOMPLETE"
+  },
+  "curated_source_sync_dry_run": {
+    "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_mode_serialization_20261103/curated_source_sync_dry_run.json",
+    "sha256": "223a494418df611012984431175b829d4adac234f236ebd48652b8d6f5fab534",
+    "applied": false,
+    "passed": false,
+    "missing_from_curated_count": 0,
+    "content_mismatch_count": 0,
+    "preserved_curated_only_file_count": 100,
+    "disposition": "Dry-run only; curated-only evidence files were preserved."
+  },
+  "limits": [
+    "No runtime schedule or stress test",
+    "No IRQ-latency measurement",
+    "No Lockdep or KCSAN run",
+    "No module load or NX809J hardware test",
+    "Whole-driver independent review remains pending"
+  ]
+}
