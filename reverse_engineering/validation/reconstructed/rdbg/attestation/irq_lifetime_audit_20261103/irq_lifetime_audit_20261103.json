@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0",
+  "review_id": "rdbg_threaded_irq_lifetime_audit_20261103",
+  "review_date": "2026-11-03",
+  "result": "STATIC_IRQ_LIFETIME_HAZARD_FOUND_IN_STOCK_AND_EXACT_CANDIDATE",
+  "runtime_failure_reproduced": false,
+  "candidate": {
+    "module_path": "kernel_development/drivers/reconstructed/rdbg/rdbg.ko",
+    "module_sha256": "6a25975d91059eae065cd28058515a767ceefe6ec4210347bc5712d3071ca2bc",
+    "module_size_bytes": 781712,
+    "docker_curated_module_matches": true,
+    "map_path": "kernel_development/drivers/reconstructed/rdbg/reconstruction_map.json",
+    "map_sha256": "29e3e5e934e487107786f1279c1f5347664be15315b1887943470040be8dfde0",
+    "mapping_status_counts": {
+      "PROMOTED_OFFLINE_EXACT": 8
+    }
+  },
+  "source_evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_03_open.c",
+      "sha256": "b2b1952b7376fb70abb1b8a1b14efd9dbd3505343d6e756af34c80784f8c3edd"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_02_release.c",
+      "sha256": "58c8cac4e4979c9dd399d732cab7fe151a0918b16941bc2cff557b2dbfa168d4"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_00_on_interrupt_from.c",
+      "sha256": "b96f25b4092140cb0eb6d23982de5a87be77ab75cbb4080ef195338adffb928f"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_01_cleanup_module.c",
+      "sha256": "98ef1ad824c74e511a757f047ec076303dbcdb05357f571a57f9641bf814c796"
+    }
+  ],
+  "stock_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0003_rdbg_open_00100ecc.asm",
+      "sha256": "b50f54a4965a8176b9f0200383d36cb9589bef8fd4e0056e4ae027e613ca626f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0004_rdbg_release_001014cc.asm",
+      "sha256": "5b99207c0499c204981e2f337b25c2370f7350acafdba9f62bb6e5dbce82a2a2"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0005_on_interrupt_from_00101600.asm",
+      "sha256": "15c9a62c261c38ed63d9dc0eeeb91f995c501881e5fc230a609201f1aeefcb3e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0007_cleanup_module_00101974.asm",
+      "sha256": "e409e3bd3f39089b3628250b43861ec76567285153fb11af6079aa2232cef492"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/decompiled/0003_00100ecc_rdbg_open.c",
+      "sha256": "96d520a9476ef56bce4f5b819d3d1d4386af6f6808ad63fd4ec6e11d05994e14"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/decompiled/0004_001014cc_rdbg_release.c",
+      "sha256": "4037c60960d0ceed38a426267ce5c7953afe4285968969a9a2b9f7888d12ce12"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/decompiled/0005_00101600_on_interrupt_from.c",
+      "sha256": "56fa8d112bdfab495a6b61ff58d17fe69a4246fb987ceab9c8abf15602f36a60"
+    }
+  ],
+  "candidate_ghidra_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/candidate_ghidra_fresh_20261102/rdbg.ko/decompiled/0002_00100698_rdbg_open.c",
+      "sha256": "7c5c99f2f876da78e7d9d879c6ac7a86c60162c74e363ccee4512ecc07c703a7"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/candidate_ghidra_fresh_20261102/rdbg.ko/decompiled/0001_00100564_rdbg_release.c",
+      "sha256": "c92ce6b0fb0b6ff624749eea36a6998e74c8793f023b502fb8247e685ad4e5ec"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/candidate_ghidra_fresh_20261102/rdbg.ko/decompiled/0000_0010053c_on_interrupt_from.c",
+      "sha256": "56fa8d112bdfab495a6b61ff58d17fe69a4246fb987ceab9c8abf15602f36a60"
+    }
+  ],
+  "pinned_irq_core": {
+    "kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "mount_read_only": true,
+    "path": "kernel_platform/common/kernel/irq/manage.c",
+    "sha256": "be9d5516fe884186c30a553cbc5a2b53e13d55dc0875dc0826b21991f918330b",
+    "relevant_lines": [
+      "__setup_irq:1516-1850",
+      "__free_irq:1884-1980",
+      "free_irq:2033-2050",
+      "request_threaded_irq:2153-2240"
+    ]
+  },
+  "findings": [
+    {
+      "id": "RDBG-IRQ-001",
+      "severity": "high",
+      "summary": "The requested per-open threaded IRQ is not freed on SMQ initialization failure or normal release.",
+      "evidence": [
+        "Stock open requests a non-shared threaded IRQ with dev_id pointing to the per-minor client record.",
+        "The post-request smq_bail path destroys SMQ state and the mutex but has no free_irq call.",
+        "Stock release wakes the completion, tears down SMQ/mutex state, and resets device_opened, but has no free_irq or synchronize_irq call.",
+        "Stock handler calls complete on the completion inside the retained dev_id record.",
+        "Stock module cleanup frees the clients array and also has no free_irq call."
+      ],
+      "interpretation": "The IRQ remains associated with the prior client and handler after the open state is closed. Later interrupts can target the old or reused completion; reclamation of client/module storage while registered creates a potential stale callback reference. This was not reproduced at runtime."
+    },
+    {
+      "id": "RDBG-IRQ-002",
+      "severity": "medium",
+      "summary": "A later open of the same minor can fail when it tries to request the still-registered non-shared IRQ again.",
+      "evidence": [
+        "release resets device_opened to zero, so a subsequent open can reach request_threaded_irq again.",
+        "The original and repeated requests use the same per-minor IRQ and dev_id and omit IRQF_SHARED.",
+        "Pinned __setup_irq returns -EBUSY when an existing action cannot be shared."
+      ],
+      "interpretation": "Repeated open failure follows statically from the exact paths and pinned IRQ-core behavior; it was not exercised on hardware."
+    }
+  ],
+  "reconstruction_disposition": "The missing IRQ release is present in stock and the offline-exact candidate. No source or map change was made; preserve exact statuses and keep rdbg offline-only.",
+  "runtime_and_hardware_validation": false
+}
