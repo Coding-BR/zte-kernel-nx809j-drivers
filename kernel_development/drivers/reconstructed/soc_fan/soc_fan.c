@@ -1490,7 +1490,7 @@ start_calculation:
 	enable_irq(*(int *)(*(u8 **)((u8 *)chip + 0x08) + 0x1c));
 	printk(KERN_DEBUG "[%s] [%s:%d] fan_level=%d start calculate, count=%d.",
 	       "NB_FAN", "fan_hrtimer_hander", 0x82,
-	       (*(u8 **)((u8 *)chip + 0x08))[0],
+	       READ_ONCE((*(u8 **)((u8 *)chip + 0x08))[0]),
 	       *(u32 *)(*(u8 **)((u8 *)chip + 0x08) + 0x04));
 	return HRTIMER_RESTART;
 
@@ -1503,57 +1503,53 @@ stop_calculation:
 		*(int *)(*(u8 **)(root + 0x08) + 0x1c));
 	printk(KERN_DEBUG "[%s] [%s:%d] fan_level=%d stop calculate, count=%d.",
 	       "NB_FAN", "fan_hrtimer_hander", 0x89,
-	       (*(u8 **)((u8 *)chip + 0x08))[0],
+	       READ_ONCE((*(u8 **)((u8 *)chip + 0x08))[0]),
 	       *(u32 *)(*(u8 **)((u8 *)chip + 0x08) + 0x04));
 	return HRTIMER_NORESTART;
 }
 
 static __used int fan_level_set(u8 *fan_state, u8 level);
 
-/* Enable or disable the fan, then apply or defer the selected level. */
+/* Serialize enable transitions with level changes and deferred-level updates. */
 static __used ssize_t fan_enable_store(struct kobject *kobj,
 				      struct kobj_attribute *attr,
 				      const char *buf, size_t count)
 {
+	struct nb_fan_remove_context *context = READ_ONCE(chip);
 	ssize_t result = count;
 	int enable = 0;
-	u8 *chip_base;
 	u8 *fan_state;
 
 	sscanf(buf, "%d", &enable);
-	chip_base = (u8 *)chip;
-	if (*(bool *)(*(u8 **)((u8 *)chip + 0x08) + 0x0c) ==
-	    (enable != 0)) {
+	mutex_lock((struct mutex *)((u8 *)context + 0x18));
+	fan_state = context->fan_state;
+	if (READ_ONCE(fan_state[0x0c]) == (enable != 0)) {
 		printk(KERN_DEBUG "[%s] [%s:%d] fan have been enabled!",
 		       "NB_FAN", "fan_enable_store", 0x13f);
-		goto fan_enable_return;
+		goto fan_enable_unlock;
 	}
 
-	*(bool *)(*(u8 **)((u8 *)chip + 0x08) + 0x0c) = enable != 0;
+	WRITE_ONCE(fan_state[0x0c], enable != 0);
 	printk(KERN_DEBUG "[%s] [%s:%d] fan_enable=%d\n",
 	       "NB_FAN", "fan_enable_store", 0x143,
-	       *(u8 *)(*(u8 **)(chip_base + 0x08) + 0x0c));
-	mutex_lock((struct mutex *)((u8 *)chip + 0x18));
-	fan_state = *(u8 **)((u8 *)chip + 0x08);
-	if (__builtin_expect_with_probability((fan_state[0x0c] & 1) != 0,
-					      1, 0.6)) {
-		if (unlikely(fan_state[1] == 0))
+	       READ_ONCE(fan_state[0x0c]));
+	if (READ_ONCE(fan_state[0x0c]) & 1) {
+		if (READ_ONCE(fan_state[1]) == 0)
 			goto fan_enable_unlock;
 
-		fan_level_set(fan_state, fan_state[1]);
+		fan_level_set(fan_state, READ_ONCE(fan_state[1]));
 		printk(KERN_DEBUG
 		       "[%s] [%s:%d] fan enabled,back fan level:%d to run.\n",
 		       "NB_FAN", "fan_enable_store", 0x14c,
-		       *(u8 *)(*(u8 **)((u8 *)chip + 0x08) + 0x01));
-		*(u8 *)(*(u8 **)((u8 *)chip + 0x08) + 0x01) = 0;
+		       READ_ONCE(fan_state[1]));
+		WRITE_ONCE(fan_state[1], 0);
 	} else {
-		fan_state[1] = fan_state[0];
-		fan_level_set(*(u8 **)((u8 *)chip + 0x08), 0);
+		WRITE_ONCE(fan_state[1], READ_ONCE(fan_state[0]));
+		fan_level_set(fan_state, 0);
 	}
 
 fan_enable_unlock:
-	mutex_unlock((struct mutex *)((u8 *)chip + 0x18));
-fan_enable_return:
+	mutex_unlock((struct mutex *)((u8 *)context + 0x18));
 	return result;
 }
 
@@ -1644,82 +1640,82 @@ static __used int fan_level_set(u8 *fan_state, u8 level)
 		       "[%s] [%s:%d] Apply PWM state for fan_level=%d failed, rc=%d\n",
 		       "NB_FAN", "fan_level_set", 0xbf, level, ret);
 	} else {
-		fan_state[0] = level;
+		WRITE_ONCE(fan_state[0], level);
 	}
 	return ret;
 }
 
-/*
- * Keep the observed byte offsets explicit until the original structure type is
- * independently recovered. The state pointer is at chip+0x08; its active
- * flag is at +0x0c, selecting current (+0x00) or pending (+0x01) level.
- */
+/* Return a coherent level/enable snapshot under the chip mutex. */
 static __used ssize_t fan_level_show(struct kobject *kobj,
 				     struct kobj_attribute *attr, char *buf)
 {
-	u8 *fan_state = *(u8 **)((u8 *)chip + 0x08);
-	u8 level_index = fan_state[0x0c] ^ 1;
+	struct nb_fan_remove_context *context = READ_ONCE(chip);
+	u8 *fan_state = context->fan_state;
+	u8 enabled;
+	u8 level;
 
-	return sprintf(buf, "%d\n", fan_state[level_index]);
+	mutex_lock((struct mutex *)((u8 *)context + 0x18));
+	enabled = fan_state[0x0c] & 1;
+	level = fan_state[enabled ? 0 : 1];
+	mutex_unlock((struct mutex *)((u8 *)context + 0x18));
+	return sprintf(buf, "%d\n", level);
 }
 
-/*
- * A disabled fan stores the requested level for the next enable operation.
- * When enabled, the update is serialized with the chip mutex and delegated
- * to fan_level_set.
- */
+/* Serialize both the enabled-level path and the disabled pending-level path. */
 static __used ssize_t fan_level_store(struct kobject *kobj,
 				      struct kobj_attribute *attr,
 				      const char *buf, size_t count)
 {
+	struct nb_fan_remove_context *context = READ_ONCE(chip);
 	ssize_t result = count;
 	u32 level = 0;
-	u8 *fan_state;
-	int ret;
+	u8 *fan_state = context->fan_state;
+	int ret = 0;
+	bool applied = false;
 
 	sscanf(buf, "%d", &level);
 	if (level >= 6) {
 		printk(KERN_DEBUG
 		       "[%s] [%s:%d] level=%d,it is a bad level,not in(%d-%d).\n",
 		       "NB_FAN", "fan_level_store", 0x165, level, 0, 5);
-		result = -EINVAL;
+		return -EINVAL;
+	}
+
+	mutex_lock((struct mutex *)((u8 *)context + 0x18));
+	if ((READ_ONCE(fan_state[0x0c]) & 1) == 0) {
+		WRITE_ONCE(fan_state[1], (u8)level);
+		printk(KERN_DEBUG
+		       "[%s] [%s:%d] Fan is disabled, just run this level:%d after fan enabled.",
+		       "NB_FAN", "fan_level_store", 0x16b, level);
 	} else {
-		fan_state = *(u8 **)((u8 *)chip + 0x08);
-		if ((fan_state[0x0c] & 1) == 0) {
-			fan_state[1] = (u8)level;
+		ret = fan_level_set(fan_state, level);
+		applied = true;
+	}
+	mutex_unlock((struct mutex *)((u8 *)context + 0x18));
+	if (ret == 0) {
+		if (applied)
 			printk(KERN_DEBUG
-			       "[%s] [%s:%d] Fan is disabled, just run this level:%d after fan enabled.",
-			       "NB_FAN", "fan_level_store", 0x16b, level);
-		} else {
-			mutex_lock((struct mutex *)((u8 *)chip + 0x18));
-			ret = fan_level_set(
-				*(u8 **)((u8 *)chip + 0x08), level);
-			mutex_unlock((struct mutex *)((u8 *)chip + 0x18));
-			if (ret == 0) {
-				printk(KERN_DEBUG
-				       "[%s] [%s:%d] set fan_level=%d rc=%d.",
-				       "NB_FAN", "fan_level_store", 0x175,
-				       level, 0);
-			} else {
-				result = ret;
-			}
-		}
+			       "[%s] [%s:%d] set fan_level=%d rc=%d.",
+			       "NB_FAN", "fan_level_store", 0x175, level, 0);
+	} else {
+		result = ret;
 	}
 	return result;
 }
 
-/*
- * The recovered sysfs read callback logs the stock source line and returns the
- * enable byte at chip+0x08+0x0c as decimal text.
- */
+/* Read enable state under the same mutex used by its writer. */
 static __used ssize_t fan_enable_show(struct kobject *kobj,
 				      struct kobj_attribute *attr, char *buf)
 {
+	struct nb_fan_remove_context *context = READ_ONCE(chip);
+	u8 enabled;
+
+	mutex_lock((struct mutex *)((u8 *)context + 0x18));
+	enabled = context->fan_state[0x0c];
+	mutex_unlock((struct mutex *)((u8 *)context + 0x18));
 	printk(KERN_DEBUG "[%s] [%s:%d] fan_enable=%d.\n",
-	       "NB_FAN", "fan_enable_show", 0x130,
-	       (*(u8 **)((u8 *)chip + 0x08))[0x0c]);
-	return sprintf(buf, "%d\n",
-		       (*(u8 **)((u8 *)chip + 0x08))[0x0c]);
+	       "NB_FAN", "fan_enable_show", 0x130, enabled);
+	return sprintf(buf, "%d\n", enabled);
 }
 
 /* Stock-derived string targets for the exact callback transcription. */
