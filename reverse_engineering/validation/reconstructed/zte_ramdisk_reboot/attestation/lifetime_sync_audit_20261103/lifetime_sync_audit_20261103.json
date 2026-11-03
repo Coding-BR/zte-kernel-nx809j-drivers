@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "review_id": "zte_ramdisk_reboot_lifetime_sync_audit_20261103",
+  "review_date": "2026-11-03",
+  "result": "CURRENT_MODULE_ASSEMBLY_PARITY_PASS_13_OF_13; STOCK_LIFETIME_AND_SYNC_RISKS_DOCUMENTED; DRIVER_INCOMPLETE",
+  "scope": {
+    "mode": "offline stock Ghidra, source, current candidate assembly, and target Docker kernel source",
+    "source_changed": false,
+    "module_changed": false,
+    "map_changed": false,
+    "device_access": false,
+    "watchdog_or_reboot_triggered": false,
+    "nvmem_write_performed": false,
+    "sysfs_runtime_test": false,
+    "module_load_or_unload_attempted": false,
+    "build_rerun": false
+  },
+  "identity": {
+    "candidate_source_sha256": "b6659a11624f3c189df04054bbb4caf97099e4a758786e4f90d0a3cddab35052",
+    "candidate_module_sha256": "1f027cf0fab9269141d722b225b04bfea688add1d28577ba1cbd03543e388892",
+    "candidate_module_size_bytes": 221584,
+    "reconstruction_map_sha256": "61ef6325dcd7b3729dab0705150998162d6ce1dcb94dd4071fab05e4a48106a5",
+    "stock_module_sha256": "598d5862b03a7f1fdc60318ca53fb6837716662c591991390e6f946aafb2d740",
+    "ghidra_stock_inventory_sha256": "1712abe7dae9371fa3050414aae5eb0ea4e8320162d9ee23ed86937478740ce5",
+    "docker_curated_source_module_and_map_match": true
+  },
+  "assembly_comparison": {
+    "extractor": "workspace_tools/reconstruction_pipeline/extract_module_assembly.py",
+    "comparator": "workspace_tools/reconstruction_pipeline/compare_function_assembly.py",
+    "docker_image": "nubia-sm8850-kernel-builder:latest",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "passed": true,
+    "functions_checked": 13,
+    "checks": ["normalized_aarch64_instructions", "relocations", "section", "symbol_size"],
+    "function_results": [
+      {"name":"attr_show","instructions":17,"symbol_size_bytes":68,"passed":true},
+      {"name":"attr_store","instructions":17,"symbol_size_bytes":68,"passed":true},
+      {"name":"cleanup_module","instructions":9,"symbol_size_bytes":36,"passed":true},
+      {"name":"extract_ocp_info","instructions":60,"symbol_size_bytes":240,"passed":true},
+      {"name":"extract_sn_info","instructions":57,"symbol_size_bytes":228,"passed":true},
+      {"name":"init_module","instructions":11,"symbol_size_bytes":44,"passed":true},
+      {"name":"ramdisk_nvmem_show","instructions":14,"symbol_size_bytes":56,"passed":true},
+      {"name":"ramdisk_nvmem_store","instructions":10,"symbol_size_bytes":40,"passed":true},
+      {"name":"zte_check_xbl_log_lines","instructions":110,"symbol_size_bytes":440,"passed":true},
+      {"name":"zte_get_xbl_log_memory_region","instructions":67,"symbol_size_bytes":268,"passed":true},
+      {"name":"zte_ramdisk_reboot_probe","instructions":208,"symbol_size_bytes":832,"passed":true},
+      {"name":"zte_ramdisk_reboot_remove","instructions":1,"symbol_size_bytes":4,"passed":true},
+      {"name":"zte_ramdisk_reboot_write","instructions":37,"symbol_size_bytes":148,"passed":true}
+    ],
+    "comparison_file": "assembly/comparison.json"
+  },
+  "target_kernel_source": {
+    "git_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "device_remove_and_devres": "drivers/base/dd.c:547-570",
+    "kobject_del_semantics": "lib/kobject.c:619-629",
+    "nvmem_cell_get_put_semantics": "drivers/nvmem/core.c:1507-1516 and 1604-1615"
+  },
+  "findings": [
+    {
+      "id": "UNBIND_LEAVES_KOBJECT_AND_RAMDISK_RB_STALE",
+      "severity": "high",
+      "classification": "stock_inherited_use_after_free_risk",
+      "summary": "remove is empty; device core frees devm state after remove, while the probe-created sysfs kobject remains and ramdisk_rb is not cleared. Subsequent sysfs or watchdog access can reach freed state or module-owned sysfs operations.",
+      "candidate_matches_stock": true,
+      "runtime_reproduced": false
+    },
+    {
+      "id": "NVMEM_CELL_REFERENCE_NOT_RELEASED",
+      "severity": "moderate",
+      "classification": "stock_inherited_reference_leak",
+      "summary": "Successful nvmem_cell_get has no matching nvmem_cell_put on unbind.",
+      "candidate_matches_stock": true,
+      "runtime_reproduced": false
+    },
+    {
+      "id": "KOBJECT_REFERENCE_UNBALANCED_ON_GROUP_FAILURE",
+      "severity": "moderate",
+      "classification": "stock_inherited_unbalanced_kobject_reference",
+      "summary": "sysfs_create_group failure calls kobject_del after initialization but does not call kobject_put before devm state release.",
+      "candidate_matches_stock": true,
+      "runtime_reproduced": false
+    },
+    {
+      "id": "EXTRACT_BUFFER_READ_WRITE_RACE",
+      "severity": "moderate",
+      "classification": "stock_inherited_unsynchronized_shared_buffer",
+      "summary": "Sysfs is exposed before probe populates extract_buffer; show reads it while probe writes without locking.",
+      "candidate_matches_stock": true,
+      "runtime_reproduced": false
+    },
+    {
+      "id": "SAVED_RAMDISK_BYTE_SHARED_BETWEEN_WRITES",
+      "severity": "low_unconfirmed_concurrency",
+      "classification": "stock_inherited_shared_write_buffer",
+      "summary": "The watchdog callback uses a single global staging byte for nvmem_cell_write without local serialization; concurrent-call possibility is unverified.",
+      "candidate_matches_stock": true,
+      "runtime_reproduced": false
+    }
+  ],
+  "status_decision": {
+    "overall": "INCOMPLETE",
+    "gate_0_to_7": "PASS for current module hash, confirmed by next098_full_static_validation_20261003 and current 13/13 assembly comparison",
+    "gate_8": "INCOMPLETE_PENDING_ANOTHER_SESSION_REVIEW",
+    "gate_9": "INCOMPLETE_HARDWARE_VALIDATION_NOT_RUN",
+    "promotion": "NOT_ALLOWED"
+  },
+  "evidence_paths": [
+    "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/ghidra_stock",
+    "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/offline_static/stock_assembly",
+    "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/attestation/next098_full_static_validation_20261003",
+    "reverse_engineering/validation/reconstructed/zte_ramdisk_reboot/attestation/lifetime_sync_audit_20261103/assembly",
+    "kernel_development/config/target_kernel.json"
+  ]
+}
