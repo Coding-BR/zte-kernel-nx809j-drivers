@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.0",
+  "review_id": "syna_panel_notifier_abi_alignment_20261103",
+  "generated_utc": "2026-11-03T06:03:03Z",
+  "scope": "Panel notifier provider binding, ABI adaptation, and candidate static build evidence for zte_tpd.",
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
+    "sha256": "05169eb97da2317d87b6921c946bd3970d3d111c4ba708a04378668a99d1e251",
+    "size_bytes": 7276320
+  },
+  "build": {
+    "status": "PASS",
+    "reproducible": true,
+    "cycles_requested": 2,
+    "cycles_accepted": 2,
+    "canonical_report": "canonical_build_report.json",
+    "canonical_report_sha256": "35503263f6dcad741dcee244bc76ca338b09a1909964ebfe6bf02e52a2ee569d",
+    "source_sync_report": "source_sync_report.json",
+    "source_sync_report_sha256": "b123de826c6704b2530694f8d5e922712ff68356167d24b822301147721f744d",
+    "source_sync_applied": true,
+    "source_sync_file_count": 0,
+    "cycle_artifact_sha256": [
+      "05169eb97da2317d87b6921c946bd3970d3d111c4ba708a04378668a99d1e251",
+      "05169eb97da2317d87b6921c946bd3970d3d111c4ba708a04378668a99d1e251"
+    ],
+    "cycle_artifact_sizes": [
+      7276320,
+      7276320
+    ],
+    "vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64"
+  },
+  "target_kernel": {
+    "source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "provider": "kernel_platform/common/drivers/soc/qcom/zte_parity.c (built-in obj-y)",
+    "provider_source_sha256": "5bbd51872e9638526d5ce3abad80fd0a1a7a1de13f70f4beb5cd382c5d42edcb",
+    "provider_header_sha256": "e33f99fcb264365505d9bdc49125fa0e8b76994be7150ad4aeba63932f9f961d",
+    "kernel_identity_check": true,
+    "kmi_crc": {
+      "panel_event_notification_trigger": "0x742485cf",
+      "panel_event_notifier_register": "0x1988207d",
+      "panel_event_notifier_unregister": "0x57bbc774"
+    }
+  },
+  "provider_semantics": {
+    "current_docker_provider": "Trigger invokes callbacks while holding panel_client_mutex. Unregister takes the same mutex to remove the client, so unregister waits for any in-flight callback to finish before returning.",
+    "stock_external_provider_sha256": "b7ce336cb2e9adc911fb43ad6784219605061e2c4c93f4fc381c5aff7a256f2a",
+    "stock_external_provider_behavior": "The stock external notifier releases its registry mutex before invoking copied callbacks and does not drain them during unregister. This is a separate provider and is not the provider resolved by this Docker kernel build."
+  },
+  "abi_adaptation": {
+    "legacy_registration_tag": 1,
+    "target_registration_tag": 0,
+    "legacy_event_early_trigger_offset": 12,
+    "target_event_panel_offset": 8,
+    "target_early_trigger_offset": 24,
+    "actions": [
+      "Register with the current target enum and primary-touch client type.",
+      "Filter notifications against the active panel pointer.",
+      "Translate the target notification into the legacy 16-byte callback view before calling the unchanged stock callback.",
+      "Treat ERR_PTR and NULL registration results as failure.",
+      "Remove the manually declared external panel_event_notifier module dependency; the target exports these symbols from vmlinux."
+    ],
+    "candidate_module_dependencies": [
+      "zlog_common",
+      "kmparam"
+    ],
+    "must_not_package_stock_external_notifier_with_target_kernel": true
+  },
+  "function_comparisons": {
+    "callback": {
+      "symbol": "syna_ts_panel_notifier_callback",
+      "result": "PASS_EXACT",
+      "evidence": "callback_exact_comparison.json",
+      "evidence_sha256": "f5d1629009151f6e2e70437eef503b6a06da7b74786b2191597ef1aa7c08d519"
+    },
+    "registration": {
+      "symbol": "syna_ts_register_for_panel_events",
+      "result": "EXPECTED_INTENTIONAL_DEVIATION",
+      "evidence": "registration_deviation_comparison.json",
+      "evidence_sha256": "2c185fa2fc3e1f6f6108d24639886eaf44dc9df089fee00a92450415266825be",
+      "reason": "The target ABI adaptation and registration failure guard change this function from stock."
+    }
+  },
+  "kcfi": {
+    "expected_type_id": "0x40116f97",
+    "adapter_callback_preamble_verified": true,
+    "unchanged_stock_callback_preamble_verified": true
+  },
+  "limitations": [
+    "No module load, boot, runtime race test, fault injection, or NX809J hardware validation was performed.",
+    "The result is bound to the recorded Docker kernel source, configuration, KMI, and built-in provider."
+  ],
+  "packaging_note": "Do not ship or load reference_modules/full_vendor_boot/panel_event_notifier.ko with this built-in-provider kernel; its ABI/KMI is different."
+}

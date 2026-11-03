@@ -2105,4 +2105,3 @@ MODULE_AUTHOR("Synaptics, Inc.");
 MODULE_DESCRIPTION("Synaptics TouchComm Touch Driver");
 MODULE_DESCRIPTION("Synaptics TouchCom SPI Bus Module");
 MODULE_LICENSE("GPL v2");
-MODULE_INFO(depends, "panel_event_notifier");

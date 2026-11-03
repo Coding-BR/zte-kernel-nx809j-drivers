@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38",
+  "candidate_sha256": "05169eb97da2317d87b6921c946bd3970d3d111c4ba708a04378668a99d1e251",
   "driver": "zte_tpd",
   "function_count": 367,
-  "generated_utc": "2026-11-03T03:48:32Z",
+  "generated_utc": "2026-11-03T06:03:43Z",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -4611,7 +4611,7 @@
       "stock_body_bytes": 308,
       "stock_entry": "001125bc",
       "stock_function": "syna_dev_remove",
-      "mapping_note": "HARDENED_STOCK_DEVIATION: retains cdev/workqueue/IRQ teardown ordering and returns safely for null pdev or missing TCM driver data. The six-scenario null-context host regression, canonical two-cycle build, KCFI type ID, and expected AArch64 delta are attested in syna_dev_remove_null_guard_20261102. Runtime/hardware remains unverified. Static teardown review 2026-11-03 traced event_data lock depth, IRQ drain, helper queue stop, and sequential duplicate disconnect; no new source change was justified. See the lifecycle-review evidence. Current-candidate review confirms sequential duplicate disconnect returns early after the connected-state byte clears; static-only. Report: attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json. Current-candidate notifier audit found that stock panel_event_notifier_unregister does not drain callbacks copied before unregister; a late callback can overlap TPD state/workqueue teardown. This is an open external-API lifetime risk, not closed by cdev quiesce. See attestation/syna_remove_lifetime_review_20261103/review.json.",
+      "mapping_note": "HARDENED_STOCK_DEVIATION: retains cdev/workqueue/IRQ teardown ordering and returns safely for null pdev or missing TCM driver data. The six-scenario null-context host regression, canonical two-cycle build, KCFI type ID, and expected AArch64 delta are attested in syna_dev_remove_null_guard_20261102. Runtime/hardware remains unverified. Static teardown review 2026-11-03 traced event_data lock depth, IRQ drain, helper queue stop, and sequential duplicate disconnect; no new source change was justified. See the lifecycle-review evidence. Current-candidate review confirms sequential duplicate disconnect returns early after the connected-state byte clears; static-only. Report: attestation/syna_input_agent_lifecycle_current_candidate_20261103/current_candidate_review.json. The current Docker target binds to built-in zte_parity, whose shared mutex serializes callback completion with unregister. The separate stock external panel_event_notifier.ko has a late-callback lifetime window and different KMI/ABI; do not package it with this target. See attestation/syna_panel_notifier_abi_alignment_20261103/review.json.",
       "candidate_body_bytes": 336
     },
     {
@@ -4807,18 +4807,24 @@
         "source:syna_ts_register_for_panel_events.c:sha256:ffd7cbd64509547526ff3f201dac47e49c38ed3fd37a8012255a9de0520ea0bf",
         "ghidra-pseudocode:decompiled/0164_00113504_syna_ts_register_for_panel_events.c:sha256:93d1fb266ecac03dcbc68eefd3be0d36e68dd9b263fa1da61096dc8dd5f968c3",
         "ghidra-pcode:pcode/0164_00113504_syna_ts_register_for_panel_events.jsonl:sha256:880c759a0ecf0c5829294422ca4491662875d8302ad608582b9922f1e94ad9c7",
-        "stock-assembly:0164_syna_ts_register_for_panel_events_00113504.asm:sha256:d32a48a6ddbb54edbc41b15f13a06bab6a4b497bbf12cfb3dec17b3c9279a49b"
+        "stock-assembly:0164_syna_ts_register_for_panel_events_00113504.asm:sha256:d32a48a6ddbb54edbc41b15f13a06bab6a4b497bbf12cfb3dec17b3c9279a49b",
+        "current-source:syna_ts_register_for_panel_events.c:sha256:0d90e4df27bddd51a60abad35a73ac0aa909ec5dab0611ca8d70a216e4169aa1",
+        "canonical-build:attestation/syna_panel_notifier_abi_alignment_20261103/canonical_build_report.json:sha256:35503263f6dcad741dcee244bc76ca338b09a1909964ebfe6bf02e52a2ee569d",
+        "source-sync:attestation/syna_panel_notifier_abi_alignment_20261103/source_sync_report.json:sha256:b123de826c6704b2530694f8d5e922712ff68356167d24b822301147721f744d",
+        "assembly-compare:attestation/syna_panel_notifier_abi_alignment_20261103/callback_exact_comparison.json:sha256:f5d1629009151f6e2e70437eef503b6a06da7b74786b2191597ef1aa7c08d519",
+        "assembly-deviation:attestation/syna_panel_notifier_abi_alignment_20261103/registration_deviation_comparison.json:sha256:2c185fa2fc3e1f6f6108d24639886eaf44dc9df089fee00a92450415266825be",
+        "candidate-module:zte_tpd.ko:sha256:05169eb97da2317d87b6921c946bd3970d3d111c4ba708a04378668a99d1e251"
       ],
       "mapping_basis": "exact filename and function-token match",
       "review_scope": "function_level_offline_exact",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "semantic_equivalence": "INTENTIONAL_HARDENING_DEVIATION",
       "source_file": "syna_ts_register_for_panel_events.c",
       "source_function": "syna_ts_register_for_panel_events",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
       "stock_body_bytes": 136,
       "stock_entry": "00113504",
       "stock_function": "syna_ts_register_for_panel_events",
-      "mapping_note": "Promoted by next520_syna_ts_register_for_panel_events_exact_v1 after strict AArch64, KCFI, Joern, canonical-build and ASan/UBSan gates. Hardware remains deferred."
+      "mapping_note": "HARDENED_STOCK_DEVIATION: registration is adapted to the NX809J Docker kernel built-in zte_parity provider ABI (current primary/client enums and notification layout), filters the active panel, translates into the legacy callback view, and handles ERR_PTR/NULL registration failure. The exact stock callback body remains unchanged. The target provider serializes callback and unregister under panel_client_mutex; the separate stock external panel_event_notifier.ko has different KMI/ABI and callback lifetime behavior and must not be packaged with this kernel. See attestation/syna_panel_notifier_abi_alignment_20261103/review.json and README.md. Runtime/hardware validation remains open."
     },
     {
       "evidence": [
@@ -5226,7 +5232,7 @@
       "stock_body_bytes": 300,
       "stock_entry": "00114914",
       "stock_function": "syna_ts_panel_notifier_callback",
-      "mapping_note": "Function-level offline parity is promoted. Stock and candidate ELF symbols contain 75 AArch64 instructions and 300 bytes; KCFI type ID 0x40116f97, section, symbol size and 18 resolved data relocations match. Joern strict analysis, two-cycle canonical Docker build and 6-path ASan/UBSan host harness pass. Hardware Android/NX809J validation remains deferred. Function-level exactness does not establish callback lifetime safety: the stock external notifier can invoke a callback copied before unregister after unregister returns. See attestation/syna_remove_lifetime_review_20261103/review.json."
+      "mapping_note": "Function-level offline parity is promoted. Stock and candidate ELF symbols contain 75 AArch64 instructions and 300 bytes; KCFI type ID 0x40116f97, section, symbol size and 18 resolved data relocations match. Joern strict analysis, two-cycle canonical Docker build and 6-path ASan/UBSan host harness pass. Hardware Android/NX809J validation remains deferred. Function-level exactness does not establish callback lifetime safety: the separate stock external notifier can invoke a copied callback after unregister returns. The current Docker built-in provider serializes callback and unregister with panel_client_mutex. See attestation/syna_panel_notifier_abi_alignment_20261103/review.json; the older external-provider analysis remains contextual only."
     },
     {
       "evidence": [

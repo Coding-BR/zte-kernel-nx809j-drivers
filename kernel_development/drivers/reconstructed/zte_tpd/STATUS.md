@@ -5,19 +5,21 @@
 - **Classificação do mapa:** `PARTIAL_SOURCE_MAP`; revisão `PASS_WITH_HARDENING_DEVIATION`;
 - **Escopo e semântica:** `structural_identity_only`; `MIXED_OFFLINE_EXACT_AND_HARDENED_DEVIATION`;
 - **Módulo stock:** SHA-256 `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`;
-- **Candidato atual:** SHA-256 `58f43110317979745449c4b355b71f7eabf24dd6782ed26bb787af16eebd2a38`, `7274192` bytes; idêntico ao snapshot curado do Docker;
-- **Build canônico:** relatório para o mesmo hash, `2/2` ciclos reproduzíveis e sem divergências de sincronização da fonte: `reverse_engineering/validation/reconstructed/zte_tpd/attestation/zte_touch_probe_dt_guard_20261103/canonical_build_report.json`;
-- **Mapa de funções:** 367 identidades; 333 marcadas `PROMOTED_OFFLINE_EXACT` (28 ainda grafadas em minúsculas) e 34 `HARDENED_STOCK_DEVIATION`;
-- **Validações desta revisão:** `tpd_set_screen_off_awake` bateu com stock em extração Docker atual; a auditoria de teardown conferiu buffer de evento, cdev, IRQ/workqueue e desconexão dupla; o probe ganhou limpeza do buffer no erro de `misc_register`, com atestação estática e build canônico `2/2`;
+- **Candidato atual:** SHA-256 `05169eb97da2317d87b6921c946bd3970d3d111c4ba708a04378668a99d1e251`, `7276320` bytes; idêntico ao snapshot curado do Docker;
+- **Build canônico:** relatório para o mesmo hash, `2/2` ciclos reproduzíveis e sem divergências de sincronização da fonte: `reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_panel_notifier_abi_alignment_20261103/canonical_build_report.json`;
+- **Mapa de funções:** 367 identidades; 332 `PROMOTED_OFFLINE_EXACT` e 35 `HARDENED_STOCK_DEVIATION`
+- **Validacoes desta revisao:** `tpd_set_screen_off_awake` bateu com stock; probe tem limpeza no erro de `misc_register`; notifier alinhado a ABI/provider embutido da arvore Docker; callback stock exato; registro classificado como desvio intencional; build canonico 2/2;
 - **Gates abertos:** revisão humana independente, equivalência semântica integral e validação em hardware NX809J. Nenhum módulo foi carregado.
 
 `PARTIAL_SOURCE_MAP` e `MIXED_OFFLINE_EXACT_AND_HARDENED_DEVIATION` descrevem o estado do mapa. O build reproduzível comprova compilação e sincronização do snapshot, não equivalência semântica integral.
 
-## Risco aberto no notifier de painel — 2026-11-03
+## ABI e lifetime do notifier de painel - 2026-11-03
 
-A auditoria do módulo stock `panel_event_notifier.ko`, dependência externa do TPD, encontrou uma janela de callback após unregister: o trigger copia o ponteiro de callback sob mutex, libera o mutex e só então o chama; o unregister limpa o slot sob o mutex, mas retorna sem aguardar chamadas já copiadas. O callback do TPD alcança `change_tp_state` e acessa estado global/workqueue. `syna_cdev_quiesce` não cobre esse caminho. Classificação: risco estático alto de uso do estado do TPD durante teardown; manifestação runtime ainda não verificada.
+O build NX809J do Docker usa `kernel_platform/common/drivers/soc/qcom/zte_parity.c` embutido em `vmlinux` (`obj-y`), no commit `3356b35306d35d5a480e3b63df1a9f065b5d9f55`. O trigger executa callbacks sob `panel_client_mutex`; unregister usa o mesmo mutex para remover o cliente, de modo que a chamada em andamento termina antes do unregister retornar. Isso resolve o binding de provider para esta configuracao compilada.
 
-O shim `zte_parity.c` presente na árvore Docker possui implementação distinta, que mantém o mutex durante a chamada, e o header Docker usa offsets de notificação diferentes dos observados no módulo stock. Portanto, o shim não prova a segurança do provider stock nem pode ser substituído sem resolver ABI e superfície de exports. Nenhuma correção de código foi incluída neste lote; o próximo passo é sincronizar o contrato de unregister no provider efetivamente usado e validá-lo contra a ABI legacy. Evidência completa: `attestation/syna_remove_lifetime_review_20261103/`.
+A ABI atual difere da ABI do modulo stock externo: enums, offsets/layout e CRCs KMI sao distintos. O TPD agora registra com os enums atuais, filtra o painel e traduz a notificacao para a visao legada antes de chamar o callback stock, que continua exato em assembly. O registro foi reclassificado como `HARDENED_STOCK_DEVIATION`; a divergencia estrita e intencional. Os imports resolvem aos exports `vmlinux`; nao empacotar `reference_modules/full_vendor_boot/panel_event_notifier.ko` com este kernel. O race encontrado no notifier externo stock permanece valido para aquele provider separado, mas nao descreve o provider embutido usado aqui.
+
+O build canonico passou `2/2` ciclos reproduziveis, sem diagnosticos; a sincronizacao para o snapshot Docker passou. Atestacao: `attestation/syna_panel_notifier_abi_alignment_20261103/`. Nenhum modulo foi carregado; boot e validacao em hardware NX809J seguem pendentes.
 
 ## Caminho de falha de `syna_dev_probe` — 2026-11-03
 
