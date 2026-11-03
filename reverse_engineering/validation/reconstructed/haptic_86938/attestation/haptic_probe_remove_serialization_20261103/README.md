@@ -28,7 +28,7 @@ The driver registers only system-sleep PM callbacks through `SET_SYSTEM_SLEEP_PM
 
 The Ghidra call export is reconciled against every hardening cancel/drain. It records eight `queue_work_on` callsites, two `queue_delayed_work_on` callsites, three `hrtimer_start_range_ns` callsites, and two each for synchronous and asynchronous firmware requests. The active queue targets map to work items `+0x3a0`, `+0x428`, `+0x560`, `+0x648`, and `+0x668`; the remove cancels each twice after closing its relevant entry surface. Delayed RAM work at `+0x3c0` is canceled, its asynchronous callbacks are drained, then it is canceled again. Timers `+0x330` and `+0x520` are canceled around synchronous work drains to catch rearming.
 
-One work item remains unusual: probe initializes `tiktap_work_routine` at `+0x628`, but the exported Ghidra call inventory contains no direct work-queue enqueue targeting it. The remove cancels `+0x628` defensively. Its producer path remains unresolved and is listed explicitly in `async_teardown_ledger.json`; the static inventory does not claim the absence of every indirect or external trigger.
+One work item remains unusual: probe initializes `tiktap_work_routine` at `+0x628`, but the full decompiled-reference scan and direct work-queue call inventory show no in-module enqueue path targeting it. The two Richtap ioctl enqueue paths target `+0x648` (`richtap_rtp_work`) and `+0x668` (`richtap_stop_work`); ioctl `0x5213`, named `TIKTAP_RTP_MIX_MODE`, only logs and returns. The remove keeps its `+0x628` cancellation as a defensive drain. This evidence establishes no producer inside the preserved module analysis, while leaving out-of-module scheduling outside the claim; details are recorded in `async_teardown_ledger.json`.
 
 ## Limits
 

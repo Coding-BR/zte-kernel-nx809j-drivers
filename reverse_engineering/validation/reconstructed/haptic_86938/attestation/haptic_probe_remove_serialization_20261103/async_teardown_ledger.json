@@ -275,7 +275,26 @@
     "cancel_passes": 2,
     "workqueue_destroy_offset": "0x448",
     "tiktap_item_offset": "0x628",
-    "tiktap_disposition": "Initialized with tiktap_work_routine in probe evidence, but no direct queue_work_on/queue_delayed_work_on caller in the full exported Ghidra call inventory. Remove cancels it defensively; enqueue origin remains unresolved."
+    "tiktap_disposition": "Initialized with tiktap_work_routine in probe evidence, but no in-module enqueue path was found in the full decompilation/reference scan or direct work-queue call inventory. Remove cancels it defensively; possible out-of-module scheduling is outside this evidence."
+  },
+  "tiktap_static_reachability": {
+    "probe_entry": "001073c0",
+    "work_item_offset": "0x628",
+    "callback_offset": "0x640",
+    "callback": "tiktap_work_routine",
+    "decompiled_references": [
+      "aw_i2c_probe initializes the work item and callback",
+      "tiktap_work_routine derives its owner from work - 0x628"
+    ],
+    "enqueue_inventory": {
+      "queue_work_on_callers": 8,
+      "queue_delayed_work_on_callers": 2,
+      "callers_targeting_0x628": [],
+      "ioctl_0x520a_target": "0x648 (richtap_rtp_work)",
+      "ioctl_0x5212_target": "0x668 (richtap_stop_work)",
+      "ioctl_0x5213": "Prints TIKTAP_RTP_MIX_MODE and returns without queueing"
+    },
+    "conclusion": "The preserved stock decompilation and direct-call inventory show no in-module enqueue path for +0x628. Keep the remove cancellation as a defensive drain. This does not claim that an out-of-module trigger is impossible."
   },
   "other_lifetime_gates": {
     "misc_fds": "misc_deregister plus active file-operation drain before work cancellation/free",
@@ -284,7 +303,7 @@
     "fifo_pages": "transfer to sidecar while VMAs remain; release on last VMA close",
     "probe_remove_global_gate": "one transition mutex spans complete stock probe and complete remove"
   },
-  "static_review_disposition": "No unmatched direct work enqueue identified for active items. TikTap work initialization lacks a direct enqueue caller in the exported Ghidra call list and remains a documented uncertainty.",
+  "static_review_disposition": "No unmatched enqueue identified for active work items. The +0x628 TikTap item is initialized with tiktap_work_routine, but the full decompilation/reference scan and direct-call inventory show no in-module enqueue path; ioctl 0x5213 is print-only. Remove keeps a defensive cancellation, and out-of-module scheduling remains outside this evidence.",
   "runtime_stress_verified": false,
   "independent_review": "PENDING"
 }
