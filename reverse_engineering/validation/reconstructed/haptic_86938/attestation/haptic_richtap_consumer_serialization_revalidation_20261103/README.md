@@ -12,6 +12,8 @@ Stock Ghidra evidence records `devm_request_threaded_irq(..., 0, irq_handle, 0x2
 
 This closes the static race between the two kernel consumers for this candidate. It does not establish publication ordering by a userspace writer to the writable mmap FIFO. A kernel-private mutex cannot pair with an unknown userspace store protocol. No runtime race or failure is asserted; the producer protocol remains open.
 
+On 2026-11-03, the user confirmed that they do not have the userspace producer APK, source, or another artifact available to provide. This records artifact availability only; it does not establish that no producer exists elsewhere. The producer-ordering gate remains open. See [the artifact availability record](producer_artifact_availability_20261103.json).
+
 Older `haptic_richtap_irq_fifo_serialization` evidence is bound to `37fc8692…`; the FIFO metadata validation and userspace publication report are bound to `3dad43a6…`. Those files remain historical. This report and its three ELF disassemblies are bound to the current `53ee…` module and current source hashes in `consumer_serialization_revalidation.json`.
 
 ## Reproduction
