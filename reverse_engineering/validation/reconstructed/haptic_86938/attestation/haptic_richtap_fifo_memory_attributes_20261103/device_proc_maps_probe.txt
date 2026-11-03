@@ -1,0 +1,9 @@
+Read-only NX809J process mapping evidence (privacy-minimized)
+Date: 2026-11-03
+Device: NX809J, Android 16
+Service: vendor.qti.hardware.vibrator.service (PID 5737 at this read)
+Reader: ADB su; uid=0(root), context=u:r:ksu:s0
+Captured VMA: /dev/awinic_haptic; permissions=rw-s; region_size=0x4000 bytes. Virtual address, inode, and unrelated process mappings intentionally omitted.
+HAL DSO was present in the same process mapping: /vendor/lib64/libaacvibrator.so; observed VMA permissions=r-xp. DSO SHA-256 is bound in advanced_envelope_live_probe.json.
+A later scoped read attempted alongside another short authorized trigger command returned Permission denied for /proc/5737/maps; completion of that follow-up trigger was not verified. /proc/5737/smaps_rollup contains aggregate accounting only and cannot expose the PTE memory type.
+The proc map permissions establish a shared writable VMA, rw-s; they do not expose the cache attribute. Cacheability is established from the exact driver/kernel path in docker_kernel_memory_attribute_evidence.txt.

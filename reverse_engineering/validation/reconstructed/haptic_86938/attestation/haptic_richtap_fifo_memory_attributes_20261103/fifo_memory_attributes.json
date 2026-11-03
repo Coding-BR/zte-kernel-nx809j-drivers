@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_richtap_fifo_memory_attributes_20261103",
+  "review_date": "2026-11-03",
+  "result": "STOCK_VMA_NORMAL_WB_SHARED_MAPPING_CONFIRMED; FIFO_ORDERING_STILL_UNRESOLVED",
+  "device": {
+    "model": "NX809J",
+    "android_major": 16,
+    "service": "vendor.qti.hardware.vibrator.service",
+    "service_pid_at_read": 5737,
+    "root_uid_observed": true,
+    "proc_maps_snapshot_read": true,
+    "observed_vma": {
+      "path": "/dev/awinic_haptic",
+      "permissions": "rw-s",
+      "size_bytes": "0x4000",
+      "virtual_address": "REDACTED"
+    },
+    "hal_dso_present_in_same_process": "/vendor/lib64/libaacvibrator.so",
+    "later_scoped_proc_maps_read": "PERMISSION_DENIED_DURING_FOLLOWUP_ATTEMPT_TRIGGER_COMPLETION_UNVERIFIED",
+    "smaps_rollup": "AGGREGATE_ONLY_NO_PTE_MEMORY_TYPE",
+    "direct_pte_attribute_read": false,
+    "candidate_installed": false
+  },
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdbd2cc93bf9a75f439fa341178459c3e8825187e",
+    "mmap_function": "richtap_file_mmap",
+    "mmap_assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0152_richtap_file_mmap_0010e92c.asm",
+    "mmap_assembly_sha256": "1a6d1588a566588ae834a68371cd43ff6e395bf97ce46645b48ebb7aa8e66f0f",
+    "page_pool_probe_assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+    "page_pool_probe_assembly_sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb",
+    "findings": {
+      "protection_argument": "current->mm->def_flags | 0xfb",
+      "protection_check": "vma->vm_page_prot must equal vm_get_page_prot(argument)",
+      "active_access_bits": "VM_READ | VM_WRITE | VM_SHARED",
+      "vm_exec": false,
+      "accepted_protection": "PAGE_SHARED",
+      "fifo_mapping_size_bytes": "0x4000",
+      "fifo_base": "state + 0x610",
+      "remap_call": "remap_pfn_range",
+      "driver_pgprot_noncached_or_writecombine_override": false,
+      "pool_allocation": "get_free_pages(order=2), ordinary RAM pages"
+    }
+  },
+  "kernel": {
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "arm64_page_type": {
+      "protection_map_entry": "PAGE_SHARED",
+      "def_flags_inherit_mask": "VM_NOHUGEPAGE only; does not include VM_MTE",
+      "page_default_contains": "PTE_ATTRINDX(MT_NORMAL)",
+      "mt_normal_index": 0,
+      "mair_attr_normal": "0xff",
+      "effective_type": "Normal inner/outer write-back cacheable",
+      "vm_get_page_prot_masks": "VM_READ|VM_WRITE|VM_EXEC|VM_SHARED",
+      "pfn_tracking_override": "__HAVE_PFNMAP_TRACKING not defined in inspected arm64 tree; generic track_pfn_remap no-op",
+      "remap_pfn_range_preserves_passed_protection": true
+    },
+    "source_sha256": {
+      "include_linux_mm_h": "ceaf0811056bce3010927a38015291a86df282e414fec2311d88eea2e0afa63c",
+      "include_linux_pgtable_h": "188df72636cd27bdbb9f1784722b423e0eeda7237bf9656e485e52ae8b9c7f44",
+      "kernel_fork_c": "d77208bb829f3038812f44f36f34a6d1fdf62df85fa4edc1ac433c6d09aa1aac",
+      "arch_arm64_mm_mmap_c": "9c064c86aa3bfa40f41a3f4db3c2307c294cca9976ef4ac53d4286766982d6fd",
+      "arch_arm64_pgtable_prot_h": "f62fb110bcf2e07d59fc433ec80234a339aac7c76995562dd3854d1705799f8c",
+      "arch_arm64_memory_h": "fdb489e8a4dfcf38651cc8feb286ec3288c4850a51cefc10ca6b249103647c7f",
+      "arch_arm64_sysreg_h": "a48a692c682f36321f54dffe4e6c22147eaaf8fa0bbe41980f2db12f0603d55a",
+      "arch_arm64_proc_S": "c42971be93e9d0dc741edf0f1ea2da691a9a3a912d45d4a7319b62cc66118678",
+      "mm_memory_c": "a94600840f0c9ead07d4a61dbe8d3ea7712f9445cdf00af0b9cec6ce0fb18d46"
+    }
+  },
+  "hal_producer": {
+    "artifact": "/vendor/lib64/libaacvibrator.so",
+    "sha256": "8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61",
+    "writer": "write_data_to_buffer",
+    "publish_state_instruction": "ordinary STRB U",
+    "explicit_release_or_barrier": false,
+    "live_probe_attestation": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_advanced_envelope_live_probe_20261103/advanced_envelope_live_probe.json"
+  },
+  "candidate_c6": {
+    "sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+    "richtap_update_fifo_data_state_load": "LDARB",
+    "richtap_update_fifo_data_free_store": "STLRB",
+    "richtap_rtp_work_state_load": "LDARB",
+    "richtap_rtp_work_free_store": "STLRB",
+    "matching_hal_release_acquire_pair": false
+  },
+  "interpretation": {
+    "cacheability_question": "RESOLVED_STATICALLY_NORMAL_WB",
+    "ordering_gate": "OPEN_NO_CROSS_BOUNDARY_RELEASE_ACQUIRE_PAIR",
+    "race_reproduced": false,
+    "data_corruption_observed": false,
+    "function_statuses": {
+      "richtap_rtp_work": "candidate_under_static_validation",
+      "richtap_update_fifo_data": "candidate_under_static_validation"
+    },
+    "driver_complete": false
+  },
+  "reconstruction": {
+    "map_path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "map_sha256": "1fa901731b63ed698bd64a648866005892728962bb874d1ce38f3af2d8c3a24c",
+    "source_changed": false,
+    "module_rebuild": "NOT_REQUIRED_EVIDENCE_ONLY"
+  },
+  "evidence_file_sha256": {
+    "docker_kernel_memory_attribute_evidence_txt": "9854dc9e1ec4028ff7fbabc13bc662ef81688cb702f0371d9f51b641c1ee08f9",
+    "device_proc_maps_probe_txt": "c272c499a740e50051960dd5b36cd5a6dd6d3a5bc6d947a157e8042feb680648",
+    "README_md": "e69a2695b52e89cb148a9dabdd8d9a7d72df96b61f5d38a8985e858bbcc4907d"
+  },
+  "limitations": [
+    "Linux /proc maps exposes VMA permissions but not the arm64 PTE MAIR index.",
+    "The actual MAIR mapping is derived from hash-bound stock driver assembly and the exact pinned kernel source; no live PTE dump was available.",
+    "Normal cacheable mapping does not itself provide release/acquire ordering.",
+    "No runtime race or corruption is asserted.",
+    "The candidate was not installed on the device."
+  ]
+}
