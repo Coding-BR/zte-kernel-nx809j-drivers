@@ -1,0 +1,72 @@
+{
+  "schema": "haptic-richtap-fifo-reset-serialization/v1",
+  "finding": "Concurrent 0x520a FIFO cleanup can overlap active Richtap IRQ FIFO mutation and previously queued +0x648 RTP work.",
+  "stock": {
+    "module_path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "ghidra_decompilations": [
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c",
+        "sha256": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c",
+        "sha256": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock/haptic_86938.ko/decompiled/0070_001088f8_richtap_rtp_work.c",
+        "sha256": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock/haptic_86938.ko/decompiled/0074_0010946c_richtap_update_fifo_data.c",
+        "sha256": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock/haptic_86938.ko/decompiled/0155_0010eaa0_richtap_clean_buf.c",
+        "sha256": "5b0f015710250b80d08795d799fad0c466e26d4fb8e64b0da2f13930cf22e835"
+      }
+    ],
+    "behavior": {
+      "ioctl": "0x520a calls richtap_clean_buf, changes state+0x6bc and queues work at state+0x648",
+      "irq": "irq_handle calls richtap_update_fifo_data while state+0x6bc is active",
+      "fifo_mutations": [
+        "state+0x608 data buffer",
+        "state+0x620 cursor",
+        "state+0x6b8 count"
+      ],
+      "serialization_gap": "IRQ FIFO branch does not take the ioctl mutex at state+0x2f0"
+    }
+  },
+  "candidate": {
+    "source": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+    "source_sha256": "8b44eda231f0100f0ad764455e35a123d0e2895a47a7f81fe2530c87d348f3dd",
+    "module": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "module_sha256": "d9672b3b9200d6369b3f9a2599ef3f3e381da95c7def8f4728e6df16a78d9f8a",
+    "module_bytes": 6701296,
+    "map": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "map_sha256": "cf3c62429b6bc85581068abfd5c31f19b3e0eb345a98bc6ddc83a90d0c5cc8d1",
+    "disassembly": "docker_candidate_ioctl_disassembly.txt",
+    "disassembly_sha256": "61942ba4ab0ac680b579475456fd84fb0fcae2f361a4a636488a24ca5f31d546"
+  },
+  "serialization": {
+    "command": "0x520a",
+    "order": [
+      "mutex_lock(haptic_richtap_reset_lock)",
+      "cancel_work_sync(state+0x648)",
+      "haptic_lifetime_irq_stop_lock()",
+      "richtap_file_unlocked_ioctl_stock_exact(...)",
+      "haptic_lifetime_irq_stop_unlock()",
+      "mutex_unlock(haptic_richtap_reset_lock)"
+    ],
+    "irq_and_stop_paths_share_mutex": "haptic_lifetime_irq_stop_lock",
+    "worker_drain_occurs_before_shared_mutex": true,
+    "active_file_lifetime_reference_held": true
+  },
+  "verdict": "STATIC_RACE_MITIGATED_BUILD_REPRODUCIBLE_RUNTIME_UNVERIFIED",
+  "limits": [
+    "No runtime concurrency validation",
+    "No NX809J hardware validation",
+    "Strict stock import parity remains false",
+    "Full driver reconstruction remains incomplete"
+  ]
+}

@@ -41,6 +41,7 @@ static DEFINE_MUTEX(haptic_lifetime_registry_lock);
 static DEFINE_MUTEX(haptic_lifecycle_transition_lock);
 static DEFINE_MUTEX(haptic_ram_callback_lock);
 static DEFINE_MUTEX(haptic_irq_stop_lock);
+static DEFINE_MUTEX(haptic_richtap_reset_lock);
 static struct haptic_lifetime *active_lifetime;
 static void *haptic_partial_probe_state;
 static bool haptic_misc_registered;
@@ -494,12 +495,24 @@ long richtap_file_unlocked_ioctl(struct file *file, unsigned int command,
 	struct file proxy = {};
 	void *state;
 	long ret;
+	bool reset_rtp = command == 0x520a;
 
 	ret = haptic_lifetime_enter_file(file, &lifetime, &state);
 	if (ret)
 		return ret;
+	if (reset_rtp) {
+		/* Serialize concurrent reset commands before draining +0x648. */
+		mutex_lock(&haptic_richtap_reset_lock);
+		/* Do not hold the IRQ/stop mutex while waiting for a worker. */
+		cancel_work_sync((struct work_struct *)((char *)state + 0x648));
+		haptic_lifetime_irq_stop_lock();
+	}
 	proxy.private_data = state;
 	ret = richtap_file_unlocked_ioctl_stock_exact(&proxy, command, argument);
+	if (reset_rtp) {
+		haptic_lifetime_irq_stop_unlock();
+		mutex_unlock(&haptic_richtap_reset_lock);
+	}
 	haptic_lifetime_exit_file(lifetime);
 	return ret;
 }

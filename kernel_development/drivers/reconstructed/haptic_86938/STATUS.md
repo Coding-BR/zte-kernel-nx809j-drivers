@@ -3,7 +3,7 @@
 ## Current canonical snapshot — 2026-11-03
 
 - Stock module SHA-256: `05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e`.
-- Lifetime-hardened candidate SHA-256: `6cbdd9dbab1a4581f98654fa845e77a94b99d4ef68bc4d64bf656c4c6f5e1fb3` (6,700,392 bytes), bound in `reconstruction_map.json` and synchronized with the Docker curated snapshot.
+- Lifetime-hardened candidate SHA-256: `d9672b3b9200d6369b3f9a2599ef3f3e381da95c7def8f4728e6df16a78d9f8a` (6,701,296 bytes), bound in `reconstruction_map.json` and synchronized with the Docker curated snapshot.
 - Two isolated canonical Docker builds produced byte-identical modules for target kernel commit `3356b35306d35d5a480e3b63df1a9f065b5d9f55`; inputs and outputs are recorded in `haptic_ram_firmware_revalidation_20261103/docker_builds.json`.
 - The ABI audit passes target vermagic and symbol CRC checks, but strict stock import parity remains false: `gpio_free` is absent and nine lifetime-support imports are additional. This is a declared lifetime-hardened candidate, not a stock-equivalent module; see `haptic_ram_firmware_revalidation_20261103/module_abi_audit.json`.
 - Twenty-one function mappings remain declared hardening deviations with semantic equivalence not established; a distinct independent whole-driver review is pending.
@@ -13,6 +13,9 @@
 
 The source closes user file access, waits for active RAM callbacks, then synchronously drains the TikTap/Richtap workers at `+0x628`, `+0x648` and `+0x668` before releasing the IRQ. Static inspection found ioctl producers for `+0x648` (`0x520a`) and `+0x668` (`0x5212`); the teardown blocks and drains those user operations first. No queue producer for `+0x628` was found in the reconstructed source. The module disassembly confirms all three cancellation calls precede `devm_free_irq`, and destroys the workqueue before retiring state. This is offline static evidence; it does not establish runtime race freedom.
 
+## Update 2026-11-03 — Richtap FIFO reset serialization
+
+Static stock review identified a race between ioctl `0x520a` FIFO cleanup and active IRQ FIFO service, with a possible overlap from an already-running RTP work item at `state+0x648`. The candidate serializes reset ioctls, drains `+0x648` before taking the shared IRQ/stop mutex, then holds that mutex across the stock-exact reset body. Two independent canonical Docker builds produced the same candidate module (`d9672b3b9200d6369b3f9a2599ef3f3e381da95c7def8f4728e6df16a78d9f8a`, 6,701,296 bytes). The build logs, Ghidra evidence hashes, candidate disassembly and repository/Docker synchronization are recorded in [the FIFO reset serialization attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_ioctl_fifo_reset_serialization_20261103/README.md). Static reasoning and successful builds do not establish runtime race freedom; kernel concurrency and hardware validation remain open.
 ## Remaining gates
 
 Full C-level semantic equivalence, strict ABI parity, independent whole-driver review, kernel concurrency validation and controlled NX809J hardware validation remain open.
