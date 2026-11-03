@@ -30,3 +30,7 @@ Taken together, the two directions do not establish a release/acquire ownership 
 - Stock consumer assembly SHA-256: `df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2`.
 
 No source or mapping status changed. The candidate remains offline-only; the userspace publication contract, runtime race behavior, and device behavior are unverified.
+
+## Address correction
+
+The producer size store is STRH at VMA 0x1c398; 0x1c39c is the following counter increment. The JSON field is corrected from the initial transcription. The hash-bound device and call-site revalidation is in [the producer revalidation report](../haptic_richtap_device_hal_producer_revalidation_20261103/README.md).

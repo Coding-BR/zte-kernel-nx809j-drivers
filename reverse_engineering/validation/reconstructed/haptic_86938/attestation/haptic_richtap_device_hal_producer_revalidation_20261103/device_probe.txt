@@ -1,0 +1,17 @@
+Read-only ADB probe — 2026-11-03
+Device: NX809J; connected over USB debugging.
+su -c id: uid=0(root)
+pidof vendor.qti.hardware.vibrator.service: 5737
+Installed module SHA-256: 05e946134e27ef741fcbb67cdbd2cc93bf9a75f439fa341178459c3e8825187e
+libaacvibrator.so SHA-256: 8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61
+Service executable SHA-256: 4af5a59e1ab7ea19162102c56513a17d05f3ad22530fd5131c50a2ead64a13fd
+
+A root read of /proc/5737/maps showed:
+7a9c8ed000-7a9c930000 r-xp ... /vendor/lib64/libaacvibrator.so
+7a9d6ab000-7a9d6af000 rw-s ... /dev/awinic_haptic
+
+A root scan of /proc/[0-9]*/maps found exactly one process mapping /dev/awinic_haptic:
+PID 5737 — /vendor/bin/hw/vendor.qti.hardware.vibrator.service
+Mapping length: 0x4000 (16384 bytes); permissions rw-s.
+
+No vibration was triggered. No files, module, settings, or other device state were changed. The pulled ELF files remained in the host temporary directory.

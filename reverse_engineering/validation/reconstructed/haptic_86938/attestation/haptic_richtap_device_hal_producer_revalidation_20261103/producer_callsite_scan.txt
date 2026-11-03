@@ -1,0 +1,22 @@
+Canonical Docker image: nubia-sm8850-kernel-builder:nx809j-repro
+Docker image ID: sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390
+Inspection tool: Ubuntu LLVM 18.1.3
+Input: read-only pull of /vendor/lib64/libaacvibrator.so
+Input SHA-256: 8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61
+
+ELF symbol and control flow:
+- Exported symbol write_data_to_buffer(tiktap_operation*, signed char) begins at 0x1c194.
+- 0x1c194 branches to the function body at 0x1c198.
+- 25 direct BL instructions in the library target 0x1c198.
+- Three identified call sites in generate_wave_with_brake: 0x1c848, 0x1c980, 0x1cae0.
+- Fifteen identified call sites in tiktap_start: 0x20a28, 0x20ac4, 0x20c90, 0x20cdc, 0x20dc0, 0x20e5c, 0x20ed0, 0x20f78, 0x20fe0, 0x210c0, 0x21298, 0x2143c, 0x214b8, 0x21674, 0x21b28.
+- Seven additional direct call sites occur at 0x2559c, 0x255ac, 0x255f0, 0x255fc, 0x25624, 0x258c8, 0x25c24; stripped/overlapping ELF labels make their enclosing caller names ambiguous, so they are not attributed here.
+
+Writer instructions:
+- 0x1c208: ordinary LDRB of node state.
+- 0x1c22c: ordinary STRB publishing ready state U (0x55).
+- 0x1c38c: ordinary STRB of payload at node offset +0x18.
+- 0x1c398: ordinary STRH of size at node offset +0x02.
+- No DMB, DSB, STLR, LDAR, LDAXR, or STLXR appears in the writer body [0x1c194, 0x1c5fc), generate_wave_with_brake [0x1c664, 0x1cc38), or inspected tiktap_start range [0x1d0a4, 0x21f9c).
+
+The whole library contains acquire/release instructions in unrelated runtime/template code; this report makes no whole-library claim that no ordering instructions exist. User-space locks do not form a shared kernel/HAL acquire-release pair.

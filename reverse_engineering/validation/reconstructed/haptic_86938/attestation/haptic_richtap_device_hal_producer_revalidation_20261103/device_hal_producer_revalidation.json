@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "review_id": "haptic_richtap_device_hal_producer_revalidation_20261103",
+  "review_date": "2026-11-03",
+  "method": "read-only ADB on NX809J; host-side ELF inspection in canonical Docker image nubia-sm8850-kernel-builder:nx809j-repro",
+  "device": {
+    "model": "NX809J",
+    "root_uid": 0,
+    "running_service": "vendor.qti.hardware.vibrator.service",
+    "service_pid": 5737,
+    "only_process_mapping_awinic_haptic_at_probe_time": true
+  },
+  "mapping": {
+    "path": "/dev/awinic_haptic",
+    "permissions": "rw-s",
+    "length_bytes": 16384,
+    "shared": true,
+    "writable": true,
+    "mapped_by": "vendor.qti.hardware.vibrator.service"
+  },
+  "userspace_hal": {
+    "library": "/vendor/lib64/libaacvibrator.so",
+    "library_sha256": "8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61",
+    "library_size_bytes": 289616,
+    "service_has_dt_needed_for_library": true,
+    "writer_symbol": "write_data_to_buffer(tiktap_operation*, signed char)",
+    "export_entry_vma": "0x1c194",
+    "writer_body_vma": "0x1c198",
+    "direct_bl_callsite_count_to_body": 25,
+    "known_callers": {
+      "generate_wave_with_brake": ["0x1c848", "0x1c980", "0x1cae0"],
+      "tiktap_start": ["0x20a28", "0x20ac4", "0x20c90", "0x20cdc", "0x20dc0", "0x20e5c", "0x20ed0", "0x20f78", "0x20fe0", "0x210c0", "0x21298", "0x2143c", "0x214b8", "0x21674", "0x21b28"]
+    },
+    "writer_state_load_vma": "0x1c208",
+    "payload_store_vma": "0x1c38c",
+    "data_size_store_vma": "0x1c398",
+    "ready_state_store_vma": "0x1c22c",
+    "ready_state": "0x55 ('U')",
+    "release_acquire_or_barrier_in_writer_body": false,
+    "release_acquire_or_barrier_in_inspected_writer_call_ranges": false,
+    "live_writer_invocation_traced": false
+  },
+  "kernel_module": {
+    "installed_path": "/vendor_dlkm/lib/modules/haptic_86938.ko",
+    "installed_sha256": "05e946134e27ef741fcbb67cdbd2cc93bf9a75f439fa341178459c3e8825187e",
+    "repository_stock_sha256": "05e946134e27ef741fcbb67cdbd2cc93bf9a75f439fa341178459c3e8825187e",
+    "current_candidate_sha256": "7e99600da7ce2a265ada7f25bbcb0157ddaf310b66a0523333058ffaab99f3e8",
+    "installed_file_matches_repository_stock": true,
+    "loaded_binary_identity_proven": false,
+    "candidate_transfer_or_install_performed": false
+  },
+  "limitations": {
+    "runtime_fifo_race_reproduced": false,
+    "haptic_effect_triggered": false,
+    "device_state_modified": false,
+    "cross_boundary_release_acquire_protocol_proven": false
+  }
+}
