@@ -1,6 +1,15 @@
 # haptic_86938 reconstruction status
 
-## Current canonical snapshot — 2026-11-02
+## Current canonical snapshot — 2026-11-03
+
+- Stock module SHA-256: `05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e`.
+- Lifetime-hardened candidate SHA-256: `7bb5ac661c2807e5ebc15c1efce91d5a978b04d22edd5eee11c5e52ea971348b` (6,691,720 bytes), bound in `reconstruction_map.json` and built in the canonical Docker environment.
+- Two clean Docker builds pass and are byte-identical. Kernel source identity and target vermagic checks pass. The final audit (`attestation/haptic_lifetime_hardening_20261103/docker/driver_audit_final.json`) confirms candidate content/layout, kernel identity, vermagic, traceability and reproducible builds. The only automated parity error is the nine additional KMI imports introduced by hardening; see the attestation. The first cycle module is preserved there for byte-level hash confirmation.
+- Nineteen function mappings now explicitly record `NOT_ESTABLISHED_HARDENED_DEVIATION`; six preserve stock assembly helpers behind lifetime-gated wrappers. Their independent review is pending, and they are not counted as stock-equivalent.
+- The module remains **INCOMPLETE** as a full reconstruction/replacement candidate. Runtime, concurrency, firmware teardown and NX809J hardware behavior are unverified. The new static lifetime evidence and build identity are in `../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_lifetime_hardening_20261103/README.md`.
+
+
+## Historical checkpoint — 2026-11-02 (superseded by the 2026-11-03 snapshot above)
 
 - Stock module SHA-256: `05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e`.
 - Current candidate SHA-256: `175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c`; it matches the repository artifact, Docker curated module and `reconstruction_map.json`.

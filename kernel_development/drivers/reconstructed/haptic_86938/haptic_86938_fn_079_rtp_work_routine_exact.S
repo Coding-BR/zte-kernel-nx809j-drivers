@@ -1,9 +1,9 @@
 .section .text,"ax",@progbits
 .align 2
-.global rtp_work_routine
-.type rtp_work_routine, %function
+.global rtp_work_routine_stock_exact
+.type rtp_work_routine_stock_exact, %function
     .word 0xa607748c
-rtp_work_routine:
+rtp_work_routine_stock_exact:
     .inst 0xd503233f
     .inst 0xd101c3ff
     .inst 0xa9017bfd
@@ -502,7 +502,7 @@ rtp_work_routine:
     .reloc .-4, R_AARCH64_CALL26, vmalloc_noprof
     .inst 0xf9002b7c
     .inst 0x17fffea4
-.size rtp_work_routine, .-rtp_work_routine
+.size rtp_work_routine_stock_exact, .-rtp_work_routine_stock_exact
 
 .section .rodata.str1.1,"aMS",@progbits,1
 .align 1

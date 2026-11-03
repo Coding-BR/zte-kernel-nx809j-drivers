@@ -3,6 +3,8 @@
 #include <linux/types.h>
 #include <linux/workqueue.h>
 
+#include "haptic_86938_internal.h"
+
 struct aw_haptic;
 
 typedef void (*aw_haptic_op_fn)(struct aw_haptic *haptic);
@@ -19,6 +21,14 @@ void richtap_stop_work(struct work_struct *work)
 	aw_haptic_op_fn operation_38;
 	aw_haptic_u8_op_fn operation_110;
 
+	if (haptic_lifetime_is_shutting_down())
+		return;
+	haptic_lifetime_irq_stop_lock();
+	if (haptic_lifetime_is_shutting_down()) {
+		haptic_lifetime_irq_stop_unlock();
+		return;
+	}
+
 	mutex_lock(mutex);
 	operations = *(void **)(work_address - 0xa0);
 	operation_f0 = *(aw_haptic_op_fn *)((char *)operations + 0xf0);
@@ -31,4 +41,5 @@ void richtap_stop_work(struct work_struct *work)
 	operation_110 = *(aw_haptic_u8_op_fn *)((char *)operations + 0x110);
 	operation_110(haptic, 0);
 	*(u32 *)(work_address + 0x54) = 0;
+	haptic_lifetime_irq_stop_unlock();
 }

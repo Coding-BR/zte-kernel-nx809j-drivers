@@ -6,9 +6,13 @@
 
 int richtap_file_open(struct inode *inode, struct file *file)
 {
+	int ret;
+
 	(void)inode;
 	if (!try_module_get(THIS_MODULE))
 		return -ENODEV;
-	file->private_data = g_aw_haptic;
-	return 0;
+	ret = haptic_lifetime_file_open(file);
+	if (ret)
+		module_put(THIS_MODULE);
+	return ret;
 }

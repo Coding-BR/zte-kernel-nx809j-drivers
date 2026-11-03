@@ -1,9 +1,9 @@
 .section .text,"ax",@progbits
 .align 2
-.global richtap_file_unlocked_ioctl
-.type richtap_file_unlocked_ioctl, %function
+.global richtap_file_unlocked_ioctl_stock_exact
+.type richtap_file_unlocked_ioctl_stock_exact, %function
     .word 0x2af6cdbb
-richtap_file_unlocked_ioctl:
+richtap_file_unlocked_ioctl_stock_exact:
     .inst 0xd503233f
     .inst 0xd10103ff
     .inst 0xa9017bfd
@@ -408,4 +408,4 @@ richtap_file_unlocked_ioctl:
     .inst 0x17ffff93
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, __stack_chk_fail
-.size richtap_file_unlocked_ioctl, .-richtap_file_unlocked_ioctl
+.size richtap_file_unlocked_ioctl_stock_exact, .-richtap_file_unlocked_ioctl_stock_exact

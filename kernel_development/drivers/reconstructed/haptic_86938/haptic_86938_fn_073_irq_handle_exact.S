@@ -1,9 +1,9 @@
 .section .text,"ax",@progbits
 .align 2
-.global irq_handle
-.type irq_handle, %function
+.global irq_handle_stock_exact
+.type irq_handle_stock_exact, %function
     .word 0xd2f00be1
-irq_handle:
+irq_handle_stock_exact:
     .inst 0xd503233f
     .inst 0xa9bd7bfd
     .inst 0xf9000bf5
@@ -312,7 +312,7 @@ irq_handle:
     .inst 0xa8c37bfd
     .inst 0xd50323bf
     .inst 0xd65f03c0
-.size irq_handle, .-irq_handle
+.size irq_handle_stock_exact, .-irq_handle_stock_exact
 
 .section .rodata.str1.1,"aMS",@progbits,1
 .align 1

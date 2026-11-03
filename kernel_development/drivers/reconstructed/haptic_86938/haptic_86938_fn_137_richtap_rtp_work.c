@@ -4,6 +4,8 @@
 #include <linux/types.h>
 #include <linux/workqueue.h>
 
+#include "haptic_86938_internal.h"
+
 struct aw_haptic;
 struct work_struct;
 
@@ -106,6 +108,9 @@ extern void richtap_update_fifo_data(struct aw_haptic *aw, u32 length);
 
 void richtap_rtp_work(struct work_struct *work)
 {
+    if (haptic_lifetime_is_shutting_down())
+        return;
+
 #if defined(__aarch64__)
 	register char *work_base asm("x19");
 	register struct aw_haptic *aw asm("x20");

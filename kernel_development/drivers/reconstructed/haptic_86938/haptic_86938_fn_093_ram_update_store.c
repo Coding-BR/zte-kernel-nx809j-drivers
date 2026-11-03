@@ -1,14 +1,11 @@
 // SPDX-License-Identifier: GPL-2.0
 #include <linux/device.h>
-#include <linux/firmware.h>
 #include <linux/gfp_types.h>
 #include <linux/kernel.h>
 #include <linux/kstrtox.h>
-#include <linux/module.h>
 #include <linux/types.h>
 
-extern char *aw_ram_name;
-extern void ram_load(const struct firmware *firmware, void *context);
+#include "haptic_86938_internal.h"
 
 ssize_t ram_update_store(struct device *dev, struct device_attribute *attr,
 			 const char *buf, size_t count)
@@ -18,15 +15,15 @@ ssize_t ram_update_store(struct device *dev, struct device_attribute *attr,
 	int result;
 
 	(void)attr;
+	if (haptic_lifetime_is_shutting_down())
+		return -ENODEV;
 	result = kstrtouint(buf, 0, &ram_update);
 	if (result < 0)
 		return result;
 	if (ram_update != 0) {
 		*(u16 *)((char *)driver_data - 0xa3) = 0;
-		(void)request_firmware_nowait(
-			THIS_MODULE, true, aw_ram_name,
-			*(struct device **)((char *)driver_data + 0x278),
-			GFP_KERNEL, (char *)driver_data - 0xa8, ram_load);
+		(void)haptic_lifetime_request_ram_firmware(
+			(char *)driver_data - 0xa8);
 	}
 	return count;
 }

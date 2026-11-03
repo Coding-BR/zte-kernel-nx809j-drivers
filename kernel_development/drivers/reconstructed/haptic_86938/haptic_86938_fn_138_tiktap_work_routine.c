@@ -10,6 +10,8 @@
 #include <linux/types.h>
 #include <linux/workqueue.h>
 
+#include "haptic_86938_internal.h"
+
 struct aw_haptic;
 
 struct richtap_fifo_node {
@@ -90,6 +92,9 @@ static __always_inline u32 tiktap_clock_msecs(void)
 
 void tiktap_work_routine(struct work_struct *work)
 {
+	if (haptic_lifetime_is_shutting_down())
+		return;
+
 	char *work_base = (char *)work;
 	struct aw_haptic *aw = (struct aw_haptic *)(work_base - 0x628);
 	struct richtap_fifo_node *node =

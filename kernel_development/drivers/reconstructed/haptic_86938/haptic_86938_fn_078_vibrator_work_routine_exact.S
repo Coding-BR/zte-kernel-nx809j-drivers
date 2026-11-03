@@ -1,9 +1,9 @@
 .section .text,"ax",@progbits
 .align 2
-.global vibrator_work_routine
-.type vibrator_work_routine, %function
+.global vibrator_work_routine_stock_exact
+.type vibrator_work_routine_stock_exact, %function
     .word 0xa607748c
-vibrator_work_routine:
+vibrator_work_routine_stock_exact:
     .inst 0xd503233f
     .inst 0xa9bc7bfd
     .inst 0xa9015ff8
@@ -397,7 +397,7 @@ vibrator_work_routine:
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, _printk
     .inst 0x17ffff57
-.size vibrator_work_routine, .-vibrator_work_routine
+.size vibrator_work_routine_stock_exact, .-vibrator_work_routine_stock_exact
 
 .section .rodata.str1.1,"aMS",@progbits,1
 .align 1

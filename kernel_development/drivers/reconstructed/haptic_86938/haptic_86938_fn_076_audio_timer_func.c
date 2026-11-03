@@ -3,11 +3,16 @@
 #include <linux/types.h>
 #include <linux/workqueue.h>
 
+#include "haptic_86938_internal.h"
+
 enum hrtimer_restart audio_timer_func(struct hrtimer *timer)
 {
     u8 *timer_bytes = (u8 *)timer;
     s32 interval_us;
     s64 interval_ns;
+
+    if (haptic_lifetime_is_shutting_down())
+        return HRTIMER_NORESTART;
 
     queue_work_on(0x20,
                   *(struct workqueue_struct **)(timer_bytes - 0xd8),

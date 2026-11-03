@@ -3,9 +3,14 @@
 #include <linux/types.h>
 #include <linux/workqueue.h>
 
+#include "haptic_86938_internal.h"
+
 enum hrtimer_restart vibrator_timer_func(struct hrtimer *timer)
 {
     u8 *timer_bytes = (u8 *)timer;
+
+    if (haptic_lifetime_is_shutting_down())
+        return HRTIMER_NORESTART;
 
     *(u32 *)(timer_bytes - 0x2f0) = 0;
     queue_work_on(0x20,

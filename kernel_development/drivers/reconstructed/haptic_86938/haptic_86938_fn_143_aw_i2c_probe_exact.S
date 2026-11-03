@@ -1,9 +1,9 @@
 .section .text,"ax",@progbits
 .align 2
-.global aw_i2c_probe
-.type aw_i2c_probe, %function
+.global aw_i2c_probe_stock_exact
+.type aw_i2c_probe_stock_exact, %function
     .word 0x0c5e2bbf
-aw_i2c_probe:
+aw_i2c_probe_stock_exact:
     .inst 0xd503233f
     .inst 0xd10243ff
     .inst 0xa9037bfd
@@ -1241,7 +1241,7 @@ aw_i2c_probe:
     .inst 0xc80a7d09
     .inst 0x35ffffaa
     .inst 0x17ffff47
-.size aw_i2c_probe, .-aw_i2c_probe
+.size aw_i2c_probe_stock_exact, .-aw_i2c_probe_stock_exact
 
 .section .rodata.str1.1,"aMS",@progbits,1
 .align 1

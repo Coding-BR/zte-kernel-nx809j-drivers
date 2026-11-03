@@ -8,6 +8,8 @@
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 
+#include "haptic_86938_internal.h"
+
 struct aw_haptic;
 
 struct aw_haptic_container {
@@ -36,7 +38,7 @@ void ram_load(const struct firmware *firmware, void *context)
 		printk(KERN_ERR "[%s][%04d]%s: failed to read %s\n",
 		       "haptic_hv", 0x6e9, "ram_load", aw_ram_name);
 		release_firmware(firmware);
-		if (load_cont > 0x14)
+		if (load_cont > 0x14 || haptic_lifetime_is_shutting_down())
 			return;
 		queue_delayed_work_on(
 			0x20, system_wq,

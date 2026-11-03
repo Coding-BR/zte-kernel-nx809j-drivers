@@ -5,10 +5,15 @@
 #include <linux/types.h>
 #include <linux/workqueue.h>
 
+#include "haptic_86938_internal.h"
+
 void brightness_set(struct led_classdev *led_cdev,
                     enum led_brightness value)
 {
     u8 *object = (u8 *)led_cdev;
+
+    if (haptic_lifetime_is_shutting_down())
+        return;
 
     printk(KERN_INFO "[%s][%04d]%s: enter\n",
            "haptic_hv", 0x889, __func__);

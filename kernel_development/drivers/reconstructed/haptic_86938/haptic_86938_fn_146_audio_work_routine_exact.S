@@ -1,9 +1,9 @@
 .section .text,"ax",@progbits
 .align 2
-.global audio_work_routine
-.type audio_work_routine, %function
+.global audio_work_routine_stock_exact
+.type audio_work_routine_stock_exact, %function
     .word 0xa607748c
-audio_work_routine:
+audio_work_routine_stock_exact:
     .inst 0xd503233f
     .inst 0xd10183ff
     .inst 0xa9017bfd
@@ -306,7 +306,7 @@ audio_work_routine:
     .reloc .-4, R_AARCH64_CALL26, __list_del_entry_valid_or_report
     .inst 0xaa0a03e0
     .inst 0x17ffff55
-.size audio_work_routine, .-audio_work_routine
+.size audio_work_routine_stock_exact, .-audio_work_routine_stock_exact
 
 .section .rodata.str1.1,"aMS",@progbits,1
 .align 1
