@@ -465,7 +465,17 @@
         "canonical-build:attestation/pdev_unregister_hardening_20261102/canonical_build_report.json:sha256:94f116bcc706b9a6b9fc5b9f75a587c738100d24529d3a2c8357be869dfdccd3",
         "kcfi:attestation/pdev_unregister_hardening_20261102/kcfi_comparison.json:sha256:6868e736fca21f6114bd3c659adb61adb32545c787f673ea7e74025217ca721e",
         "source-sync:attestation/pdev_unregister_hardening_20261102/source_sync_plan.json:sha256:9919361facefe1d05315ab07a254b759edd06edf2065e8608245768e628a0c93",
-        "hardening-review:attestation/pdev_unregister_hardening_20261102/pdev_unregister_review.json:sha256:bd34a1d1c4a8f85b5584edbcaa55d86e61305f9ce5a14b5f8ffe8254a23889f2"
+        "hardening-review:attestation/pdev_unregister_hardening_20261102/pdev_unregister_review.json:sha256:bd34a1d1c4a8f85b5584edbcaa55d86e61305f9ce5a14b5f8ffe8254a23889f2",
+        "source:tpd_proc_deinit.c:sha256:6111f6efc592c71557fb3b0d933f4a43d9e4c1c22d78946d720a95cc2531483d",
+        "probe-proc-create:zte_touch_probe.c:sha256:c4fdd13c800bedf35f5484560d727cfb9c5e36eb222bd06ee7a7514539ca33c9",
+        "stock-ghidra-decompilation:0014_00107fa4_tpd_proc_deinit.c:sha256:0b4101fbc3c57c43e33480b35f36282939cf4de58975b2f2e20450f64cb6a1cf",
+        "source-sync:attestation/tpd_proc_subtree_cleanup_20261102/source_sync_plan.json:sha256:4b3949a0e577491bbca25c42e0555e4d2de2278001c2c32b43b270aff993eb8c",
+        "canonical-build:attestation/tpd_proc_subtree_cleanup_20261102/canonical_build_report.json:sha256:16b71c694e7eb2379a490aeaacee97074095132ad652176da439b6d21afa411b",
+        "candidate-assembly:attestation/tpd_proc_subtree_cleanup_20261102/candidate_assembly/manifest.json:sha256:e2cd7a7c1ffd18834b57d8236621417aca28c87d92f6244dcff20d0541982f51",
+        "assembly-comparison:attestation/tpd_proc_subtree_cleanup_20261102/assembly_comparison.json:sha256:812394a81813a349be054615e4ca67213608aaeb5008f6774de91ab77808ba52",
+        "kcfi-comparison:attestation/tpd_proc_subtree_cleanup_20261102/kcfi_comparison.json:sha256:a647cbecb4e9a57ac62cfa9ce4b91723111dba7dcdc353abdde9059441bd9ae7",
+        "lifecycle-review:attestation/tpd_proc_subtree_cleanup_20261102/lifecycle_review.json:sha256:3a69994477ea2311cd3eec221486834f4030f941f56ed408f1c368a145ae1ccb",
+        "linux-proc-api:https://github.com/torvalds/linux/blob/v6.12/fs/proc/generic.c"
       ],
       "mapping_basis": "Preserved stock Ghidra/P-Code and historical exact evidence plus hardened pdev lifecycle, canonical Docker two-cycle build and KCFI type-ID/section comparison.",
       "review_scope": "offline_exact_function_level",
@@ -477,7 +487,7 @@
       "elf_symbol_bytes": 544,
       "stock_entry": "00107fa4",
       "stock_function": "tpd_proc_deinit",
-      "mapping_note": "HARDENED_STOCK_DEVIATION: after removing proc entries, clears tpd_proc_dir for idempotent probe rollback and normal deinit; the final canonical build validates this source revision."
+      "mapping_note": "HARDENED_STOCK_DEVIATION: atomically unpublishes the saved proc parent and uses proc_remove to recursively drain the subtree, including four stock-omitted children (single_game, stability_level, tp_test, zlog_debug); canonical Docker build is reproducible in two cycles, while stock assembly size/opcode parity is intentionally not claimed."
     },
     {
       "evidence": [

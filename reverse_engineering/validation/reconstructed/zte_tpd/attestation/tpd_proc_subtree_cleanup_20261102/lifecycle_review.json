@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T02:19:42+00:00",
+  "function": "tpd_proc_deinit",
+  "finding": {
+    "summary": "Stock cleanup manually removes a fixed list of proc entries, then removes the touchscreen parent. Probe creates four child names absent from that removal list; on Linux v6.12 remove_proc_entry does not recursively remove non-empty directories, so these children can remain and trigger the kernel warning/leak path during unwind/deinit.",
+    "proc_create_count": 33,
+    "stock_remove_proc_entry_count": 30,
+    "missing_children": [
+      "single_game",
+      "stability_level",
+      "tp_test",
+      "zlog_debug"
+    ],
+    "kernel_reference": "https://github.com/torvalds/linux/blob/v6.12/fs/proc/generic.c",
+    "kernel_semantics": "remove_proc_entry unlinks one entry and warns/leaks if the directory remains non-empty; proc_remove recursively removes the subtree and waits for active users to drain."
+  },
+  "change": {
+    "summary": "Read the proc parent once, clear the published pointer, then call proc_remove on the saved parent so all current and future descendants are removed and active proc users are drained.",
+    "source_sha256": "6111f6efc592c71557fb3b0d933f4a43d9e4c1c22d78946d720a95cc2531483d",
+    "docker_curated_source_sha256": "6111f6efc592c71557fb3b0d933f4a43d9e4c1c22d78946d720a95cc2531483d",
+    "source_matches_docker_curated": true
+  },
+  "validation": {
+    "source_sync_applied": true,
+    "remaining_source_mismatches": 0,
+    "canonical_docker_build_passed": true,
+    "two_cycle_reproducible": true,
+    "module_sha256": "494c8ba776f1a97ec7ac9ceae7075073c0db3994d5d8fb739d01f6f16e4de4b4",
+    "module_size_bytes": 7259064,
+    "kcfi_comparison_passed": true,
+    "kcfi_type_id_match": true,
+    "stock_candidate_symbol_sizes_bytes": {
+      "stock": 544,
+      "candidate": 68
+    },
+    "assembly_comparison_passed": false,
+    "assembly_difference": "Expected intentional hardening deviation: stock 544-byte manual removal body versus 68-byte proc_remove implementation; opcode/relocation exactness is not claimed.",
+    "hardware_validation": "DEFERRED"
+  },
+  "evidence": {
+    "reconstructed_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/tpd_proc_deinit.c",
+      "sha256": "6111f6efc592c71557fb3b0d933f4a43d9e4c1c22d78946d720a95cc2531483d"
+    },
+    "probe_proc_entry_creation": {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_touch_probe.c",
+      "sha256": "c4fdd13c800bedf35f5484560d727cfb9c5e36eb222bd06ee7a7514539ca33c9"
+    },
+    "stock_ghidra_decompilation": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0014_00107fa4_tpd_proc_deinit.c",
+      "sha256": "0b4101fbc3c57c43e33480b35f36282939cf4de58975b2f2e20450f64cb6a1cf"
+    },
+    "source_sync_report": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/tpd_proc_subtree_cleanup_20261102/source_sync_plan.json",
+      "sha256": "4b3949a0e577491bbca25c42e0555e4d2de2278001c2c32b43b270aff993eb8c"
+    },
+    "canonical_docker_build": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/tpd_proc_subtree_cleanup_20261102/canonical_build_report.json",
+      "sha256": "16b71c694e7eb2379a490aeaacee97074095132ad652176da439b6d21afa411b"
+    },
+    "candidate_assembly_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/tpd_proc_subtree_cleanup_20261102/candidate_assembly/manifest.json",
+      "sha256": "e2cd7a7c1ffd18834b57d8236621417aca28c87d92f6244dcff20d0541982f51"
+    },
+    "stock_candidate_assembly_comparison": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/tpd_proc_subtree_cleanup_20261102/assembly_comparison.json",
+      "sha256": "812394a81813a349be054615e4ca67213608aaeb5008f6774de91ab77808ba52"
+    },
+    "stock_candidate_kcfi_comparison": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/tpd_proc_subtree_cleanup_20261102/kcfi_comparison.json",
+      "sha256": "a647cbecb4e9a57ac62cfa9ce4b91723111dba7dcdc353abdde9059441bd9ae7"
+    },
+    "stock_kcfi_report": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/tpd_proc_subtree_cleanup_20261102/stock_kcfi.json",
+      "sha256": "36dba52162494f1e84910386747d6a485d243e8beabb1e875feb31042ac406d1"
+    },
+    "candidate_kcfi_report": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/tpd_proc_subtree_cleanup_20261102/candidate_kcfi.json",
+      "sha256": "1898051cf7dbf2680b8f8c66b479fc5df13be09723c927f5717d2068d88ed6b7"
+    }
+  },
+  "status": "HARDENED_STOCK_DEVIATION"
+}
