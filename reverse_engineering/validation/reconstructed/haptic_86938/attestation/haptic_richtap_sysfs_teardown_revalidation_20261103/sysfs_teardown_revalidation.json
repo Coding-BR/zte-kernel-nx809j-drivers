@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-03T09:14:33.505322+00:00",
+  "driver": "haptic_86938",
+  "finding_ids": [
+    "HAP-LED-01",
+    "HAP-SYSFS-01",
+    "HAP-SYSFS-02",
+    "HAP-SYSFS-03"
+  ],
+  "disposition": "STATICALLY_ADDRESSED_CURRENT_CANDIDATE_RUNTIME_UNVERIFIED",
+  "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "candidate_module": {
+    "sha256": "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098",
+    "size_bytes": 6700096
+  },
+  "reconstruction_map_sha256": "8af7d2a6298d31493704587b20df32f67dd4eae07d2f15dcff46c83e01a9144b",
+  "source_sha256": {
+    "haptic_86938_fn_132_aw_remove.c": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55",
+    "haptic_86938_lifetime.c": "3d958fc19b04eeaa062f6a6bcf2d33345d5aff99aaad7afe266dbcbef0e2e718",
+    "haptic_86938_fn_126_aw8693x_creat_node.c": "c5812641c584ebf8d21d9720852aee9541a8b6cdb50e61f8973af7880ea134bd",
+    "haptic_86938_fn_103_brightness_set.c": "70f842205c3b397ba658e8e92f99776cbe0c9e41188f7cb67478c6c1ef9c2bb8",
+    "haptic_86938_fn_093_ram_update_store.c": "ea0da71006104c0bc809f0b83b6a09020844446e6bd993a87b238ef5227d4a3c"
+  },
+  "target_kernel": {
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "files_sha256": {
+      "drivers/leds/led-class.c": "2b98602bc67c37f535a532c1c711641d1d684465ded10de75dda472815fb5340",
+      "drivers/base/core.c": "64397a878c094bb860d8cbb7d08c5c0380d4656bc53e0f777e31f1f6666dc882",
+      "lib/kobject.c": "0161a3faaa770cf7a724f94773104a5ab33c5dbafe525729276360cd8120d4ab",
+      "fs/sysfs/dir.c": "baa94bbf4d3d857a986089d9d6a0dcdd71623d574ab49dd56bdb3cdd15755aa7",
+      "fs/kernfs/dir.c": "f1a463c8976410a37aed61f3677a35afe044fce51fda50d60ed9f6e4869bb1e9"
+    },
+    "teardown_chain": [
+      "led_classdev_unregister -> device_unregister",
+      "device_del -> kobject_del",
+      "__kobject_del -> sysfs_remove_dir",
+      "sysfs_remove_dir -> kernfs_remove",
+      "__kernfs_remove marks nodes removing/deactivated and calls kernfs_drain",
+      "kernfs_drain waits until active count reaches KN_DEACTIVATED_BIAS"
+    ]
+  },
+  "current_candidate_disassembly": {
+    "path": "docker_llvm_objdump_sysfs_teardown.txt",
+    "sha256": "c09e597de6bb750ee20ed7b1b0e8023bdb659053d3c995a0bfa85c202685e478",
+    "symbols": {
+      "aw_remove": "0x64ec",
+      "aw_i2c_probe": "0x6668",
+      "brightness_set": "0x3828",
+      "ram_update_store": "0x31a4"
+    },
+    "call_addresses": {
+      "led_classdev_unregister": "0x6560",
+      "ram_callback_drain": "0x6578",
+      "worker_drains": [
+        "0x6598",
+        "0x65a0",
+        "0x65a8"
+      ],
+      "devm_free_irq": "0x65cc",
+      "workqueue_destroy": "0x6628",
+      "state_retire": "0x6644",
+      "probe_sysfs_create_group": "0x67fc",
+      "probe_aw_group_create": "0x6810",
+      "brightness_shutdown_gate": "0x3840",
+      "ram_update_shutdown_gate": "0x31d8",
+      "ram_firmware_request": "0x320c"
+    }
+  },
+  "build_binding": {
+    "audit_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_workers_before_irq_revalidation_20261103/canonical_postpromotion_audit.json",
+    "audit_sha256": "58c751263c0871f881a196cea984695a3f32cde4bfbfba7d0474f97faf2890df",
+    "candidate_hash_matches": true,
+    "reproducible": true,
+    "clean_build_sha256": [
+      "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098",
+      "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098"
+    ],
+    "remaining_failed_check": [
+      "undefined_symbols_match"
+    ]
+  },
+  "prior_sysfs_reviews_sha256": {
+    "led_teardown_callback_lifetime.json": "7a7f63e681d5d9e0f929d68c43217637bf1347e393832a52b8d4715423eb9e4b",
+    "sysfs_remove_window_review.json": "45a3c866a8af4a0733bb3cce58f52abb21a4d162f58f9ed01a46e101f3afd7eb",
+    "sysfs_store_callback_teardown_review.json": "6fc1dd7f03305938b3fdb3803fa32c24dd56a338eb92ed896e9ed9adc8291ec5",
+    "sysfs_show_callback_teardown_review.json": "21f3ebf504e8d3fc94a39e90f9aced506a173e083a357255d005ea66cab34bb8"
+  },
+  "source_sync_dry_run": {
+    "path": "source_tree_sync_dry_run.json",
+    "sha256": "4d766f4f4f7a5901ad1008d5219d79593ef79d67e887535bd6053b88e53ddc42",
+    "applied": false,
+    "missing": 0,
+    "content_mismatch": 0,
+    "curated_only": 39
+  },
+  "limits": [
+    "No runtime callback/unbind race reproduction.",
+    "No NX809J hardware validation.",
+    "Whole-driver independent review and strict ABI parity remain pending."
+  ]
+}

@@ -23,6 +23,12 @@ The current candidate `7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1
 
 The current candidate disassembly contains the mmap attachment and retirement callbacks. This closes the previously reported page-use-after-free path by static reasoning for this candidate. No source changed in this review; runtime mapping/unbind races and NX809J hardware behavior remain untested. The lifetime hardening remains a declared deviation from stock semantics pending independent review. See `../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_vma_teardown_revalidation_20261103/README.md`.
 
+## Update 2026-11-03 — LED-child sysfs teardown revalidation
+
+The current candidate statically closes the LED/sysfs callback window recorded as HAP-LED-01 and HAP-SYSFS-01/02/03. Probe registers both attribute groups on the LED child device. `aw_remove` sets the shutdown gate, calls `led_classdev_unregister` while state is valid, and only then drains firmware callbacks, work and timers or releases device resources. In the pinned kernel, LED unregister invokes `device_unregister`; `device_del` removes the child kobject; sysfs removal recursively deactivates the attribute nodes and waits for active kernfs operations to drain. Thus in-flight show/store callbacks finish before teardown proceeds, and no new callback can start afterward.
+
+The current `brightness_set` returns at the shutdown gate, including the LED-off callback from unregister. `ram_update_store` also checks shutdown and submits firmware through the tracked callback path. Stores already in flight are drained by child-device removal; work they submitted is canceled afterward. The current module disassembly confirms the unregister occurs before worker cancellation, IRQ release, workqueue destruction and state retirement. This statically resolves the previously identified LED/sysfs races for this candidate. No runtime reproduction was performed; independent review, strict ABI parity and hardware behavior remain open. Evidence: `../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_sysfs_teardown_revalidation_20261103/README.md`.
+
 ## Historical checkpoint — 2026-11-02 (superseded by the 2026-11-03 snapshot above)
 
 - Stock module SHA-256: `05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e`.
