@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0",
+  "review_id": "haptic_irq_stop_lock_revalidation_20261103",
+  "generated_local_date": "2026-11-03",
+  "driver": "haptic_86938",
+  "status": "STATICALLY_REVALIDATED_HAP_RICHTAP_06_CLOSED_FOR_CURRENT_CANDIDATE_RUNTIME_UNVERIFIED",
+  "finding": {
+    "id": "HAP-RICHTAP-06",
+    "title": "Richtap IRQ/stop work shared serialization",
+    "disposition": "The candidate shared mutex serializes the active IRQ path against the complete +0x668 stop-worker sequence. Static closure applies only to the candidate hash below.",
+    "previous_review_candidate_sha256": "175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c",
+    "runtime_reproduced": false,
+    "hardware_tested": false
+  },
+  "binding": {
+    "stock_module": {
+      "path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+      "size_bytes": 189328,
+      "sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+    },
+    "candidate_module_repository": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+      "size_bytes": 6700448,
+      "sha256": "d2705ec78d029bd9510231c83d0e3f01da9133201d749e3e7933b0896fbae421"
+    },
+    "candidate_module_docker_curated": {
+      "path": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/haptic_86938/haptic_86938.ko",
+      "size_bytes": 6700448,
+      "sha256": "d2705ec78d029bd9510231c83d0e3f01da9133201d749e3e7933b0896fbae421"
+    },
+    "reconstruction_map": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+      "size_bytes": 413274,
+      "sha256": "18f7b4eb7792d775dea693351ecc3a32cca7f94c7e0e22c9cc5e0cda63124adc"
+    },
+    "candidate_sources": [
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+        "size_bytes": 13337,
+        "sha256": "3d958fc19b04eeaa062f6a6bcf2d33345d5aff99aaad7afe266dbcbef0e2e718"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_112_richtap_stop_work.c",
+        "size_bytes": 1353,
+        "sha256": "300379d3e2f30713a8e56dbf69a5bb622866e3d46c9a9d7951c4368ea8107666"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c",
+        "size_bytes": 3437,
+        "sha256": "cdff4fcf77ffe8ec41c0de72b4b470f0faac12c3e0153de384401e7280fe1f29"
+      }
+    ],
+    "stock_function_evidence": [
+      {
+        "function": "irq_handle",
+        "assembly": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0073_irq_handle_00109090.asm",
+          "size_bytes": 15815,
+          "sha256": "3cf59ea3df996cd316b402838fbd56a6a02b56515562e4a3eaf955777822bff5"
+        },
+        "ghidra_decompilation": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c",
+          "size_bytes": 5406,
+          "sha256": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279"
+        }
+      },
+      {
+        "function": "richtap_stop_work",
+        "assembly": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0071_richtap_stop_work_00108ba0.asm",
+          "size_bytes": 2392,
+          "sha256": "255cbe283df945f8e4e62cde2df21f5a94656377412befc2c4be2ad26edc3f14"
+        },
+        "ghidra_decompilation": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0071_00108ba0_richtap_stop_work.c",
+          "size_bytes": 1019,
+          "sha256": "ded7c7d4f14825b14120c2d0e45dc9abb6a5001e55f6ca28bd71b5cfa38718a0"
+        }
+      },
+      {
+        "function": "aw_remove",
+        "assembly": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+          "size_bytes": 5208,
+          "sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562"
+        },
+        "ghidra_decompilation": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+          "size_bytes": 1260,
+          "sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbebd34e9c198fdd6ef17cb6c804e8438"
+        }
+      }
+    ],
+    "previous_review": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/richtap_irq_stop_serialization_review.json",
+      "size_bytes": 13594,
+      "sha256": "60b03fd9c750f1d41c240b67b78e4a1e01da8823f83956998ff65d9c13748505"
+    }
+  },
+  "docker_read_only_elf_inspection": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "tool": "LLVM llvm-objdump 18.1.3",
+    "mount_mode": "Docker-curated module mounted read-only",
+    "candidate_elf_output": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_irq_stop_lock_revalidation_20261103/docker_llvm_objdump_irq_stop.txt",
+      "size_bytes": 6900,
+      "sha256": "81351ee36ac562e4619f513af0084ceaa664062734f53f9365731276fa2645b3"
+    },
+    "command": "docker run --rm --network none -v 'C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/haptic_86938:/evidence:ro' nubia-sm8850-kernel-builder:latest sh -lc 'llvm-objdump --version; llvm-objdump -dr --disassemble-symbols=irq_handle,richtap_stop_work /evidence/haptic_86938.ko'",
+    "observations": [
+      "irq_handle takes the shared lifetime mutex, calls irq_handle_stock_exact, and unlocks after return.",
+      "richtap_stop_work takes the same shared mutex, then its stock per-device mutex, and retains the shared mutex through the third callback and state update."
+    ]
+  },
+  "static_analysis": {
+    "stock_locking": [
+      "Stock irq_handle locks state offset +0x370.",
+      "Stock richtap_stop_work locks state offset +0x2f0.",
+      "These are separate per-device mutexes; neither is the shared candidate lock."
+    ],
+    "candidate_locking": [
+      "The IRQ wrapper checks shutdown before and after the shared lock.",
+      "The stop worker checks shutdown before and after the shared lock.",
+      "Both paths hold the shared mutex across their complete conflicting active operation."
+    ],
+    "teardown": [
+      "aw_remove establishes shutdown before draining callbacks.",
+      "devm_free_irq synchronizes the IRQ handler.",
+      "cancel_work_sync for work item +0x668 completes before workqueue destruction and state retirement."
+    ],
+    "interpretation": "HAP-RICHTAP-06 is statically closed for concurrent overlap between these two paths on this candidate. The broader map remains a lifetime-hardened candidate, not a stock-equivalent promotion."
+  },
+  "curated_tree_sync_review": {
+    "tool": "workspace_tools/reconstruction_pipeline/sync_hard_driver_curated_source.py",
+    "mode": "read-only dry-run",
+    "applied": false,
+    "source_missing": 0,
+    "source_content_mismatches": 0,
+    "curated_only_attestation_files_preserved": 14,
+    "note": "The tool treats attestation files stored inside curated/ as unexpected relative to the reconstructed source subtree. Its apply mode would remove those paths; no apply was run."
+  },
+  "limits": [
+    "No runtime schedule or hardware result is established.",
+    "The lock-coverage claim is limited to irq_handle and richtap_stop_work; other I2C paths are outside scope.",
+    "FIFO completion under stress and IRQ re-enable behavior remain unverified.",
+    "Independent review remains pending.",
+    "The current module and source hashes equal the previously built candidate; this turn used Docker read-only inspection and did not rebuild.",
+    "HAP-RICHTAP-03 remains a separate teardown-lifetime review."
+  ]
+}
