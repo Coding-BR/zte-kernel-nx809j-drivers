@@ -34,6 +34,9 @@ void aw_remove(struct i2c_client *client)
 
 	/* Close both user entry points before any callback-owned resource is freed. */
 	published = haptic_lifetime_block_file_access(haptic);
+	/* The stop worker performs I2C; file blocking drains its ioctl producer. */
+	if (published)
+		cancel_work_sync((struct work_struct *)(haptic + 0x668));
 	led_cdev = (struct led_classdev *)(haptic + 0xa8);
 	if (READ_ONCE(*(struct device **)(haptic + 0xf8))) {
 		led_classdev_unregister(led_cdev);

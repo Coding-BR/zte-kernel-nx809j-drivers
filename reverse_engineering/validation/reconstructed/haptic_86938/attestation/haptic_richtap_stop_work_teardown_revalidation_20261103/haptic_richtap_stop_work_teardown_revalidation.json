@@ -1,0 +1,244 @@
+{
+  "schema_version": "1.0",
+  "review_id": "haptic_richtap_stop_work_teardown_revalidation_20261103",
+  "generated_local_date": "2026-11-03",
+  "driver": "haptic_86938",
+  "status": "HAP_RICHTAP_03_STATICALLY_CLOSED_ON_D4AECDD6; HAP_RICHTAP_06_REVALIDATED; RUNTIME_UNVERIFIED",
+  "candidate_disposition": "LIFETIME_HARDENED_CANDIDATE_NOT_STOCK_EQUIVALENT",
+  "independent_review": "INDEPENDENT_REVIEW_PENDING",
+  "findings": [
+    {
+      "id": "HAP-RICHTAP-03",
+      "title": "stop worker I2C/state access across IRQ teardown",
+      "prior_candidate_sha256": "175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c",
+      "disposition": "CLOSED_STATIC_ON_CURRENT_CANDIDATE",
+      "reason": "The current candidate drains work +0x668 after blocking and draining active file operations, before devm_free_irq; therefore no queued/running stop worker continues through IRQ release or state retirement on the mapped producer path.",
+      "runtime_reproduced": false,
+      "hardware_tested": false
+    },
+    {
+      "id": "HAP-RICHTAP-06",
+      "title": "shared serialization between threaded IRQ and stop work",
+      "disposition": "REVALIDATED_ON_CURRENT_CANDIDATE",
+      "reason": "The current candidate ELF still wraps irq_handle_stock_exact and the complete stop-worker callback sequence in the same shared mutex.",
+      "runtime_reproduced": false,
+      "hardware_tested": false
+    }
+  ],
+  "binding": {
+    "stock_module": {
+      "path": "reference_modules/full_vendor_boot/haptic_86938.ko",
+      "size_bytes": 189328,
+      "sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+    },
+    "candidate_repository_module": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+      "size_bytes": 6700632,
+      "sha256": "d4aecdd65186729587fc5625efc243c9dd3c0d04b70fc61babe79af24e4722e0"
+    },
+    "candidate_docker_curated_module": {
+      "path": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/haptic_86938/haptic_86938.ko",
+      "size_bytes": 6700632,
+      "sha256": "d4aecdd65186729587fc5625efc243c9dd3c0d04b70fc61babe79af24e4722e0"
+    },
+    "reconstruction_map": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+      "size_bytes": 414030,
+      "sha256": "02ccbd71f3b1b9b528b91f4f5c04538c90ec16c51c8ee43de610b7f9a4abaaf9"
+    },
+    "status": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/STATUS.md",
+      "size_bytes": 26462,
+      "sha256": "296a4d42e5d482f6d989fded87ee723f3ddbd41f6890bf8cff9a7601b506121b"
+    },
+    "candidate_sources": [
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c",
+        "size_bytes": 3591,
+        "sha256": "872e187b381194f0178d8019d83452dbe118586b7aa2d6ad80d36f4e00a1a77a"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_112_richtap_stop_work.c",
+        "size_bytes": 1353,
+        "sha256": "300379d3e2f30713a8e56dbf69a5bb622866e3d46c9a9d7951c4368ea8107666"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_134_richtap_file_unlocked_ioctl.c",
+        "size_bytes": 4115,
+        "sha256": "91086f14f35b02db927f7b44518598353339f470de4b068174f0012322a5b736"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_134_richtap_file_unlocked_ioctl_exact.S",
+        "size_bytes": 10381,
+        "sha256": "fa42f0b17e416d5b9d858485c4c7db220b176867e2c94cd6b9ee91c9cd7fe6c1"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_073_irq_handle_exact.S",
+        "size_bytes": 9115,
+        "sha256": "ac5dace9a1895b9e6f8bbc305a4c4cc78afa1ea928cc0ec16ff6b1cf256f9d7f"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+        "size_bytes": 13337,
+        "sha256": "3d958fc19b04eeaa062f6a6bcf2d33345d5aff99aaad7afe266dbcbef0e2e718"
+      }
+    ],
+    "stock_function_evidence": [
+      {
+        "function": "aw_remove",
+        "assembly": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+          "size_bytes": 5208,
+          "sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562"
+        },
+        "ghidra_decompilation": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+          "size_bytes": 1260,
+          "sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbebd34e9c198fdd6ef17cb6c804e8438"
+        }
+      },
+      {
+        "function": "richtap_stop_work",
+        "assembly": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0071_richtap_stop_work_00108ba0.asm",
+          "size_bytes": 2392,
+          "sha256": "255cbe283df945f8e4e62cde2df21f5a94656377412befc2c4be2ad26edc3f14"
+        },
+        "ghidra_decompilation": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0071_00108ba0_richtap_stop_work.c",
+          "size_bytes": 1019,
+          "sha256": "ded7c7d4f14825b14120c2d0e45dc9abb6a5001e55f6ca28bd71b5cfa38718a0"
+        }
+      },
+      {
+        "function": "richtap_file_unlocked_ioctl",
+        "assembly": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0151_richtap_file_unlocked_ioctl_0010e374.asm",
+          "size_bytes": 20439,
+          "sha256": "1c28ebb056e308409fe6892d83aa68aba8bba8a732e8f12b18c6024203dbe0ad"
+        },
+        "ghidra_decompilation": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c",
+          "size_bytes": 8861,
+          "sha256": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824"
+        }
+      },
+      {
+        "function": "irq_handle",
+        "assembly": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0073_irq_handle_00109090.asm",
+          "size_bytes": 15815,
+          "sha256": "3cf59ea3df996cd316b402838fbd56a6a02b56515562e4a3eaf955777822bff5"
+        },
+        "ghidra_decompilation": {
+          "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c",
+          "size_bytes": 5406,
+          "sha256": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279"
+        }
+      }
+    ],
+    "prior_hap03_review": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/richtap_stop_work_callback_teardown_review.json",
+      "size_bytes": 11249,
+      "sha256": "8e115eaba19e2b12b27a1ecde44d9a3a9add0bc0f844cbdc47737c467b344ef3"
+    },
+    "prior_hap06_revalidation": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_irq_stop_lock_revalidation_20261103/haptic_irq_stop_lock_revalidation.json",
+      "size_bytes": 8062,
+      "sha256": "c2abd8b06d9e1d4c3214cab806b7b4d8d6259e10711ef07b6db61eff78e729ee"
+    },
+    "prepromotion_build_audit": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_stop_work_teardown_revalidation_20261103/prepromotion_build_audit.json",
+      "size_bytes": 109473,
+      "sha256": "d4fe390702eb5daf5f9379d2192e588858ef3a14caa6b0ee23aef16118a934b5"
+    },
+    "postpromotion_canonical_docker_audit": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_stop_work_teardown_revalidation_20261103/canonical_postpromotion_audit.json",
+      "size_bytes": 90188,
+      "sha256": "22532dbbdaa9fbada263b222b5d918024568a24b52f4a48ee45b61f3fd5d6fa0"
+    }
+  },
+  "docker_read_only_elf_inspection": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "tool": "LLVM llvm-objdump 18.1.3",
+    "mount_mode": "canonical Docker curated directory mounted read-only",
+    "output": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_stop_work_teardown_revalidation_20261103/docker_llvm_objdump_remove_stop.txt",
+      "size_bytes": 19220,
+      "sha256": "85e31ed4fdb34d58f24e81d69c8435f9d89d5600b7e99e873900452e7b0d1699"
+    },
+    "symbols": [
+      "aw_remove",
+      "richtap_stop_work",
+      "richtap_file_unlocked_ioctl",
+      "irq_handle"
+    ],
+    "command": "docker run --rm --network none -v 'C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/haptic_86938:/evidence:ro' nubia-sm8850-kernel-builder:latest sh -lc 'llvm-objdump --version; llvm-objdump -dr --disassemble-symbols=aw_remove,richtap_stop_work,richtap_file_unlocked_ioctl,irq_handle /evidence/haptic_86938.ko'",
+    "observations": [
+      "aw_remove calls haptic_lifetime_block_file_access, forms state+0x668, and calls cancel_work_sync before the devm_free_irq relocation.",
+      "The later cancellation sequence runs before destroy_workqueue and haptic_lifetime_retire_state.",
+      "richtap_stop_work and irq_handle take/release the same shared lifetime mutex around their stock paths."
+    ]
+  },
+  "static_reasoning": {
+    "producer": "Stock ioctl command 0x5212 queues state+0x668. The candidate wrapper counts active file operations; block_file_access marks the sidecar dying, deregisters misc, and waits for active operations to reach zero before aw_remove continues. The mapped source search found no other producer of +0x668.",
+    "worker_effect": "Stock ELF callback resolution identifies aw8693x_irq_clear, aw8693x_stop, and aw8693x_set_rtp_aei; these perform I2C operations and update device state.",
+    "teardown_order": [
+      "set shutdown and close misc/file access; drain active operations",
+      "cancel_work_sync(state+0x668)",
+      "unregister LED/sysfs child and drain firmware callback paths",
+      "devm_free_irq synchronizes the IRQ handler",
+      "cancel remaining work/timers",
+      "destroy workqueue",
+      "free candidate-owned buffers as applicable",
+      "retire state"
+    ],
+    "hap03_conclusion": "No known +0x668 work remains able to continue its I2C/state sequence after IRQ release or after aw_remove returns on this candidate.",
+    "hap06_conclusion": "The shared candidate mutex serializes the active IRQ path and stop-worker sequence; stock per-device mutexes at state+0x370 and state+0x2f0 are distinct."
+  },
+  "canonical_build_validation": {
+    "postpromotion_audit": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_stop_work_teardown_revalidation_20261103/canonical_postpromotion_audit.json",
+      "size_bytes": 90188,
+      "sha256": "22532dbbdaa9fbada263b222b5d918024568a24b52f4a48ee45b61f3fd5d6fa0"
+    },
+    "two_clean_builds_reproducible": true,
+    "build_pair_passed": true,
+    "current_candidate_hash_matches_map": true,
+    "candidate_runtime_content_matches_fresh": true,
+    "candidate_runtime_section_layout_matches_fresh": true,
+    "target_vermagic_accepted": true,
+    "overall_driver_status": "incomplete_or_failed",
+    "remaining_strict_symbol_parity": {
+      "missing_imports": [
+        "gpio_free"
+      ],
+      "additional_imports": [
+        "__init_waitqueue_head",
+        "__wake_up",
+        "destroy_workqueue",
+        "finish_wait",
+        "init_wait_entry",
+        "led_classdev_unregister",
+        "prepare_to_wait_event",
+        "refcount_warn_saturate",
+        "schedule"
+      ],
+      "check_passed": false
+    }
+  },
+  "curated_source_sync": {
+    "report_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_stop_work_teardown_revalidation_20261103/source_tree_sync_dry_run.json",
+    "mode": "read-only dry-run",
+    "source_missing": 0,
+    "source_content_mismatches": 0,
+    "note": "Curated-only attestation artifacts make the whole-tree tool report extras. Its apply mode was not used; no curated evidence files were removed."
+  },
+  "limits": [
+    "Static control-flow and hash evidence only; no runtime or hardware execution.",
+    "The candidate remains a lifetime-hardened deviation, not a stock-equivalent full reconstruction.",
+    "The full canonical audit is incomplete because strict undefined-symbol parity reports the listed import differences.",
+    "Independent review remains pending."
+  ]
+}
