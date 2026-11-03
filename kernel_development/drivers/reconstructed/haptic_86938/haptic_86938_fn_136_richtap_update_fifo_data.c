@@ -74,7 +74,7 @@ bool richtap_update_fifo_data(struct aw_haptic *aw, u32 length)
 		fifo = READ_ONCE(aw->rtp_ptr);
 		if (!haptic_richtap_fifo_node_valid(head, fifo))
 			goto invalid_fifo;
-		state = READ_ONCE(fifo->state);
+		state = smp_load_acquire(&fifo->state);
 		if (state == (u8)'U') {
 			s16 fifo_size = READ_ONCE(fifo->data_size);
 			s16 fifo_count = READ_ONCE(aw->rtp_cnt);

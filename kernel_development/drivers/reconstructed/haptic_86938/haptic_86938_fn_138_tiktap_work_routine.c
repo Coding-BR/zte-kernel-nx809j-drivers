@@ -9,13 +9,14 @@
 #include <linux/timekeeping.h>
 #include <linux/types.h>
 #include <linux/workqueue.h>
+#include <asm/barrier.h>
 
 #include "haptic_86938_internal.h"
 
 struct aw_haptic;
 
 struct richtap_fifo_node {
-	volatile u8 state;
+	u8 state;
 	u8 bit;
 	s16 data_size;
 	u32 reserved_04;
@@ -123,7 +124,7 @@ void tiktap_work_routine(struct work_struct *work)
 	func->upload_lra(aw, 2);
 
 	do {
-		if (node->state == (u8)'U') {
+		if (smp_load_acquire(&node->state) == (u8)'U') {
 			func = *(struct aw_haptic_func **)(work_base - 0x60);
 			func->play_go(aw, 1);
 			udelay(1000);
@@ -141,7 +142,7 @@ void tiktap_work_routine(struct work_struct *work)
 
 	printk(KERN_ERR
 	       "[%s][%04d]%s: wait 100 ms but start_buf->status != VALID! status = 0x%02x\n",
-	       "haptic_hv", 0xe7e, __func__, node->state);
+	       "haptic_hv", 0xe7e, __func__, smp_load_acquire(&node->state));
 	goto work_cleanup;
 
 qos_start:
@@ -170,7 +171,7 @@ processing_loop:
 			goto glb_state_error;
 
 		stop_requested = aw->tiktap_stop;
-		node_state = node->state;
+		node_state = smp_load_acquire(&node->state);
 		if (stop_requested & 1U)
 			goto node_state_exit;
 
@@ -183,7 +184,7 @@ processing_loop:
 			       "haptic_hv", 0xea7, __func__, retry_or_count,
 			       node->bit, (int)node->data_size);
 			logged_length = node->data_size;
-			logged_state = node->state;
+			logged_state = smp_load_acquire(&node->state);
 			data_0 = node->payload[0];
 			data_1 = node->payload[1];
 			data_10 = node->payload[0x0a];
@@ -196,7 +197,7 @@ processing_loop:
 			func = *(struct aw_haptic_func **)(work_base - 0x60);
 			func->set_rtp_data(aw, (u8 *)node->payload,
 					   (u32)node->data_size);
-			node->state = 0xaaU;
+			smp_store_release(&node->state, (u8)0xaaU);
 			node = node->next;
 			elapsed_anchor = tiktap_clock_msecs();
 			retry_or_count++;

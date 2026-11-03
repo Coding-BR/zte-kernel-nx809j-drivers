@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0
 #include <linux/string.h>
+#include <asm/barrier.h>
 
 struct aw_haptic;
 
@@ -19,49 +20,49 @@ void richtap_clean_buf(struct aw_haptic *haptic)
 	puVar1 = *(struct richtap_clean_node **)((unsigned char *)haptic + 0x610);
 	memset(puVar1->data, 0, 1000);
 	puVar2 = puVar1->next;
-	puVar1->state = 0xff;
+	smp_store_release(&puVar1->state, 0xff);
 	memset(puVar2->data, 0, 1000);
 	puVar1 = puVar2->next;
-	puVar2->state = 0xff;
+	smp_store_release(&puVar2->state, 0xff);
 	memset(puVar1->data, 0, 1000);
 	puVar2 = puVar1->next;
-	puVar1->state = 0xff;
+	smp_store_release(&puVar1->state, 0xff);
 	memset(puVar2->data, 0, 1000);
 	puVar1 = puVar2->next;
-	puVar2->state = 0xff;
+	smp_store_release(&puVar2->state, 0xff);
 	memset(puVar1->data, 0, 1000);
 	puVar2 = puVar1->next;
-	puVar1->state = 0xff;
+	smp_store_release(&puVar1->state, 0xff);
 	memset(puVar2->data, 0, 1000);
 	puVar1 = puVar2->next;
-	puVar2->state = 0xff;
+	smp_store_release(&puVar2->state, 0xff);
 	memset(puVar1->data, 0, 1000);
 	puVar2 = puVar1->next;
-	puVar1->state = 0xff;
+	smp_store_release(&puVar1->state, 0xff);
 	memset(puVar2->data, 0, 1000);
 	puVar1 = puVar2->next;
-	puVar2->state = 0xff;
+	smp_store_release(&puVar2->state, 0xff);
 	memset(puVar1->data, 0, 1000);
 	puVar2 = puVar1->next;
-	puVar1->state = 0xff;
+	smp_store_release(&puVar1->state, 0xff);
 	memset(puVar2->data, 0, 1000);
 	puVar1 = puVar2->next;
-	puVar2->state = 0xff;
+	smp_store_release(&puVar2->state, 0xff);
 	memset(puVar1->data, 0, 1000);
 	puVar2 = puVar1->next;
-	puVar1->state = 0xff;
+	smp_store_release(&puVar1->state, 0xff);
 	memset(puVar2->data, 0, 1000);
 	puVar1 = puVar2->next;
-	puVar2->state = 0xff;
+	smp_store_release(&puVar2->state, 0xff);
 	memset(puVar1->data, 0, 1000);
 	puVar2 = puVar1->next;
-	puVar1->state = 0xff;
+	smp_store_release(&puVar1->state, 0xff);
 	memset(puVar2->data, 0, 1000);
 	puVar1 = puVar2->next;
-	puVar2->state = 0xff;
+	smp_store_release(&puVar2->state, 0xff);
 	memset(puVar1->data, 0, 1000);
 	puVar2 = puVar1->next;
-	puVar1->state = 0xff;
+	smp_store_release(&puVar1->state, 0xff);
 	memset(puVar2->data, 0, 1000);
-	puVar2->state = 0xff;
+	smp_store_release(&puVar2->state, 0xff);
 }

@@ -174,7 +174,7 @@ void richtap_rtp_work(struct work_struct *work)
 			haptic_lifetime_irq_stop_unlock();
 			return;
 		}
-		state = READ_ONCE(RTP_CURSOR->state);
+		state = smp_load_acquire(&RTP_CURSOR->state);
 		if (state == (u8)'U') {
 			struct richtap_fifo_node *fifo = RTP_CURSOR;
 			s32 node_size = READ_ONCE(fifo->data_size);
@@ -261,7 +261,7 @@ void richtap_rtp_work(struct work_struct *work)
 			}
 			if (RICHTAP_FUNC(rtp_get_fifo_afs)(aw) != 0U ||
 			    RICHTAP_FIELD_17 != 2U ||
-			    READ_ONCE(RTP_CURSOR->state) != (u8)'U')
+			    smp_load_acquire(&RTP_CURSOR->state) != (u8)'U')
 				break;
 
 			if (!richtap_update_fifo_data(aw, RTP_LENGTH >> 2)) {

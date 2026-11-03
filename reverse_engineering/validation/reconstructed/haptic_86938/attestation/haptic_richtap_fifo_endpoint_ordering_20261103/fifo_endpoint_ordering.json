@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0",
+  "review_id": "haptic_richtap_fifo_endpoint_ordering_20261103",
+  "review_date": "2026-11-03",
+  "result": "KERNEL_FIFO_ENDPOINT_ACQUIRE_RELEASE_EXPLICIT; HAL_SYNCHRONIZATION_PAIR_UNPROVEN; STATIC_ONLY",
+  "candidate": {
+    "previous_sha256": "7e99600da7ce2a265ada7f25bbcb0157ddaf310b66a0523333058ffaab99f3e8",
+    "sha256": "594c7a2bca583d7827a1078917c6af8414cbb8143890f577d15744bb512bac86",
+    "size_bytes": 6721424,
+    "stock_sha256": "05e946134e27ef741fcbb67cdbd2cc93bf9a75f439fa341178459c3e8825187e",
+    "reconstruction_map_sha256_before": "ad7f238296d7b7122a70f4292ef7cc0803d88a9e9e680ddd8e4af7ada62fce01",
+    "reconstruction_map_sha256_after": "1952aa2d6d6206a4be675ca6bf3a605ff3e4428f86d9ca4e4b9195a5f0297def",
+    "docker_curated_module_matches": true
+  },
+  "source_sha256": {
+    "haptic_86938_fn_036_richtap_clean_buf.c": "6797b7349dd9d54ee441638533ab3f4a3bc64ed0926562bbe87873431c71e44b",
+    "haptic_86938_fn_136_richtap_update_fifo_data.c": "2b7907f550d608ee94d780db2cea07007a13ca72fdb5f31b42a3a2540f33ba6c",
+    "haptic_86938_fn_137_richtap_rtp_work.c": "b85c300f3460f3c94e3b8b71147a38adf91f05c90f8ee8e5ab70b9cb4ec1b6e5",
+    "haptic_86938_fn_138_tiktap_work_routine.c": "2af2c00ee722ca4b6f8779c9eebc963ecd9a8eb2e81ca588927e8f0c9b8a368f"
+  },
+  "stock_evidence": {
+    "richtap_clean_buf_decompiled": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0155_0010eaa0_richtap_clean_buf.c",
+      "sha256": "5b0f015710250b80d08795d799fad0c466e26d4fb8e64b0da2f13930cf22e835"
+    },
+    "richtap_clean_buf_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0155_richtap_clean_buf_0010eaa0.asm",
+      "sha256": "057a0d80a519bda2f60d2577b0af3cdab34c465848277a07a4d5274bf9d5f32d"
+    },
+    "richtap_update_fifo_data_decompiled": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0074_0010946c_richtap_update_fifo_data.c",
+      "sha256": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e"
+    },
+    "richtap_update_fifo_data_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0074_richtap_update_fifo_data_0010946c.asm",
+      "sha256": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2"
+    },
+    "richtap_rtp_work_decompiled": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0070_001088f8_richtap_rtp_work.c",
+      "sha256": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5"
+    },
+    "richtap_rtp_work_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0070_richtap_rtp_work_001088f8.asm",
+      "sha256": "393de37c1ba2b68f4e42e90f4bd72515fc7650b1542bc48aa14af747012cfa83"
+    },
+    "tiktap_work_routine_decompiled": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0072_00108c68_tiktap_work_routine.c",
+      "sha256": "fb061fba7b83c12bf4da86448aa293de830531c2ba6f1490c75ef96d83863a14"
+    },
+    "tiktap_work_routine_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0072_tiktap_work_routine_00108c68.asm",
+      "sha256": "d79575d5106ac12d168d7f4e72715a036089425f37dad1bc63214bf1225b0939"
+    }
+  },
+  "hal_producer": {
+    "library": "/vendor/lib64/libaacvibrator.so",
+    "sha256": "8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61",
+    "process": "vendor.qti.hardware.vibrator.service",
+    "node": "/dev/awinic_haptic",
+    "mapped_bytes": 16384,
+    "writer": "write_data_to_buffer(tiktap_operation*, signed char)",
+    "body_vma": "0x1c198",
+    "state_loads": [
+      "0x1c208 LDRB",
+      "0x1c278 LDRB",
+      "0x1c308 LDRB"
+    ],
+    "ready_state_store": "0x1c22c STRB U (0x55)",
+    "payload_store": "0x1c38c STRB",
+    "size_update": "0x1c398 STRH",
+    "release_or_acquire_in_writer_or_scanned_calls": false,
+    "state_loads_for_AA_FF_are_acquire": false,
+    "state_U_store_is_release": false,
+    "source_evidence": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_device_hal_producer_revalidation_20261103"
+  },
+  "kernel_endpoints": {
+    "state_U_readers": {
+      "richtap_update_fifo_data": [
+        "0x82b0 LDARB"
+      ],
+      "richtap_rtp_work": [
+        "0x8508 LDARB",
+        "0x8708 LDARB"
+      ],
+      "tiktap_work_routine": [
+        "0x8928 LDARB",
+        "0x89a0 LDARB",
+        "0x8b60 LDARB",
+        "0x8bb4 LDARB"
+      ]
+    },
+    "kernel_state_publications": {
+      "richtap_clean_buf": [
+        "0xb1c",
+        "0xb34",
+        "0xb4c",
+        "0xb64",
+        "0xb7c",
+        "0xb94",
+        "0xbac",
+        "0xbc4",
+        "0xbdc",
+        "0xbf4",
+        "0xc0c",
+        "0xc24",
+        "0xc3c",
+        "0xc54",
+        "0xc6c",
+        "0xc80"
+      ],
+      "richtap_update_fifo_data": [
+        "0x8370 STLRB FF"
+      ],
+      "richtap_rtp_work": [
+        "0x85c8 STLRB FF"
+      ],
+      "tiktap_work_routine": [
+        "0x8c20 STLRB AA"
+      ],
+      "haptic_lifetime_richtap_fifo_reset": [
+        "0x74bc STLRB FF"
+      ]
+    },
+    "opcode_counts": {
+      "ldarb": 7,
+      "stlrb": 20
+    },
+    "disassembly": {
+      "endpoint_file": "candidate_fifo_endpoint_disassembly.txt",
+      "endpoint_sha256": "feacf0b8cd484428a96271c92b5f9c75df8858ec508c961e717c128b1c25710d",
+      "combined_lock_file": "candidate_lifetime_lock_fifo_disassembly.txt",
+      "combined_lock_sha256": "9b0360bc871dd5ba39d8b260e92eef45c0b3aa5b066844b45274377b67faba3b"
+    }
+  },
+  "lock_revalidation": {
+    "irq_handle_global_lock": "0x7510",
+    "irq_handle_unlock": "0x753c",
+    "richtap_rtp_start_device_lock": "0x80d0",
+    "richtap_rtp_start_unlock": "0x8214",
+    "richtap_rtp_work_global_lock": "0x8640",
+    "richtap_rtp_start_call": "0x8650",
+    "richtap_rtp_work_common_unlock": "0x85f4",
+    "timeout_requested_sleep_total_ms": "602.5-752.6",
+    "latency_risk_still_present": true,
+    "runtime_stall_reproduced": false
+  },
+  "build": {
+    "record": "docker_builds.json",
+    "record_sha256": "3858bae81eed19effbc4c671098320d80dcce0ddd1b5b7b6311f378be599edbf",
+    "source_manifest_file_count": 311,
+    "source_manifest_sha256": "120773761dbdb8854183402ab8c84b87ae6d55947dbf6421b392d7be749455af",
+    "cycle_count": 2,
+    "both_outputs_same_sha256": true,
+    "undefined_imports_previous": 93,
+    "undefined_imports_current": 93,
+    "undefined_import_sets_identical": true,
+    "strict_stock_import_parity": false
+  },
+  "mapping_status": {
+    "mapping_count": 160,
+    "promoted_offline_exact": 135,
+    "reviewed_hardening_deviations": 23,
+    "candidate_under_static_validation": 2,
+    "pending_functions": [
+      "richtap_rtp_work",
+      "richtap_update_fifo_data"
+    ],
+    "independent_review": "PENDING_INDEPENDENT_REVIEW",
+    "whole_driver": "INCOMPLETE"
+  },
+  "limitations": [
+    "The HAL publishes U with an ordinary store and reads kernel AA/FF statuses with ordinary loads; no complete release/acquire pair exists in either direction.",
+    "Kernel-side barriers order local accesses but cannot supply the missing HAL-side release/acquire operations.",
+    "No runtime race or haptic failure was reproduced; the candidate was not installed on the NX809J.",
+    "richtap_clean_buf no longer matches the stock exact binary after the release-store hardening and is explicitly mapped as a declared deviation.",
+    "The global IRQ-stop mutex still spans the RTP start timeout and initial data callback; the current static latency risk remains.",
+    "Formal independent review, whole-driver semantic equivalence, strict stock import parity and hardware/runtime behavior remain unverified."
+  ]
+}
