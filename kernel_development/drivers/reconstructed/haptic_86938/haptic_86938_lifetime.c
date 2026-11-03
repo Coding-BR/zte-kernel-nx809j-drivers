@@ -90,6 +90,11 @@ bool haptic_lifetime_is_shutting_down(void)
 	return atomic_read(&haptic_shutdown) != 0;
 }
 
+bool haptic_lifetime_is_probe_complete(void)
+{
+	return READ_ONCE(haptic_probe_complete);
+}
+
 int aw_i2c_probe(struct i2c_client *client)
 {
 	struct led_classdev *led_cdev;

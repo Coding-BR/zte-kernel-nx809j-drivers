@@ -1,0 +1,93 @@
+  4338	static bool __cancel_work_sync(struct work_struct *work, u32 cflags)
+  4339	{
+  4340		bool ret;
+  4341	
+  4342		ret = __cancel_work(work, cflags | WORK_CANCEL_DISABLE);
+  4343	
+  4344		if (*work_data_bits(work) & WORK_OFFQ_BH)
+  4345			WARN_ON_ONCE(in_hardirq());
+  4346		else
+  4347			might_sleep();
+  4348	
+  4349		/*
+  4350		 * Skip __flush_work() during early boot when we know that @work isn't
+  4351		 * executing. This allows canceling during early boot.
+  4352		 */
+  4353		if (wq_online)
+  4354			__flush_work(work, true);
+  4355	
+  4356		if (!(cflags & WORK_CANCEL_DISABLE))
+  4357			enable_work(work);
+  4358	
+  4359		return ret;
+  4360	}
+  4361	
+  4362	/*
+  4363	 * See cancel_delayed_work()
+  4364	 */
+  4365	bool cancel_work(struct work_struct *work)
+  4366	{
+  4367		return __cancel_work(work, 0);
+  4368	}
+  4369	EXPORT_SYMBOL(cancel_work);
+  4370	
+  4371	/**
+  4372	 * cancel_work_sync - cancel a work and wait for it to finish
+  4373	 * @work: the work to cancel
+  4374	 *
+  4375	 * Cancel @work and wait for its execution to finish. This function can be used
+  4376	 * even if the work re-queues itself or migrates to another workqueue. On return
+  4377	 * from this function, @work is guaranteed to be not pending or executing on any
+  4378	 * CPU as long as there aren't racing enqueues.
+  4379	 *
+  4380	 * cancel_work_sync(&delayed_work->work) must not be used for delayed_work's.
+  4381	 * Use cancel_delayed_work_sync() instead.
+  4382	 *
+  4383	 * Must be called from a sleepable context if @work was last queued on a non-BH
+  4384	 * workqueue. Can also be called from non-hardirq atomic contexts including BH
+  4385	 * if @work was last queued on a BH workqueue.
+  4386	 *
+  4387	 * Returns %true if @work was pending, %false otherwise.
+  4388	 */
+  4389	bool cancel_work_sync(struct work_struct *work)
+  4390	{
+  4391		return __cancel_work_sync(work, 0);
+  4392	}
+  4393	EXPORT_SYMBOL_GPL(cancel_work_sync);
+  4394	
+  4395	/**
+  4396	 * cancel_delayed_work - cancel a delayed work
+  4397	 * @dwork: delayed_work to cancel
+  4398	 *
+  4399	 * Kill off a pending delayed_work.
+  4400	 *
+  4401	 * Return: %true if @dwork was pending and canceled; %false if it wasn't
+  4402	 * pending.
+  4403	 *
+  4404	 * Note:
+  4405	 * The work callback function may still be running on return, unless
+  4406	 * it returns %true and the work doesn't re-arm itself.  Explicitly flush or
+  4407	 * use cancel_delayed_work_sync() to wait on it.
+  4408	 *
+  4409	 * This function is safe to call from any context including IRQ handler.
+  4410	 */
+  4411	bool cancel_delayed_work(struct delayed_work *dwork)
+  4412	{
+  4413		return __cancel_work(&dwork->work, WORK_CANCEL_DELAYED);
+  4414	}
+  4415	EXPORT_SYMBOL(cancel_delayed_work);
+  4416	
+  4417	/**
+  4418	 * cancel_delayed_work_sync - cancel a delayed work and wait for it to finish
+  4419	 * @dwork: the delayed work cancel
+  4420	 *
+  4421	 * This is cancel_work_sync() for delayed works.
+  4422	 *
+  4423	 * Return:
+  4424	 * %true if @dwork was pending, %false otherwise.
+  4425	 */
+  4426	bool cancel_delayed_work_sync(struct delayed_work *dwork)
+  4427	{
+  4428		return __cancel_work_sync(&dwork->work, WORK_CANCEL_DELAYED);
+  4429	}
+  4430	EXPORT_SYMBOL(cancel_delayed_work_sync);

@@ -15,6 +15,15 @@ void ram_work_routine(struct work_struct *work)
 {
     char *haptic = (char *)work - 0x3c0;
 
+    /* Probe can exceed the initial delay; don't touch chip resources yet. */
+    if (!haptic_lifetime_is_probe_complete()) {
+        if (!haptic_lifetime_is_shutting_down())
+            queue_delayed_work_on(
+                0x20, system_wq,
+                (struct delayed_work *)(haptic + 0x3c0), 0xfa);
+        return;
+    }
+
     if (haptic_lifetime_is_shutting_down())
         return;
 

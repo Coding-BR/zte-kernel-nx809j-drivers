@@ -1,0 +1,199 @@
+target commit: 3356b35306d35d5a480e3b63df1a9f065b5d9f55
+2b98602bc67c37f535a532c1c711641d1d684465ded10de75dda472815fb5340  drivers/leds/led-class.c
+64397a878c094bb860d8cbb7d08c5c0380d4656bc53e0f777e31f1f6666dc882  drivers/base/core.c
+ecbd38d79ea3513b7138d42a0ca7104f41ca28bac95c139529c131440925e64b  fs/sysfs/group.c
+f1a463c8976410a37aed61f3677a35afe044fce51fda50d60ed9f6e4869bb1e9  fs/kernfs/dir.c
+   581	void led_classdev_unregister(struct led_classdev *led_cdev)
+   582	{
+   583		if (IS_ERR_OR_NULL(led_cdev->dev))
+   584			return;
+   585	
+   586	#ifdef CONFIG_LEDS_TRIGGERS
+   587		down_write(&led_cdev->trigger_lock);
+   588		if (led_cdev->trigger)
+   589			led_trigger_set(led_cdev, NULL);
+   590		up_write(&led_cdev->trigger_lock);
+   591	#endif
+   592	
+   593		led_cdev->flags |= LED_UNREGISTERING;
+   594	
+   595		/* Stop blinking */
+   596		led_stop_software_blink(led_cdev);
+   597	
+   598		if (!(led_cdev->flags & LED_RETAIN_AT_SHUTDOWN))
+   599			led_set_brightness(led_cdev, LED_OFF);
+   600	
+   601		flush_work(&led_cdev->set_brightness_work);
+   602	
+   603		if (led_cdev->flags & LED_BRIGHT_HW_CHANGED)
+   604			led_remove_brightness_hw_changed(led_cdev);
+   605	
+   606		device_unregister(led_cdev->dev);
+   607	
+   608		down_write(&leds_list_lock);
+   609		list_del(&led_cdev->node);
+   610		up_write(&leds_list_lock);
+   611	
+   612		mutex_destroy(&led_cdev->led_access);
+  3848			/* remove the device from the class list */
+  3849			klist_del(&dev->p->knode_class);
+  3850			mutex_unlock(&sp->mutex);
+  3851			subsys_put(sp);
+  3852		}
+  3853		device_remove_file(dev, &dev_attr_uevent);
+  3854		device_remove_attrs(dev);
+  3855		bus_remove_device(dev);
+  3856		device_pm_remove(dev);
+  3857		driver_deferred_probe_del(dev);
+  3858		device_platform_notify_remove(dev);
+  3859		device_links_purge(dev);
+  3860	
+  3861		/*
+  3862		 * If a device does not have a driver attached, we need to clean
+  3863		 * up any managed resources. We do this in device_release(), but
+  3864		 * it's never called (and we leak the device) if a managed
+  3865		 * resource holds a reference to the device. So release all
+  3866		 * managed resources here, like we do in driver_detach(). We
+  3867		 * still need to do so again in device_release() in case someone
+  3868		 * adds a new resource after this point, though.
+  3869		 */
+  3870		devres_release_all(dev);
+  3871	
+  3872		bus_notify(dev, BUS_NOTIFY_REMOVED_DEVICE);
+  3873		kobject_uevent(&dev->kobj, KOBJ_REMOVE);
+  3874		glue_dir = get_glue_dir(dev);
+  3875		kobject_del(&dev->kobj);
+  3876		cleanup_glue_dir(dev, glue_dir);
+  3877		memalloc_noio_restore(noio_flag);
+  3878		put_device(parent);
+  3879	}
+  3880	EXPORT_SYMBOL_GPL(device_del);
+  3881	
+  3882	/**
+  3883	 * device_unregister - unregister device from system.
+  3884	 * @dev: device going away.
+  3885	 *
+  3886	 * We do this in two parts, like we do device_register(). First,
+  3887	 * we remove it from all the subsystems with device_del(), then
+  3888	 * we decrement the reference count via put_device(). If that
+  3889	 * is the final reference count, the device will be cleaned up
+  3890	 * via device_release() above. Otherwise, the structure will
+  3891	 * stick around until the final reference to the device is dropped.
+  3892	 */
+  3893	void device_unregister(struct device *dev)
+  3894	{
+  3895		pr_debug("device: '%s': %s\n", dev_name(dev), __func__);
+  3896		device_del(dev);
+  3897		put_device(dev);
+  3898	}
+  3899	EXPORT_SYMBOL_GPL(device_unregister);
+  3900	
+  3901	static struct device *prev_device(struct klist_iter *i)
+  3902	{
+  3903		struct klist_node *n = klist_prev(i);
+  3904		struct device *dev = NULL;
+  3905		struct device_private *p;
+  3906	
+  3907		if (n) {
+  3908			p = to_device_private_parent(n);
+  3909			dev = p->device;
+  3910		}
+   301	void sysfs_remove_group(struct kobject *kobj,
+   302				const struct attribute_group *grp)
+   303	{
+   304		struct kernfs_node *parent = kobj->sd;
+   305		struct kernfs_node *kn;
+   306	
+   307		if (grp->name) {
+   308			kn = kernfs_find_and_get(parent, grp->name);
+   309			if (!kn) {
+   310				pr_debug("sysfs group '%s' not found for kobject '%s'\n",
+   311					 grp->name, kobject_name(kobj));
+   312				return;
+   313			}
+   314		} else {
+   315			kn = parent;
+   316			kernfs_get(kn);
+   317		}
+   318	
+   319		remove_files(kn, grp);
+   320		if (grp->name)
+   321			kernfs_remove(kn);
+   322	
+   323		kernfs_put(kn);
+   324	}
+   478	static void kernfs_drain(struct kernfs_node *kn)
+   479		__releases(&kernfs_root(kn)->kernfs_rwsem)
+   480		__acquires(&kernfs_root(kn)->kernfs_rwsem)
+   481	{
+   482		struct kernfs_root *root = kernfs_root(kn);
+   483	
+   484		lockdep_assert_held_write(&root->kernfs_rwsem);
+   485		WARN_ON_ONCE(kernfs_active(kn));
+   486	
+   487		/*
+   488		 * Skip draining if already fully drained. This avoids draining and its
+   489		 * lockdep annotations for nodes which have never been activated
+   490		 * allowing embedding kernfs_remove() in create error paths without
+   491		 * worrying about draining.
+   492		 */
+   493		if (atomic_read(&kn->active) == KN_DEACTIVATED_BIAS &&
+   494		    !kernfs_should_drain_open_files(kn))
+   495			return;
+   496	
+   497		up_write(&root->kernfs_rwsem);
+   498	
+   499		if (kernfs_lockdep(kn)) {
+   500			rwsem_acquire(&kn->dep_map, 0, 0, _RET_IP_);
+   501			if (atomic_read(&kn->active) != KN_DEACTIVATED_BIAS)
+   502				lock_contended(&kn->dep_map, _RET_IP_);
+   503		}
+   504	
+   505		wait_event(root->deactivate_waitq,
+   506			   atomic_read(&kn->active) == KN_DEACTIVATED_BIAS);
+   507	
+   508		if (kernfs_lockdep(kn)) {
+  1447	static void __kernfs_remove(struct kernfs_node *kn)
+  1448	{
+  1449		struct kernfs_node *pos;
+  1450	
+  1451		/* Short-circuit if non-root @kn has already finished removal. */
+  1452		if (!kn)
+  1453			return;
+  1454	
+  1455		lockdep_assert_held_write(&kernfs_root(kn)->kernfs_rwsem);
+  1456	
+  1457		/*
+  1458		 * This is for kernfs_remove_self() which plays with active ref
+  1459		 * after removal.
+  1460		 */
+  1461		if (kn->parent && RB_EMPTY_NODE(&kn->rb))
+  1462			return;
+  1463	
+  1464		pr_debug("kernfs %s: removing\n", kn->name);
+  1465	
+  1466		/* prevent new usage by marking all nodes removing and deactivating */
+  1467		pos = NULL;
+  1468		while ((pos = kernfs_next_descendant_post(pos, kn))) {
+  1469			pos->flags |= KERNFS_REMOVING;
+  1470			if (kernfs_active(pos))
+  1471				atomic_add(KN_DEACTIVATED_BIAS, &pos->active);
+  1472		}
+  1473	
+  1474		/* deactivate and unlink the subtree node-by-node */
+  1475		do {
+  1476			pos = kernfs_leftmost_descendant(kn);
+  1477	
+  1478			/*
+  1479			 * kernfs_drain() may drop kernfs_rwsem temporarily and @pos's
+  1480			 * base ref could have been put by someone else by the time
+  1481			 * the function returns.  Make sure it doesn't go away
+  1482			 * underneath us.
+  1483			 */
+  1484			kernfs_get(pos);
+  1485	
+  1486			kernfs_drain(pos);
+  1487	
+  1488			/*
+  1489			 * kernfs_unlink_sibling() succeeds once per node.  Use it
+  1490			 * to decide who's responsible for cleanups.

@@ -80,6 +80,7 @@ long richtap_file_unlocked_ioctl(struct file *file, unsigned int command,
 				 unsigned long argument);
 
 bool haptic_lifetime_is_shutting_down(void);
+bool haptic_lifetime_is_probe_complete(void);
 int haptic_lifetime_file_open(struct file *file);
 void haptic_lifetime_file_release(struct file *file);
 int haptic_lifetime_enter_file(struct file *file,

@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_ram_work_probe_guard_revalidation_20261103",
+  "disposition": "PREPROBE_RAM_WORK_GATED_STATICALLY_RUNTIME_UNVERIFIED",
+  "driver": "haptic_86938",
+  "stock_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+  "candidate_sha256": "53ee12ee85c0d39eb05515e81b7eff5abe14af4480a4b7376ddbebc902427bb3",
+  "candidate_size_bytes": 6706688,
+  "reconstruction_map_sha256": "7aec144f3dd5440745d52f448236a3842727c1bfe2b03a68efde0c5d67dc4f4b",
+  "docker_curated_candidate_sha256": "53ee12ee85c0d39eb05515e81b7eff5abe14af4480a4b7376ddbebc902427bb3",
+  "docker_curated_sync": {
+    "root": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\haptic_86938",
+    "hashes_match": true,
+    "files": [
+      {
+        "path": "haptic_86938_internal.h",
+        "sha256": "49e3eae90bebc0d2c53736e2cabeec370bbd7ab51fe48e48cf836088b0367132"
+      },
+      {
+        "path": "haptic_86938_lifetime.c",
+        "sha256": "dc5f751668ad2c6e4d835c0c6c8f5997d439d8a03306db5ae5b403e8cd30403d"
+      },
+      {
+        "path": "haptic_86938_fn_082_ram_work_routine.c",
+        "sha256": "a4771b991e0017a8c46a7299a024f01578eaca801c7c80f6a1025df1be075c14"
+      },
+      {
+        "path": "haptic_86938.ko",
+        "sha256": "53ee12ee85c0d39eb05515e81b7eff5abe14af4480a4b7376ddbebc902427bb3"
+      },
+      {
+        "path": "reconstruction_map.json",
+        "sha256": "7aec144f3dd5440745d52f448236a3842727c1bfe2b03a68efde0c5d67dc4f4b"
+      },
+      {
+        "path": "STATUS.md",
+        "sha256": "6fdd0dec6a666ec908c764928798358419533813cd0ea45f1ecfffc465748a90"
+      },
+      {
+        "path": "README.md",
+        "sha256": "0a7c98d45f8082375751903024698c36bdf679f2d7fbcad933870eb8673dbd6e"
+      }
+    ]
+  },
+  "target": {
+    "kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "kernel_config_hz": 250,
+    "kernel_config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+    "workqueue_source_sha256": "192be8175ff7fed8445758f98a18fc67e88245801ee75f84378af82fda3dd46e",
+    "workqueue_header_sha256": "c9a6746167853c27900f767ab84a836d303e948625f926111a20c44762f5a6cb",
+    "firmware_loader_source_sha256": "271dab9b1aaea7f53b44b2b438b3466f988e0692c0529b7094bfbfa049e94a2f"
+  },
+  "build": {
+    "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "toolchain": "clang-r536225",
+    "kernel_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "bindgen_volume": "nx809j_bindgen_0695",
+    "network": "disabled",
+    "build_command": "make -C /work/src/kernel/kernel_platform/common O=/work/kernel_out ARCH=arm64 LLVM=1 LLVM_IAS=1 M=/work/validation/haptic_86938/cycle_N KCFLAGS=-ffile-prefix-map=/work/validation/haptic_86938/cycle_N=/haptic_86938 -fdebug-prefix-map=/work/validation/haptic_86938/cycle_N=/haptic_86938 -j 8 modules",
+    "module_outputs_cleaned_before_build": true,
+    "cycle_1": {
+      "kernel_output_volume": "codex-kbuild-haptic_86938-1-ef5f53acf73a",
+      "returncode": 0,
+      "sha256": "53ee12ee85c0d39eb05515e81b7eff5abe14af4480a4b7376ddbebc902427bb3",
+      "size_bytes": 6706688,
+      "log_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_work_probe_guard_revalidation_20261103/docker_build_cycle_1.log",
+      "log_sha256": "1d53a5ad3707a77a2d5208bae2faa5c9b7a4592517d9036b8a254abd26968470"
+    },
+    "cycle_2": {
+      "kernel_output_volume": "codex-kbuild-haptic_86938-2-8181db867dbb",
+      "returncode": 0,
+      "sha256": "53ee12ee85c0d39eb05515e81b7eff5abe14af4480a4b7376ddbebc902427bb3",
+      "size_bytes": 6706688,
+      "log_path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_work_probe_guard_revalidation_20261103/docker_build_cycle_2.log",
+      "log_sha256": "a9063b8decc79a287207eccc3e117ad2bb400f633ed6454e3c297e64dea3040f"
+    },
+    "reproducible": true,
+    "full_driver_abi_audit": "NOT_RERUN_IN_THIS_FOCUSED_REVIEW; undefined-import parity was compared directly and remains false"
+  },
+  "undefined_import_parity": {
+    "method": "llvm-nm -u on pinned stock module and current candidate module; normalized, sorted unique symbol names",
+    "stock_import_count": 85,
+    "candidate_import_count": 93,
+    "missing_from_candidate": [
+      "gpio_free"
+    ],
+    "extra_in_candidate": [
+      "__init_waitqueue_head",
+      "__wake_up",
+      "destroy_workqueue",
+      "finish_wait",
+      "init_wait_entry",
+      "led_classdev_unregister",
+      "prepare_to_wait_event",
+      "refcount_warn_saturate",
+      "schedule"
+    ],
+    "passed": false
+  },
+  "source_files": [
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_internal.h",
+      "sha256": "49e3eae90bebc0d2c53736e2cabeec370bbd7ab51fe48e48cf836088b0367132"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+      "sha256": "dc5f751668ad2c6e4d835c0c6c8f5997d439d8a03306db5ae5b403e8cd30403d"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_082_ram_work_routine.c",
+      "sha256": "a4771b991e0017a8c46a7299a024f01578eaca801c7c80f6a1025df1be075c14"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c",
+      "sha256": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_083_ram_load.c",
+      "sha256": "14ee7fb30d8cce303da5bbadd5e4217c388bc850c4b4e63b8c46cfd6e69084dc"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_067_ram_work_init.c",
+      "sha256": "a337e7a48139df77ca1424ea8433026e71001f648edf9b05c99019dbf05afbee"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_093_ram_update_store.c",
+      "sha256": "ea0da71006104c0bc809f0b83b6a09020844446e6bd993a87b238ef5227d4a3c"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+      "sha256": "7aec144f3dd5440745d52f448236a3842727c1bfe2b03a68efde0c5d67dc4f4b"
+    }
+  ],
+  "stock_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock/haptic_86938.ko/decompiled/0069_0010887c_ram_work_init.c",
+      "sha256": "cfe32f55276e6ee4db4f9d95d9efd8c44e3fc619519901d47ef0c5ad8e24c51e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0069_ram_work_init_0010887c.asm",
+      "sha256": "3433ecddba333ca7da5880d2c13d2c87522181c9c353a988021f6710c7199ea3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+      "sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+      "sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+      "sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbebd34e9c198fdd6ef17cb6c804e8438"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+      "sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0147_ram_work_routine_0010e190.asm",
+      "sha256": "13054948ab64c7f71db498509b16afa399303690f8f4874034c4c1cde209a3bc"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0104_ram_load_0010b2e0.asm",
+      "sha256": "f2c47b883c3140880a8f3e07425a98945fb568d02cdced3b62ec0b6a469e9091"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0103_ram_update_store_0010b228.asm",
+      "sha256": "5e98b4b789ea94af33b22941273690f1e91bbc245654dc8fe3360eecf7ea21af"
+    }
+  ],
+  "candidate_evidence": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_work_probe_guard_revalidation_20261103/candidate_ram_work_probe_guard_disassembly.txt",
+      "sha256": "989abb7080e76a9b086a9fb5c9601f5f49a8c704ae2a2b65e349fd87ff3aba27"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_work_probe_guard_revalidation_20261103/docker_target_workqueue_excerpt.txt",
+      "sha256": "a13dd70c1306b72d80534410e90ebab9acac9bc426fc89eafaeb3f73d6dc59df"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_work_probe_guard_revalidation_20261103/docker_target_led_sysfs_drain_excerpt.txt",
+      "sha256": "2ef3bbad962c52069fac0cf6cdcd5f6f6627bfd1e44546c1d06a0568c31e452d"
+    }
+  ],
+  "findings": [
+    "Stock Ghidra shows that the private workqueue allocation precedes ram_work_init. The initial delayed work is queued on system_wq with delay 2000 jiffies; at the pinned HZ=250 configuration this is 8 seconds.",
+    "Stock probe calls ram_work_init before allocating the RTP buffer at +0x608 and FIFO pages at +0x610. The later allocation-failure paths release the IRQ and return zero without publishing g_aw_haptic, leaving the wrapper to detect and clean the partial state.",
+    "Before this change, ram_work_routine could reach RAM state mutation and request_firmware_nowait before the wrapper marked probe_complete. The current source gates both effects on haptic_lifetime_is_probe_complete and requeues the delayed work after 250 jiffies while probe remains incomplete.",
+    "The retry path checks shutdown before it requeues. The pinned target cancel_delayed_work_sync implementation disables the work while flushing and guarantees no pending or executing instance on return unless another enqueue races; the shutdown gate prevents continued retry after removal begins.",
+    "When the private workqueue is NULL, stock probe did not call ram_work_init, so no +0x3c0 work exists. After ram_work_init has run, the queue pointer is non-NULL and aw_remove performs cancel, callback-count drain, and a second cancel before destroying the queue or retiring state.",
+    "The asynchronous firmware callback remains counted through ram_load. A failed ram_load can enqueue a retry on system_wq before decrementing that count; the second remove-time cancel catches that retry after the callback drain. ram_update_store is exposed only after probe setup and is drained by LED/sysfs unregister before teardown continues."
+  ],
+  "conclusion": "The pre-publication initial RAM-worker window is statically gated in candidate 53ee12ee85c0d39eb05515e81b7eff5abe14af4480a4b7376ddbebc902427bb3. The existing asynchronous callback drain and double delayed-work cancellation still cover submitted firmware callbacks and system_wq retries. This is not runtime, fault-injection, or hardware validation.",
+  "remaining_status": "The whole-driver reconstruction and canonical ABI/import audit remain INCOMPLETE; this focused review does not promote a function to exact stock equivalence."
+}

@@ -1,18 +1,7 @@
-# RAM firmware callback revalidation — current candidate, 2026-11-03
+# Historical RAM firmware callback review — candidate 37FC8692
 
-## Result
+This review and its JSON evidence are bound to candidate `37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca`. It is retained as a historical record and does not describe the current module.
 
-The previously reviewed HAP-FW-01 callback lifetime path remains statically addressed in the current candidate `37fc86926a32dc3bd170d3c673a9adef3bdb4b48ff90eff1bff2a80af59caeca`. Runtime callback timing, allocation-fault injection, unbind races, and hardware behavior remain untested.
+The callback counter, completion path, firmware-loader references, and remove-time drain described in [the historical report](ram_firmware_current_candidate_revalidation.json) remain the basis for the callback-lifetime review. A later stock/Ghidra control-flow check found that the initial delayed RAM worker could execute before probe publication when probe setup exceeds its initial delay. The current candidate adds a probe-completion gate and is documented in the [candidate 53EE12EE probe/retry revalidation](../haptic_ram_work_probe_guard_revalidation_20261103/README.md).
 
-## Current-candidate evidence
-
-- Stock Ghidra/assembly identifies the RAM delayed-work path and `ram_update_store` as request origins. The candidate routes requests through `haptic_lifetime_request_ram_firmware`.
-- The helper checks shutdown, allocates request context, increments the outstanding-callback counter before submitting `request_firmware_nowait(THIS_MODULE, ...)`, and rolls back the counter/context for shutdown or synchronous submission failure.
-- The pinned target firmware loader schedules work only after setup succeeds. Its worker invokes the callback, then drops the device and module references. The callback is therefore not invoked on the pre-schedule error returns shown in the target source.
-- The completion callback serializes RAM loads. If shutdown has started, it calls `release_firmware` and skips `ram_load`; otherwise it calls `ram_load`. It frees its request and decrements/wakes the callback counter only after that work finishes.
-- The pinned target `release_firmware` checks `if (fw)` before dereferencing, so the callback's shutdown path is safe when a failed request supplied `NULL`.
-- Current candidate disassembly shows `aw_remove` canceling delayed RAM work, waiting for the tracked callback count, canceling delayed work again, then draining other work and retiring state.
-
-The current repository module and Docker curated module have identical SHA-256. Candidate disassembly and target source excerpts were captured read-only in the canonical Docker environment. Source and binary hashes are recorded in `ram_firmware_current_candidate_revalidation.json`.
-
-This revalidation is limited to the RAM firmware callback/state lifetime path. No code changed, no rebuild was needed, and no runtime or NX809J hardware result is claimed.
+The historical module remains distinct from the current candidate. Runtime callback timing, allocation-fault injection, unbind races, and NX809J hardware behavior have not been verified.
