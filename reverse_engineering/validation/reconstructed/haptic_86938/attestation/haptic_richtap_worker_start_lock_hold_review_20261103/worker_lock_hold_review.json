@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0",
+  "review_id": "haptic_richtap_worker_start_lock_hold_review_20261103",
+  "review_date": "2026-11-03",
+  "result": "STATIC_THREADED_IRQ_LATENCY_RISK; NO_RUNTIME_FAILURE_ESTABLISHED",
+  "candidate": {
+    "module_sha256": "7e99600da7ce2a265ada7f25bbcb0157ddaf310b66a0523333058ffaab99f3e8",
+    "module_bytes": 6720000,
+    "repository_and_curated_match": true,
+    "reconstruction_map_sha256_before_evidence_append": "90e3b752d67d30b2726ae6ee23e340b9566112fbf6ddb53f5bf1319a54ebb0cc",
+    "reconstruction_map_sha256_after_evidence_append": "ad7f238296d7b7122a70f4292ef7cc0803d88a9e9e680ddd8e4af7ada62fce01",
+    "target_kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "llvm_objdump": "18.1.3",
+    "candidate_lock_interval_disassembly_sha256": "d455db27915385765d48d7fcb764ba935b072061ecf93d0c91aa06758e5e4f75"
+  },
+  "stock_evidence": {
+    "stock_module_sha256": "05e946134e27ef741fcbb67cdbd2cc93bf9a75f439fa341178459c3e8825187e",
+    "richtap_rtp_work": {
+      "ghidra_entry": "001088f8",
+      "decompiled_sha256": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5",
+      "assembly_sha256": "393de37c1ba2b68f4e42e90f4bd72515fc7650b1542bc48aa14af747012cfa83"
+    },
+    "richtap_rtp_start": {
+      "ghidra_entry": "0010e1dc",
+      "decompiled_sha256": "b207ff0484bd501c67ac35950be6b9936e497cc6bc2aa6651f89c62ae719a9b3",
+      "assembly_sha256": "4564c12a37fbfccb680da5a678a52ad81f415133c06872859dfbd1c5e74c209b"
+    },
+    "aw8693x_stop": {
+      "ghidra_entry": "00103d4c",
+      "decompiled_sha256": "017483a186ed349feecb572ae77ccd37e10c47e391785485563cf16fc092300",
+      "assembly_sha256": "e981210fc1a403ed4030ca227b02dafc83b8c564329829f23c26bccfdccf88fd"
+    },
+    "irq_config_decompiled_sha256": "6e1f30fc5e0a16a35a24fa262156061375522d47b4877ea78d6a06ba71fdcc40"
+  },
+  "candidate_sources": {
+    "haptic_86938_fn_137_richtap_rtp_work.c": "943818e278e925db38d8cf7b7748f83a67fbb2a5eae6339d8db3f1e8c403b926",
+    "haptic_86938_fn_135_richtap_rtp_start_exact.S": "7adb0864e05517c2a558da60e091af5a6de5402acfb12e2318e99e8f7cc187e7",
+    "haptic_86938_fn_118_aw8693x_stop.c": "b4eacd8636a7168c5035fc3e8428c3146948dd03bcd348888eb2e9a641d306e0",
+    "haptic_86938_fn_038_aw8693x_set_rtp_data.c": "db1642457b89faffbefbdf2f20dab36310d14d52fdc5dadba69e67f5667ba6cf",
+    "haptic_86938_lifetime.c": "4ea538fdec18451e8cc9abcf0dca2e2386898df5ccf794eca449fd26552cdd92",
+    "haptic_86938_fn_037_aw_i2c_suspend.c": "d906a91c62f773ec1cd160f8b3899f8596a2576b384243d88667b21eb9846b29",
+    "haptic_86938_fn_129_audio_off.c": "f1ed2f5c628fa494a3f81098ad86502201f854916aeb1e65eaf943fd02596b41",
+    "haptic_86938_fn_084_get_ram_num.c": "a2a1035fe5596a4b82e7d2e91d9f689ab3d1893de3278f9d2648f93b7d70077a",
+    "haptic_86938_fn_127_aw8693x_container_update.c": "abc93b64b1df03a6a6a7e7e7354b3900f208f3142b28b1855757ca970aba8bd9"
+  },
+  "findings": [
+    {
+      "id": "GLOBAL_MUTEX_HELD_DURING_RTP_START",
+      "severity": "LATENCY_RISK",
+      "details": "richtap_rtp_work acquires the global IRQ-stop mutex before calling richtap_rtp_start and retains it through the callback path until the common unlock. The IRQ wrapper uses the same mutex around the threaded stock handler.",
+      "worker_lock_vma": "0x860c",
+      "worker_rtp_start_call_vma": "0x861c",
+      "worker_common_unlock_vma": "0x85c0",
+      "irq_wrapper_lock_target": ".data+0x400",
+      "irq_wrapper_body_call_vma": "0x752c"
+    },
+    {
+      "id": "NESTED_DEVICE_MUTEX_AND_TIMEOUT_SLEEPS",
+      "severity": "LATENCY_RISK",
+      "details": "richtap_rtp_start acquires aw+0x2f0. It may poll global state 200 times with 2-2.5 ms requested sleeps; timeout calls aw8693x_stop before releasing aw+0x2f0. aw8693x_stop requests a 0.5-0.6 ms sleep and may poll 100 times with 2-2.5 ms requested sleeps.",
+      "rtp_start_mutex_lock_vma": "0x80d0",
+      "rtp_start_poll_sleep_vma": "0x8180",
+      "rtp_start_timeout_loop_vma": "0x8184",
+      "rtp_start_mutex_unlock_vma": "0x8214",
+      "stop_initial_sleep_vma": "0x4b88",
+      "stop_poll_sleep_vma": "0x4bf8",
+      "stop_retry_loop_vma": "0x4bfc",
+      "nominal_requested_sleep_total_ms_min": 602.5,
+      "nominal_requested_sleep_total_ms_max": 752.6,
+      "wall_clock_upper_bound_proven": false
+    },
+    {
+      "id": "RTP_DATA_CALLBACK_UNDER_GLOBAL_MUTEX",
+      "severity": "LATENCY_RISK",
+      "details": "On successful RTP start, richtap_rtp_work calls set_rtp_data before releasing the global IRQ-stop mutex. The callback calls i2c_w_bytes with the copied RTP length, bounded by the worker validation to at most 16000 bytes; transfer time is not measured."
+    },
+    {
+      "id": "SCOPED_LOCK_ORDER",
+      "severity": "NO_CYCLE_ESTABLISHED_IN_REVIEWED_PATHS",
+      "details": "The worker and reviewed serialized ioctl/stop-work paths use global IRQ-stop mutex before aw+0x2f0. The reviewed suspend, audio-off, RAM-number, and container-update functions take aw+0x2f0 without synchronously waiting for the RTP worker or acquiring the global mutex in those functions. This is not a whole-driver lockdep proof."
+    }
+  ],
+  "threading": {
+    "stock_irq_config_primary_handler_null": true,
+    "stock_irq_threaded_function": "irq_handle",
+    "stock_irq_flags": "0x2002",
+    "candidate_irq_wrapper_serializes_stock_handler": true,
+    "hard_irq_disabled_by_this_mutex": false
+  },
+  "limits": {
+    "runtime_irq_latency_measured": false,
+    "lockdep_run": false,
+    "runtime_failure_reproduced": false,
+    "candidate_loaded": false,
+    "source_changed": false,
+    "kernel_rebuild_required": false,
+    "reconstruction_status_remains": "candidate_under_static_validation"
+  },
+  "disposition": "Record as a static latency risk; do not relax mutex scope without proving startup/IRQ state independence."
+}
