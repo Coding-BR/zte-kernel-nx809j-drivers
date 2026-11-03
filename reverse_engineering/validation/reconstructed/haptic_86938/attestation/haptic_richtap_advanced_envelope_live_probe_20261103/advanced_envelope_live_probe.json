@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_richtap_advanced_envelope_live_probe_20261103",
+  "result": "HAL_TIKTAP_FIFO_WRITER_OBSERVED_ON_STOCK_DEVICE",
+  "device": {
+    "model": "NX809J",
+    "android_major": 16,
+    "adb_root": true,
+    "serial_recorded": false
+  },
+  "trigger": {
+    "command": "cmd vibrator_manager synced envelope -a 100 0.8 150 100 0.4 180",
+    "exit_code": 0,
+    "segments": 2,
+    "duration_ms": 200,
+    "gameassist_specific": false
+  },
+  "hal": {
+    "service": "vendor.qti.hardware.vibrator.service",
+    "library": "/vendor/lib64/libaacvibrator.so",
+    "library_sha256": "8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61",
+    "shared_fifo": "/dev/awinic_haptic",
+    "shared_fifo_length_bytes": 16384
+  },
+  "capture": {
+    "tool": "simpleperf",
+    "duration_seconds": 18.0255,
+    "sample_period": 1,
+    "lost_samples": 0,
+    "total_samples": 1083,
+    "events": [
+      {"symbol": "write_data_to_buffer", "offset": "0x1c198", "samples": 1077},
+      {"symbol": "tiktap_start", "offset": "0x1d0a4", "samples": 3},
+      {"symbol": "generate_wave_with_brake", "offset": "0x1c664", "samples": 3},
+      {"symbol": "tiktap_update", "offset": "0x23240", "samples": 0},
+      {"symbol": "tiktap_on", "offset": "0x21f9c", "samples": 0}
+    ]
+  },
+  "kernel_module": {
+    "loaded_name": "haptic_86938",
+    "installed_path": "/vendor_dlkm/lib/modules/haptic_86938.ko",
+    "installed_sha256": "05e946134e27ef741fcbb67cdbd2cc93bf9a75f439fa341178459c3e8825187e",
+    "candidate_sha256_not_installed": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156"
+  },
+  "interpretation": "The active HAL entered tiktap_start and called the statically identified FIFO writer during the authorized advanced-envelope trigger. This confirms the relevant live userspace producer on the stock NX809J. It does not validate the reconstructed kernel candidate or establish cross-boundary memory ordering.",
+  "cleanup": {
+    "uprobe_events_empty_after_capture": true,
+    "temporary_capture_files_removed": true,
+    "dnd_mode_unchanged_off": true,
+    "candidate_transferred_or_installed": false,
+    "persistent_device_state_changed": false
+  },
+  "evidence": {
+    "simpleperf_report": "simpleperf_report.txt",
+    "simpleperf_report_sha256": "f7c998280b9eaf87bd3806b42b9e495e19be6ce186a27e206612c4c4bbbb0fdb"
+  }
+}

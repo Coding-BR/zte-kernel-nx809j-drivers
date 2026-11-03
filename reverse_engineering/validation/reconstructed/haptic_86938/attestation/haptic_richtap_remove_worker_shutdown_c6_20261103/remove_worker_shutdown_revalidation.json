@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "review_id": "haptic_richtap_remove_worker_shutdown_c6_20261103",
+  "date": "2026-11-03",
+  "result": "STATIC_REMOVE_WAITS_FOR_UNLOCKED_RTP_WORK_BEFORE_IRQ_OR_STATE_RELEASE",
+  "scope": "fully published device; C6 current candidate only",
+  "candidate": {
+    "module_sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+    "module_bytes": 6710488,
+    "repository_path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "curated_path": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/haptic_86938/haptic_86938.ko",
+    "reconstruction_map_sha256": "757180b937276ca27befe3d0158c9cea4cacfc19d3d752a3ba5c6a654928f56c",
+    "map_candidate_sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156"
+  },
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdbd2cc93bf9a75f439fa341178459c3e8825187e",
+    "aw_remove_ghidra": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+      "sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbebd34e9c198fdd6ef17cb6c804e8438"
+    },
+    "aw_remove_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm",
+      "sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562"
+    }
+  },
+  "source_sha256": {
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55",
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_137_richtap_rtp_work.c": "22953758a2ab1b118dc5f3c05a8cfb04f3b8ede5c6fcf8a510be5df43b26f8d3",
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c": "604cf4d2b86fec52cbdde3268fbc6c1ee9f02e68adcef6bea180987dde2189df"
+  },
+  "candidate_disassembly": {
+    "aw_remove": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_remove_worker_shutdown_c6_20261103/candidate_c6_aw_remove_disassembly.txt",
+      "sha256": "125dc5c7b85dd7a9ed1d44e778ae066c4b11126c16db034d304799f39ed61a3b",
+      "entry": "0x6528"
+    },
+    "block_file_access": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_remove_worker_shutdown_c6_20261103/candidate_c6_block_file_access_disassembly.txt",
+      "sha256": "166ac02d7ae716a3a0a242ebd92b4131d888018ff7a0fbfdacfcc324320db64b"
+    },
+    "richtap_rtp_work": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_gate_20261103/candidate_richtap_start_disassembly.txt",
+      "sha256": "2035de62f262321228f15ad6b5441a9f7d4823a6542facdbcc85fc28759f395c",
+      "entry": "0x8498"
+    }
+  },
+  "target_kernel": {
+    "source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "workqueue_c_sha256": "192be8175ff7fed8445758f98a18fc67e88245801ee75f84378af82fda3dd46e",
+    "workqueue_h_sha256": "c9a6746167853c27900f767ab84a836d303e948625f926111a20c44762f5a6cb",
+    "excerpt": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_remove_worker_shutdown_c6_20261103/target_kernel_cancel_work_sync.txt",
+      "sha256": "3ec447d387798c0b9c2cd2c6c1caa68a2eb32aa4024597e0afd69dd4cb1e7a59",
+      "lines": "4338-4393"
+    }
+  },
+  "candidate_order": {
+    "shutdown_gate_call": "aw_remove+0x60, relocation at 0x6588 to haptic_lifetime_block_file_access",
+    "cancel_work_offsets_before_irq_release": {
+      "0x628": "0x65d4",
+      "0x648": "0x65dc",
+      "0x668": "0x65e4"
+    },
+    "devm_free_irq": "0x6608",
+    "destroy_workqueue": "0x6664",
+    "retire_state": "0x6680",
+    "remove_calls_irq_stop_mutex": false,
+    "worker_global_unlock": "0x8698",
+    "worker_richtap_rtp_start": "0x86a4",
+    "worker_global_relock": "0x86ac",
+    "worker_shutdown_recheck": "0x86b0"
+  },
+  "finding": {
+    "shutdown_precedes_cancel": true,
+    "active_file_operations_drained_before_rtp_cancel": true,
+    "cancel_work_sync_waits_for_pending_or_running_work": true,
+    "worker_can_reacquire_global_mutex_while_remove_waits": true,
+    "state_and_irq_remain_available_until_rtp_cancel_completes": true,
+    "racing_ioctl_enqueue_closed_by_file_gate": true,
+    "partial_probe_revalidated_in_this_report": false
+  },
+  "limitations": [
+    "Static only; no runtime unbind/reprobe stress, Lockdep, KCSAN, or target hardware behavior.",
+    "Partial probe paths are referenced to their separate review and are not promoted by this C6-focused report.",
+    "Full driver remains incomplete; no mapping status was promoted."
+  ]
+}

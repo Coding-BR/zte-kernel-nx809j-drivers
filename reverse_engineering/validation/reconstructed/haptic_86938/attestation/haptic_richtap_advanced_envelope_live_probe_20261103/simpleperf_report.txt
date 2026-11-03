@@ -1,0 +1,34 @@
+Cmdline: /system/bin/simpleperf record --uprobe p:codex_fifo_writer /vendor/lib64/libaacvibrator.so:0x1c198 --uprobe p:codex_tiktap_start /vendor/lib64/libaacvibrator.so:0x1d0a4 --uprobe p:codex_tiktap_update /vendor/lib64/libaacvibrator.so:0x23240 --uprobe p:codex_tiktap_on /vendor/lib64/libaacvibrator.so:0x21f9c --uprobe p:codex_generate_wave /vendor/lib64/libaacvibrator.so:0x1c664 -e uprobes:codex_fifo_writer,uprobes:codex_tiktap_start,uprobes:codex_tiktap_update,uprobes:codex_tiktap_on,uprobes:codex_generate_wave -p 5737 -c 1 --duration 18 -o /data/local/tmp/codex_haptic_4d_probe.perf
+Arch: arm64
+Event: uprobes:codex_fifo_writer (type 2, config 2024)
+Samples: 1077
+Event count: 1077
+
+Overhead  Command                               Symbol
+1077      vendor.qti.hardware.vibrator.service  libaacvibrator.so[+1c198]
+
+Event: uprobes:codex_tiktap_start (type 2, config 2025)
+Samples: 3
+Event count: 3
+
+Overhead  Command                               Symbol
+3         vendor.qti.hardware.vibrator.service  tiktap_start(int const*, int, int, int, int, int)
+
+Event: uprobes:codex_tiktap_update (type 2, config 2026)
+Samples: 0
+Event count: 0
+
+Overhead  Command                               Symbol
+
+Event: uprobes:codex_tiktap_on (type 2, config 2027)
+Samples: 0
+Event count: 0
+
+Overhead  Command                               Symbol
+
+Event: uprobes:codex_generate_wave (type 2, config 2028)
+Samples: 3
+Event count: 3
+
+Overhead  Command                               Symbol
+3         vendor.qti.hardware.vibrator.service  generate_wave_with_brake(tiktap_operation*, std::__ndk1::vector<char, std::__ndk1::allocator<char>>*, int, float, int)
