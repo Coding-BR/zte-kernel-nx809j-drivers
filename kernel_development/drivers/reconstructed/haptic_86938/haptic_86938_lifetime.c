@@ -112,6 +112,8 @@ int aw_i2c_probe(struct i2c_client *client)
 
 	ret = aw_i2c_probe_stock_exact(client);
 	if (ret) {
+		/* A failed stock path can release state before returning. */
+		i2c_set_clientdata(client, NULL);
 		atomic_set(&haptic_shutdown, 1);
 	} else {
 		state = i2c_get_clientdata(client);
@@ -124,6 +126,12 @@ int aw_i2c_probe(struct i2c_client *client)
 				mutex_unlock(&haptic_lifetime_registry_lock);
 				cleanup = true;
 			}
+		} else if (!READ_ONCE(*(struct workqueue_struct **)
+					      ((char *)state + 0x448))) {
+			/* ram_work_init never initialized +0x3c0 without this queue. */
+			atomic_set(&haptic_shutdown, 1);
+			ret = -ENOMEM;
+			cleanup = true;
 		} else if (!READ_ONCE(haptic_misc_registered)) {
 			atomic_set(&haptic_shutdown, 1);
 			ret = -ENODEV;

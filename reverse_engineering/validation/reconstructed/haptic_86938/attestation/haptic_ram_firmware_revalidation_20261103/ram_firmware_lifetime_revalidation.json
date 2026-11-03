@@ -1,0 +1,168 @@
+{
+  "schema_version": "1.0",
+  "review_id": "HAP-RAM-FW-LIFETIME-REVALIDATION-20261103",
+  "generated_local_date": "2026-11-03",
+  "parent_review": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_lifetime_review_20261102/ram_firmware_callback_lifetime.json",
+  "driver": "haptic_86938",
+  "finding_id": "HAP-FW-01",
+  "status": "STATICALLY_ADDRESSED_FOR_CURRENT_CANDIDATE_RUNTIME_UNVERIFIED",
+  "binding": {
+    "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "historical_review_candidate_sha256": "175f305a0f7d4348bed2a6db8eb901ddfb3f3eaa59d844ececd861f25e23a34c",
+    "candidate_before_probe_failure_fix_sha256": "7e0af6fc3bbac603f1dbc2e59774897f7cc1f019b8aab7747a6d798a1be54098",
+    "current_candidate_module_sha256": "6cbdd9dbab1a4581f98654fa845e77a94b99d4ef68bc4d64bf656c4c6f5e1fb3",
+    "current_candidate_module_bytes": 6700392,
+    "target_kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "target_kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k"
+  },
+  "stock_probe_failure_path": {
+    "ghidra_source": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c",
+      "sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a",
+      "locations": [
+        "alloc_workqueue at decompiled lines 222-227",
+        "ram_work_init occurs only in the non-NULL workqueue branch"
+      ]
+    },
+    "assembly": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0064_aw_i2c_probe_001073c0.asm",
+      "sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb",
+      "locations": [
+        "0x5004 alloc_workqueue",
+        "0x5008 stores returned pointer at state+0x448",
+        "0x500c branches to initialized path only when non-NULL",
+        "0x5030 sets return register to zero on NULL",
+        "0x5034 branches to cleanup",
+        "0x4f8c calls devm_kfree",
+        "0x4f90 returns the zero status",
+        "0x5334 misc_register and 0x5340 g_aw_haptic publication are bypassed by the NULL path"
+      ]
+    },
+    "consequence": "The stock NULL-workqueue branch frees the state and returns success before global/misc publication. The caller wrapper previously treated zero as success and could then inspect clientdata after the stock function had released state."
+  },
+  "candidate_changes": [
+    {
+      "file": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_143_aw_i2c_probe_exact.S",
+      "source_sha256": "db68f11430347ce1653d0ddd65f579ec1873d661961da44c176d14a96c24b616",
+      "change": "The NULL alloc_workqueue branch now materializes -ENOMEM in w21 before following the stock cleanup path.",
+      "candidate_disassembly": "aw_i2c_probe_stock_exact at 0xa7b8: mov w21, #-0xc; the function returns w21 after the existing cleanup."
+    },
+    {
+      "file": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+      "source_sha256": "77510fbb2469d2c6a29ab338009560c31e02c415a0e6a4310bbc544553b782aa",
+      "change": "When the exact probe returns an error, the wrapper clears i2c clientdata before returning, so it never reads or removes state already released by the stock failure path.",
+      "candidate_disassembly": "aw_i2c_probe error branch stores xzr to clientdata at the device drvdata field before returning the probe error."
+    },
+    {
+      "file": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c",
+      "source_sha256": "77510fbb2469d2c6a29ab338009560c31e02c415a0e6a4310bbc544553b782aa",
+      "change": "On a successful exact-probe path, the wrapper requires state+0x448 to be non-NULL before registering the LED child or creating its sysfs groups; absent workqueue fails with -ENOMEM and enters guarded partial cleanup.",
+      "candidate_disassembly": "aw_i2c_probe loads state+0x448 at 0x67b0 and branches to failure cleanup when NULL."
+    }
+  ],
+  "callback_lifetime_contract": {
+    "request_origin": "ram_work_routine and ram_update_store call haptic_lifetime_request_ram_firmware.",
+    "asynchronous_api": "The pinned target request_firmware_nowait implementation schedules work on the system workqueue, saves the caller context, invokes the callback asynchronously, and provides no cancellation handle.",
+    "candidate": "The helper counts each admitted request before submission; the tracked completion callback suppresses ram_load after shutdown, releases firmware, and decrements/wakes the count. Synchronous submission errors roll back the count.",
+    "teardown": "aw_remove closes file and sysfs admission, cancels delayed work, waits for tracked RAM callbacks, cancels delayed work again, drains other workers, then destroys the private queue and retires state.",
+    "sysfs_gate": "The LED child is not registered on the missing-workqueue probe path; on normal probe, LED child unregister synchronously drains its kernfs callbacks before callback and state teardown."
+  },
+  "target_kernel_files": [
+    {
+      "path": "kernel/kernel_platform/common/drivers/base/firmware_loader/main.c",
+      "sha256": "271dab9b1aaea7f53b44b2b438b3466f988e0692c0529b7094bfbfa049e94a2f",
+      "locations": [
+        "1329-1339",
+        "1347-1385",
+        "1412-1418"
+      ]
+    },
+    {
+      "path": "kernel/kernel_platform/common/drivers/base/dd.c",
+      "sha256": "405ff5610410ddc30dec483423f54c9be46c8d307f930989cfd44860a1185930",
+      "locations": [
+        "540-555"
+      ]
+    },
+    {
+      "path": "kernel/kernel_platform/common/drivers/leds/led-class.c",
+      "sha256": "2b98602bc67c37f535a532c1c711641d1d684465ded10de75dda472815fb5340",
+      "locations": [
+        "520-545",
+        "610-680"
+      ]
+    },
+    {
+      "path": "kernel/kernel_platform/common/kernel/workqueue.c",
+      "sha256": "192be8175ff7fed8445758f98a18fc67e88245801ee75f84378af82fda3dd46e",
+      "locations": [
+        "4417-4430"
+      ]
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_firmware_revalidation_20261103/docker_builds.json",
+      "sha256": "bf70628fb5cf1275c4ea8e89814c1d762ef67e4d25830a97b5e52087c1ce1a28"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_firmware_revalidation_20261103/docker_ram_firmware_lifetime_disassembly.txt",
+      "sha256": "6e6286fb7e1effda39a834e78c1a10704665b9cd16ef1671fa7af6a70bfee81a"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_firmware_revalidation_20261103/docker_candidate_lifetime_functions.txt",
+      "sha256": "fa5e937b23dfd4b823abb3fee303fcba3dc4b0d1a297d1304e7220138351d7df"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_firmware_revalidation_20261103/docker_candidate_symbols.txt",
+      "sha256": "972f43cb99a78e5f5c753cfb092b6929b3c1812b8263f02d5593a07ffefc1ed2"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_firmware_revalidation_20261103/docker_target_firmware_lifetime_source.txt",
+      "sha256": "5b2ea76de98e4283ff20d41356420fba3b2b3f131d4547f0578499c2fb8172a9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_firmware_revalidation_20261103/module_abi_audit.json",
+      "sha256": "c0cc30a85f0bbc8ab36d9309cd402076262a57db55c5e726d1a4cf139509fb1c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_ram_firmware_revalidation_20261103/docker_candidate_probe_failure_excerpt.txt",
+      "sha256": "abe80440f565f17e4b149b22741ad0bce2e11049c3557ae56ca4ad49aac13ed4"
+    }
+  ],
+  "abi_audit": {
+    "passed": false,
+    "checks": {
+      "aliases_match": true,
+      "candidate_is_aarch64_relocatable": true,
+      "depends_set_match": true,
+      "exports_match": true,
+      "imports_match": false,
+      "metadata_match": true,
+      "target_modversions_match": true,
+      "target_vermagic_match": true
+    },
+    "missing_imports": [
+      "gpio_free"
+    ],
+    "unexpected_imports": [
+      "__init_waitqueue_head",
+      "__wake_up",
+      "destroy_workqueue",
+      "finish_wait",
+      "init_wait_entry",
+      "led_classdev_unregister",
+      "prepare_to_wait_event",
+      "refcount_warn_saturate",
+      "schedule"
+    ],
+    "target_modversions_match": true,
+    "target_vermagic_match": true
+  },
+  "conclusion": "The current candidate removes the successful-probe path when private delayed-work initialization is absent, and prevents wrapper access to clientdata after an exact probe error. For admitted firmware requests, the existing shutdown gate plus tracked callback drain statically prevents callback state access after teardown. This closes the reviewed static paths for this candidate; runtime and hardware behavior are unverified.",
+  "limitations": [
+    "No device runtime, allocation-fault injection, or hardware test was performed.",
+    "The overall module ABI audit is incomplete: target vermagic and symbol CRC checks pass, but stock import parity does not (missing gpio_free; additional lifetime-support imports are listed in module_abi_audit.json).",
+    "This review is limited to the RAM firmware callback and private-workqueue allocation-failure paths."
+  ]
+}

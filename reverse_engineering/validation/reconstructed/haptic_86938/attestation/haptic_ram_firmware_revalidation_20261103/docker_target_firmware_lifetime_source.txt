@@ -1,0 +1,258 @@
+TARGET_KERNEL_SOURCE_COMMIT=3356b35306d35d5a480e3b63df1a9f065b5d9f55
+271dab9b1aaea7f53b44b2b438b3466f988e0692c0529b7094bfbfa049e94a2f  drivers/base/firmware_loader/main.c
+405ff5610410ddc30dec483423f54c9be46c8d307f930989cfd44860a1185930  drivers/base/dd.c
+2b98602bc67c37f535a532c1c711641d1d684465ded10de75dda472815fb5340  drivers/leds/led-class.c
+192be8175ff7fed8445758f98a18fc67e88245801ee75f84378af82fda3dd46e  kernel/workqueue.c
+
+### firmware_loader/main.c 1325-1420
+  1325		void (*cont)(const struct firmware *fw, void *context);
+  1326		u32 opt_flags;
+  1327	};
+  1328	
+  1329	static void request_firmware_work_func(struct work_struct *work)
+  1330	{
+  1331		struct firmware_work *fw_work;
+  1332		const struct firmware *fw;
+  1333	
+  1334		fw_work = container_of(work, struct firmware_work, work);
+  1335	
+  1336		_request_firmware(&fw, fw_work->name, fw_work->device, NULL, 0, 0,
+  1337				  fw_work->opt_flags);
+  1338		fw_work->cont(fw, fw_work->context);
+  1339		put_device(fw_work->device); /* taken in request_firmware_nowait() */
+  1340	
+  1341		module_put(fw_work->module);
+  1342		kfree_const(fw_work->name);
+  1343		kfree(fw_work);
+  1344	}
+  1345	
+  1346	
+  1347	static int _request_firmware_nowait(
+  1348		struct module *module, bool uevent,
+  1349		const char *name, struct device *device, gfp_t gfp, void *context,
+  1350		void (*cont)(const struct firmware *fw, void *context), bool nowarn)
+  1351	{
+  1352		struct firmware_work *fw_work;
+  1353	
+  1354		fw_work = kzalloc(sizeof(struct firmware_work), gfp);
+  1355		if (!fw_work)
+  1356			return -ENOMEM;
+  1357	
+  1358		fw_work->module = module;
+  1359		fw_work->name = kstrdup_const(name, gfp);
+  1360		if (!fw_work->name) {
+  1361			kfree(fw_work);
+  1362			return -ENOMEM;
+  1363		}
+  1364		fw_work->device = device;
+  1365		fw_work->context = context;
+  1366		fw_work->cont = cont;
+  1367		fw_work->opt_flags = FW_OPT_NOWAIT |
+  1368			(uevent ? FW_OPT_UEVENT : FW_OPT_USERHELPER) |
+  1369			(nowarn ? FW_OPT_NO_WARN : 0);
+  1370	
+  1371		if (!uevent && fw_cache_is_setup(device, name)) {
+  1372			kfree_const(fw_work->name);
+  1373			kfree(fw_work);
+  1374			return -EOPNOTSUPP;
+  1375		}
+  1376	
+  1377		if (!try_module_get(module)) {
+  1378			kfree_const(fw_work->name);
+  1379			kfree(fw_work);
+  1380			return -EFAULT;
+  1381		}
+  1382	
+  1383		get_device(fw_work->device);
+  1384		INIT_WORK(&fw_work->work, request_firmware_work_func);
+  1385		schedule_work(&fw_work->work);
+  1386		return 0;
+  1387	}
+  1388	
+  1389	/**
+  1390	 * request_firmware_nowait() - asynchronous version of request_firmware
+  1391	 * @module: module requesting the firmware
+  1392	 * @uevent: sends uevent to copy the firmware image if this flag
+  1393	 *	is non-zero else the firmware copy must be done manually.
+  1394	 * @name: name of firmware file
+  1395	 * @device: device for which firmware is being loaded
+  1396	 * @gfp: allocation flags
+  1397	 * @context: will be passed over to @cont, and
+  1398	 *	@fw may be %NULL if firmware request fails.
+  1399	 * @cont: function will be called asynchronously when the firmware
+  1400	 *	request is over.
+  1401	 *
+  1402	 *	Caller must hold the reference count of @device.
+  1403	 *
+  1404	 *	Asynchronous variant of request_firmware() for user contexts:
+  1405	 *		- sleep for as small periods as possible since it may
+  1406	 *		  increase kernel boot time of built-in device drivers
+  1407	 *		  requesting firmware in their ->probe() methods, if
+  1408	 *		  @gfp is GFP_KERNEL.
+  1409	 *
+  1410	 *		- can't sleep at all if @gfp is GFP_ATOMIC.
+  1411	 **/
+  1412	int request_firmware_nowait(
+  1413		struct module *module, bool uevent,
+  1414		const char *name, struct device *device, gfp_t gfp, void *context,
+  1415		void (*cont)(const struct firmware *fw, void *context))
+  1416	{
+  1417		return _request_firmware_nowait(module, uevent, name, device, gfp,
+  1418						context, cont, false);
+  1419	
+  1420	}
+
+### driver-core dd.c 540-555
+   540		val = dev->state_synced;
+   541		device_unlock(dev);
+   542	
+   543		return sysfs_emit(buf, "%u\n", val);
+   544	}
+   545	static DEVICE_ATTR_RW(state_synced);
+   546	
+   547	static void device_unbind_cleanup(struct device *dev)
+   548	{
+   549		devres_release_all(dev);
+   550		arch_teardown_dma_ops(dev);
+   551		kfree(dev->dma_range_map);
+   552		dev->dma_range_map = NULL;
+   553		dev->driver = NULL;
+   554		dev_set_drvdata(dev, NULL);
+   555		if (dev->pm_domain && dev->pm_domain->dismiss)
+
+### LED class 520-545, 610-680
+   520			dev_warn(parent, "LED %s color identifier out of range\n", final_name);
+   521	
+   522		mutex_init(&led_cdev->led_access);
+   523		mutex_lock(&led_cdev->led_access);
+   524		led_cdev->dev = device_create_with_groups(&leds_class, parent, 0,
+   525							  led_cdev, led_cdev->groups, "%s", final_name);
+   526		if (IS_ERR(led_cdev->dev)) {
+   527			mutex_unlock(&led_cdev->led_access);
+   528			return PTR_ERR(led_cdev->dev);
+   529		}
+   530		if (init_data && init_data->fwnode)
+   531			device_set_node(led_cdev->dev, init_data->fwnode);
+   532	
+   533		if (led_cdev->flags & LED_BRIGHT_HW_CHANGED) {
+   534			ret = led_add_brightness_hw_changed(led_cdev);
+   535			if (ret) {
+   536				device_unregister(led_cdev->dev);
+   537				led_cdev->dev = NULL;
+   538				mutex_unlock(&led_cdev->led_access);
+   539				return ret;
+   540			}
+   541		}
+   542	
+   543		led_cdev->work_flags = 0;
+   544	#ifdef CONFIG_LEDS_TRIGGERS
+   545		init_rwsem(&led_cdev->trigger_lock);
+   610		up_write(&leds_list_lock);
+   611	
+   612		mutex_destroy(&led_cdev->led_access);
+   613	}
+   614	EXPORT_SYMBOL_GPL(led_classdev_unregister);
+   615	
+   616	static void devm_led_classdev_release(struct device *dev, void *res)
+   617	{
+   618		led_classdev_unregister(*(struct led_classdev **)res);
+   619	}
+   620	
+   621	/**
+   622	 * devm_led_classdev_register_ext - resource managed led_classdev_register_ext()
+   623	 *
+   624	 * @parent: parent of LED device
+   625	 * @led_cdev: the led_classdev structure for this device.
+   626	 * @init_data: LED class device initialization data
+   627	 */
+   628	int devm_led_classdev_register_ext(struct device *parent,
+   629					   struct led_classdev *led_cdev,
+   630					   struct led_init_data *init_data)
+   631	{
+   632		struct led_classdev **dr;
+   633		int rc;
+   634	
+   635		dr = devres_alloc(devm_led_classdev_release, sizeof(*dr), GFP_KERNEL);
+   636		if (!dr)
+   637			return -ENOMEM;
+   638	
+   639		rc = led_classdev_register_ext(parent, led_cdev, init_data);
+   640		if (rc) {
+   641			devres_free(dr);
+   642			return rc;
+   643		}
+   644	
+   645		*dr = led_cdev;
+   646		devres_add(parent, dr);
+   647	
+   648		return 0;
+   649	}
+   650	EXPORT_SYMBOL_GPL(devm_led_classdev_register_ext);
+   651	
+   652	static int devm_led_classdev_match(struct device *dev, void *res, void *data)
+   653	{
+   654		struct led_classdev **p = res;
+   655	
+   656		if (WARN_ON(!p || !*p))
+   657			return 0;
+   658	
+   659		return *p == data;
+   660	}
+   661	
+   662	/**
+   663	 * devm_led_classdev_unregister() - resource managed led_classdev_unregister()
+   664	 * @dev: The device to unregister.
+   665	 * @led_cdev: the led_classdev structure for this device.
+   666	 */
+   667	void devm_led_classdev_unregister(struct device *dev,
+   668					  struct led_classdev *led_cdev)
+   669	{
+   670		WARN_ON(devres_release(dev,
+   671				       devm_led_classdev_release,
+   672				       devm_led_classdev_match, led_cdev));
+   673	}
+   674	EXPORT_SYMBOL_GPL(devm_led_classdev_unregister);
+   675	
+   676	static int __init leds_init(void)
+   677	{
+   678		return class_register(&leds_class);
+   679	}
+   680	
+
+### workqueue cancel_delayed_work_sync 4405-4440
+  4405	 * The work callback function may still be running on return, unless
+  4406	 * it returns %true and the work doesn't re-arm itself.  Explicitly flush or
+  4407	 * use cancel_delayed_work_sync() to wait on it.
+  4408	 *
+  4409	 * This function is safe to call from any context including IRQ handler.
+  4410	 */
+  4411	bool cancel_delayed_work(struct delayed_work *dwork)
+  4412	{
+  4413		return __cancel_work(&dwork->work, WORK_CANCEL_DELAYED);
+  4414	}
+  4415	EXPORT_SYMBOL(cancel_delayed_work);
+  4416	
+  4417	/**
+  4418	 * cancel_delayed_work_sync - cancel a delayed work and wait for it to finish
+  4419	 * @dwork: the delayed work cancel
+  4420	 *
+  4421	 * This is cancel_work_sync() for delayed works.
+  4422	 *
+  4423	 * Return:
+  4424	 * %true if @dwork was pending, %false otherwise.
+  4425	 */
+  4426	bool cancel_delayed_work_sync(struct delayed_work *dwork)
+  4427	{
+  4428		return __cancel_work_sync(&dwork->work, WORK_CANCEL_DELAYED);
+  4429	}
+  4430	EXPORT_SYMBOL(cancel_delayed_work_sync);
+  4431	
+  4432	/**
+  4433	 * disable_work - Disable and cancel a work item
+  4434	 * @work: work item to disable
+  4435	 *
+  4436	 * Disable @work by incrementing its disable count and cancel it if currently
+  4437	 * pending. As long as the disable count is non-zero, any attempt to queue @work
+  4438	 * will fail and return %false. The maximum supported disable depth is 2 to the
+  4439	 * power of %WORK_OFFQ_DISABLE_BITS, currently 65536.
+  4440	 *

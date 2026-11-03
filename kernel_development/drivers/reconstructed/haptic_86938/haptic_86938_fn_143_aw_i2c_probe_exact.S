@@ -939,7 +939,7 @@ aw_i2c_probe_stock_exact:
     .inst 0x52822da2
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, _printk
-    .inst 0x2a1f03f5
+    .inst 0x12800175
     .inst 0x17ffffce
     .inst 0x90000000
     .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, .rodata.str1.1+0x7ae
