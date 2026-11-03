@@ -2,7 +2,7 @@
   "candidate_sha256": "5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f",
   "driver": "zte_tpd",
   "function_count": 367,
-  "generated_utc": "2026-11-03T02:00:41Z",
+  "generated_utc": "2026-11-03T03:31:40Z",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -4576,7 +4576,8 @@
         "attestation:syna_dev_remove_null_guard_20261102/source_sync_report.json:sha256:40089e8c2455792a1a167580540d7e3f3735afc6f8604397f81bf2e6dbf20af2",
         "attestation:syna_dev_remove_null_guard_20261102/canonical_build_report.json:sha256:5358bca3b75a7de9f6049d085a019eb12439c8ccf41e4bccac554f3226ab57b9",
         "attestation:syna_dev_remove_null_guard_20261102/assembly_comparison.json:sha256:340e0bfc4c118a8545a4d9dbd5acea4c48125ee9e6b588739f135e327225b8f4",
-        "attestation:syna_dev_remove_null_guard_20261102/kcfi_type_only_comparison.json:sha256:35640e7f5f9e75fb1e1b2b3d8d7762c82106dbd4b1c52b4152c57f267f3649f5"
+        "attestation:syna_dev_remove_null_guard_20261102/kcfi_type_only_comparison.json:sha256:35640e7f5f9e75fb1e1b2b3d8d7762c82106dbd4b1c52b4152c57f267f3649f5",
+        "lifecycle-review:attestation/syna_teardown_lifetime_review_20261103/lifetime_review.json:sha256:8327e29c31d15e2cbf09fc57ed405271c8d88fc8a0050706428598364942afa0"
       ],
       "mapping_basis": "Stock Ghidra pseudocode/P-Code and AArch64 assembly were reviewed; the candidate adds early returns for null platform/context pointers before teardown side effects.",
       "review_scope": "offline_lifecycle_hardening",
@@ -4587,7 +4588,7 @@
       "stock_body_bytes": 308,
       "stock_entry": "001125bc",
       "stock_function": "syna_dev_remove",
-      "mapping_note": "HARDENED_STOCK_DEVIATION: retains cdev/workqueue/IRQ teardown ordering and returns safely for null pdev or missing TCM driver data. The six-scenario null-context host regression, canonical two-cycle build, KCFI type ID, and expected AArch64 delta are attested in syna_dev_remove_null_guard_20261102. Runtime/hardware remains unverified.",
+      "mapping_note": "HARDENED_STOCK_DEVIATION: retains cdev/workqueue/IRQ teardown ordering and returns safely for null pdev or missing TCM driver data. The six-scenario null-context host regression, canonical two-cycle build, KCFI type ID, and expected AArch64 delta are attested in syna_dev_remove_null_guard_20261102. Runtime/hardware remains unverified. Static teardown review 2026-11-03 traced event_data lock depth, IRQ drain, helper queue stop, and sequential duplicate disconnect; no new source change was justified. See the lifecycle-review evidence.",
       "candidate_body_bytes": 336
     },
     {
@@ -4680,7 +4681,8 @@
         "hardening-build:attestation/charger_supply_reference_20261102/canonical_build_report.json:sha256:66b4c64dde005e1ac7928050ec65a4f09b884944c969ef5ba0913f074a2a5084",
         "docker-source-sync:attestation/charger_supply_reference_20261102/source_sync_plan.json:sha256:13261839529bef400e5fdb920bc6dbc5b1900c9917c08f4d3007bfaaa89fbc58",
         "candidate-module:attestation/charger_supply_reference_20261102/candidate_module/zte_tpd.ko:sha256:8b0461e962b4a41ffc3ac8dc639002a7102158d82c5290c3122452851267c62a",
-        "lifecycle-order-review:attestation/syna_dev_disconnect_lifecycle_order_review_20261102/review.json:sha256:bf49aeee775cd66e23b63c62ff640b8e639f9f11ff39192b0fd7f23676e88c66"
+        "lifecycle-order-review:attestation/syna_dev_disconnect_lifecycle_order_review_20261102/review.json:sha256:bf49aeee775cd66e23b63c62ff640b8e639f9f11ff39192b0fd7f23676e88c66",
+        "lifecycle-review:attestation/syna_teardown_lifetime_review_20261103/lifetime_review.json:sha256:8327e29c31d15e2cbf09fc57ed405271c8d88fc8a0050706428598364942afa0"
       ],
       "mapping_basis": "Ghidra stock body plus serialized notifier/workqueue teardown wrapper and reproducible Android 16 GKI 6.12.23 Docker build; runtime and hardware behavior remain unverified.",
       "review_scope": "lifecycle_hardening_wrapper_with_stock_body_retained",
@@ -5370,7 +5372,8 @@
         "source-current:syna_input_agent.c:sha256:764fd68630dcdaef6759a79b87debcab5f6d39827f8ceb8bd159237556f698bb",
         "source-current:globals.c:sha256:9e2aa0a8bfb1a623f0d97cf4ebbf451671ca5a114f3e64b25898488cb6394bd2",
         "source-current:defs.h:sha256:cf769c02319638cfc9db5eb30ae429ad8d16e0f59e4cb33b689fbd421ce0e454",
-        "source-current:Makefile:sha256:a6e70da74e5349dafeacf4f022847d41459655911a6e2159684ff99a00fdc455"
+        "source-current:Makefile:sha256:a6e70da74e5349dafeacf4f022847d41459655911a6e2159684ff99a00fdc455",
+        "lifecycle-review:attestation/syna_teardown_lifetime_review_20261103/lifetime_review.json:sha256:8327e29c31d15e2cbf09fc57ed405271c8d88fc8a0050706428598364942afa0"
       ],
       "mapping_basis": "Ghidra stock lifetime/control-flow evidence, lifecycle gate review, curated source sync, and reproducible two-cycle canonical Docker build",
       "review_scope": "offline_lifecycle_hardening",
@@ -6472,7 +6475,11 @@
         "canonical-build:attestation/next789_syna_tcm_buf_copy_exact_v1/canonical_build_report.json:sha256:600d65b3f25ddfcd1d6e8ee9111d0f874dd7c8660995f3d41b6df46d26b57c29",
         "source-sync:attestation/next789_syna_tcm_buf_copy_exact_v1/source_sync_report.json:sha256:79688808c05ceb1da8b0ec4419835d116c424a6d5f161aa676b72f6ca6556046",
         "host-asan-ubsan:attestation/next789_syna_tcm_buf_copy_exact_v1/host_harness_report.json:sha256:7cb4c5ba1a32439bd1362d1b2f7e6931c40d53c9372478aa7805f84030db3847",
-        "attestation:attestation/next789_syna_tcm_buf_copy_exact_v1/microtask_attestation.json:sha256:6cab585d581d2fdef5c8380dc32b1e043c66eb61e8780a6f5459b31169a3f366"
+        "attestation:attestation/next789_syna_tcm_buf_copy_exact_v1/microtask_attestation.json:sha256:6cab585d581d2fdef5c8380dc32b1e043c66eb61e8780a6f5459b31169a3f366",
+        "candidate-current-assembly:attestation/syna_teardown_lifetime_review_20261103/candidate_assembly/0000_syna_tcm_buf_copy.asm:sha256:3904ae1344f884c6e3f2e39efa9c817e238fd3e2ec93506223aa5b6ed6401839",
+        "current-module-assembly-comparison:attestation/syna_teardown_lifetime_review_20261103/assembly_comparison.json:sha256:6b620e3663216aaf6588ef9dc528ab42e017150ed03f93d03cf472c6381974ef",
+        "candidate-module-current:zte_tpd.ko:sha256:5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f",
+        "lifecycle-review:attestation/syna_teardown_lifetime_review_20261103/lifetime_review.json:sha256:8327e29c31d15e2cbf09fc57ed405271c8d88fc8a0050706428598364942afa0"
       ],
       "mapping_basis": "Stock ELF symbol plus exact offline AArch64 opcode and relocation comparison",
       "review_scope": "function_level_offline_exact",
@@ -10086,11 +10093,13 @@
         "ghidra-pcode:pcode/0362_0012ca1c_tpd_set_screen_off_awake.jsonl:sha256:96d93994b40bcb75ce27458e12ea18da8e3af5707db0fb32f11e00fb5c6c6044",
         "stock-assembly:0362_tpd_set_screen_off_awake_0012ca1c.asm:sha256:19da162180738ad138f9c025bcd238c108024f5ff488ca1ce71f978eab6c8e33",
         "source:tpd_set_screen_off_awake_exact.S:sha256:5bedece964fc891129ed6391cc755393afdec620cc801e14b28d7e53754a66b0",
-        "candidate-assembly:attestation/tpd_set_screen_off_awake_mapping_review_20261102/candidate_assembly/manifest.json:sha256:21e5f14549f80b271ace507a3fc9c7be03566b955c9548a07b8cf028f779539c",
-        "assembly-compare:attestation/tpd_set_screen_off_awake_mapping_review_20261102/assembly_comparison.json:sha256:225c7ffa9673d2459d882347f19d8508e840ac914287161c0be62b3c3aa1bd25",
-        "mapping-review:attestation/tpd_set_screen_off_awake_mapping_review_20261102/mapping_review.json:sha256:71f16551e142ad89175c38e59bd5cea80a1105716812532fe01de5c93cb4ce09",
-        "candidate-module:zte_tpd.ko:sha256:7c1c0ecc84bf985a0f8105f69c33595b4247e671b99870fe0b9a6dc2207b682e",
-        "makefile:Makefile:sha256:a6e70da74e5349dafeacf4f022847d41459655911a6e2159684ff99a00fdc455"
+        "makefile:Makefile:sha256:a6e70da74e5349dafeacf4f022847d41459655911a6e2159684ff99a00fdc455",
+        "candidate-assembly:attestation/tpd_set_screen_off_awake_current_module_review_20261103/candidate_assembly/manifest.json:sha256:6ae8c3f2b6a5a54685ae8024ec67f89fcd2cd596dfe9a6418ea8e283a6ad31dc",
+        "candidate-assembly-bytes:attestation/tpd_set_screen_off_awake_current_module_review_20261103/candidate_assembly/0000_tpd_set_screen_off_awake.asm:sha256:740766fa1c1041efcf62705d2a1241347b78da51b1583f745441d66aad6311af",
+        "assembly-compare:attestation/tpd_set_screen_off_awake_current_module_review_20261103/assembly_comparison.json:sha256:e936de7f8845c0cc6f57b79dcd713ff4a9851d9d509d88c8c39298278e3e47d9",
+        "mapping-review:attestation/tpd_set_screen_off_awake_current_module_review_20261103/mapping_review.json:sha256:e034e1e14b77e7b14d97fa429d7b6d39942d64bb9c8ccaf15750ffc31c2b117a",
+        "canonical-build:attestation/syna_dev_remove_null_guard_20261102/canonical_build_report.json:sha256:5358bca3b75a7de9f6049d085a019eb12439c8ccf41e4bccac554f3226ab57b9",
+        "candidate-module:zte_tpd.ko:sha256:5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f"
       ],
       "mapping_basis": "current compiled exact assembly source and relocation-resolved function identity",
       "review_scope": "OFFLINE_EXACT_ASSEMBLY_MATCH",
@@ -10101,7 +10110,7 @@
       "stock_body_bytes": 88,
       "stock_entry": "0012ca1c",
       "stock_function": "tpd_set_screen_off_awake",
-      "mapping_note": "Current candidate module 7c1c0ecc84bf985a0f8105f69c33595b4247e671b99870fe0b9a6dc2207b682e; exact .S object selected by Makefile, C draft excluded. Current linked 88-byte function matches stock instructions and relocations. Independent Docker rebuild is reproducible; no hardware validation."
+      "mapping_note": "Current candidate module 5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f; exact .S object selected by Makefile, C draft excluded. Fresh Docker extraction matches the stock 88-byte function instructions and relocations. Linked module matches the reproducible two-cycle canonical build; no hardware validation."
     },
     {
       "evidence": [

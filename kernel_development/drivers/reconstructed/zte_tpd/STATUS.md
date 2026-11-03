@@ -1,17 +1,17 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
-## Estado atual — 2026-11-02
+## Estado atual — 2026-11-03
 
-- **Classificação do build:** `STATIC_VERIFIED_OFFLINE` — auditoria canônica Docker aprovada;
-- **Kernel alvo:** Android 16 / GKI 6.12.23 / AArch64;
+- **Classificação do mapa:** `PARTIAL_SOURCE_MAP`; revisão `PASS_WITH_HARDENING_DEVIATION`;
+- **Escopo e semântica:** `structural_identity_only`; `MIXED_OFFLINE_EXACT_AND_HARDENED_DEVIATION`;
 - **Módulo stock:** SHA-256 `a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342`;
-- **Candidato curado:** SHA-256 `7c1c0ecc84bf985a0f8105f69c33595b4247e671b99870fe0b9a6dc2207b682e`, `6291168` bytes;
-- **Build Docker:** dois builds limpos, ambos com código de saída `0`; 367 funções rastreadas e mapa aprovado;
-- **Aviso:** metadados de dependência do stock diferem do alvo atual; dependências do candidato foram conferidas contra o rebuild do alvo;
-- **Evidência:** `reverse_engineering/validation/reconstructed/zte_tpd/attestation/canonical_build_tree_review_20261102/docker_audit.json`;
-- **Gates abertos:** revisão humana independente, equivalência semântica integral e teste em hardware NX809J. Nenhum módulo foi carregado.
+- **Candidato atual:** SHA-256 `5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f`, `7264256` bytes; idêntico ao snapshot curado do Docker;
+- **Build canônico:** relatório para o mesmo hash, `2/2` ciclos reproduzíveis e sem divergências de sincronização da fonte: `reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_dev_remove_null_guard_20261102/canonical_build_report.json`;
+- **Mapa de funções:** 367 identidades; 333 marcadas `PROMOTED_OFFLINE_EXACT` (28 ainda grafadas em minúsculas) e 34 `HARDENED_STOCK_DEVIATION`;
+- **Validações desta revisão:** `tpd_set_screen_off_awake` bateu com stock em extração Docker atual; a auditoria de teardown conferiu o buffer de evento, operações cdev, IRQ/workqueue e a desconexão dupla sequencial;
+- **Gates abertos:** revisão humana independente, equivalência semântica integral e validação em hardware NX809J. Nenhum módulo foi carregado.
 
-`STATIC_VERIFIED_OFFLINE` comprova os gates estáticos do candidato; não comprova equivalência comportamental nem validação em hardware.
+`PARTIAL_SOURCE_MAP` e `MIXED_OFFLINE_EXACT_AND_HARDENED_DEVIATION` descrevem o estado do mapa. O build reproduzível comprova compilação e sincronização do snapshot, não equivalência semântica integral.
 
 ## Snapshot histórico — 2026-08-28
 

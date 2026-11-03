@@ -1,0 +1,241 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_tpd",
+  "generated_utc": "2026-11-03T03:31:40.174266+00:00",
+  "scope": "Static lifetime and synchronization review of remove, cdev, IRQ, event-buffer, helper-workqueue, charger-notifier, and input-agent teardown against preserved stock Ghidra evidence and fresh Docker extraction of the current module.",
+  "candidate_module": {
+    "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
+    "sha256": "5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f",
+    "size": 7264256
+  },
+  "canonical_docker_snapshot": {
+    "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\zte_tpd.ko",
+    "sha256": "5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f",
+    "byte_identical_to_repository_candidate": true
+  },
+  "canonical_build": {
+    "report": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_dev_remove_null_guard_20261102/canonical_build_report.json",
+    "report_sha256": "5358bca3b75a7de9f6049d085a019eb12439c8ccf41e4bccac554f3226ab57b9",
+    "passed": true,
+    "reproducible": true,
+    "cycles_requested": 2,
+    "cycles_accepted": 2,
+    "source_tree_file_count": 858,
+    "source_sync": {
+      "content_mismatch": [],
+      "missing_from_curated": [],
+      "unexpected_in_curated": []
+    }
+  },
+  "fresh_current_module_assembly": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "clang_revision": "clang-r536225",
+    "manifest": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_teardown_lifetime_review_20261103/candidate_assembly/manifest.json",
+    "manifest_sha256": "b3bb09ad07e9e259caa08273b6620719878387bc294dbcf585a14a5166f7a031",
+    "comparison": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_teardown_lifetime_review_20261103/assembly_comparison.json",
+    "comparison_sha256": "6b620e3663216aaf6588ef9dc528ab42e017150ed03f93d03cf472c6381974ef",
+    "passed": true,
+    "exact_pairs": [
+      {
+        "pair": "syna_tcm_buf_copy@0011ce6c=syna_tcm_buf_copy",
+        "passed": true,
+        "bytes": 640,
+        "instructions": 160,
+        "instruction_match": true,
+        "relocation_match": true
+      },
+      {
+        "pair": "syna_dev_disconnect@00112b04=syna_dev_disconnect_stock_exact",
+        "passed": true,
+        "bytes": 392,
+        "instructions": 98,
+        "instruction_match": true,
+        "relocation_match": true
+      }
+    ],
+    "syna_cdev_quiesce": {
+      "function": "syna_cdev_quiesce",
+      "bytes": 336,
+      "sha256": "1c34a90704a51d9494a6b7423c7ced28eb76c1d5275966cf6dd618da4b77757f"
+    }
+  },
+  "findings": [
+    {
+      "id": "event_data_buffer_lifetime",
+      "result": "normal_remove_path_is_synchronized; no new candidate-specific race established",
+      "evidence": [
+        "The warning load at syna_dev_remove offset 0x2e8 addresses event_data lock-depth: buffer base offset 0x2a8 plus byte offset 0x40.",
+        "syna_dev_isr passes this event_data buffer to syna_tcm_get_event_data, which copies through syna_tcm_buf_copy.",
+        "Fresh extraction from the current module shows syna_tcm_buf_copy matches the stock 640-byte function, instructions and relocations; stock locks both buffers and unlocks them on return paths.",
+        "Remove calls syna_dev_disconnect before freeing event_data. The stock disconnect body is exact in the current module and releases the requested IRQ before clearing connected state; IRQ release synchronizes the handler before the later buffer free.",
+        "Stock syna_dev_remove logs a nonzero lock depth, resets the byte, and continues teardown. The candidate preserves this. A nonzero count is a diagnostic abnormality; static evidence did not establish a reachable normal-path race."
+      ],
+      "remaining_uncertainty": "No in-kernel race detector or NX809J hardware run was performed; abnormal nonzero lock-depth teardown still follows stock free-after-warning behavior."
+    },
+    {
+      "id": "duplicate_disconnect_and_charger_stop",
+      "result": "sequential duplicate in platform remove is idempotent under the observed connected-state guard and lifecycle state",
+      "evidence": [
+        "Candidate syna_cdev_remove calls syna_dev_disconnect, then syna_dev_remove calls it again after syna_cdev_remove returns.",
+        "The stock disconnect checks the connected byte and clears it after cleanup. Its 392-byte body was freshly extracted from the current module and matches stock instructions and relocations; the second sequential call takes the disconnected path.",
+        "The wrapper syna_dev_disconnect calls syna_tpd_charger_lifecycle_stop before the stock body. stop serializes state under a mutex, marks stopping, clears registration state, cancels startup work synchronously, unregisters the notifier, cancels/destroys the charger queue, and clears/puts the cached power_supply. Repeating it for the same tcm observes the resources already absent.",
+        "The remove path stops helper-queue admission under a spinlock, then cancel_work_sync and flush/destroy drain helper work before object teardown."
+      ],
+      "remaining_uncertainty": "Conclusion is for the synchronous remove call chain; no concurrent runtime stress was performed."
+    },
+    {
+      "id": "cdev_and_input_agent_operations",
+      "result": "post-quiesce callbacks are gated and retained mmap storage is reference-counted",
+      "evidence": [
+        "syna_cdev_quiesce clears online and advances generation under the lifecycle mutex, wakes waiters, and waits until active-operation count reaches zero.",
+        "The current module contains the extracted 336-byte syna_cdev_quiesce implementation; native read/write/ioctl/open/release and misc poll/ioctl/mmap paths use operation admission before touching tcm context.",
+        "The input-agent owner detaches its tcm pointer on retirement and retains its buffer through file/VMA references; release calls syna_release, whose body only logs, then drops the owner reference."
+      ],
+      "remaining_uncertainty": "Static review does not validate all userspace ioctl/mmap interleavings on hardware."
+    }
+  ],
+  "overall_result": "STATIC_REVIEW_COMPLETE_NO_SOURCE_CHANGE_JUSTIFIED",
+  "limitations": [
+    "Map status remains PARTIAL_SOURCE_MAP; 34 entries are HARDENED_STOCK_DEVIATION and semantics are mixed.",
+    "Independent human review and NX809J hardware/runtime validation remain pending.",
+    "This review does not claim full driver semantic equivalence."
+  ],
+  "evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_remove.c",
+      "sha256": "de97dcca3a629b6099b66e8b977c9ffbea130d07f9cfd1779c8392363941adae"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_remove.c",
+      "sha256": "e80289f332dee27ed2b4d0496ed02d46cc2ebcf73743e091e5b30445509c85c4"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_cdev_create.c",
+      "sha256": "0d6397ec22b88e06a6ff4f0896a6abe6d19a0b27576199e4bfeed7a8b0de5121"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_process_unexpected_reset.c",
+      "sha256": "9708384b5354187f4dd2061b51ecfda3086fc2d2af45a4a0d523a58ad06d4013"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tpd_charger_lifecycle.c",
+      "sha256": "18fe1fa03cc5106a758bad21cd1a666a2463c6d246b8b783ad8326655c07d78f"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_disconnect_exact.S",
+      "sha256": "4479e457855bfae3fe634e9c93b9ae056ba97917202ebc47c8fd351c8bfdcb88"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_dev_isr.c",
+      "sha256": "84eeacfd783fca59caca0e58b0b15b3f1c9f81f90aafe1f103d94b836518d77c"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_get_event_data.c",
+      "sha256": "c3c9891c584bb6d6efb0b5dc69a631ea9971dacaddde7390589d43263dca4ca2"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_tcm_buf_copy_exact.S",
+      "sha256": "45c6a2d0f0d7f58d06e89522950cce7d273f5b23b157a7da124719b87e9fbe94"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/syna_input_agent.c",
+      "sha256": "8cca2ae85a9d92dee16658e1825684b581d84e15f602564c531c244de361558f"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd_syna_layout.h",
+      "sha256": "ab92b620297c2dd15db05e16969d9861956db10aec3e027966a65b6e72341893"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/Makefile",
+      "sha256": "e4728aed14a6f88b7fd1a46df08139abfe206797916644d22905137792a14b63"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0157_001125bc_syna_dev_remove.c",
+      "sha256": "c1c85634dafff1b54db38f2401b869bc9e6335607ec61559d96e3992edc007ff"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0185_00114e04_syna_cdev_remove.c",
+      "sha256": "0c43242c1987319dd9788d3e395985db814b025fd092383a869a10545657db57"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0160_00112b04_syna_dev_disconnect.c",
+      "sha256": "a940308579e8b4b154778c474b2a6bbfde4d262a280b767bc5fe0b3819d6b17e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/ghidra_stock/decompiled/0229_0011ce6c_syna_tcm_buf_copy.c",
+      "sha256": "15bc416249ffd6d75746b9167056c29769f067bee8ff747e0e71d5d7b1f4debf"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0160_syna_dev_disconnect_00112b04.asm",
+      "sha256": "0bc89518da127a95b6d05b2b39c5df4f945352b8c6099feb335629b29dc594f1"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0229_syna_tcm_buf_copy_0011ce6c.asm",
+      "sha256": "4c898717d4c2ff5c06feba12fa23c1883d20855b21db66a87abf5cf949cc5d49"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_teardown_lifetime_review_20261103/candidate_assembly/manifest.json",
+      "sha256": "b3bb09ad07e9e259caa08273b6620719878387bc294dbcf585a14a5166f7a031"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_teardown_lifetime_review_20261103/assembly_comparison.json",
+      "sha256": "6b620e3663216aaf6588ef9dc528ab42e017150ed03f93d03cf472c6381974ef"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_teardown_lifetime_review_20261103/candidate_assembly/0000_syna_tcm_buf_copy.asm",
+      "sha256": "3904ae1344f884c6e3f2e39efa9c817e238fd3e2ec93506223aa5b6ed6401839"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_teardown_lifetime_review_20261103/candidate_assembly/0001_syna_dev_disconnect_stock_exact.asm",
+      "sha256": "8317baee77cedc5a93f4b27ec9a06dfafebfc4b7c67275e1548d93d27c8c0101"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_teardown_lifetime_review_20261103/candidate_assembly/0002_syna_cdev_quiesce.asm",
+      "sha256": "1c34a90704a51d9494a6b7423c7ced28eb76c1d5275966cf6dd618da4b77757f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_dev_remove_null_guard_20261102/canonical_build_report.json",
+      "sha256": "5358bca3b75a7de9f6049d085a019eb12439c8ccf41e4bccac554f3226ab57b9"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_tpd/zte_tpd.ko",
+      "sha256": "5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f"
+    },
+    {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\zte_tpd\\zte_tpd.ko",
+      "sha256": "5c63a4e71be8a70768f048f86e7bfda3fada00c3283645a62ce9a3759c784a7f"
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src/kernel/kernel_platform/common/kernel/irq/devres.c",
+      "sha256": "fb75fdd63d44cd3a71edfcc437b8857424d3df40a4c593ed6d782c68cc31fae1"
+    },
+    {
+      "path": "docker-volume:nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src/kernel/kernel_platform/common/kernel/irq/manage.c",
+      "sha256": "be9d5516fe884186c30a553cbc5a2b53e13d55dc0875dc0826b21991f918330b"
+    }
+  ],
+  "platform_api_contract": {
+    "api": "devm_free_irq -> free_irq",
+    "kernel_source_identity": {
+      "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git",
+      "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+      "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+      "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390"
+    },
+    "docker_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "source_files": [
+      {
+        "path": "/work/src/kernel/kernel_platform/common/kernel/irq/devres.c",
+        "sha256": "fb75fdd63d44cd3a71edfcc437b8857424d3df40a4c593ed6d782c68cc31fae1",
+        "contract": "devm_free_irq calls free_irq(irq, dev_id) after releasing the devres record."
+      },
+      {
+        "path": "/work/src/kernel/kernel_platform/common/kernel/irq/manage.c",
+        "sha256": "be9d5516fe884186c30a553cbc5a2b53e13d55dc0875dc0826b21991f918330b",
+        "contract": "free_irq documentation states it does not return until executing interrupts for that IRQ have completed."
+      }
+    ],
+    "effect_on_review": "The exact stock disconnect body calls devm_free_irq before event_data is freed, so the active ISR has completed before the buffer teardown continues, when the managed device and requested IRQ are present."
+  }
+}
