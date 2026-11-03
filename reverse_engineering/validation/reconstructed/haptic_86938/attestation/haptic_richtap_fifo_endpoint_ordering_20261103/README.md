@@ -65,3 +65,9 @@ Stock Ghidra evidence shows ioctl `0x520a` clears/stops the device, selects RTP 
 Candidate `8e09dd59` sets `haptic_richtap_arming` under the global mutex before the stock ioctl queues work. The threaded IRQ waits on a waitqueue without holding the mutex, then rechecks the arming flag after acquiring it. The Richtap worker clears the gate after setup or after error cleanup; remove sets shutdown and wakes waiters, while probe resets the gate. Two isolated canonical Docker builds match byte-for-byte at SHA-256 `8e09dd59643b97bd191db117acea5ed972e4ef03169ab7ca905ee6d171031ca7`.
 
 On the stock phone, a user-authorized prebaked tick was captured with the HAL writer uprobe armed; it produced zero samples, so it did not exercise the shared FIFO producer. A TikTap/Richtap-specific event remains untraced, and candidate runtime behavior remains unverified.
+
+## Additional live trigger attempts — 2026-11-03
+
+Two user-authorized attempts were made against the active stock HAL while a simpleperf uprobe watched `write_data_to_buffer`: one tap in GameAssist's “3d” diagnostic activity and a 90 ms Android waveform request. Both captures registered the uprobe, lost zero samples, and recorded zero writer samples. APK inspection showed the diagnostic activity has no click handler or writer call path. The generic waveform request also did not reach the writer.
+
+These negative results do not disprove the static producer relationship. A TikTap/Richtap-specific interaction that invokes `tiktap_start` is still required. The phone remains on the OEM stock module; no candidate was installed. The test activity was closed and temporary on-device tracing artifacts were removed. Full command and identity details are in `user_authorized_live_trigger_attempts_20261103.txt`.

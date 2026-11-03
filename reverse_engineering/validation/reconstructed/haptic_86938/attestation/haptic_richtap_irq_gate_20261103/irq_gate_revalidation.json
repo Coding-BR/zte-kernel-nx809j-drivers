@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0",
+  "review_id": "haptic_richtap_irq_gate_20261103",
+  "date": "2026-11-03",
+  "driver": "haptic_86938",
+  "result": "STATIC_IRQ_ONESHOT_WAIT_REMOVED; TWO_BUILDS_IDENTICAL; HARDWARE_UNVERIFIED",
+  "scope": "Review of the Richtap arming-to-threaded-IRQ handoff and global mutex interval during RTP startup.",
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "irq_config": {
+      "entry": "00108368",
+      "decompiled_sha256": "6e1f30fc5e0a16a35a24fa262156061375522d47b4877ea78d6a06ba71fdcc40",
+      "assembly_sha256": "193472d744db86fbf869b0339e6de679fe4d73ce58b0d2320e07580b7fa76f65",
+      "primary_handler": "NULL",
+      "threaded_handler": "irq_handle",
+      "flags": "0x2002",
+      "interpretation": "IRQF_ONESHOT | IRQF_TRIGGER_FALLING"
+    },
+    "richtap_rtp_start": {
+      "entry": "0010e1dc",
+      "decompiled_sha256": "b207ff0484bd501c67ac35950be6b9936e497cc6bc2aa6651f89c62ae719a9b3",
+      "assembly_sha256": "4564c12a37fbfccb680da5a678a52ad81f415133c06872859dfbd1c5e74c209b",
+      "device_mutex_offset": "0x2f0",
+      "polls_max": 200,
+      "sleep_range_ms": "2-2.5",
+      "timeout_stop_polls_max": 100,
+      "requested_sleep_total_ms": "602.5-752.6",
+      "waits_for_irq_thread": false
+    }
+  },
+  "candidate": {
+    "module_sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+    "module_bytes": 6710488,
+    "repository_path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "curated_path": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/haptic_86938/haptic_86938.ko",
+    "repository_and_curated_match": true,
+    "map_candidate_sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+    "reconstruction_map_sha256": "db488e8f1db21164a5ecb0c8e8e4edd9bb80ab5364937caf21cc87530dafd84e",
+    "source_sha256": {
+      "haptic_86938_lifetime_c": "604cf4d2b86fec52cbdde3268fbc6c1ee9f02e68adcef6bea180987dde2189df",
+      "haptic_86938_fn_137_richtap_rtp_work_c": "22953758a2ab1b118dc5f3c05a8cfb04f3b8ede5c6fcf8a510be5df43b26f8d3"
+    },
+    "disassembly_sha256": {
+      "irq_handle": "6e1a24935638d5fe2d87da7c982a43ff1ec8c26d3ca33a963f801c1d399224b0",
+      "richtap_rtp_work_and_start": "2035de62f262321228f15ad6b5441a9f7d4823a6542facdbcc85fc28759f395c"
+    },
+    "kcfi_preambles": {
+      "irq_handle": {
+        "symbol_entry": "0x7504",
+        "preamble_offset": "0x7500",
+        "type_id": "0xd2f00be1"
+      },
+      "richtap_rtp_work": {
+        "symbol_entry": "0x8498",
+        "preamble_offset": "0x8494",
+        "type_id": "0xa607748c"
+      }
+    }
+  },
+  "change": {
+    "irq_handler": "Returns IRQ_HANDLED before the mutex while shutdown/arming is set; rechecks both predicates after acquiring the mutex.",
+    "worker": "Releases the global IRQ/stop mutex around richtap_rtp_start, retains the arming gate, reacquires the mutex after start, and rechecks shutdown.",
+    "completion": "RTP worker clears IRQ status/finishes AEI setup before clearing arming; IRQs arriving in the transition are acknowledged without sleeping.",
+    "workqueue": "Richtap start and stop callbacks use the same stock per-device unbound workqueue with max_active=1; ioctl and probe queue paths are stock-exact.",
+    "deviation": "Hardening deviation from stock behavior; no mapping promotion."
+  },
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "kernel_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "bindgen_volume": "nx809j_bindgen_0695",
+    "output_volumes": [
+      {
+        "cycle": 1,
+        "name": "codex-kbuild-haptic_86938-1-eb83efce6986",
+        "return_code": 0,
+        "sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+        "bytes": 6710488
+      },
+      {
+        "cycle": 2,
+        "name": "codex-kbuild-haptic_86938-2-f5b7666da965",
+        "return_code": 0,
+        "sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+        "bytes": 6710488
+      }
+    ],
+    "result": "PASS_TWO_ISOLATED_BUILDS_BYTE_IDENTICAL",
+    "input_manifest": {
+      "path": "build_input_manifest.json",
+      "file_count": 195,
+      "sha256": "a2bac75f6610855707100cc938344f3c5dd1a6cba1ad4a66e8e33377c638efbd",
+      "canonical_snapshot": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/haptic_86938"
+    },
+    "copied_candidate_hash_matches_both_outputs": true
+  },
+  "validator": {
+    "report": "driver_audit_pre_sync.json",
+    "report_sha256": "0a00b9ad34152c06243854f8ade69de5ce1ec3bc58e8fa415c38c5c4fdac20ee",
+    "captured_before_fresh_module_was_copied": true,
+    "reproducible_build": true,
+    "target_kernel_identity": true,
+    "strict_import_parity": false,
+    "stock_import_count": 85,
+    "candidate_import_count": 93,
+    "unexpected_imports": [
+      "__init_waitqueue_head",
+      "__wake_up",
+      "destroy_workqueue",
+      "finish_wait",
+      "init_wait_entry",
+      "led_classdev_unregister",
+      "prepare_to_wait_event",
+      "refcount_warn_saturate",
+      "schedule"
+    ],
+    "missing_imports": [
+      "gpio_free"
+    ],
+    "pre_sync_candidate_runtime_match": false,
+    "explanation": "Candidate content/layout mismatch fields describe the old module present when the audit ran; the fresh output was later copied to both candidate paths and its SHA-256 matches both builds."
+  },
+  "reconstruction_status": {
+    "map_promotions": 0,
+    "richtap_rtp_work": "candidate_under_static_validation",
+    "irq_handle": "reviewed; NOT_ESTABLISHED_HARDENED_DEVIATION",
+    "fifo_endpoints_under_static_validation": 2,
+    "independent_review": "pending",
+    "candidate_runtime_or_hardware_validation": "not performed",
+    "stock_module_remains_loaded_on_phone": true,
+    "userspace_kernel_fifo_publication": "unresolved"
+  },
+  "limitations": [
+    "No candidate module was installed or exercised on hardware.",
+    "IRQ edge behavior and latency were not measured.",
+    "Strict import parity remains false: 93 candidate imports versus 85 stock imports, with nine extra lifetime-support imports and missing gpio_free.",
+    "The userspace HAL and kernel FIFO still lack a matched release/acquire publication pair.",
+    "Independent review and runtime stress remain pending."
+  ]
+}

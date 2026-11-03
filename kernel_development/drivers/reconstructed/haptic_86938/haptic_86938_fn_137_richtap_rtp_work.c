@@ -257,7 +257,16 @@ void richtap_rtp_work(struct work_struct *work)
 		haptic_lifetime_richtap_arming_complete();
 		return;
 	}
+	haptic_lifetime_irq_stop_unlock();
+
+	/* The arming gate suppresses threaded IRQ dispatch while startup polls. */
 	if ((richtap_rtp_start(aw) & 1U) == 0U) {
+		haptic_lifetime_irq_stop_lock();
+		if (haptic_lifetime_is_shutting_down()) {
+			haptic_lifetime_irq_stop_unlock();
+			haptic_lifetime_richtap_arming_complete();
+			return;
+		}
 		RICHTAP_FUNC(set_rtp_aei)(aw, 0U);
 		RICHTAP_FUNC(irq_clear)(aw);
 		haptic_lifetime_richtap_arming_complete();
@@ -265,6 +274,12 @@ void richtap_rtp_work(struct work_struct *work)
 		return;
 	}
 
+	haptic_lifetime_irq_stop_lock();
+	if (haptic_lifetime_is_shutting_down()) {
+		haptic_lifetime_irq_stop_unlock();
+		haptic_lifetime_richtap_arming_complete();
+		return;
+	}
 	RICHTAP_FUNC(set_rtp_data)(aw, RTP_DATA, copied);
 	if (RICHTAP_FIELD_11 == 1U) {
 		WRITE_ONCE(RTP_LOOP, 1U);

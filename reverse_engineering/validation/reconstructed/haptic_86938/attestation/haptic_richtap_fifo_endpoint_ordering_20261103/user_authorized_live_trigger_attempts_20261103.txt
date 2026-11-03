@@ -1,0 +1,25 @@
+User-authorized live trigger attempts — NX809J — 2026-11-03
+
+Device and module identity
+- ADB connected to REDMAGIC NX809J running Android 16; root access was available.
+- The active vibrator service mapped /vendor/lib64/libaacvibrator.so and /dev/awinic_haptic. The HAL DSO SHA-256 was 8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61, the same binary analyzed by producer_callsite_scan.txt.
+- The OEM stock haptic_86938 module remained loaded. No reconstructed candidate was transferred or installed.
+
+Probe
+- simpleperf registered uprobe event uprobes:codex_haptic_writer_20261103 at /vendor/lib64/libaacvibrator.so file offset 0x1c198, the body of write_data_to_buffer.
+- Samples were scoped to the active vendor.qti.hardware.vibrator.service process, with sample period 1. Both captures reported zero lost samples.
+
+Attempt A — GameAssist diagnostic screen
+- After the user authorized triggering the test, cn.nubia.gameassist/.test.Game3DTestActivity was launched and its visible “3d” button was tapped once.
+- The APK manifest marks this activity exported=false. Its bytecode showed layout setup and dialog helpers, with no onClick handler or reference to TikTap, the vibrator API, or write_data_to_buffer.
+- The 25.0068-second capture recorded 0 samples and 0 lost samples for the writer.
+
+Attempt B — short Android waveform
+- Command: cmd vibrator_manager synced waveform -a 30 48 30 0 30 48
+- The shell command returned exit code 0. The requested three-segment pattern totals 90 ms.
+- The 15.0091-second capture recorded 0 samples and 0 lost samples for the writer.
+
+Conclusion and cleanup
+These actions did not demonstrate a live call to write_data_to_buffer. The diagnostic screen has no path to the producer, and this generic waveform request did not reach it. This does not disprove the statically identified HAL call graph: a TikTap/Richtap-specific event remains necessary to exercise tiktap_start and the shared FIFO.
+
+The test activity was closed and the phone returned to its launcher. The uprobe event list was empty afterward. Temporary on-device capture scripts, perf data, and UI dumps were removed. No persistent phone settings or module state were changed.

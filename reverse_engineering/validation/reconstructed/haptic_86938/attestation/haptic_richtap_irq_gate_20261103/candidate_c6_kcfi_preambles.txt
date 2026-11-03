@@ -1,0 +1,13 @@
+KCFI preamble verification for candidate C6AEC6EA — 2026-11-03
+
+Input: kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko
+SHA-256: c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156
+Size: 6,710,488 bytes
+
+Method: parsed the candidate as ELF64 little-endian ET_REL, resolved the two symbols through .symtab/.strtab, then read the 32-bit KCFI word immediately before each symbol in its section (`section_file_offset + st_value - 4`). This binds the preamble addresses to the current candidate artifact, rather than the earlier candidate layout.
+
+Results:
+- irq_handle: .text symbol entry 0x7504; KCFI preamble at .text+0x7500; word 0xd2f00be1.
+- richtap_rtp_work: .text symbol entry 0x8498; KCFI preamble at .text+0x8494; word 0xa607748c.
+
+Both words match the type IDs recorded for these functions in reconstruction_map.json. No candidate code changed during this audit. The map's stale preamble offsets from earlier module layouts were updated to these C6 values, and the revalidation record was rebound to the resulting map hash.
