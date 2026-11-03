@@ -83,3 +83,8 @@ This confirms an additional live producer path into the previously recorded firm
 ## Sysfs teardown hardening follow-up
 
 In the separate hardening candidate, close admission to all LED-child sysfs callbacks before resource teardown, then unregister the LED child while state remains valid. Drain stores that were already in flight and any firmware callback or work they submitted. Cancel state+0x3a0 and state+0x428 only after those producers are stopped, then destroy state+0x448 before releasing its owning state.
+### HAP-SYSFS-02 — synchronous store callbacks overlap aw_remove
+
+The complete map contains 33 store callbacks in the two LED-child sysfs groups (28 generic and 5 AW-specific); all are mapped as PROMOTED_OFFLINE_EXACT. Their candidate sources and matching stock assembly exports are hash-bound in sysfs_store_callback_teardown_review.json. The managed LED child is unregistered by devres only after aw_remove returns, so these callbacks are still callable while stock remove frees internal resources. The remove body neither removes the groups nor takes their shared mutex.
+
+The complete inventory finds four work submitters: activate_store and activate_aw_store can queue the same item at state +0x428; aw_rtp_store and rtp_auto_sin_store can queue the same item at +0x3a0. ram_update_store also submits the raw-state asynchronous firmware callback. Other stores can touch I2C, timers, shared state, or callback-owned allocations during the same window. This is a static race path; no runtime or hardware reproduction is claimed. This review extends the earlier sysfs finding with two newly confirmed work producers.
