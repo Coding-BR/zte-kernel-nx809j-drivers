@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0",
+  "batch_id": "lifetime_sync_hardening_20261104",
+  "driver": "zte_misc",
+  "stage": "offline_static_lifetime_hardening",
+  "result": "compiled_reproducibly_with_declared_stock_deviation",
+  "stock": {
+    "sha256": "6455a3c97f10d10914248c4a92b0f92b06a8e06921def9c56c6a57a863703f9d"
+  },
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zte_misc/zte_misc.ko",
+    "sha256": "4397e8fcd4880b10e2af32a32d361708f2c227c2c135840750061730f4ea8f8c",
+    "size_bytes": 265040,
+    "source_path": "kernel_development/drivers/reconstructed/zte_misc/zte_misc.c",
+    "source_sha256": "2c6f992995eed2026348dd39f6c56909271af8056d2db88773e19a93c39f1e30",
+    "reconstruction_map_sha256": "a59ddcda91e83fe47ad1c8deb47a83e46fe03c5a761529c150e6a165447ba38d"
+  },
+  "changes": [
+    "Callbacks are published as immutable bindings and dispatched under SRCU.",
+    "Added zte_misc_unregister_callback(); removal waits for in-flight callbacks before freeing a binding.",
+    "Marked the boot-mode flag volatile because the stock-preserved probe is external assembly and writes it outside the C compiler's visible data flow."
+  ],
+  "modified_or_new_functions": [
+    "zte_misc_register_callback",
+    "zte_misc_get_node_val",
+    "zte_misc_common_callback_get",
+    "zte_misc_common_callback_set",
+    "zte_misc_unregister_callback"
+  ],
+  "evidence": {
+    "docker": {
+      "validator": "reverse_engineering/validation/reconstructed/zte_misc/attestation/lifetime_sync_hardening_20261104/canonical_build_report.json",
+      "reproducible": true,
+      "first_build_sha256": "4397e8fcd4880b10e2af32a32d361708f2c227c2c135840750061730f4ea8f8c",
+      "second_build_sha256": "4397e8fcd4880b10e2af32a32d361708f2c227c2c135840750061730f4ea8f8c",
+      "candidate_matches_fresh": true,
+      "runtime_content_matches_fresh": true,
+      "runtime_sections_match_fresh": true,
+      "modinfo_matches_fresh": true,
+      "undefined_symbol_parity": false,
+      "validator_status": "incomplete_or_failed",
+      "failed_checks": [
+        "undefined_symbols_match"
+      ],
+      "errors": [
+        "module parity check failed: undefined_symbols_match"
+      ]
+    },
+    "host": {
+      "report": "kernel_development/drivers/validation/zte_misc/host_test_report.json",
+      "passed": true,
+      "reproducible": true,
+      "covered_function_count": 15,
+      "covered_functions": [
+        "get_sysnumber_byname",
+        "zte_poweroff_charging_status",
+        "zte_misc_register_callback",
+        "zte_misc_unregister_callback",
+        "zte_misc_get_node_val",
+        "battery_module_pack_vendor_get",
+        "zte_misc_get_design_capacity",
+        "zte_misc_common_callback_set",
+        "zte_misc_common_callback_get",
+        "zte_misc_probe",
+        "zte_misc_remove",
+        "zte_timezone_setup",
+        "zte_poweroff_charging_handle",
+        "init_module",
+        "cleanup_module"
+      ]
+    },
+    "kcfi": {
+      "comparison": "reverse_engineering/validation/reconstructed/zte_misc/attestation/lifetime_sync_hardening_20261104/kcfi_comparison.json",
+      "passed": true,
+      "required_functions": 4
+    },
+    "assembly": {
+      "comparison": "reverse_engineering/validation/reconstructed/zte_misc/attestation/lifetime_sync_hardening_20261104/assembly_comparison.json",
+      "strict_comparator_passed": false,
+      "functions_checked": 14,
+      "exact_matches": 10,
+      "not_exact": 4,
+      "failures": [
+        "zte_misc_common_callback_get@0010140c: symbol_size, instructions, relocations",
+        "zte_misc_common_callback_set@00101280: symbol_size, instructions, relocations",
+        "zte_misc_get_node_val@00100c5c: symbol_size, instructions, relocations",
+        "zte_misc_register_callback@00100b10: symbol_size, instructions, relocations"
+      ]
+    },
+    "function_map": {
+      "path": "kernel_development/drivers/reconstructed/zte_misc/reconstruction_map.json",
+      "candidate_sha256_bound": true,
+      "ghidra_function_count": 14,
+      "offline_exact_count": 10,
+      "reviewed_not_exact_count": 4
+    }
+  },
+  "stock_import_delta": {
+    "stock_only": [],
+    "candidate_only": [
+      "__kmalloc_cache_noprof",
+      "__srcu_read_lock",
+      "__srcu_read_unlock",
+      "delayed_work_timer_fn",
+      "kfree",
+      "kmalloc_caches",
+      "mem_alloc_profiling_key",
+      "mutex_lock",
+      "mutex_unlock",
+      "synchronize_srcu"
+    ]
+  },
+  "hardware_validation": {
+    "status": "NOT_RUN",
+    "adb_device_present": false
+  },
+  "independent_review": "PENDING",
+  "claims": {
+    "stock_equivalence_established": false,
+    "static_verified": false,
+    "hardware_verified": false
+  }
+}

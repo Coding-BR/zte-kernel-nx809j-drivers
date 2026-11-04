@@ -1,6 +1,19 @@
 # Status de reconstrucao do `zte_misc`
 
-## Veredito atual
+## Estado atual — lote `lifetime_sync_hardening_20261104`
+
+- Candidato atual: SHA-256 `4397e8fcd4880b10e2af32a32d361708f2c227c2c135840750061730f4ea8f8c` (265040 bytes), copiado tanto para o repositorio quanto para o snapshot Docker curado.
+- Duas builds Docker limpas produziram o mesmo hash. Conteudo ELF, secoes runtime, modinfo e hash do mapa correspondem ao candidato.
+- Harness de host: PASS reproduzivel, 15 funcoes cobertas. KCFI: PASS para os quatro callbacks alterados.
+- Comparacao estrita de assembly: 10/14 funcoes continuam exatamente iguais ao stock. Os quatro callbacks SRCU foram reclassificados como `reviewed`; a equivalencia stock nao esta estabelecida para eles.
+- O validador permanece `incomplete_or_failed` somente em `undefined_symbols_match`. O hardening adiciona imports SRCU/mutex/alocacao listados na atestacao; o build reproduzivel nao elimina essa diferenca do stock.
+- ADB sem dispositivo conectado. Nenhum teste no telefone; revisao independente pendente.
+
+Recibos hash-bound: `reverse_engineering/validation/reconstructed/zte_misc/attestation/lifetime_sync_hardening_20261104/README.md` e `attestation.json`. A comparacao vigente e `assembly_comparison.json`.
+
+O restante deste arquivo registra a atestacao do candidato anterior ao lote. Seus hashes e contagens nao descrevem o binario atual.
+
+## Veredito do candidato anterior ao lote
 
 O driver concluiu os gates estaticos implementaveis pelo mesmo engenheiro. Isso
 comprova rastreabilidade do stock, reconstrucao das 14 funcoes, build

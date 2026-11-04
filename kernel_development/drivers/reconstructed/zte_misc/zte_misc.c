@@ -22,6 +22,9 @@
 #include <linux/slab.h>
 #include <linux/power_supply.h>
 #include <linux/string.h>
+#include <linux/mutex.h>
+#include <linux/rcupdate.h>
+#include <linux/srcu.h>
 #endif
 
 #define DRV_NAME "zte-misc"
@@ -34,12 +37,24 @@
  * Structures and Globals
  * ====================================================================== */
 
+struct zte_misc_callback_binding {
+	int (*set)(const char *buf, const void *priv);
+	int (*get)(char *buf, const void *priv);
+	int (*show)(char *buf, const void *priv);
+	void *priv;
+};
+
 struct zte_misc_ops {
 	const char *name;
 	int (*set)(const char *buf, const void *priv);
 	int (*get)(char *buf, const void *priv);
 	int (*show)(char *buf, const void *priv);
 	void *priv;
+};
+
+struct zte_misc_node {
+	const char *name;
+	struct zte_misc_callback_binding __rcu *binding;
 };
 
 struct zte_gpio_entry {
@@ -52,13 +67,14 @@ struct zte_gpio_entry zte_gpios[16];
 
 int zte_timezone;
 unsigned int zte_poweroff_charging;
-static bool zte_poweroff_charging_param;
+/* zte_misc_probe is preserved as external assembly and writes this flag. */
+static volatile bool zte_poweroff_charging_param;
 
 int battery_vendor_id[] = { 2, 3, 4, 17, 10, 12, 15, 20, 20 };
 int resistance_kohm[] = { 10, 20, 33, 82, 180, 240, 330, 430, 470 };
 
 /* ZTE node property table populated by callbacks from peer vendor modules. */
-struct zte_misc_ops node_ops_list[] = {
+struct zte_misc_node node_ops_list[] = {
 	{ "enable_to_shutdown" },
 	{ "enable_to_dump_reg" },
 	{ "demo_charging_policy" },
@@ -99,12 +115,16 @@ struct zte_misc_ops node_ops_list[] = {
 
 #define NODE_OPS_COUNT ARRAY_SIZE(node_ops_list)
 
+static DEFINE_MUTEX(zte_misc_callbacks_lock);
+DEFINE_STATIC_SRCU(zte_misc_callbacks_srcu);
+
 /* ======================================================================
  * Registered Callbacks & Node Values API
  * ====================================================================== */
 
 int zte_misc_register_callback(struct zte_misc_ops *callback, void *priv)
 {
+	struct zte_misc_callback_binding *binding;
 	const char *name;
 	int ret = 0;
 	int i;
@@ -116,23 +136,29 @@ int zte_misc_register_callback(struct zte_misc_ops *callback, void *priv)
 	if (!name)
 		return -EINVAL;
 
+	mutex_lock(&zte_misc_callbacks_lock);
 	for (i = 0; i < NODE_OPS_COUNT; i++) {
 		if (strncmp(node_ops_list[i].name, name, strlen(name)) == 0) {
 			if (strlen(node_ops_list[i].name) == strlen(name)) {
 				pr_info("%s: name[%d]: %s\n", __func__, i,
 					node_ops_list[i].name);
 
-				if (node_ops_list[i].get || node_ops_list[i].set ||
-				    node_ops_list[i].show || node_ops_list[i].priv) {
+				if (rcu_access_pointer(node_ops_list[i].binding)) {
 					pr_info("%s: register name[%d]: %s failed!!!\n",
 						__func__, i, node_ops_list[i].name);
 					ret = -EFAULT;
 				} else {
-					node_ops_list[i].get = callback->get;
-					node_ops_list[i].set = callback->set;
-					node_ops_list[i].show = callback->show;
-					node_ops_list[i].priv = priv ? priv :
-						callback->priv;
+					binding = kzalloc(sizeof(*binding), GFP_KERNEL);
+					if (!binding) {
+						ret = -ENOMEM;
+						break;
+					}
+					binding->get = callback->get;
+					binding->set = callback->set;
+					binding->show = callback->show;
+					binding->priv = priv ? priv : callback->priv;
+					rcu_assign_pointer(node_ops_list[i].binding,
+							  binding);
 				}
 				break;
 			}
@@ -140,47 +166,100 @@ int zte_misc_register_callback(struct zte_misc_ops *callback, void *priv)
 	}
 
 	if (i >= NODE_OPS_COUNT)
-		return -EINVAL;
+		ret = -EINVAL;
+	mutex_unlock(&zte_misc_callbacks_lock);
 
 	return ret;
 }
 EXPORT_SYMBOL(zte_misc_register_callback);
 
+int zte_misc_unregister_callback(struct zte_misc_ops *callback, void *priv)
+{
+	struct zte_misc_callback_binding *binding;
+	const char *name;
+	int i;
+	int ret = -ENOENT;
+
+	if (!callback)
+		return -EINVAL;
+
+	name = callback->name;
+	if (!name)
+		return -EINVAL;
+
+	mutex_lock(&zte_misc_callbacks_lock);
+	for (i = 0; i < NODE_OPS_COUNT; i++) {
+		if (strlen(node_ops_list[i].name) != strlen(name) ||
+		    strncmp(node_ops_list[i].name, name, strlen(name)))
+			continue;
+
+		binding = rcu_access_pointer(node_ops_list[i].binding);
+		if (!binding || binding->set != callback->set ||
+		    binding->get != callback->get ||
+		    binding->show != callback->show ||
+		    binding->priv != (priv ? priv : callback->priv))
+			break;
+
+		RCU_INIT_POINTER(node_ops_list[i].binding, NULL);
+		ret = 0;
+		break;
+	}
+	mutex_unlock(&zte_misc_callbacks_lock);
+
+	if (!ret) {
+		synchronize_srcu(&zte_misc_callbacks_srcu);
+		kfree(binding);
+	}
+
+	return ret;
+}
+EXPORT_SYMBOL(zte_misc_unregister_callback);
+
 int zte_misc_get_node_val(const char *name)
 {
+	struct zte_misc_callback_binding *binding;
 	char buf[64];
 	size_t len;
+	int srcu_idx;
 	int i;
-	int val = 0;
+	int ret;
+	int val = -EINVAL;
 
 	if (!name || !*name)
 		return -EINVAL;
 
 	memset(buf, 0, sizeof(buf));
 	len = strlen(name);
+	srcu_idx = srcu_read_lock(&zte_misc_callbacks_srcu);
 
 	for (i = 0; i < NODE_OPS_COUNT; i++) {
 		if (strncmp(node_ops_list[i].name, name, len) == 0) {
 			if (strlen(node_ops_list[i].name) == strlen(name)) {
-				if (node_ops_list[i].get)
+				binding = srcu_dereference(node_ops_list[i].binding,
+							   &zte_misc_callbacks_srcu);
+				if (binding && binding->get)
 					break;
 			}
 		}
 	}
 
 	if (i == NODE_OPS_COUNT) {
+		srcu_read_unlock(&zte_misc_callbacks_srcu, srcu_idx);
 		pr_err("find node_name failed\n");
 		return -EINVAL;
 	}
 
 	/* Invoke get callback with security signature check (represented here by type verification) */
-	if (node_ops_list[i].get(buf, node_ops_list[i].priv) >= 0) {
-		if (sscanf(buf, "%d", &val) == 1)
-			return val;
+	ret = binding->get(buf, binding->priv);
+	if (ret >= 0 && sscanf(buf, "%d", &val) == 1)
+		goto unlock;
+	if (ret >= 0)
 		pr_err("sscanf result failed\n");
-	}
+	val = -EINVAL;
 
-	return -EINVAL;
+unlock:
+	srcu_read_unlock(&zte_misc_callbacks_srcu, srcu_idx);
+	return val;
 }
 EXPORT_SYMBOL(zte_misc_get_node_val);
 
@@ -190,7 +269,9 @@ EXPORT_SYMBOL(zte_misc_get_node_val);
 
 int zte_misc_common_callback_get(char *buffer, const struct kernel_param *kp)
 {
+	struct zte_misc_callback_binding *binding;
 	char name_buf[64];
+	int srcu_idx;
 	int ret;
 	int i;
 
@@ -202,22 +283,29 @@ int zte_misc_common_callback_get(char *buffer, const struct kernel_param *kp)
 	}
 
 	ret = 0;
+	srcu_idx = srcu_read_lock(&zte_misc_callbacks_srcu);
 	for (i = 0; i < NODE_OPS_COUNT; i++) {
 		if (!strncmp(node_ops_list[i].name, name_buf, strlen(name_buf)) &&
-		    strlen(node_ops_list[i].name) == strlen(name_buf) &&
-		    node_ops_list[i].get) {
-			ret = node_ops_list[i].get(buffer, node_ops_list[i].priv);
+		    strlen(node_ops_list[i].name) == strlen(name_buf)) {
+			binding = srcu_dereference(node_ops_list[i].binding,
+						  &zte_misc_callbacks_srcu);
+			if (!binding || !binding->get)
+				continue;
+			ret = binding->get(buffer, binding->priv);
 			if (ret < 0)
 				break;
 		}
 	}
+	srcu_read_unlock(&zte_misc_callbacks_srcu, srcu_idx);
 	return ret;
 }
 
 int zte_misc_common_callback_set(const char *value,
 				 const struct kernel_param *kp)
 {
+	struct zte_misc_callback_binding *binding;
 	char name_buf[64];
+	int srcu_idx;
 	int ret;
 	int i;
 
@@ -229,15 +317,20 @@ int zte_misc_common_callback_set(const char *value,
 	}
 
 	ret = 0;
+	srcu_idx = srcu_read_lock(&zte_misc_callbacks_srcu);
 	for (i = 0; i < NODE_OPS_COUNT; i++) {
 		if (!strncmp(node_ops_list[i].name, name_buf, strlen(name_buf)) &&
-		    strlen(node_ops_list[i].name) == strlen(name_buf) &&
-		    node_ops_list[i].set) {
-			ret = node_ops_list[i].set(value, node_ops_list[i].priv);
+		    strlen(node_ops_list[i].name) == strlen(name_buf)) {
+			binding = srcu_dereference(node_ops_list[i].binding,
+						  &zte_misc_callbacks_srcu);
+			if (!binding || !binding->set)
+				continue;
+			ret = binding->set(value, binding->priv);
 			if (ret < 0)
 				break;
 		}
 	}
+	srcu_read_unlock(&zte_misc_callbacks_srcu, srcu_idx);
 	return ret;
 }
 

@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <pthread.h>
+#include <stdatomic.h>
 
 typedef uint32_t u32;
 typedef int32_t s32;
@@ -19,6 +21,7 @@ typedef int32_t s32;
 #define PAGE_SIZE 4096u
 #define ARRAY_SIZE(array) (sizeof(array) / sizeof((array)[0]))
 #define EXPORT_SYMBOL(symbol)
+#define __rcu
 #define MODULE_DEVICE_TABLE(type, table)
 #define MODULE_DESCRIPTION(value)
 #define MODULE_LICENSE(value)
@@ -39,6 +42,37 @@ struct kernel_param_ops {
 struct kernel_param { const char *name; const struct kernel_param_ops *ops; void *arg; };
 #define module_param_cb(name, ops, arg, mode)
 #define module_param(name, type, mode)
+
+struct mutex { pthread_mutex_t lock; };
+#define DEFINE_MUTEX(name) struct mutex name = { .lock = PTHREAD_MUTEX_INITIALIZER }
+static inline void mutex_lock(struct mutex *lock) { pthread_mutex_lock(&lock->lock); }
+static inline void mutex_unlock(struct mutex *lock) { pthread_mutex_unlock(&lock->lock); }
+
+struct srcu_struct {
+	pthread_rwlock_t lock;
+	atomic_int synchronize_waiting;
+};
+#define DEFINE_STATIC_SRCU(name) \
+	struct srcu_struct name = { .lock = PTHREAD_RWLOCK_INITIALIZER, .synchronize_waiting = ATOMIC_VAR_INIT(0) }
+static inline int srcu_read_lock(struct srcu_struct *srcu)
+{ pthread_rwlock_rdlock(&srcu->lock); return 0; }
+static inline void srcu_read_unlock(struct srcu_struct *srcu, int index)
+{ (void)index; pthread_rwlock_unlock(&srcu->lock); }
+static inline void synchronize_srcu(struct srcu_struct *srcu)
+{
+	atomic_store(&srcu->synchronize_waiting, 1);
+	pthread_rwlock_wrlock(&srcu->lock);
+	pthread_rwlock_unlock(&srcu->lock);
+}
+#define rcu_access_pointer(pointer) __atomic_load_n(&(pointer), __ATOMIC_ACQUIRE)
+#define srcu_dereference(pointer, srcu) \
+	((void)(srcu), __atomic_load_n(&(pointer), __ATOMIC_ACQUIRE))
+#define rcu_assign_pointer(pointer, value) \
+	__atomic_store_n(&(pointer), (value), __ATOMIC_RELEASE)
+#define RCU_INIT_POINTER(pointer, value) \
+	__atomic_store_n(&(pointer), (value), __ATOMIC_RELEASE)
+#define kzalloc(size, flags) ((void)(flags), calloc(1, (size)))
+#define kfree(pointer) free(pointer)
 
 struct device_node {
 	const char *path;

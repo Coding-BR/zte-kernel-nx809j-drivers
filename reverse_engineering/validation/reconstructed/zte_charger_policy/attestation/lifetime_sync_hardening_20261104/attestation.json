@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0",
+  "batch_id": "lifetime_sync_hardening_20261104",
+  "driver": "zte_charger_policy",
+  "stage": "offline_static_lifetime_hardening",
+  "result": "compiled_reproducibly_with_declared_stock_deviation",
+  "stock": {
+    "sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c"
+  },
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.ko",
+    "sha256": "37ec41388d9e6a971f15e4222e6685a926b362f7a5eff36eddd8128d5a865f6a",
+    "size_bytes": 331352,
+    "source_path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c",
+    "source_sha256": "954713bfda43712d0bf72703f0f00f2e5fca34bfa9cc09260e14547570c3f7fa",
+    "reconstruction_map_sha256": "138ca68f2c0011d831d963d6cefc92f13a5c0ef6952ad36a8f1caa11fac7d570"
+  },
+  "changes": [
+    "Added ordered runtime teardown for callback bindings, notifier, power supply, alarm, delayed work, workqueues, and wake source.",
+    "Added a stopping gate for timeout work and alarm callbacks.",
+    "Replaced devm power-supply registration with explicit registration and unregistration.",
+    "Removed asynchronous devm_kfree on retry exhaustion; devres owns the probe allocation until device removal."
+  ],
+  "modified_or_new_functions": [
+    "charger_policy_probe",
+    "charger_policy_probe_work",
+    "charger_policy_remove",
+    "charger_policy_timeout_handler_work",
+    "charger_policy_timeout_alarm_cb",
+    "charger_policy_stop_runtime"
+  ],
+  "evidence": {
+    "docker": {
+      "validator": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261104/canonical_build_report.json",
+      "reproducible": true,
+      "first_build_sha256": "37ec41388d9e6a971f15e4222e6685a926b362f7a5eff36eddd8128d5a865f6a",
+      "second_build_sha256": "37ec41388d9e6a971f15e4222e6685a926b362f7a5eff36eddd8128d5a865f6a",
+      "candidate_matches_fresh": true,
+      "runtime_content_matches_fresh": true,
+      "runtime_sections_match_fresh": true,
+      "modinfo_matches_fresh": true,
+      "undefined_symbol_parity": false,
+      "validator_status": "incomplete_or_failed",
+      "failed_checks": [
+        "undefined_symbols_match"
+      ],
+      "errors": [
+        "module parity check failed: undefined_symbols_match"
+      ]
+    },
+    "host": {
+      "report": "reverse_engineering/validation/reconstructed/zte_charger_policy/host_test_report.json",
+      "passed": true,
+      "reproducible": true,
+      "covered_function_count": 39,
+      "covered_functions": [
+        "charger_policy_cap_max_get",
+        "charger_policy_cap_max_set",
+        "charger_policy_cap_min_get",
+        "charger_policy_cap_min_set",
+        "charger_policy_check_soc_reach_min",
+        "charger_policy_check_usb_present",
+        "charger_policy_ctrl_charging_enable",
+        "charger_policy_demo_sts_get",
+        "charger_policy_demo_sts_set",
+        "charger_policy_disable_cas",
+        "charger_policy_enable_status_get",
+        "charger_policy_enable_status_set",
+        "charger_policy_expired_sec_get",
+        "charger_policy_expired_sec_set",
+        "charger_policy_expired_sts_get",
+        "charger_policy_force_disching_sec_get",
+        "charger_policy_force_disching_sec_set",
+        "charger_policy_get_prop_by_name",
+        "charger_policy_get_status",
+        "charger_policy_notifier_switch",
+        "charger_policy_probe",
+        "charger_policy_probe_work",
+        "charger_policy_remove",
+        "charger_policy_stop_runtime",
+        "charger_policy_status_disable",
+        "charger_policy_status_forcedischging",
+        "charger_policy_status_ide",
+        "charger_policy_status_runchging",
+        "charger_policy_status_rundischging",
+        "charger_policy_timeout_alarm_cb",
+        "charger_policy_timeout_handler_work",
+        "cleanup_module",
+        "init_module",
+        "policy_external_power_changed",
+        "policy_property_is_writeable",
+        "policy_psy_get_property",
+        "policy_psy_set_property",
+        "zte_charger_policy_get_prop_by_name",
+        "zte_charger_policy_set_prop_by_name"
+      ]
+    },
+    "kcfi": {
+      "comparison": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261104/kcfi_comparison.json",
+      "passed": true,
+      "required_functions": 5
+    },
+    "assembly": {
+      "comparison": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261104/assembly_comparison.json",
+      "strict_comparator_passed": false,
+      "functions_checked": 38,
+      "exact_matches": 3,
+      "not_exact": 35,
+      "failures": [
+        "charger_policy_cap_max_get@00101954: relocations",
+        "charger_policy_cap_max_set@001018a4: relocations",
+        "charger_policy_cap_min_get@00101828: relocations",
+        "charger_policy_cap_min_set@0010177c: relocations",
+        "charger_policy_check_soc_reach_min@00102224: relocations",
+        "charger_policy_check_usb_present@00103294: relocations",
+        "charger_policy_ctrl_charging_enable@00101e08: relocations",
+        "charger_policy_demo_sts_get@001013c8: relocations",
+        "charger_policy_demo_sts_set@00101264: instructions, relocations",
+        "charger_policy_disable_cas@00101cdc: relocations",
+        "charger_policy_enable_status_get@00101a80: relocations",
+        "charger_policy_enable_status_set@001019d0: relocations",
+        "charger_policy_expired_sec_get@0010159c: relocations",
+        "charger_policy_expired_sec_set@001014f4: relocations",
+        "charger_policy_expired_sts_get@0010146c: relocations",
+        "charger_policy_force_disching_sec_get@001016e0: relocations",
+        "charger_policy_force_disching_sec_set@00101638: relocations",
+        "charger_policy_get_prop_by_name@00101bd8: relocations",
+        "charger_policy_get_status@00101b04: relocations",
+        "charger_policy_notifier_switch@001034d8: relocations",
+        "charger_policy_probe@001023ec: symbol_size, instructions, relocations",
+        "charger_policy_probe_work@00102c00: symbol_size, instructions, relocations",
+        "charger_policy_remove@00102b90: symbol_size, instructions, relocations",
+        "charger_policy_status_forcedischging@00101160: relocations",
+        "charger_policy_status_ide@00100a34: relocations",
+        "charger_policy_status_runchging@00100bc4: relocations",
+        "charger_policy_status_rundischging@00100e88: relocations",
+        "charger_policy_timeout_alarm_cb@00101208: symbol_size, instructions",
+        "charger_policy_timeout_handler_work@00102f34: symbol_size, instructions, relocations",
+        "cleanup_module@001037a4: relocations",
+        "init_module@00103774: relocations",
+        "policy_psy_get_property@00103564: relocations",
+        "policy_psy_set_property@00103678: relocations",
+        "zte_charger_policy_get_prop_by_name@00102020: relocations",
+        "zte_charger_policy_set_prop_by_name@00102124: relocations"
+      ]
+    },
+    "function_map": {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/reconstruction_map.json",
+      "candidate_sha256_bound": true,
+      "ghidra_function_count": 38,
+      "offline_exact_count": 3,
+      "reviewed_not_exact_count": 35
+    }
+  },
+  "stock_import_delta": {
+    "stock_only": [
+      "devm_kfree",
+      "devm_power_supply_register"
+    ],
+    "candidate_only": [
+      "alarm_cancel",
+      "cancel_delayed_work_sync",
+      "destroy_workqueue",
+      "power_supply_register",
+      "power_supply_unregister",
+      "zte_misc_unregister_callback"
+    ]
+  },
+  "hardware_validation": {
+    "status": "NOT_RUN",
+    "adb_device_present": false
+  },
+  "independent_review": "PENDING",
+  "claims": {
+    "stock_equivalence_established": false,
+    "static_verified": false,
+    "hardware_verified": false
+  }
+}

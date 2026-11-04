@@ -1,5 +1,6 @@
 #define ZTE_MISC_HOST_TEST 1
 #include "../zte_misc.c"
+#include <time.h>
 
 struct fake_state {
 	int failures;
@@ -31,13 +32,6 @@ static struct property label_property;
 
 static void reset_fake(void)
 {
-	int i;
-	for (i = 0; i < NODE_OPS_COUNT; i++) {
-		node_ops_list[i].set = NULL;
-		node_ops_list[i].get = NULL;
-		node_ops_list[i].show = NULL;
-		node_ops_list[i].priv = NULL;
-	}
 	memset(&fake, 0, sizeof(fake));
 	memset(zte_gpios, 0, sizeof(zte_gpios));
 	zte_poweroff_charging = 0;
@@ -150,6 +144,14 @@ void platform_driver_unregister(struct platform_driver *driver)
 static int callback_set_value;
 static int callback_get_value;
 static int callback_result;
+static pthread_mutex_t blocking_get_lock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t blocking_get_cond = PTHREAD_COND_INITIALIZER;
+static bool block_get_callback;
+static bool get_callback_entered;
+static bool release_get_callback;
+static atomic_int unregister_finished;
+static int concurrent_get_result;
+static int concurrent_unregister_result;
 
 static int test_set(const char *value, const void *priv)
 {
@@ -161,6 +163,14 @@ static int test_set(const char *value, const void *priv)
 static int test_get(char *buffer, const void *priv)
 {
 	EXPECT(priv == &callback_set_value);
+	pthread_mutex_lock(&blocking_get_lock);
+	if (block_get_callback) {
+		get_callback_entered = true;
+		pthread_cond_broadcast(&blocking_get_cond);
+		while (!release_get_callback)
+			pthread_cond_wait(&blocking_get_cond, &blocking_get_lock);
+	}
+	pthread_mutex_unlock(&blocking_get_lock);
 	callback_get_value++;
 	sprintf(buffer, "%d", callback_set_value);
 	return callback_result;
@@ -177,6 +187,25 @@ static struct zte_misc_ops callback = {
 	.priv = NULL,
 };
 
+static void *run_blocking_get(void *unused)
+{
+	struct kernel_param parameter = { .name = "screen_on" };
+	char value[64] = { 0 };
+
+	(void)unused;
+	concurrent_get_result = zte_misc_common_callback_get(value, &parameter);
+	return NULL;
+}
+
+static void *run_unregister(void *unused)
+{
+	(void)unused;
+	concurrent_unregister_result =
+		zte_misc_unregister_callback(&callback, &callback_set_value);
+	atomic_store(&unregister_finished, 1);
+	return NULL;
+}
+
 static void register_test_callback(void)
 {
 	callback_set_value = 12;
@@ -190,6 +219,9 @@ static void test_registry_and_values(void)
 	struct zte_misc_ops unknown = { .name = "missing" };
 	char value[64];
 	struct kernel_param parameter = { .name = "screen_on" };
+	pthread_t reader;
+	pthread_t unregisterer;
+	struct timespec pause = { .tv_sec = 0, .tv_nsec = 1000000 };
 
 	reset_fake();
 	EXPECT(zte_misc_register_callback(NULL, NULL) == -EINVAL);
@@ -206,6 +238,35 @@ static void test_registry_and_values(void)
 	EXPECT(!strcmp(value, "31"));
 	callback_result = -EIO;
 	EXPECT(zte_misc_common_callback_set("32", &parameter) == -EIO);
+	EXPECT(zte_misc_unregister_callback(&callback, NULL) == -ENOENT);
+
+	callback_result = 0;
+	block_get_callback = true;
+	get_callback_entered = false;
+	release_get_callback = false;
+	atomic_store(&unregister_finished, 0);
+	atomic_store(&zte_misc_callbacks_srcu.synchronize_waiting, 0);
+	EXPECT(pthread_create(&reader, NULL, run_blocking_get, NULL) == 0);
+	pthread_mutex_lock(&blocking_get_lock);
+	while (!get_callback_entered)
+		pthread_cond_wait(&blocking_get_cond, &blocking_get_lock);
+	pthread_mutex_unlock(&blocking_get_lock);
+	EXPECT(pthread_create(&unregisterer, NULL, run_unregister, NULL) == 0);
+	while (!atomic_load(&zte_misc_callbacks_srcu.synchronize_waiting))
+		nanosleep(&pause, NULL);
+	EXPECT(!atomic_load(&unregister_finished));
+	pthread_mutex_lock(&blocking_get_lock);
+	release_get_callback = true;
+	pthread_cond_broadcast(&blocking_get_cond);
+	pthread_mutex_unlock(&blocking_get_lock);
+	EXPECT(pthread_join(reader, NULL) == 0);
+	EXPECT(pthread_join(unregisterer, NULL) == 0);
+	block_get_callback = false;
+	EXPECT(concurrent_get_result == 0);
+	EXPECT(concurrent_unregister_result == 0);
+	EXPECT(atomic_load(&unregister_finished));
+	EXPECT(zte_misc_get_node_val("screen_on") == -EINVAL);
+	EXPECT(zte_misc_unregister_callback(&callback, &callback_set_value) == -ENOENT);
 }
 
 static void test_battery_vendor(void)

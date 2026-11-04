@@ -31,6 +31,8 @@ typedef s64 ktime_t;
 #define ARRAY_SIZE(value) (sizeof(value) / sizeof((value)[0]))
 #define static_assert(condition) _Static_assert(condition, #condition)
 #define container_of(pointer, type, member) ((type *)((char *)(pointer) - offsetof(type, member)))
+#define READ_ONCE(value) (value)
+#define WRITE_ONCE(value, new_value) ((value) = (new_value))
 #define ERR_PTR(error) ((void *)(intptr_t)(error))
 #define PTR_ERR(pointer) ((long)(intptr_t)(pointer))
 #define IS_ERR(pointer) ((uintptr_t)(pointer) >= (uintptr_t)-4095)
@@ -90,6 +92,8 @@ struct workqueue_struct *host_create_workqueue(const char *name);
 void host_init_delayed_work(struct delayed_work *work, void (*func)(struct work_struct *));
 bool host_queue_delayed_work(struct workqueue_struct *wq, struct delayed_work *work, unsigned long delay);
 bool host_delayed_work_pending(struct delayed_work *work);
+bool host_cancel_delayed_work_sync(struct delayed_work *work);
+void host_destroy_workqueue(struct workqueue_struct *wq);
 unsigned long host_msecs_to_jiffies(unsigned int value);
 void host_bug(void);
 
@@ -102,6 +106,8 @@ void power_supply_changed(struct power_supply *psy);
 int power_supply_reg_notifier(struct notifier_block *nb);
 void power_supply_unreg_notifier(struct notifier_block *nb);
 struct power_supply *devm_power_supply_register(struct device *dev, const struct power_supply_desc *desc, const struct power_supply_config *config);
+struct power_supply *power_supply_register(struct device *dev, const struct power_supply_desc *desc, const struct power_supply_config *config);
+void power_supply_unregister(struct power_supply *psy);
 
 struct wakeup_source *wakeup_source_register(struct device *dev, const char *name);
 void wakeup_source_unregister(struct wakeup_source *source);
@@ -115,6 +121,7 @@ ktime_t ns_to_ktime(s64 value);
 void alarm_init(struct alarm *alarm, int type, enum alarmtimer_restart (*callback)(struct alarm *, ktime_t));
 int alarm_start_relative(struct alarm *alarm, ktime_t expires);
 int alarm_try_to_cancel(struct alarm *alarm);
+int alarm_cancel(struct alarm *alarm);
 
 void platform_set_drvdata(struct platform_device *pdev, void *data);
 void *platform_get_drvdata(struct platform_device *pdev);
@@ -130,6 +137,8 @@ void platform_driver_unregister(struct platform_driver *driver);
 #define create_singlethread_workqueue(name) host_create_workqueue(name)
 #define INIT_DELAYED_WORK(work, callback) host_init_delayed_work((work), (callback))
 #define queue_delayed_work(wq, work, delay) host_queue_delayed_work((wq), (work), (delay))
+#define cancel_delayed_work_sync(work) host_cancel_delayed_work_sync(work)
+#define destroy_workqueue(wq) host_destroy_workqueue(wq)
 #define delayed_work_pending(work) host_delayed_work_pending(work)
 #define msecs_to_jiffies(value) host_msecs_to_jiffies(value)
 #define BUG() host_bug()

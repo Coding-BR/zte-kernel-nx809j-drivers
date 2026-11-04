@@ -11,6 +11,7 @@ struct host_state {
 	int fail_register_psy;
 	int fail_workqueue;
 	int fail_wakeup;
+	int fail_misc_register_at;
 	int poweroff_charging;
 	int dt_present;
 	u32 dt_enable;
@@ -21,12 +22,16 @@ struct host_state {
 	int notifier_register_calls;
 	int notifier_unregister_calls;
 	int queue_calls;
+	int cancel_work_calls;
+	int destroy_workqueue_calls;
 	unsigned long last_delay;
 	int stay_awake_calls;
 	int relax_calls;
 	int alarm_start_calls;
 	int alarm_cancel_calls;
 	int misc_register_calls;
+	int misc_unregister_calls;
+	int power_supply_unregister_calls;
 	int platform_register_calls;
 	int platform_unregister_calls;
 	int bug_calls;
@@ -121,6 +126,10 @@ bool host_queue_delayed_work(struct workqueue_struct *wq, struct delayed_work *w
 	return true;
 }
 bool host_delayed_work_pending(struct delayed_work *work) { return work->pending != 0; }
+bool host_cancel_delayed_work_sync(struct delayed_work *work)
+{ bool pending = work->pending != 0; work->pending = 0; host.cancel_work_calls++; return pending; }
+void host_destroy_workqueue(struct workqueue_struct *wq)
+{ CHECK(wq != NULL); host.destroy_workqueue_calls++; }
 unsigned long host_msecs_to_jiffies(unsigned int value) { return value / 4; }
 void host_bug(void) { host.bug_calls++; }
 
@@ -155,7 +164,7 @@ int power_supply_reg_notifier(struct notifier_block *nb)
 { (void)nb; host.notifier_register_calls++; return host.fail_register_notifier ? -EIO : 0; }
 void power_supply_unreg_notifier(struct notifier_block *nb)
 { (void)nb; host.notifier_unregister_calls++; }
-struct power_supply *devm_power_supply_register(struct device *dev, const struct power_supply_desc *desc, const struct power_supply_config *config)
+struct power_supply *power_supply_register(struct device *dev, const struct power_supply_desc *desc, const struct power_supply_config *config)
 {
 	(void)dev;
 	if (host.fail_register_psy) return ERR_PTR(-EIO);
@@ -163,6 +172,8 @@ struct power_supply *devm_power_supply_register(struct device *dev, const struct
 	host.policy.drv_data = config->drv_data;
 	return &host.policy;
 }
+void power_supply_unregister(struct power_supply *psy)
+{ CHECK(psy == &host.policy); host.power_supply_unregister_calls++; host.policy.desc = NULL; }
 
 struct wakeup_source *wakeup_source_register(struct device *dev, const char *name)
 { (void)dev; (void)name; return host.fail_wakeup ? NULL : &host.wakeup; }
@@ -180,6 +191,8 @@ void alarm_init(struct alarm *alarm, int type, enum alarmtimer_restart (*callbac
 int alarm_start_relative(struct alarm *alarm, ktime_t expires)
 { alarm->expires = expires; host.alarm_start_calls++; return 0; }
 int alarm_try_to_cancel(struct alarm *alarm)
+{ alarm->expires = 0; host.alarm_cancel_calls++; return 0; }
+int alarm_cancel(struct alarm *alarm)
 { alarm->expires = 0; host.alarm_cancel_calls++; return 0; }
 
 void platform_set_drvdata(struct platform_device *pdev, void *data) { pdev->dev.drvdata = data; }
@@ -203,7 +216,14 @@ int zte_power_supply_set_property(struct zte_power_supply *psy, enum power_suppl
 { if (host.fail_zte_property) return -EIO; psy->values[prop] = value->intval; return 0; }
 int zte_poweroff_charging_status(void) { return host.poweroff_charging; }
 int zte_misc_register_callback(const struct zte_misc_cb *cb, void *priv)
-{ CHECK(cb != NULL); CHECK(priv != NULL); host.misc_register_calls++; return 0; }
+{
+	CHECK(cb != NULL);
+	CHECK(priv != NULL);
+	host.misc_register_calls++;
+	return host.fail_misc_register_at == host.misc_register_calls ? -EFAULT : 0;
+}
+int zte_misc_unregister_callback(const struct zte_misc_cb *cb, void *priv)
+{ CHECK(cb != NULL); CHECK(priv != NULL); host.misc_unregister_calls++; return 0; }
 
 static void init_policy(struct charger_policy_info *policy)
 {
@@ -338,11 +358,54 @@ static void test_probe_remove_and_module(void)
 	CHECK(host.misc_register_calls == 7);
 	CHECK(policy->policy_psy == &host.policy);
 	charger_policy_remove(&pdev);
-	CHECK(host.notifier_unregister_calls > 0);
+	CHECK(host.notifier_unregister_calls == 1);
+	CHECK(host.misc_unregister_calls == 7);
+	CHECK(host.power_supply_unregister_calls == 1);
+	CHECK(host.cancel_work_calls == 2);
+	CHECK(host.destroy_workqueue_calls == 2);
+	CHECK(platform_get_drvdata(&pdev) == NULL);
 	CHECK(init_module() == 0);
 	cleanup_module();
 	CHECK(host.platform_register_calls == 1);
 	CHECK(host.platform_unregister_calls == 1);
+}
+
+static void test_failed_probe_cleanup_and_retry(void)
+{
+	struct platform_device pdev = {0};
+	struct device_node node = {0};
+	struct charger_policy_info *policy;
+
+	reset_host();
+	host.dt_present = 1;
+	host.dt_enable = 1;
+	host.fail_misc_register_at = 3;
+	pdev.dev.of_node = &node;
+	CHECK(charger_policy_probe(&pdev) == 0);
+	policy = platform_get_drvdata(&pdev);
+	CHECK(policy != NULL);
+	policy->probe_work.pending = 0;
+	policy->probe_work.work.func(&policy->probe_work.work);
+	CHECK(host.misc_register_calls == 3);
+	CHECK(host.misc_unregister_calls == 7);
+	CHECK(host.notifier_unregister_calls == 1);
+	CHECK(host.power_supply_unregister_calls == 1);
+	CHECK(host.destroy_workqueue_calls == 1);
+	CHECK(policy->runtime_stopping == 0);
+	CHECK(policy->probe_work.pending == 1);
+
+	policy->probe_work.pending = 0;
+	policy->probe_work.work.func(&policy->probe_work.work);
+	CHECK(host.misc_register_calls == 10);
+	CHECK(policy->policy_psy == &host.policy);
+	CHECK(policy->runtime_stopping == 0);
+	charger_policy_remove(&pdev);
+	CHECK(host.misc_unregister_calls == 14);
+	CHECK(host.notifier_unregister_calls == 2);
+	CHECK(host.power_supply_unregister_calls == 2);
+	CHECK(host.cancel_work_calls == 3);
+	CHECK(host.destroy_workqueue_calls == 3);
+	CHECK(platform_get_drvdata(&pdev) == NULL);
 }
 
 static void test_failure_paths(void)
@@ -372,6 +435,7 @@ int main(void)
 	test_callbacks();
 	test_alarm_notifier_and_status();
 	test_probe_remove_and_module();
+	test_failed_probe_cleanup_and_retry();
 	test_failure_paths();
 	if (host.failures)
 		return 1;

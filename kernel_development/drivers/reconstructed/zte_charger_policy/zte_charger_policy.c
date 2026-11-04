@@ -42,6 +42,7 @@ struct zte_misc_cb {
 };
 
 extern int zte_misc_register_callback(const struct zte_misc_cb *cb, void *priv);
+extern int zte_misc_unregister_callback(const struct zte_misc_cb *cb, void *priv);
 
 /* Layout of struct charger_policy_info aligned 1:1 with binary (544 bytes) */
 struct charger_policy_info {
@@ -103,7 +104,12 @@ struct charger_policy_info {
 	u64 force_discharging_sec_nanoseconds;             /* 0x200 (512) */
 	u64 force_discharging_start_time;                  /* 0x208 (520) */
 
-	u8 pad7[8];                                        /* 0x210 (528) */
+	u8 misc_callbacks_registered;                      /* 0x210 (528) */
+	u8 notifier_registered;                            /* 0x211 (529) */
+	u8 timeout_work_initialized;                       /* 0x212 (530) */
+	u8 timeout_alarm_initialized;                      /* 0x213 (531) */
+	u8 runtime_stopping;                               /* 0x214 (532) */
+	u8 lifetime_padding[3];                            /* 0x215 (533) */
 
 	/* Status booleans / bytes */
 	u8 low_temp_status;                                /* 0x218 (536) */
@@ -804,6 +810,9 @@ static __used void charger_policy_timeout_handler_work_model(struct work_struct 
 	bool is_charging = false;
 	int ret;
 
+	if (READ_ONCE(policy->runtime_stopping))
+		return;
+
 	now_sec = get_current_time_seconds();
 	policy->log_limit = 0;
 
@@ -912,8 +921,10 @@ sleep_policy:
 #ifdef ZTE_CHARGER_POLICY_HOST_TEST
 #define charger_policy_timeout_handler_work charger_policy_timeout_handler_work_model
 #else
-extern void charger_policy_timeout_handler_work(struct work_struct *work);
-#include "charger_policy_timeout_handler_work_exact.inc"
+void charger_policy_timeout_handler_work(struct work_struct *work)
+{
+	charger_policy_timeout_handler_work_model(work);
+}
 #endif
 
 /* Alarm timer callback */
@@ -921,11 +932,15 @@ static enum alarmtimer_restart charger_policy_timeout_alarm_cb(struct alarm *ala
 {
 	struct charger_policy_info *policy = container_of(alarm, struct charger_policy_info, timeout_alarm);
 
+	if (READ_ONCE(policy->runtime_stopping))
+		return ALARMTIMER_NORESTART;
+
 	alarm_start_relative(alarm, ns_to_ktime(1000000LL * policy->force_discharging_sec_nanoseconds));
-	if (!delayed_work_pending(&policy->timeout_work)) {
+	if (!READ_ONCE(policy->runtime_stopping) &&
+	    !delayed_work_pending(&policy->timeout_work)) {
 		queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(100));
 	}
-	return ALARMTIMER_RESTART;
+	return READ_ONCE(policy->runtime_stopping) ? ALARMTIMER_NORESTART : ALARMTIMER_RESTART;
 }
 
 /* Power supply notifier switch callback */
@@ -1309,6 +1324,60 @@ static struct zte_misc_cb policy_enable_node = {
 	.get = charger_policy_enable_status_get,
 };
 
+static struct zte_misc_cb * const charger_policy_misc_callbacks[] = {
+	&demo_charging_policy_node,
+	&expired_charging_policy_node,
+	&charging_time_sec_node,
+	&force_disching_sec_node,
+	&policy_cap_min_node,
+	&policy_cap_max_node,
+	&policy_enable_node,
+};
+
+static void charger_policy_stop_runtime(struct charger_policy_info *policy)
+{
+	size_t i;
+
+	WRITE_ONCE(policy->runtime_stopping, 1);
+
+	if (policy->misc_callbacks_registered) {
+		for (i = 0; i < ARRAY_SIZE(charger_policy_misc_callbacks); i++)
+			zte_misc_unregister_callback(charger_policy_misc_callbacks[i],
+						     policy);
+		policy->misc_callbacks_registered = 0;
+	}
+
+	if (policy->notifier_registered) {
+		power_supply_unreg_notifier(&policy->nb);
+		policy->notifier_registered = 0;
+	}
+
+	if (policy->policy_psy) {
+		power_supply_unregister(policy->policy_psy);
+		policy->policy_psy = NULL;
+	}
+
+	if (policy->timeout_alarm_initialized)
+		alarm_cancel(&policy->timeout_alarm);
+
+	if (policy->timeout_work_initialized)
+		cancel_delayed_work_sync(&policy->timeout_work);
+
+	/* A running timeout work item may have armed the alarm before it drained. */
+	if (policy->timeout_alarm_initialized)
+		alarm_cancel(&policy->timeout_alarm);
+
+	if (policy->timeout_wq) {
+		destroy_workqueue(policy->timeout_wq);
+		policy->timeout_wq = NULL;
+	}
+
+	if (policy->ws) {
+		wakeup_source_unregister(policy->ws);
+		policy->ws = NULL;
+	}
+}
+
 /* Power supply properties and implementation of the standard driver interface */
 static enum power_supply_property policy_psy_properties[] = {
 	POWER_SUPPLY_PROP_PRESENT,
@@ -1470,6 +1539,7 @@ static __used void charger_policy_probe_work_model(struct work_struct *work)
 {
 	struct charger_policy_info *policy = container_of(work, struct charger_policy_info, probe_work.work);
 	struct power_supply_config psy_cfg = {};
+	size_t i;
 	int ret;
 
 	pr_info("policy: %s(): begin execution\n", "charger_policy_probe_work");
@@ -1487,15 +1557,11 @@ static __used void charger_policy_probe_work_model(struct work_struct *work)
 	policy->force_discharging_enable = (policy->have_power_path != 0);
 	policy->low_temp_status = (policy->low_temp != 0);
 
-	alarm_init(&policy->timeout_alarm, ALARM_BOOTTIME, charger_policy_timeout_alarm_cb);
-
 	policy->timeout_wq = create_singlethread_workqueue("charger-policy-service");
 	if (!policy->timeout_wq) {
 		pr_info("policy: %s(): timeout workqueue allocation failed\n", "charger_policy_probe_work");
 		goto check_retry;
 	}
-
-	INIT_DELAYED_WORK(&policy->timeout_work, charger_policy_timeout_handler_work);
 
 	policy->nb.notifier_call = charger_policy_notifier_switch;
 	ret = power_supply_reg_notifier(&policy->nb);
@@ -1503,22 +1569,27 @@ static __used void charger_policy_probe_work_model(struct work_struct *work)
 		pr_info("policy: %s(): Couldn't register psy notifier rc = %d\n", "charger_policy_probe_work", ret);
 		goto destroy_wq;
 	}
+	policy->notifier_registered = 1;
 
 	psy_cfg.drv_data = policy;
-	policy->policy_psy = devm_power_supply_register(policy->dev, &policy_psy_desc, &psy_cfg);
+	policy->policy_psy = power_supply_register(policy->dev, &policy_psy_desc, &psy_cfg);
 	if (IS_ERR(policy->policy_psy)) {
 		pr_info("policy: %s(): failed to register policy_psy rc = %ld\n", "charger_policy_probe_work", PTR_ERR(policy->policy_psy));
+		policy->policy_psy = NULL;
 		goto unreg_notifier;
 	}
 
 	/* Register node ops callbacks into zte_misc node manager */
-	zte_misc_register_callback(&demo_charging_policy_node, policy);
-	zte_misc_register_callback(&expired_charging_policy_node, policy);
-	zte_misc_register_callback(&charging_time_sec_node, policy);
-	zte_misc_register_callback(&force_disching_sec_node, policy);
-	zte_misc_register_callback(&policy_cap_min_node, policy);
-	zte_misc_register_callback(&policy_cap_max_node, policy);
-	zte_misc_register_callback(&policy_enable_node, policy);
+	for (i = 0; i < ARRAY_SIZE(charger_policy_misc_callbacks); i++) {
+		int callback_ret;
+
+		callback_ret = zte_misc_register_callback(
+			charger_policy_misc_callbacks[i], policy);
+		if (callback_ret < 0) {
+			goto unreg_notifier;
+		}
+		policy->misc_callbacks_registered = 1;
+	}
 
 	policy->ws = wakeup_source_register(policy->dev, "charger_policy_service");
 	if (policy->ws) {
@@ -1530,26 +1601,27 @@ static __used void charger_policy_probe_work_model(struct work_struct *work)
 	pr_info("policy: %s(): charger_policy_service wakelock register failed\n", "charger_policy_probe_work");
 
 unreg_notifier:
-	power_supply_unreg_notifier(&policy->nb);
 destroy_wq:
-	;
+	charger_policy_stop_runtime(policy);
 check_retry:
 	charger_policy_check_retry_probe_count++;
 	if (charger_policy_check_retry_probe_count >= policy->retry_times) {
 		pr_info("policy: %s(): Charge Arbitrate Driver Init Failed!!!\n", "charger_policy_probe_work");
-		devm_kfree(policy->dev, policy);
 		return;
 	}
 
 	pr_info("policy: %s(): charger policy driver retry[%d]!!!\n", "charger_policy_probe_work", charger_policy_check_retry_probe_count);
+	WRITE_ONCE(policy->runtime_stopping, 0);
 	queue_delayed_work(policy->probe_wq, &policy->probe_work, msecs_to_jiffies(5000));
 }
 
 #ifdef ZTE_CHARGER_POLICY_HOST_TEST
 #define charger_policy_probe_work charger_policy_probe_work_model
 #else
-extern void charger_policy_probe_work(struct work_struct *work);
-#include "charger_policy_probe_work_exact.inc"
+void charger_policy_probe_work(struct work_struct *work)
+{
+	charger_policy_probe_work_model(work);
+}
 #endif
 
 /* Probe driver initialization */
@@ -1722,30 +1794,38 @@ static __used int charger_policy_probe_model(struct platform_device *pdev)
 
 	if (policy->policy_enable) {
 		policy->probe_wq = create_singlethread_workqueue("policy_probe_wq");
-		if (!policy->probe_wq)
+		if (!policy->probe_wq) {
+			platform_set_drvdata(pdev, NULL);
 			return -ENOMEM;
+		}
 
+		alarm_init(&policy->timeout_alarm, ALARM_BOOTTIME,
+			   charger_policy_timeout_alarm_cb);
+		policy->timeout_alarm_initialized = 1;
+		INIT_DELAYED_WORK(&policy->timeout_work,
+				  charger_policy_timeout_handler_work);
+		policy->timeout_work_initialized = 1;
 		INIT_DELAYED_WORK(&policy->probe_work, charger_policy_probe_work);
 		queue_delayed_work(policy->probe_wq, &policy->probe_work, msecs_to_jiffies(5000));
 		return 0;
 	}
 
 	pr_info("policy: %s(): charge policy is disabled, please config policy,enable\n", "charger_policy_probe");
-	devm_kfree(dev, policy);
 	return 0;
 
 parse_string_error:
 	pr_info("policy: charger_policy_parse_dt(): failed %s rc=%d\n",
 		parse_property, ret);
-	devm_kfree(dev, policy);
 	return 0;
 }
 
 #ifdef ZTE_CHARGER_POLICY_HOST_TEST
 #define charger_policy_probe charger_policy_probe_model
 #else
-extern int charger_policy_probe(struct platform_device *pdev);
-#include "charger_policy_probe_exact.inc"
+int charger_policy_probe(struct platform_device *pdev)
+{
+	return charger_policy_probe_model(pdev);
+}
 #endif
 
 /* Remove platform driver instance */
@@ -1756,12 +1836,15 @@ static __used void charger_policy_remove_model(struct platform_device *pdev)
 	pr_info("policy: %s(): removing driver instance\n", "charger_policy_remove");
 
 	if (policy) {
-		power_supply_unreg_notifier(&policy->nb);
-		if (policy->ws) {
-			wakeup_source_unregister(policy->ws);
+		platform_set_drvdata(pdev, NULL);
+		if (policy->probe_wq) {
+			cancel_delayed_work_sync(&policy->probe_work);
+			charger_policy_stop_runtime(policy);
+			destroy_workqueue(policy->probe_wq);
+			policy->probe_wq = NULL;
+		} else {
+			charger_policy_stop_runtime(policy);
 		}
-		/* Workqueues are left allocated to match official binary imports */
-		devm_kfree(&pdev->dev, policy);
 	}
 
 	pr_info("policy: %s(): driver successfully removed\n", "charger_policy_remove");
@@ -1770,8 +1853,10 @@ static __used void charger_policy_remove_model(struct platform_device *pdev)
 #ifdef ZTE_CHARGER_POLICY_HOST_TEST
 #define charger_policy_remove charger_policy_remove_model
 #else
-extern void charger_policy_remove(struct platform_device *pdev);
-#include "charger_policy_remove_exact.inc"
+void charger_policy_remove(struct platform_device *pdev)
+{
+	charger_policy_remove_model(pdev);
+}
 #endif
 
 static const struct of_device_id charger_policy_match_table[] = {

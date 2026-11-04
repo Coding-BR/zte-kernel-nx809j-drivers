@@ -22,6 +22,7 @@ FUNCTIONS = [
     "charger_policy_force_disching_sec_set", "charger_policy_get_prop_by_name",
     "charger_policy_get_status", "charger_policy_notifier_switch",
     "charger_policy_probe", "charger_policy_probe_work", "charger_policy_remove",
+    "charger_policy_stop_runtime",
     "charger_policy_status_disable", "charger_policy_status_forcedischging",
     "charger_policy_status_ide", "charger_policy_status_runchging",
     "charger_policy_status_rundischging", "charger_policy_timeout_alarm_cb",
@@ -46,7 +47,8 @@ STATE = {
     "charger_policy_status_ide", "charger_policy_status_runchging",
     "charger_policy_status_rundischging", "charger_policy_timeout_handler_work",
 }
-PROBE = {"charger_policy_probe", "charger_policy_probe_work", "charger_policy_remove"}
+PROBE = {"charger_policy_probe", "charger_policy_probe_work", "charger_policy_remove",
+         "charger_policy_stop_runtime"}
 ALARM = {"charger_policy_timeout_alarm_cb", "charger_policy_notifier_switch", "charger_policy_get_status"}
 MODULE = {"init_module", "cleanup_module"}
 
@@ -121,8 +123,8 @@ def main() -> int:
         and all(item["returncode"] == 0 for item in compile_reports + run_reports)
         and all("PASS zte_charger_policy host tests" in item["stdout"]
                 for item in run_reports)
-        and len(FUNCTIONS) == 38
-        and len(set(FUNCTIONS)) == 38
+        and len(FUNCTIONS) == 39
+        and len(set(FUNCTIONS)) == 39
     )
     payload = {
         "schema_version": "1.0",

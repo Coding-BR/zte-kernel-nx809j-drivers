@@ -12,7 +12,8 @@ from pathlib import Path
 
 COVERED_FUNCTIONS = [
     "get_sysnumber_byname", "zte_poweroff_charging_status",
-    "zte_misc_register_callback", "zte_misc_get_node_val",
+    "zte_misc_register_callback", "zte_misc_unregister_callback",
+    "zte_misc_get_node_val",
     "battery_module_pack_vendor_get", "zte_misc_get_design_capacity",
     "zte_misc_common_callback_set", "zte_misc_common_callback_get",
     "zte_misc_probe", "zte_misc_remove", "zte_timezone_setup",
@@ -46,6 +47,7 @@ def main() -> int:
             "nubia_sm8850_kernel_toolchains:/toolchains:ro",
             "nubia-sm8850-kernel-builder:latest",
             "/toolchains/clang-r536225/bin/clang", "-std=gnu11", "-O2",
+            "-pthread",
             "-Wall", "-Wextra", "-Werror", "-Wno-unused-parameter",
             "-Wno-missing-field-initializers", "-Wno-sign-compare",
             "/source/tests/host_test.c", "-o", f"/output/{binary.name}",
