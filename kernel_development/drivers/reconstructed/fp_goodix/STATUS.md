@@ -1,27 +1,31 @@
 # Status: `fp_goodix`
 
-Estado: **STATIC_VERIFIED_OFFLINE - ainda nao equivalente a 100%**.
+Estado atual (2026-11-04): **HARDENING_CANDIDATE_BUILD_VERIFIED_WITH_RESIDUAL_LIFETIME_RISKS**. O driver permanece offline-only; nao instalar nem promover este candidato.
 
-Revalidação hash-bound em 2026-11-02: o candidato canônico `fc9a662…` passou comparação AArch64 fresca contra o stock em **30/30 funções**. A extração antiga em `candidate_assembly/` aponta para `13ce11de…`; as rechecagens de 27/30 e 28/30 são de hashes intermediários. A nova evidência está em `attestation/current_candidate_assembly_review_20261102/`.
+O baseline stock-exact `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595` continua preservado como evidência histórica. O candidato atual aplica três correções de teardown em `gf_remove`/`zte_fp_exit`; dois builds Docker limpos produziram o mesmo módulo `3dcb65d6844d895ed794d44f09e400a4caf0d08401c5a8ed4454d5c8ba8eae63` (719232 bytes). A comparação de assembly atual passa 28/30 funções; as únicas diferenças são desvios de hardening esperados em `gf_remove` e `cleanup_module`. Atestação: `attestation/lifetime_sync_hardening_20261104/`.
+
+Riscos ainda abertos: `gf_remove` não quiesce a IRQ requisitada durante um descritor aberto, e `gf_ioctl` continua sem serialização/estado de remoção, permitindo corrida com o teardown do input device e recursos gerenciados pela plataforma. Não houve reprodução em runtime nem teste de hardware; revisão independente e validação NX809J seguem pendentes.
+
+Baseline stock-exact revalidado em 2026-11-02: o módulo `fc9a662…` passou comparação AArch64 fresca contra o stock em **30/30 funções**. A extração antiga em `candidate_assembly/` aponta para `13ce11de…`; as rechecagens de 27/30 e 28/30 são de hashes intermediários. A evidência está em `attestation/current_candidate_assembly_review_20261102/`.
 
 | Gate | Estado | Evidencia |
 |---|---|---|
 | Stock OEM | PASS | SHA-256 `534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562`; binario privado nao publicado |
 | Ghidra | PASS | 30 funcoes com pseudocodigo, P-Code e assembly AArch64 completos |
 | Fonte | PASS | modulo composto por `fp_goodix_core.c`, `fp_goodix_netlink.c` e `fp_goodix_platform.c` |
-| Mapa stock -> fonte | PASS estrutural | 30/30 com hashes; assembly do candidato atual 30/30 exato; equivalência C continua UNPROVEN e revisão humana independente pendente |
+| Mapa stock -> fonte | PASS estrutural | 30/30 funções continuam mapeadas; hash do módulo e fonte foram atualizados. Equivalência C continua UNPROVEN e revisão humana independente pendente |
 | Call graph | PASS | 30/30 inventario e chamadas stock/candidato coincidentes |
 | KCFI | DIFERENÃ‡A CLASSIFICADA / STRICT PRESENCE FAILS | A comparaÃ§Ã£o estrita continua diferente em trÃªs preÃ¢mbulos. RevisÃ£o estÃ¡tica encontrou uma chamada direta `R_AARCH64_CALL26` de `gf_ioctl` por funÃ§Ã£o, corpos byte a byte idÃªnticos e nenhuma referÃªncia ELF indireta ou exportaÃ§Ã£o kernel `__ksymtab` para esses alvos. DecisÃ£o: `KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY`; nÃ£o Ã© PASS de igualdade estrita. EvidÃªncia: `attestation/kcfi_direct_call_only_review_20261102/`. |
-| Assembly | PASS | Comparação fresca, candidato `fc9a662…`: 30/30 instruções, relocations, seções e tamanhos |
-| Host harness | PASS | 30/30 funcoes cobertas; duas compilacoes e duas execucoes reproduziveis |
-| Build GKI/KMI | PASS parcial | Dois builds Docker limpos reproduzÃ­veis; conteÃºdo de cÃ³digo/dados alocados, layout das seÃ§Ãµes alocadas e `modinfo` coincidem. `.note.gnu.build-id` alocado e seÃ§Ãµes BTF/debug nÃ£o coincidem; dependÃªncias stock diferem do target atual. |
-| Microtarefas | PASS offline | 30/30 com evidencias separadas de compile, KCFI e teste verificadas por SHA-256 |
+| Assembly | PARCIAL / HARDENING | Comparação fresca atual: 28/30 exatas; `gf_remove` e `cleanup_module` diferem intencionalmente pelas correções de teardown. Nenhuma terceira diferença. Ver `attestation/lifetime_sync_hardening_20261104/assembly_comparison_build3.json` |
+| Host harness | HISTÓRICO | 30/30 cobertas no baseline `fc9a662…`; o candidato hardening atual não teve harness nesta rodada |
+| Build GKI/KMI | BUILD PASS | Dois builds Docker canônicos limpos produziram módulo idêntico, SHA-256 `3dcb65d…`; isso não fecha equivalência semântica nem validação de hardware |
+| Microtarefas | HISTÓRICO | As 30 microtarefas foram verificadas no baseline stock-exact; as mudanças hardening atuais não repetiram esses testes |
 | Hardware NX809J | DEFERRED | nenhum `insmod`, `rmmod`, ADB ou fastboot foi executado neste ciclo |
 
 Candidato atual:
 
-- SHA-256: `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595`
-- tamanho: `721560` bytes
+- SHA-256 do baseline stock-exact de 2026-11-02: `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595`
+- SHA-256 do candidato atual com hardening: `3dcb65d6844d895ed794d44f09e400a4caf0d08401c5a8ed4454d5c8ba8eae63` (719232 bytes)
 - vermagic: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64`
 
 Reauditoria Docker â€” 2026-11-02:

@@ -1,0 +1,96 @@
+{
+  "schema_version": "1.0",
+  "audit_id": "fp_goodix_lifetime_sync_hardening_20261104",
+  "driver": "fp_goodix",
+  "generated_utc": "2026-11-04T07:17:29Z",
+  "candidate_status": "HARDENING_CANDIDATE_BUILD_VERIFIED_WITH_RESIDUAL_LIFETIME_RISKS",
+  "source_changed": true,
+  "candidate_identity": {
+    "core_source_sha256": "b6bca5c3622b5deb1578f695e8ff281e11f1be55e755418966f31c63a111ef03",
+    "module_sha256": "3dcb65d6844d895ed794d44f09e400a4caf0d08401c5a8ed4454d5c8ba8eae63",
+    "module_size": 719232,
+    "stock_module_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562"
+  },
+  "target_kernel": {
+    "release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_image": "nubia-sm8850-kernel-builder:latest",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "toolchains_volume": "nubia_sm8850_kernel_toolchains",
+    "bindgen_volume": "nx809j_bindgen_0695"
+  },
+  "changes": [
+    {
+      "function": "gf_remove",
+      "change": "cancel_delayed_work_sync precedes panel_event_notifier_unregister",
+      "reason": "Drain delayed registration before unregistering the final cookie."
+    },
+    {
+      "function": "zte_fp_exit / cleanup_module",
+      "change": "platform_driver_unregister precedes netlink_exit",
+      "reason": "Finish device/notifier teardown while netlink is still available."
+    },
+    {
+      "function": "gf_remove",
+      "change": "Removed input_free_device after input_unregister_device and clear gf.input_dev",
+      "reason": "Target Linux input API says unregister drops the registered reference; a second put is invalid."
+    }
+  ],
+  "kernel_api_evidence": {
+    "file": "kernel/kernel_platform/common/drivers/input/input.c",
+    "input_unregister_device_line": 2498,
+    "documentation_lines": "1966-1968, 2081-2092",
+    "behavior": "For non-managed registered devices, input_unregister_device calls __input_unregister_device then input_put_device. The API documentation says input_free_device is for devices not registered or for registration failures."
+  },
+  "docker_build": {
+    "builds": 2,
+    "clean_builds": true,
+    "output_hashes_match": true,
+    "module_sha256": "3dcb65d6844d895ed794d44f09e400a4caf0d08401c5a8ed4454d5c8ba8eae63",
+    "logs": [
+      "docker_build_1_canonical.txt",
+      "docker_build_2_canonical.txt"
+    ],
+    "output_volumes": [
+      "codex-kbuild-fp_goodix-lifetime-20261104-1",
+      "codex-kbuild-fp_goodix-lifetime-20261104-2"
+    ]
+  },
+  "assembly_comparison": {
+    "manifest": "candidate_assembly_build3/manifest.json",
+    "comparison": "assembly_comparison_build3.json",
+    "checked_functions": 30,
+    "exact_functions": 28,
+    "intentional_deviations": [
+      "gf_remove@00101968: instructions, relocations, symbol size",
+      "cleanup_module@00102ac8: call order"
+    ],
+    "unexplained_failures": 0,
+    "result": "28 exact, 2 expected hardening deviations"
+  },
+  "residual_findings": [
+    {
+      "id": "IRQ_REMAINS_ACTIVE_ON_PLATFORM_REMOVE_WITH_OPEN_FD",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "detail": "gf_remove does not disable/free the open-time IRQ; gf_release frees it only on last close. An IRQ may continue after platform resources begin teardown."
+    },
+    {
+      "id": "IOCTL_NOT_SERIALIZED_WITH_PLATFORM_REMOVE",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "detail": "gf_fops exposes gf_ioctl without a removal state/lock. An open descriptor can race removal and access the input device or platform-managed resources during teardown."
+    }
+  ],
+  "runtime_failure_reproduced": false,
+  "host_harness_run": false,
+  "adb_devices": "none attached at audit time",
+  "hardware_validation": "DEFERRED",
+  "independent_review": "PENDING",
+  "promotion_authorized": false,
+  "limits": [
+    "Static analysis and reproducible Docker builds do not establish runtime safety or full semantic equivalence.",
+    "Do not install or promote this candidate until residual lifetime findings receive a separate review and controlled hardware validation is available."
+  ]
+}

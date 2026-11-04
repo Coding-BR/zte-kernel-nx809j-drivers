@@ -1,0 +1,1 @@
+These two preliminary logs are retained for traceability only. They came from the initial in-tree `nx809j-repro` build context, which did not match the canonical historical `fp_goodix` Docker command. Do not use them as evidence for the promoted candidate. The valid canonical build logs are at the parent level: `docker_build_1_canonical.txt` and `docker_build_2_canonical.txt`.

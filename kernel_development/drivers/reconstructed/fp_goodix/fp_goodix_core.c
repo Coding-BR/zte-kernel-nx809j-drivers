@@ -662,9 +662,10 @@ static void gf_remove(struct platform_device *pdev)
 
 	wakeup_source_remove(&fp_wakelock);
 
-	if (gf.input_dev)
+	if (gf.input_dev) {
 		input_unregister_device(gf.input_dev);
-	input_free_device(gf.input_dev);
+		gf.input_dev = NULL;
+	}
 
 	mutex_lock(&device_list_lock);
 	__list_del_entry(&gf.device_entry);
@@ -674,8 +675,8 @@ static void gf_remove(struct platform_device *pdev)
 	clear_bit(MINOR(gf.devt), minors);
 
 	if (gf.screen_state_wq) {
-		panel_event_notifier_unregister(cookie);
 		cancel_delayed_work_sync(&gf.screen_state_work);
+		panel_event_notifier_unregister(cookie);
 		destroy_workqueue(gf.screen_state_wq);
 	}
 	mutex_unlock(&device_list_lock);
@@ -733,8 +734,8 @@ static int __init zte_fp_init(void)
 
 static void __exit zte_fp_exit(void)
 {
-	netlink_exit();
 	platform_driver_unregister(&gf_driver);
+	netlink_exit();
 	class_destroy(gf_class);
 	unregister_chrdev(SPIDEV_MAJOR, gf_driver.driver.name);
 }
