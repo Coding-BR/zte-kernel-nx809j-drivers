@@ -61,7 +61,56 @@
         "0x21ddc"
       ],
       "producer_writer_has_local_mutex_calls": false,
-      "interpretation": "HAL mutex activity is process-local and not shared with the kernel FIFO consumers; this disassembly does not establish that producer threads overlapped."
+      "interpretation": "The HAL binary contains multiple detached worker creation paths. One fallback CFG path can create workers at 0x1d5b4 and 0x1d6e0 through entry 0x1fb18 with context values from separate global slots, and the worker calls the FIFO writer. The evidence does not establish that the contexts share the same +0x40 FIFO base or that writer calls overlap. Thread-lifecycle mutexes are process-local and are not shared with the kernel consumer.",
+      "thread_creation_sites_detail": [
+        {
+          "create_site": "0x1d4b8",
+          "worker_entry": "0x1fb18",
+          "argument": "value loaded from global address 0x49a98",
+          "detach_site": "0x1d4c0",
+          "branch": "separate fast path returns after this worker is detached"
+        },
+        {
+          "create_site": "0x1d5b4",
+          "worker_entry": "0x1fb18",
+          "argument": "x20 loaded from its global operation-context slot",
+          "detach_site": "0x1d5bc",
+          "branch_guard": "w22 == 1 at 0x1d500"
+        },
+        {
+          "create_site": "0x1d6e0",
+          "worker_entry": "0x1fb18",
+          "argument": "x19 loaded from its global operation-context slot",
+          "detach_site": "0x1d6e8",
+          "branch_guard": "w21 >= 1 at 0x1d618"
+        }
+      ],
+      "worker_writer_callsites": [
+        "0x20a28",
+        "0x20ac4",
+        "0x20c90",
+        "0x20cdc",
+        "0x20dc0",
+        "0x20e5c",
+        "0x20ed0",
+        "0x20f78",
+        "0x210c0",
+        "0x21298",
+        "0x2143c",
+        "0x214b8",
+        "0x21674",
+        "0x21b28"
+      ],
+      "multi_worker_assessment": {
+        "same_fallback_path_can_create_two_detached_workers": true,
+        "condition": "The control-flow path enters the 0x1d5b4 create when w22 == 1, then reaches the 0x1d6e0 create when w21 >= 1.",
+        "both_workers_use_same_entry": "0x1fb18",
+        "operation_contexts": "The two create sites pass x20 and x19 from separate global context slots; pointer inequality and FIFO-base aliasing are not established.",
+        "writer_has_internal_mutex": false,
+        "shared_fifo_base_aliasing_proven": false,
+        "concurrent_writer_execution_proven": false,
+        "interpretation": "Static code establishes a possible multiple-worker path, not shared-buffer aliasing or simultaneous writes."
+      }
     }
   },
   "kernel_candidate": {
@@ -92,7 +141,7 @@
   },
   "reconstruction": {
     "map_path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
-    "map_sha256": "8205740233a5a72b668bb99b56cd5bba58bd668f575b84a44c752cf38ee9f0cd",
+    "map_sha256": "3773f78f259b46ae3a0d0d06743b1bdf8e043b7c3fe60aa45b445b93affb5fa6",
     "function_statuses": {
       "richtap_rtp_work": "candidate_under_static_validation",
       "richtap_update_fifo_data": "candidate_under_static_validation"
@@ -112,8 +161,8 @@
     "Static program order and live writer reachability are established; cross-CPU visibility is not.",
     "No matching release/acquire pair exists in either HAL-kernel ownership direction in the inspected instructions.",
     "The HAL memory mapping attributes were not revalidated in this review.",
-    "Multiple producer thread overlap, stale data, and corruption were not observed or established.",
-    "The reconstructed candidate was not loaded on the phone."
+    "The reconstructed candidate was not loaded on the phone.",
+    "Static call-flow contains a conditional path for two detached worker contexts, but shared FIFO pointer aliasing and overlapping writer calls remain unverified; the latest entry/return probe attempt captured no writer samples."
   ],
   "stock_kernel_comparison": {
     "scope": "Complete preserved stock function assembly for the two FIFO consumers, compared with the exact stock Ghidra decompilations.",
@@ -197,5 +246,17 @@
     },
     "runtime_race_or_corruption_observed": false,
     "candidate_installed_on_phone": false
+  },
+  "runtime_thread_probe_followup": {
+    "attempt_log": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_endpoint_ordering_20261103/user_authorized_live_trigger_attempts_20261103.txt",
+    "action": "cmd vibrator_manager synced envelope -a 100 0.8 150 100 0.4 180",
+    "record_duration_seconds": 20.0053,
+    "writer_entry_and_return_samples": 0,
+    "samples_lost": 0,
+    "result": "INCONCLUSIVE_NO_WRITER_HIT",
+    "candidate_installed": false,
+    "temporary_uprobes_cleaned": true,
+    "temporary_perf_file_removed": true,
+    "attempt_log_sha256": "9f208f81c0cb94ade3eb1b7fa217d58e4e7b21b64b94da0acee9449e81657f89"
   }
 }

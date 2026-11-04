@@ -16,7 +16,7 @@ The NX809J-rooted ADB probe in [the advanced-envelope live-probe attestation](..
 - At `0x1c208` the writer reads node state with `LDRB`.
 - With count below 1,000, `0x1c38c` stores one byte at node payload offset `+0x18`; `0x1c398` stores the incremented 16-bit length; `0x1c3a4` saves the incremented count.
 - On the next call when the count is 1,000, `0x1c22c` stores `U` with `STRB`, then advances to the next node.
-- `tiktap_start` launches the HAL worker. The worker reaches both `write_data_to_buffer` and `generate_wave_with_brake`; `generate_wave_with_brake` also calls the writer directly. No mutex or barrier occurs inside the writer body. The HAL's thread-lifecycle mutex calls are process-local and are not shared with the kernel consumer.
+- `tiktap_start` has three `pthread_create` call sites, all using worker entry `0x1fb18`; the resulting threads are detached. On a guarded fallback path, site `0x1d5b4` passes context `x20`, then site `0x1d6e0` can pass the context value in `x19`. The two arguments come from separate global slots, but pointer inequality is not established. The worker reaches `write_data_to_buffer` at multiple call sites and calls `generate_wave_with_brake`. The writer has no mutex or barrier in its body; the start-path mutexes are process-local and are not shared with the kernel consumer. Static evidence does not prove that the context values resolve to the same `+0x40` FIFO base or that their writer calls overlap.
 - Candidate C6 disassembly shows `LDARB` at `richtap_update_fifo_data+0x7c` (`0x8300`) and `richtap_rtp_work+0xe8` (`0x8580`, with another acquire at `0x8774`); free-node `STLRB` stores occur at `0x83c0` and `0x8640`.
 
 ## Stock kernel baseline and ownership handoffs
@@ -26,6 +26,8 @@ Preserved stock assembly and Ghidra show ordinary state accesses in both kernel 
 C6 changes this kernel-side ordering: it uses `LDARB` for the consumer state checks, clears node length before publishing free state with `STLRB`, and keeps the existing lock around the kernel cursor. These changes are hardening deviations from stock. The live HAL still publishes `U` with ordinary `STRB` at `0x1c22c` and observes a freed node with ordinary `LDRB` at `0x1c208` (and ordinary loads in its retry path).
 
 The two ownership edges therefore remain unmatched: HAL-to-kernel has a plain HAL `STRB` followed by candidate kernel `LDARB`; kernel-to-HAL has candidate `STLRB` followed by plain HAL `LDRB`. This evidence does not establish a cross-boundary release/acquire pair or a reproduced race. Keep `richtap_rtp_work` and `richtap_update_fifo_data` under static validation; do not treat the candidate barriers as proof of full FIFO protocol correctness.
+
+A later user-authorized entry/return probe around `write_data_to_buffer` ran during the advanced-envelope command for 20.0053 seconds but captured 0 samples (0 lost). It is inconclusive for thread overlap; the earlier 1,077-sample report is process-level and has no per-thread intervals. The phone remained on the OEM stock module, and the temporary probes and perf file were removed. See the [trigger-attempt log](../haptic_richtap_fifo_endpoint_ordering_20261103/user_authorized_live_trigger_attempts_20261103.txt).
 
 ## Evidence and limits
 

@@ -19,7 +19,12 @@ Attempt B — short Android waveform
 - The shell command returned exit code 0. The requested three-segment pattern totals 90 ms.
 - The 15.0091-second capture recorded 0 samples and 0 lost samples for the writer.
 
-Conclusion and cleanup
-These actions did not demonstrate a live call to write_data_to_buffer. The diagnostic screen has no path to the producer, and this generic waveform request did not reach it. This does not disprove the statically identified HAL call graph: a TikTap/Richtap-specific event remains necessary to exercise tiktap_start and the shared FIFO.
+Attempt C — writer entry/return probes
+- Root ADB recheck identified the active `vendor.qti.hardware.vibrator.service` as PID 5737; its mapped `/vendor/lib64/libaacvibrator.so` SHA-256 remained `8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61`.
+- With user authorization, `cmd vibrator_manager synced envelope -a 100 0.8 150 100 0.4 180` returned exit code 0 while simpleperf recorded for 20.0053 seconds. Entry and return uprobes targeted `write_data_to_buffer` at DSO offset `0x1c198`; the capture reported 0 samples and 0 lost samples. This run therefore provides no thread-overlap evidence and does not contradict the earlier positive process-level capture.
+- The OEM stock module remained loaded. After recording, `/sys/kernel/tracing/uprobe_events` was empty and the temporary perf file was removed. No phone settings or module state were changed.
 
-The test activity was closed and the phone returned to its launcher. The uprobe event list was empty afterward. Temporary on-device capture scripts, perf data, and UI dumps were removed. No persistent phone settings or module state were changed.
+Conclusion and cleanup
+Attempts A-C did not produce writer samples. The separate positive advanced-envelope capture is recorded in the linked live-probe attestation; these zero-sample attempts do not disprove the static HAL call graph and do not establish whether writer calls overlap.
+
+The OEM stock module remained loaded and no candidate was transferred or installed. The uprobe event list was empty after capture; temporary on-device scripts and perf files were removed. The diagnostic activity was closed, the phone returned to its launcher, and no persistent settings or module state changed.
