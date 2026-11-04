@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_gpio_devm_double_release_20261103",
+  "review_date": "2026-11-03",
+  "result": "STATIC_STOCK_MANUAL_GPIO_FREE_DUPLICATES_DEVM_RELEASE; CANDIDATE_USES_SINGLE_DEVM_RELEASE",
+  "candidate": {
+    "module_sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+    "module_path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "map_sha256": "3773f78f259b46ae3a0d0d06743b1bdf8e043b7c3fe60aa45b445b93affb5fa6",
+    "undefined_gpio_symbols": ["devm_free_irq", "devm_gpio_request_one"],
+    "gpio_free_import_present": false,
+    "probe_requests_both_gpios_with_devm": true,
+    "probe_manual_gpio_free_calls": 0,
+    "remove_manual_gpio_free_calls": 0,
+    "remove_frees_irq_before_devm_gpio_release": true,
+    "release_owner": "device-core devres cleanup after remove returns or after probe callback fails"
+  },
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "probe_entry": "0x001073c0",
+    "remove_entry": "0x0010823c",
+    "gpio_requests": [
+      {"field_offset": "state+0x5c", "purpose": "reset", "function": "devm_gpio_request_one"},
+      {"field_offset": "state+0x50", "purpose": "interrupt", "function": "devm_gpio_request_one"}
+    ],
+    "probe_error_manual_free_fields": ["state+0x50", "state+0x5c"],
+    "remove_manual_free_fields": ["state+0x50", "state+0x5c"],
+    "devm_free_irq_precedes_manual_irq_gpio_free": true
+  },
+  "pinned_kernel": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "gpiolib_legacy_c_sha256": "591296abdea7065d8846511fd50c8ea77931f72a0954bb299994db6b84a0ef89",
+    "gpiolib_c_sha256": "6377a8ace586f2d6da305cbc6947d16c3bec298e62686348db02fbeec2a18727",
+    "driver_core_dd_c_sha256": "405ff5610410ddc30dec483423f54c9be46c8d307f930989cfd44860a1185930",
+    "devm_gpio_release_calls_gpio_free": true,
+    "normal_unbind_order": ["device_remove calls driver remove", "device_unbind_cleanup", "devres_release_all"],
+    "probe_failure_reaches_devres_release_all": true,
+    "gpiod_request_success_ref_effects": ["try_module_get", "gpio_device_get"],
+    "gpiod_free_always_drops_refs": ["module_put", "gpio_device_put"],
+    "gpiod_free_commit_hardware_release_guard": "Only the GPIO-chip free/FLAG_REQUESTED cleanup is conditional; the two reference drops follow unconditionally."
+  },
+  "reconstruction": {
+    "candidate_aw_i2c_probe_source_sha256": "db68f11430347ce1653d0ddd65f579ec1873d661961da44c176d14a96c24b616",
+    "candidate_aw_remove_source_sha256": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55",
+    "aw_i2c_probe_map_status": "reviewed; NOT_ESTABLISHED_HARDENED_DEVIATION",
+    "aw_remove_map_status": "reviewed; NOT_ESTABLISHED_HARDENED_DEVIATION",
+    "stock_import_count": 85,
+    "candidate_import_count": 93,
+    "candidate_only_lifetime_imports": 9,
+    "strict_import_parity": false,
+    "missing_gpio_free_is_intentional_deviation": true,
+    "source_changed": false,
+    "map_changed": false,
+    "module_rebuild_required": false,
+    "candidate_installed_on_phone": false,
+    "driver_complete": false
+  },
+  "stock_evidence": {
+    "aw_i2c_probe_ghidra_sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a",
+    "aw_i2c_probe_assembly_sha256": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb",
+    "aw_remove_ghidra_sha256": "f11ac7c0a5b01a5564e612e5c6a9693cbebd34e9c198fdd6ef17cb6c804e8438",
+    "aw_remove_assembly_sha256": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562"
+  },
+  "evidence_files": {
+    "gpio_import_inventory.txt": "cc4d8387bae6fd5992db50bb424bcc15bae088426932ad2adf98c8fb5b7ff309",
+    "stock_gpio_callsite_excerpts.txt": "a7f123734b7c0b93245de3c11d516118377176dcace0d3d6d3d0ab30ae4b45b2",
+    "pinned_kernel_gpio_devres_excerpt.txt": "6aec0cae00a456f3938589f1d2f122171f86594f59b93fed82ca28ccd7671fe2"
+  },
+  "limitations": [
+    "This establishes duplicate managed/manual cleanup paths in stock statically; no runtime refcount warning, failure, or crash was reproduced.",
+    "This disposition explains the missing gpio_free import only; the nine candidate-only lifetime imports and whole-module parity audit remain open.",
+    "No GPIO unbind/probe-failure scenario was exercised on the NX809J."
+  ]
+}

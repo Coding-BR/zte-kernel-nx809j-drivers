@@ -1,0 +1,144 @@
+=== drivers/gpio/gpiolib-legacy.c ===
+    18	void gpio_free(unsigned gpio)
+    19	{
+    20		gpiod_free(gpio_to_desc(gpio));
+    21	}
+    22	EXPORT_SYMBOL_GPL(gpio_free);
+    23	
+    24	/**
+    25	 * gpio_request_one - request a single GPIO with initial configuration
+    84	static void devm_gpio_release(struct device *dev, void *res)
+    85	{
+    86		unsigned *gpio = res;
+    87	
+    88		gpio_free(*gpio);
+    89	}
+   141	int devm_gpio_request_one(struct device *dev, unsigned gpio,
+   142				  unsigned long flags, const char *label)
+   143	{
+   144		unsigned *dr;
+   145		int rc;
+   146	
+   147		dr = devres_alloc(devm_gpio_release, sizeof(unsigned), GFP_KERNEL);
+   148		if (!dr)
+   149			return -ENOMEM;
+   150	
+   151		rc = gpio_request_one(gpio, flags, label);
+   152		if (rc) {
+   153			devres_free(dr);
+   154			return rc;
+   155		}
+   156	
+   157		*dr = gpio;
+   158		devres_add(dev, dr);
+   159	
+   160		return 0;
+   161	}
+   162	EXPORT_SYMBOL_GPL(devm_gpio_request_one);
+=== drivers/gpio/gpiolib.c ===
+  2387	int gpiod_request(struct gpio_desc *desc, const char *label)
+  2388	{
+  2389		int ret = -EPROBE_DEFER;
+  2390	
+  2391		VALIDATE_DESC(desc);
+  2392	
+  2393		if (try_module_get(desc->gdev->owner)) {
+  2394			ret = gpiod_request_commit(desc, label);
+  2395			if (ret)
+  2396				module_put(desc->gdev->owner);
+  2397			else
+  2398				gpio_device_get(desc->gdev);
+  2399		}
+  2400	
+  2401		if (ret)
+  2402			gpiod_dbg(desc, "%s: status %d\n", __func__, ret);
+  2403	
+  2404		return ret;
+  2417		if (guard.gc && test_bit(FLAG_REQUESTED, &flags)) {
+  2418			if (guard.gc->free)
+  2419				guard.gc->free(guard.gc, gpio_chip_hwgpio(desc));
+  2420	
+  2421			clear_bit(FLAG_ACTIVE_LOW, &flags);
+  2422			clear_bit(FLAG_REQUESTED, &flags);
+  2423			clear_bit(FLAG_OPEN_DRAIN, &flags);
+  2424			clear_bit(FLAG_OPEN_SOURCE, &flags);
+  2425			clear_bit(FLAG_PULL_UP, &flags);
+  2426			clear_bit(FLAG_PULL_DOWN, &flags);
+  2427			clear_bit(FLAG_BIAS_DISABLE, &flags);
+  2428			clear_bit(FLAG_EDGE_RISING, &flags);
+  2429			clear_bit(FLAG_EDGE_FALLING, &flags);
+  2430			clear_bit(FLAG_IS_HOGGED, &flags);
+  2431	#ifdef CONFIG_OF_DYNAMIC
+  2432			WRITE_ONCE(desc->hog, NULL);
+  2433	#endif
+  2434			desc_set_label(desc, NULL);
+  2435			WRITE_ONCE(desc->flags, flags);
+  2436	
+  2437			gpiod_line_state_notify(desc, GPIOLINE_CHANGED_RELEASED);
+  2438		}
+  2439	}
+  2440	
+  2441	void gpiod_free(struct gpio_desc *desc)
+  2442	{
+  2443		VALIDATE_DESC_VOID(desc);
+  2444	
+  2445		gpiod_free_commit(desc);
+  2446		module_put(desc->gdev->owner);
+  2447		gpio_device_put(desc->gdev);
+  2448	}
+=== drivers/base/dd.c ===
+   547	static void device_unbind_cleanup(struct device *dev)
+   548	{
+   549		devres_release_all(dev);
+   550		arch_teardown_dma_ops(dev);
+   551		kfree(dev->dma_range_map);
+   552		dev->dma_range_map = NULL;
+   553		dev->driver = NULL;
+   554		dev_set_drvdata(dev, NULL);
+   555		if (dev->pm_domain && dev->pm_domain->dismiss)
+   556			dev->pm_domain->dismiss(dev);
+   557		pm_runtime_reinit(dev);
+   558		dev_pm_set_driver_flags(dev, 0);
+   559	}
+   560	
+   561	static void device_remove(struct device *dev)
+   562	{
+   563		device_remove_file(dev, &dev_attr_state_synced);
+   564		device_remove_groups(dev, dev->driver->dev_groups);
+   565	
+   566		if (dev->bus && dev->bus->remove)
+   567			dev->bus->remove(dev);
+   568		else if (dev->driver->remove)
+   569			dev->driver->remove(dev);
+   570	}
+   713	dev_sysfs_state_synced_failed:
+   714	dev_groups_failed:
+   715		device_remove(dev);
+   716	probe_failed:
+   717		driver_sysfs_remove(dev);
+   718	sysfs_failed:
+   719		bus_notify(dev, BUS_NOTIFY_DRIVER_NOT_BOUND);
+   720		if (dev->bus && dev->bus->dma_cleanup)
+   721			dev->bus->dma_cleanup(dev);
+   722	pinctrl_bind_failed:
+   723		device_links_no_driver(dev);
+   724		device_unbind_cleanup(dev);
+   725	done:
+  1267			driver_sysfs_remove(dev);
+  1268	
+  1269			bus_notify(dev, BUS_NOTIFY_UNBIND_DRIVER);
+  1270	
+  1271			pm_runtime_put_sync(dev);
+  1272	
+  1273			device_remove(dev);
+  1274	
+  1275			if (dev->bus && dev->bus->dma_cleanup)
+  1276				dev->bus->dma_cleanup(dev);
+  1277	
+  1278			device_unbind_cleanup(dev);
+  1279			device_links_driver_cleanup(dev);
+  1280	
+=== source hashes ===
+591296abdea7065d8846511fd50c8ea77931f72a0954bb299994db6b84a0ef89  drivers/gpio/gpiolib-legacy.c
+6377a8ace586f2d6da305cbc6947d16c3bec298e62686348db02fbeec2a18727  drivers/gpio/gpiolib.c
+405ff5610410ddc30dec483423f54c9be46c8d307f930989cfd44860a1185930  drivers/base/dd.c
