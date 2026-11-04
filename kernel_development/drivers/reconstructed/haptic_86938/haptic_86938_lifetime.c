@@ -94,7 +94,7 @@ bool haptic_lifetime_is_shutting_down(void)
 
 bool haptic_lifetime_is_probe_complete(void)
 {
-	return READ_ONCE(haptic_probe_complete);
+	return smp_load_acquire(&haptic_probe_complete);
 }
 
 int aw_i2c_probe(struct i2c_client *client)
@@ -163,7 +163,8 @@ int aw_i2c_probe(struct i2c_client *client)
 				atomic_set(&haptic_shutdown, 1);
 				cleanup = true;
 			} else {
-				WRITE_ONCE(haptic_probe_complete, true);
+				/* Publish initialized state to workers and file operations. */
+				smp_store_release(&haptic_probe_complete, true);
 			}
 		}
 	}
@@ -212,7 +213,7 @@ int haptic_lifetime_file_open(struct file *file)
 
 	mutex_lock(&haptic_lifetime_registry_lock);
 	state = READ_ONCE(g_aw_haptic);
-	if (!state || !READ_ONCE(haptic_probe_complete) ||
+	if (!state || !smp_load_acquire(&haptic_probe_complete) ||
 	    haptic_lifetime_is_shutting_down()) {
 		mutex_unlock(&haptic_lifetime_registry_lock);
 		return -ENODEV;

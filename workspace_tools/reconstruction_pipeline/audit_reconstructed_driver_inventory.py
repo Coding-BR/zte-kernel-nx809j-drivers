@@ -81,17 +81,29 @@ def stock_module(repo_root: Path, driver: str) -> Path | None:
 
 
 def ghidra_export(repo_root: Path, driver: str) -> Path:
-    root = (
+    base = (
         repo_root
         / "reverse_engineering"
         / "validation"
         / "reconstructed"
         / driver
         / "offline_static"
-        / "ghidra_stock"
     )
-    nested = root / f"{driver}.ko"
-    return nested if (nested / "functions.jsonl").is_file() else root
+    preferred = base / "ghidra_stock"
+    roots = [preferred]
+    if base.is_dir():
+        roots.extend(
+            path
+            for path in sorted(base.glob("ghidra_stock*"))
+            if path != preferred
+        )
+    for root in roots:
+        nested = root / f"{driver}.ko"
+        if (nested / "functions.jsonl").is_file():
+            return nested
+        if (root / "functions.jsonl").is_file():
+            return root
+    return preferred
 
 
 def identity(name: Any, entry: Any) -> tuple[str, str] | None:

@@ -1,0 +1,105 @@
+kernel_commit=3356b35306d35d5a480e3b63df1a9f065b5d9f55
+d067146839425a9d81712d7259e89820fc73a0305fcb2c84d15de9ab185d2b9c  /work/src/kernel/kernel_platform/common/include/asm-generic/barrier.h
+c08de9b5ce56f73069f357681c437c0ca47670ddb0872e59caa1a5154350d551  /work/src/kernel/kernel_platform/common/arch/arm64/include/asm/barrier.h
+--- asm-generic release/acquire definitions ---
+#ifndef __smp_store_release
+#define __smp_store_release(p, v)					\
+do {									\
+	compiletime_assert_atomic_type(*p);				\
+	__smp_mb();							\
+	WRITE_ONCE(*p, v);						\
+} while (0)
+#endif
+
+#ifndef __smp_load_acquire
+#define __smp_load_acquire(p)						\
+({									\
+	__unqual_scalar_typeof(*p) ___p1 = READ_ONCE(*p);		\
+	compiletime_assert_atomic_type(*p);				\
+	__smp_mb();							\
+	(typeof(*p))___p1;						\
+})
+#endif
+
+#ifdef CONFIG_SMP
+
+#ifndef smp_store_mb
+#define smp_store_mb(var, value)  do { kcsan_mb(); __smp_store_mb(var, value); } while (0)
+#endif
+
+#ifndef smp_mb__before_atomic
+#define smp_mb__before_atomic()	do { kcsan_mb(); __smp_mb__before_atomic(); } while (0)
+#endif
+
+#ifndef smp_mb__after_atomic
+#define smp_mb__after_atomic()	do { kcsan_mb(); __smp_mb__after_atomic(); } while (0)
+#endif
+
+#ifndef smp_store_release
+#define smp_store_release(p, v) do { kcsan_release(); __smp_store_release(p, v); } while (0)
+#endif
+
+#ifndef smp_load_acquire
+#define smp_load_acquire(p) __smp_load_acquire(p)
+#endif
+
+--- arm64 release/acquire implementations ---
+	: "=r" (tmp) : "r" (_val));					\
+} while (0)
+
+#define __smp_mb()	dmb(ish)
+#define __smp_rmb()	dmb(ishld)
+#define __smp_wmb()	dmb(ishst)
+
+#define __smp_store_release(p, v)					\
+do {									\
+	typeof(p) __p = (p);						\
+	union { __unqual_scalar_typeof(*p) __val; char __c[1]; } __u =	\
+		{ .__val = (__force __unqual_scalar_typeof(*p)) (v) };	\
+	compiletime_assert_atomic_type(*p);				\
+	kasan_check_write(__p, sizeof(*p));				\
+	switch (sizeof(*p)) {						\
+	case 1:								\
+		asm volatile ("stlrb %w1, %0"				\
+				: "=Q" (*__p)				\
+				: "rZ" (*(__u8 *)__u.__c)		\
+				: "memory");				\
+		break;							\
+	case 2:								\
+		asm volatile ("stlrh %w1, %0"				\
+				: "=Q" (*__p)				\
+				: "rZ" (*(__u16 *)__u.__c)		\
+				: "memory");				\
+		break;							\
+	case 4:								\
+		asm volatile ("stlr %w1, %0"				\
+				: "=Q" (*__p)				\
+				: "rZ" (*(__u32 *)__u.__c)		\
+				: "memory");				\
+		break;							\
+	case 8:								\
+		asm volatile ("stlr %x1, %0"				\
+				: "=Q" (*__p)				\
+				: "rZ" (*(__u64 *)__u.__c)		\
+				: "memory");				\
+		break;							\
+	}								\
+} while (0)
+
+#define __smp_load_acquire(p)						\
+({									\
+	union { __unqual_scalar_typeof(*p) __val; char __c[1]; } __u;	\
+	typeof(p) __p = (p);						\
+	compiletime_assert_atomic_type(*p);				\
+	kasan_check_read(__p, sizeof(*p));				\
+	switch (sizeof(*p)) {						\
+	case 1:								\
+		asm volatile ("ldarb %w0, %1"				\
+			: "=r" (*(__u8 *)__u.__c)			\
+			: "Q" (*__p) : "memory");			\
+		break;							\
+	case 2:								\
+		asm volatile ("ldarh %w0, %1"				\
+			: "=r" (*(__u16 *)__u.__c)			\
+			: "Q" (*__p) : "memory");			\
+		break;							\
