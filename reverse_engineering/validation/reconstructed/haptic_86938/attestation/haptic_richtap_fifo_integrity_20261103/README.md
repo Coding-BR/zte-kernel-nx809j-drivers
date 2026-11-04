@@ -28,9 +28,9 @@ The core protocol's Joern and reproducible Docker gates pass. Assembly equality 
 
 The helper harness and bounded model pass, but they do not prove runtime IRQ behavior, concurrent mutation of mapped payload contents, userspace producer ordering, latency, hardware operation, full-driver equivalence or whole-driver independent review. No hardware was used. Promotion is unauthorized.
 
-## Current-candidate userspace publication review
+## Historical userspace publication review — candidate 3DAD43A6
 
-The earlier [userspace publication review](../haptic_richtap_userspace_fifo_publication_review_20261103/README.md) was bound to candidate `37fc8692…`, before this FIFO hardening. Its open conclusion still applies, but its candidate/source hashes do not describe the current module. The current module and worker/helper disassembly were rechecked in [userspace_publication_revalidation.json](userspace_publication_revalidation.json): the search found no producer source or Android client package in the repository/Docker roots, and the changed functions contain no explicit ARM acquire/release or barrier instructions around the mapped FIFO fields. This remains an unverified publication contract; no race or runtime failure is asserted.
+The earlier [userspace publication review](../haptic_richtap_userspace_fifo_publication_review_20261103/README.md) was bound to candidate `37fc8692…`. The adjacent [userspace_publication_revalidation.json](userspace_publication_revalidation.json) is bound to candidate `3dad43a6…`; it is also historical and must not be read as describing C6. Its repository/Docker search predated the rooted phone inspection that later identified the live producer in `/vendor/lib64/libaacvibrator.so`. For current C6 (`c6aec6ea…`), use the hash-bound [HAL FIFO writer ordering review](../haptic_richtap_hal_fifo_writer_order_20261103/README.md), which records the live HAL instructions and the unmatched ownership handoffs. That remains an unverified visibility contract; no race or runtime failure is asserted.
 
 ## Current-candidate VMA lifetime revalidation
 
