@@ -38,7 +38,8 @@ gpio_keys_open:
     .inst 0xf9400a89
     .inst 0xb4ffff49
     .inst 0xaa1403e0
-    .inst 0x94000021
+    .inst 0x94000000
+    .reloc .-4, R_AARCH64_CALL26, gpio_keys_gpio_report_event
     .inst 0xf94002a8
     .inst 0x17fffff6
     .inst 0xaa1303e0

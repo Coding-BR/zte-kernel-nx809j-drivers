@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "95e2b7d8352c3039e154f56f32da8f45e3a513b3706d3ebcb2269886424f14cc",
+  "candidate_sha256": "8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8",
   "driver": "gpio_keys_nubia",
   "function_count": 24,
-  "generated_utc": "2026-08-28T13:25:02.693354+00:00",
+  "generated_utc": "2026-11-04T10:34:09.117Z",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -138,28 +138,38 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_gpio_report_event_exact.S:sha256:52015ac2bb73dbf2b363881572cd3d23639e29e42107bfe2e285af3608912337",
+        "source:gpio_keys_nubia.c:sha256:ADF57E877A89644C6F6679A147BF2DDCAD4E300D1A42715F2F78ED5BAC77D6E6",
+        "source:gpio_keys_gpio_report_event_exact.S:sha256:BAFB4B3E0CAB9015D0A5383373894B29B933C21D592A336C8F037AA3654C2610",
+        "source:gpio_keys_open_exact.S:sha256:6A9AAE891CAB6F8FEBFB9A64A59A49033A6C5E057B83EBCC89C0053E2EFC155D",
+        "source:gpio_keys_gpio_work_func_exact.S:sha256:B7A30B9D2BEBF742F6F0EC1453A8BF292FE50FE0132CD12DCE2D281715634E76",
         "ghidra-pseudocode:decompiled/0004_00101684_gpio_keys_gpio_report_event.c:sha256:de01a096fe73cc0af154a6c791538b16e6c7535f7480afda0d179506d4a34869",
         "ghidra-pcode:pcode/0004_00101684_gpio_keys_gpio_report_event.jsonl:sha256:45e03003e64f074f1a935fa2a278e5a4ca37feaec952922b0f228e6fd4f102ca",
-        "stock-assembly:0004_gpio_keys_gpio_report_event_00101684.asm:sha256:c4ced6ecc002cab41bd540c3404cf5620715b047c355bdccb2c22a3f179dfd77"
+        "stock-assembly:0004_gpio_keys_gpio_report_event_00101684.asm:sha256:c4ced6ecc002cab41bd540c3404cf5620715b047c355bdccb2c22a3f179dfd77",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/README.md",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/hardening_attestation.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/assembly_comparison_final.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/assembly_comparison_preserved_body.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/kcfi_comparison.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/candidate_direct_refs.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/docker_validation_final.json"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "PROVEN_OFFLINE_EXACT",
-      "source_file": "gpio_keys_gpio_report_event_exact.S",
+      "mapping_basis": "Ghidra identity retained; stock body is called under a global report-state mutex",
+      "review_scope": "static_synchronization_hardening",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "source_file": "gpio_keys_nubia.c",
       "source_function": "gpio_keys_gpio_report_event",
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next026_gpio_keys_gpio_report_event_exact_v1/decision.json",
-      "exact_evidence": [
-        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next026_gpio_keys_gpio_report_event_exact_v1/hard_protocol_report.json",
-        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next026_gpio_keys_gpio_report_event_exact_v1/assembly.json",
-        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next026_gpio_keys_gpio_report_event_exact_v1/kcfi.json",
-        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next026_gpio_keys_gpio_report_event_exact_v1/joern.json",
-        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next026_gpio_keys_gpio_report_event_exact_v1/compile.json",
-        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next026_gpio_keys_gpio_report_event_exact_v1/ghidra.json"
-      ],
-      "promotion_basis": "exact Assembly/relocation parity, direct Ghidra/P-Code equality, matching KCFI, strict Joern and reproducible Docker candidate identity",
-      "stock_body_bytes": 404,
+      "status": "reviewed",
+      "attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/README.md",
+      "historical_stock_exact_attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next026_gpio_keys_gpio_report_event_exact_v1/decision.json",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/hardening_attestation.json",
+      "independent_review": "NOT_PERFORMED",
+      "hardening_status": "STATICALLY_VERIFIED; SEMANTIC_AND_HARDWARE_VALIDATION_PENDING",
+      "candidate_helper": {
+        "source_file": "gpio_keys_gpio_report_event_exact.S",
+        "source_function": "gpio_keys_gpio_report_event_stock_body",
+        "purpose": "preserve the stock reporter body behind the serialized public entry"
+      },
+      "preserved_stock_body_bytes": 404,
       "stock_entry": "00101684",
       "stock_function": "gpio_keys_gpio_report_event"
     },

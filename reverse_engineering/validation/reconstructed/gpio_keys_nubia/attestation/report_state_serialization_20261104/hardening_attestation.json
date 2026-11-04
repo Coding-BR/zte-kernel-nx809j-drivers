@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-04T10:35:58+00:00",
+  "driver": "gpio_keys_nubia",
+  "objective": "Serialize the shared report-state cache without changing gpio_button_data layout.",
+  "stock_module": {
+    "path": "reference_modules/full_vendor_boot/gpio_keys_nubia.ko",
+    "sha256": "8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3",
+    "size": 42728
+  },
+  "candidate_module": {
+    "path": "kernel_development/drivers/reconstructed/gpio_keys_nubia/gpio_keys_nubia.ko",
+    "sha256": "8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8",
+    "size": 240272
+  },
+  "changes": [
+    "Wrap the preserved stock reporter body with a module-wide mutex.",
+    "Replace fixed branch immediates at open and debounce-worker call sites with R_AARCH64_CALL26 relocations to the serialized public entry.",
+    "Keep the original assembly reporter body as a candidate-only helper and record it separately from stock function identity."
+  ],
+  "validation": {
+    "docker_pipeline": {
+      "status": "static_verified",
+      "hardware_verified": false,
+      "two_clean_builds_reproducible": true,
+      "build_sha256": "8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8",
+      "second_build_sha256": "8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8",
+      "build_size": 240272,
+      "candidate_matches_fresh": true,
+      "runtime_content_matches_fresh": true,
+      "runtime_layout_matches_fresh": true,
+      "modinfo_matches_fresh": true,
+      "undefined_symbols_match": true,
+      "errors": []
+    },
+    "aarch64_assembly": {
+      "stock_identities_checked": 24,
+      "stock_exact_count": 23,
+      "passed_strictly": false,
+      "declared_hardening_deviation": "gpio_keys_gpio_report_event@00101684: symbol_size, instructions, relocations",
+      "candidate_text_function_count": 25,
+      "preserved_body_comparison_passed": true,
+      "preserved_body_size": 404,
+      "preserved_body_instructions": 101,
+      "wrapper_size": 68
+    },
+    "kcfi": {
+      "shared_callers_passed": true,
+      "shared_callers_checked": 3,
+      "shared_callers": [
+        "gpio_keys_gpio_work_func",
+        "gpio_keys_open",
+        "gpio_keys_resume"
+      ],
+      "new_wrapper_type_id": "0xdd3ea6e8"
+    },
+    "references": {
+      "candidate_incoming_call_relocations": 4,
+      "all_candidate_references_direct": true,
+      "callers": [
+        "gpio_keys_gpio_work_func",
+        "gpio_keys_open",
+        "gpio_keys_resume"
+      ]
+    }
+  },
+  "superseded_attempt": {
+    "candidate_sha256": "89122753b979296a8a5925e4727f7121fd4d32871197e753e984dd36b89a16ad",
+    "assembly_failures": [
+      "gpio_keys_gpio_report_event@00101684: symbol_size, instructions, relocations",
+      "gpio_keys_gpio_work_func@0010181c: instructions",
+      "gpio_keys_open@00101578: instructions"
+    ],
+    "diagnosis": "Fixed branch immediates in open and the worker bypassed the wrapper. Both call sites were changed to explicit relocations before the final build."
+  },
+  "remaining_findings": [
+    "The suspended byte is still read in IRQ context and written by PM paths without a common lock; this batch does not resolve it.",
+    "The shutdown callback can leave asynchronous work pending during the shutdown window.",
+    "Independent semantic review and controlled NX809J validation remain pending.",
+    "No host harness was run for this hardening change."
+  ],
+  "evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/gpio_keys_nubia/gpio_keys_nubia.c",
+      "sha256": "adf57e877a89644c6f6679a147bf2ddcad4e300d1a42715f2f78ed5bac77d6e6"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/gpio_keys_nubia/gpio_keys_gpio_report_event_exact.S",
+      "sha256": "bafb4b3e0cab9015d0a5383373894b29b933c21d592a336c8f037aa3654c2610"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/gpio_keys_nubia/gpio_keys_open_exact.S",
+      "sha256": "6a9aae891cab6f8febfb9a64a59a49033a6c5e057b83ebcc89c0053e2efc155d"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/gpio_keys_nubia/gpio_keys_gpio_work_func_exact.S",
+      "sha256": "b7a30b9d2bebf742f6f0ec1453a8bf292fe50fe0132cd12dce2d281715634e76"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/gpio_keys_nubia/reconstruction_map.json",
+      "sha256": "e01e9c207a8158c80cc8759e52b6a78e8d03627f4af06db76400e674abbaa406"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/gpio_keys_nubia/gpio_keys_nubia.ko",
+      "sha256": "8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8"
+    },
+    {
+      "path": "reference_modules/full_vendor_boot/gpio_keys_nubia.ko",
+      "sha256": "8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/docker_validation_final.json",
+      "sha256": "c4a02482788641a3902ecc438eb13b801cf02a1236048580001e11ebe2db133d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/docker_validation_final.md",
+      "sha256": "3400850699209f33e276c25fca1bb890d9c50a12e7777b5b254b067c0112acc3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/stock_assembly/manifest.json",
+      "sha256": "7898742e7118e7d5158f5fbf1e2fb3fa4353f2eadf63a5fa2214b13e8cf7076b"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/candidate_assembly_final/manifest.json",
+      "sha256": "c10c672adb9387252c3d831a9ce008408ddf6fcc91028f61db5fc9efd2c0d119"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/assembly_comparison_final.json",
+      "sha256": "c01792462424fa1fafef18d5e115472b8548facfece968b9c8492875c2efdbb2"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/assembly_comparison_preserved_body.json",
+      "sha256": "a41a9a0252d8d08f0838d5c5f1c2ee26a6bd1123ad2e7a4f246a99255fadf689"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/kcfi_stock.json",
+      "sha256": "e2e3a892e6615406d5834322511999dcb36ead8ed8d35989d4b2621d7891fc2e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/kcfi_candidate.json",
+      "sha256": "c6888378da37181d1b414628b3c361372ba7f2a01a483884d733cf3564f5295f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/kcfi_comparison.json",
+      "sha256": "8ddadf4ab2dbbafa0cd9624dbf61dcdc53302d621a3befa0f53f2b996bfbf0d3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/stock_direct_refs.json",
+      "sha256": "fbe94ebf455d3454c6cf1ffb97be3e995852703a91f728d7799e600eb33d70f3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/candidate_direct_refs.json",
+      "sha256": "763426404ed147a87bc82b459f8dafb599630b43bd3f31258bc1b67ee2c235d2"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/candidate_direct_refs.txt",
+      "sha256": "9b04be185c51d37a7dcebc8bd132dfe72ad7d3506bae48cef427a529be8772ed"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/assembly_comparison.json",
+      "sha256": "2aab9883244249ae959a4ea9982f8b8aa4d7cc2ae8d6cbd3882028673eaa2308"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/candidate_assembly/manifest.json",
+      "sha256": "8dfe1e4cb4464ab689c2d7f4a00cf7af32e093c6e9580fffd1725139e3c12d96"
+    }
+  ],
+  "report_sanitization": "Canonical Docker engineering root is replaced with a portable placeholder; build commands, outputs, and hashes are retained."
+}

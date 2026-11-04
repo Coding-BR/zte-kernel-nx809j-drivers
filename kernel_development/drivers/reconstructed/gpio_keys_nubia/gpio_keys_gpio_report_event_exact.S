@@ -1,8 +1,8 @@
 .section .text,"ax",@progbits
 .align 2
-.global gpio_keys_gpio_report_event
-.type gpio_keys_gpio_report_event, %function
-gpio_keys_gpio_report_event:
+.global gpio_keys_gpio_report_event_stock_body
+.type gpio_keys_gpio_report_event_stock_body, %function
+gpio_keys_gpio_report_event_stock_body:
     .inst 0xd503233f
     .inst 0xa9bb7bfd
     .inst 0xf9000bf9
@@ -128,7 +128,7 @@ gpio_keys_gpio_report_event:
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, _printk
     .inst 0x17ffffca
-.size gpio_keys_gpio_report_event, .-gpio_keys_gpio_report_event
+.size gpio_keys_gpio_report_event_stock_body, .-gpio_keys_gpio_report_event_stock_body
 
 .section .bss,"aw",@nobits
 .align 2

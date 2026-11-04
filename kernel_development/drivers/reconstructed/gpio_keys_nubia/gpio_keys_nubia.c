@@ -25,6 +25,7 @@
 #include <linux/delay.h>
 #include <linux/platform_device.h>
 #include <linux/input.h>
+#include <linux/mutex.h>
 #include <linux/gpio_keys.h>
 #include <linux/workqueue.h>
 #include <linux/gpio.h>
@@ -369,7 +370,22 @@ nb_key_is_need_report(struct gpio_button_data *bdata)
 	return true;
 }
 
-extern void gpio_keys_gpio_report_event(struct gpio_button_data *bdata);
+/*
+ * The Nubia report routine keeps a function-local cache that is shared by all
+ * buttons.  Its callers include the debounce worker, input open, and resume;
+ * per-button locks do not serialize those paths against one another.
+ */
+static DEFINE_MUTEX(gpio_keys_report_state_lock);
+
+extern void gpio_keys_gpio_report_event_stock_body(
+	struct gpio_button_data *bdata);
+
+void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
+{
+	mutex_lock(&gpio_keys_report_state_lock);
+	gpio_keys_gpio_report_event_stock_body(bdata);
+	mutex_unlock(&gpio_keys_report_state_lock);
+}
 
 extern void gpio_keys_gpio_work_func(struct work_struct *work);
 

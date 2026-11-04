@@ -1,0 +1,913 @@
+{
+  "drivers": [
+    {
+      "build": {
+        "commands": {
+          "build_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "<CANONICAL_DOCKER_ENGINEERING_ROOT>\\validation\\work_codex_gpio_keys_report_state_fix2_20261104:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-gpio_keys_nubia-1-0ed405c333d6:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/gpio_keys_nubia/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/gpio_keys_nubia/cycle_1=/gpio_keys_nubia -fdebug-prefix-map=/work/validation/gpio_keys_nubia/cycle_1=/gpio_keys_nubia",
+              "-j",
+              "8",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "Skipping BTF generation for /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_nubia.ko due to unavailability of vmlinux\n",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_suspend_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_resume_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_attr_show_helper_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_attr_store_helper_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_show_keys_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_show_switches_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_show_disabled_keys_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_show_disabled_switches_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_store_disabled_keys_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_store_disabled_switches_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_show_GamekeyStatus_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_store_GamekeyStatus_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_shutdown_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_open_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_close_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_gpio_report_event_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_gpio_work_func_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_gpio_isr_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_irq_timer_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_irq_isr_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_quiesce_key_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_probe_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_init_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_exit_exact.o\n  CC [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_nubia_main.o\n  LD [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_nubia.o\n  MODPOST /work/validation/gpio_keys_nubia/cycle_1/Module.symvers\n  CC [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_nubia.mod.o\n  CC [M]  /work/validation/gpio_keys_nubia/cycle_1/.module-common.o\n  LD [M]  /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_nubia.ko\n  BTF [M] /work/validation/gpio_keys_nubia/cycle_1/gpio_keys_nubia.ko\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "build_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "<CANONICAL_DOCKER_ENGINEERING_ROOT>\\validation\\work_codex_gpio_keys_report_state_fix2_20261104:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-gpio_keys_nubia-2-d1106b7b694d:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/gpio_keys_nubia/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/gpio_keys_nubia/cycle_2=/gpio_keys_nubia -fdebug-prefix-map=/work/validation/gpio_keys_nubia/cycle_2=/gpio_keys_nubia",
+              "-j",
+              "8",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "Skipping BTF generation for /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_nubia.ko due to unavailability of vmlinux\n",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_suspend_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_resume_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_attr_show_helper_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_attr_store_helper_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_show_keys_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_show_switches_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_show_disabled_keys_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_show_disabled_switches_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_store_disabled_keys_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_store_disabled_switches_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_show_GamekeyStatus_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_store_GamekeyStatus_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_shutdown_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_open_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_close_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_gpio_report_event_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_gpio_work_func_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_gpio_isr_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_irq_timer_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_irq_isr_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_quiesce_key_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_probe_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_init_exact.o\n  AS [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_exit_exact.o\n  CC [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_nubia_main.o\n  LD [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_nubia.o\n  MODPOST /work/validation/gpio_keys_nubia/cycle_2/Module.symvers\n  CC [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_nubia.mod.o\n  CC [M]  /work/validation/gpio_keys_nubia/cycle_2/.module-common.o\n  LD [M]  /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_nubia.ko\n  BTF [M] /work/validation/gpio_keys_nubia/cycle_2/gpio_keys_nubia.ko\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "clean_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "<CANONICAL_DOCKER_ENGINEERING_ROOT>\\validation\\work_codex_gpio_keys_report_state_fix2_20261104:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-gpio_keys_nubia-1-0ed405c333d6:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/gpio_keys_nubia/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/gpio_keys_nubia/cycle_1=/gpio_keys_nubia -fdebug-prefix-map=/work/validation/gpio_keys_nubia/cycle_1=/gpio_keys_nubia",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "clean_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "<CANONICAL_DOCKER_ENGINEERING_ROOT>\\validation\\work_codex_gpio_keys_report_state_fix2_20261104:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-gpio_keys_nubia-2-d1106b7b694d:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/gpio_keys_nubia/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/gpio_keys_nubia/cycle_2=/gpio_keys_nubia -fdebug-prefix-map=/work/validation/gpio_keys_nubia/cycle_2=/gpio_keys_nubia",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "create_kernel_output_volume_first": {
+            "argv": [
+              "docker",
+              "volume",
+              "create",
+              "codex-kbuild-gpio_keys_nubia-1-0ed405c333d6"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "codex-kbuild-gpio_keys_nubia-1-0ed405c333d6\n"
+          },
+          "create_kernel_output_volume_second": {
+            "argv": [
+              "docker",
+              "volume",
+              "create",
+              "codex-kbuild-gpio_keys_nubia-2-d1106b7b694d"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "codex-kbuild-gpio_keys_nubia-2-d1106b7b694d\n"
+          },
+          "prepare_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-gpio_keys_nubia-1-0ed405c333d6:/work/kernel_out",
+              "-v",
+              "<CANONICAL_DOCKER_ENGINEERING_ROOT>\\validation\\work_codex_gpio_keys_report_state_fix2_20261104:/work/validation",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "bash",
+              "-lc",
+              "set -eu\nS=/work/src/kernel/kernel_platform/common\nO=/work/kernel_out\nI=/work/src/kernel/.codex-kbuild/identity\nmake -s -C \"$S\" O=\"$O\" ARCH=arm64 mrproper\nmkdir -p \"$O\"\ncp -a \"$I/.\" \"$O/\"\ncmp \"$O/.config\" \"$I/.config\"\ncmp \"$O/Module.symvers\" \"$I/Module.symvers\"\ntest \"$(make -s -C \"$S\" O=\"$O\" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)\" = \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\""
+            ],
+            "returncode": 0,
+            "stderr": "/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:98: \"KSU_GIT_VERSION not defined! It is better to make KernelSU-Next a git repository!\"\n/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:109: \"KSU_VERSION_TAG not defined! It is better to make KernelSU-Next a git submodule!\"\n",
+            "stdout": "-- KernelSU-Next version fallback: 33129\n-- KernelSU-Next tag fallback: v3.2.0\n-- KernelSU-Next new DCACHE flush: 1\n-- KernelSU-Next Manager signature size: 0x3e6\n-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7\n"
+          },
+          "prepare_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-gpio_keys_nubia-2-d1106b7b694d:/work/kernel_out",
+              "-v",
+              "<CANONICAL_DOCKER_ENGINEERING_ROOT>\\validation\\work_codex_gpio_keys_report_state_fix2_20261104:/work/validation",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "bash",
+              "-lc",
+              "set -eu\nS=/work/src/kernel/kernel_platform/common\nO=/work/kernel_out\nI=/work/src/kernel/.codex-kbuild/identity\nmake -s -C \"$S\" O=\"$O\" ARCH=arm64 mrproper\nmkdir -p \"$O\"\ncp -a \"$I/.\" \"$O/\"\ncmp \"$O/.config\" \"$I/.config\"\ncmp \"$O/Module.symvers\" \"$I/Module.symvers\"\ntest \"$(make -s -C \"$S\" O=\"$O\" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)\" = \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\""
+            ],
+            "returncode": 0,
+            "stderr": "/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:98: \"KSU_GIT_VERSION not defined! It is better to make KernelSU-Next a git repository!\"\n/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:109: \"KSU_VERSION_TAG not defined! It is better to make KernelSU-Next a git submodule!\"\n",
+            "stdout": "-- KernelSU-Next version fallback: 33129\n-- KernelSU-Next tag fallback: v3.2.0\n-- KernelSU-Next new DCACHE flush: 1\n-- KernelSU-Next Manager signature size: 0x3e6\n-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7\n"
+          }
+        },
+        "cycle_dirs": [
+          "<CANONICAL_DOCKER_ENGINEERING_ROOT>\\validation\\work_codex_gpio_keys_report_state_fix2_20261104\\gpio_keys_nubia\\cycle_1",
+          "<CANONICAL_DOCKER_ENGINEERING_ROOT>\\validation\\work_codex_gpio_keys_report_state_fix2_20261104\\gpio_keys_nubia\\cycle_2"
+        ],
+        "first_build": {
+          "exists": true,
+          "path": "<CANONICAL_DOCKER_ENGINEERING_ROOT>\\validation\\work_codex_gpio_keys_report_state_fix2_20261104\\gpio_keys_nubia\\cycle_1\\gpio_keys_nubia.ko",
+          "sha256": "8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8",
+          "size": 240272
+        },
+        "kernel_output_volumes": {
+          "cycle_1": "codex-kbuild-gpio_keys_nubia-1-0ed405c333d6",
+          "cycle_2": "codex-kbuild-gpio_keys_nubia-2-d1106b7b694d"
+        },
+        "passed": true,
+        "reproducible": true,
+        "second_build": {
+          "exists": true,
+          "path": "<CANONICAL_DOCKER_ENGINEERING_ROOT>\\validation\\work_codex_gpio_keys_report_state_fix2_20261104\\gpio_keys_nubia\\cycle_2\\gpio_keys_nubia.ko",
+          "sha256": "8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8",
+          "size": 240272
+        },
+        "work_dir": "<CANONICAL_DOCKER_ENGINEERING_ROOT>\\validation\\work_codex_gpio_keys_report_state_fix2_20261104\\gpio_keys_nubia"
+      },
+      "candidate": {
+        "exists": true,
+        "path": "<CANONICAL_DOCKER_ENGINEERING_ROOT>\\curated\\gpio_keys_nubia\\gpio_keys_nubia.ko",
+        "sha256": "8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8",
+        "size": 240272
+      },
+      "candidate_hash_binding": {
+        "current_candidate_sha256": "8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8",
+        "declared_candidate_sha256": "8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8",
+        "matches": true
+      },
+      "checks": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_hash_matches_map": true,
+        "candidate_modinfo_matches_fresh": true,
+        "candidate_runtime_content_matches_fresh": true,
+        "candidate_runtime_section_layout_matches_fresh": true,
+        "function_traceability": true,
+        "ghidra_export": true,
+        "kernel_source_identity": true,
+        "makefile": true,
+        "mapping_review": true,
+        "namespace_match": true,
+        "reproducible_build": true,
+        "source_directory": true,
+        "source_files": 2,
+        "undefined_symbols_match": true,
+        "vermagic_accepted": true
+      },
+      "driver": "gpio_keys_nubia",
+      "errors": [],
+      "ghidra": {
+        "document": "C:\\w_haptic_remove_c6\\kernel_development\\drivers\\reconstructed\\gpio_keys_nubia\\DOCUMENTO_TRANSICAO.md",
+        "export": "C:\\w_haptic_remove_c6\\reverse_engineering\\validation\\reconstructed\\gpio_keys_nubia\\offline_static\\ghidra_stock",
+        "function_count": 24,
+        "function_identities": [
+          {
+            "stock_entry": "10071c",
+            "stock_function": "gpio_keys_probe"
+          },
+          {
+            "stock_entry": "101530",
+            "stock_function": "gpio_keys_shutdown"
+          },
+          {
+            "stock_entry": "101578",
+            "stock_function": "gpio_keys_open"
+          },
+          {
+            "stock_entry": "10163c",
+            "stock_function": "gpio_keys_close"
+          },
+          {
+            "stock_entry": "101684",
+            "stock_function": "gpio_keys_gpio_report_event"
+          },
+          {
+            "stock_entry": "10181c",
+            "stock_function": "gpio_keys_gpio_work_func"
+          },
+          {
+            "stock_entry": "101878",
+            "stock_function": "gpio_keys_gpio_isr"
+          },
+          {
+            "stock_entry": "101928",
+            "stock_function": "gpio_keys_irq_timer"
+          },
+          {
+            "stock_entry": "1019b0",
+            "stock_function": "gpio_keys_irq_isr"
+          },
+          {
+            "stock_entry": "101acc",
+            "stock_function": "gpio_keys_quiesce_key"
+          },
+          {
+            "stock_entry": "101b04",
+            "stock_function": "gpio_keys_suspend"
+          },
+          {
+            "stock_entry": "101d18",
+            "stock_function": "gpio_keys_show_keys"
+          },
+          {
+            "stock_entry": "101d44",
+            "stock_function": "gpio_keys_attr_show_helper"
+          },
+          {
+            "stock_entry": "101e88",
+            "stock_function": "gpio_keys_show_switches"
+          },
+          {
+            "stock_entry": "101eb8",
+            "stock_function": "gpio_keys_show_disabled_keys"
+          },
+          {
+            "stock_entry": "101ee8",
+            "stock_function": "gpio_keys_store_disabled_keys"
+          },
+          {
+            "stock_entry": "101f24",
+            "stock_function": "gpio_keys_attr_store_helper"
+          },
+          {
+            "stock_entry": "102248",
+            "stock_function": "gpio_keys_show_disabled_switches"
+          },
+          {
+            "stock_entry": "102278",
+            "stock_function": "gpio_keys_store_disabled_switches"
+          },
+          {
+            "stock_entry": "1022b8",
+            "stock_function": "gpio_keys_show_GamekeyStatus"
+          },
+          {
+            "stock_entry": "102388",
+            "stock_function": "gpio_keys_store_GamekeyStatus"
+          },
+          {
+            "stock_entry": "1023c0",
+            "stock_function": "gpio_keys_resume"
+          },
+          {
+            "stock_entry": "1025f4",
+            "stock_function": "init_module"
+          },
+          {
+            "stock_entry": "102624",
+            "stock_function": "cleanup_module"
+          }
+        ],
+        "function_names": [
+          "cleanup_module",
+          "gpio_keys_attr_show_helper",
+          "gpio_keys_attr_store_helper",
+          "gpio_keys_close",
+          "gpio_keys_gpio_isr",
+          "gpio_keys_gpio_report_event",
+          "gpio_keys_gpio_work_func",
+          "gpio_keys_irq_isr",
+          "gpio_keys_irq_timer",
+          "gpio_keys_open",
+          "gpio_keys_probe",
+          "gpio_keys_quiesce_key",
+          "gpio_keys_resume",
+          "gpio_keys_show_GamekeyStatus",
+          "gpio_keys_show_disabled_keys",
+          "gpio_keys_show_disabled_switches",
+          "gpio_keys_show_keys",
+          "gpio_keys_show_switches",
+          "gpio_keys_shutdown",
+          "gpio_keys_store_GamekeyStatus",
+          "gpio_keys_store_disabled_keys",
+          "gpio_keys_store_disabled_switches",
+          "gpio_keys_suspend",
+          "init_module"
+        ],
+        "manifest": {
+          "compiler_spec": "default",
+          "executable_format": "Executable and Linking Format (ELF)",
+          "executable_md5": "158dd072603ed1ac47037c93469db771",
+          "function_count": 24,
+          "image_base": "00100000",
+          "language": "AARCH64:LE:64:v8A",
+          "max_address": "_elfSectionHeaders::00000bff",
+          "min_address": "00100000",
+          "pointer_size": 8,
+          "program": "gpio_keys_nubia.ko",
+          "schema_version": 1
+        },
+        "passed": true
+      },
+      "hardware_verified": false,
+      "kernel_source_identity": {
+        "checks": {
+          "bindgen_sha256": true,
+          "bindgen_version": true,
+          "clang_binary_sha256": true,
+          "clang_revision": true,
+          "clang_version": true,
+          "config_sha256": true,
+          "docker_image_id": true,
+          "kernel_release": true,
+          "localversion_sha256": true,
+          "module_symvers_sha256": true,
+          "rust_toolchain": true,
+          "rustc_sha256": true,
+          "source_head": true,
+          "source_repository": true
+        },
+        "expected": {
+          "bindgen_sha256": "548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706",
+          "bindgen_version": "0.69.5",
+          "clang_binary_sha256": "69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044",
+          "clang_revision": "clang-r536225",
+          "clang_version": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+          "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+          "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+          "localversion_sha256": "e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475",
+          "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+          "rust_toolchain": "rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)",
+          "rustc_sha256": "ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c",
+          "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+          "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git"
+        },
+        "image_command": {
+          "argv": [
+            "docker",
+            "image",
+            "inspect",
+            "--format",
+            "{{.Id}}",
+            "nubia-sm8850-kernel-builder:latest"
+          ],
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390\n"
+        },
+        "mismatches": [],
+        "observed": {
+          "bindgen_sha256": "548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706",
+          "bindgen_version": "bindgen 0.69.5",
+          "clang_binary_sha256": "69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044",
+          "clang_revision": "clang-r536225",
+          "clang_version": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+          "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+          "docker_image": "nubia-sm8850-kernel-builder:latest",
+          "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+          "localversion_sha256": "e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475",
+          "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+          "rust_toolchain": "rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)",
+          "rustc_sha256": "ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c",
+          "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+          "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git"
+        },
+        "passed": true,
+        "probe_command": {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-v",
+            "nx809j_bindgen_0695:/work/bindgen:ro",
+            "-e",
+            "PATH=/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "-w",
+            "/work/src/kernel",
+            "nubia-sm8850-kernel-builder:latest",
+            "python3",
+            "-c",
+            "\nimport hashlib\nimport json\nimport pathlib\nimport subprocess\n\ndef run(args):\n    result = subprocess.run(args, capture_output=True, text=True, check=False)\n    return result.stdout.strip() if result.returncode == 0 else None\n\ndef digest(path):\n    try:\n        return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()\n    except OSError:\n        return None\n\nsource_root = pathlib.Path(\"/work/src/kernel\")\ncommon = source_root / \"kernel_platform/common\"\nbuild_output = source_root / \".codex-kbuild/identity\"\nbuild_inputs = source_root / \"target_build_inputs\"\nlocalversion_rel = \"kernel_platform/common/localversion.nx809j-target\"\nbindgen = pathlib.Path(\"/work/bindgen/bin/bindgen\")\nclang = pathlib.Path(\"/work/toolchains/clang-r536225/bin/clang.real\")\nrustc = pathlib.Path(\"/work/toolchains/rust-1.82.0/bin/rustc\")\nclang_version = run([str(clang), \"--version\"])\nrust_toolchain = run([str(rustc), \"--version\"])\n\nprint(json.dumps({\n    \"source_head\": run([\"git\", \"-C\", str(source_root), \"rev-parse\", \"HEAD\"]),\n    \"source_repository\": run([\"git\", \"-C\", str(source_root), \"config\", \"--get\", \"remote.origin.url\"]),\n    \"kernel_release\": run([\"make\", \"-s\", \"-C\", str(common), f\"O={build_output}\", \"ARCH=arm64\", \"LLVM=1\", \"LLVM_IAS=1\", \"kernelrelease\"]),\n    \"config_sha256\": digest(build_output / \".config\"),\n    \"module_symvers_sha256\": digest(build_output / \"Module.symvers\"),\n    \"localversion_sha256\": digest(common / \"localversion.nx809j-target\"),\n    \"bindgen_version\": run([str(bindgen), \"--version\"]),\n    \"bindgen_sha256\": digest(bindgen),\n    \"clang_revision\": \"clang-r536225\",\n    \"clang_version\": clang_version.splitlines()[0] if clang_version else None,\n    \"clang_binary_sha256\": digest(clang),\n    \"rust_toolchain\": rust_toolchain,\n    \"rustc_sha256\": digest(rustc),\n}))\n"
+          ],
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\"source_head\": \"3356b35306d35d5a480e3b63df1a9f065b5d9f55\", \"source_repository\": \"https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git\", \"kernel_release\": \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\", \"config_sha256\": \"b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288\", \"module_symvers_sha256\": \"28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83\", \"localversion_sha256\": \"e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475\", \"bindgen_version\": \"bindgen 0.69.5\", \"bindgen_sha256\": \"548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706\", \"clang_revision\": \"clang-r536225\", \"clang_version\": \"Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)\", \"clang_binary_sha256\": \"69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044\", \"rust_toolchain\": \"rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)\", \"rustc_sha256\": \"ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c\"}\n"
+        },
+        "probe_error": null,
+        "required": true,
+        "status": "MATCH"
+      },
+      "metadata": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_allocated_metadata_differences": [],
+        "candidate_depends_match_target": true,
+        "candidate_loadable_section_differences": [],
+        "candidate_loadable_sections_match_fresh": true,
+        "candidate_matches_fresh": true,
+        "candidate_modinfo": {
+          "alias": [
+            "of:N*T*Cgpio-keys_nubia",
+            "of:N*T*Cgpio-keys_nubiaC*",
+            "platform:gpio-keys_nubia"
+          ],
+          "depends": [
+            ""
+          ],
+          "license": [
+            "GPL"
+          ],
+          "vermagic": [
+            "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        "candidate_modinfo_matches_fresh": true,
+        "candidate_nonloadable_section_differences": [],
+        "candidate_runtime_content_differences": [],
+        "candidate_runtime_content_matches_fresh": true,
+        "candidate_runtime_section_layout_differences": [],
+        "candidate_runtime_section_layout_matches_fresh": true,
+        "fresh": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__devm_add_action",
+              "__msecs_to_jiffies",
+              "__mutex_init",
+              "__platform_driver_register",
+              "__stack_chk_fail",
+              "_dev_err",
+              "_dev_warn",
+              "_printk",
+              "_raw_spin_lock_irqsave",
+              "_raw_spin_unlock_irqrestore",
+              "bitmap_free",
+              "bitmap_parselist",
+              "bitmap_zalloc",
+              "cancel_delayed_work_sync",
+              "delayed_work_timer_fn",
+              "device_get_child_node_count",
+              "device_get_next_child_node",
+              "device_property_present",
+              "device_property_read_string",
+              "device_set_wakeup_capable",
+              "device_wakeup_disable",
+              "device_wakeup_enable",
+              "devm_fwnode_gpiod_get_index",
+              "devm_gpio_request_one",
+              "devm_input_allocate_device",
+              "devm_kmalloc",
+              "devm_request_any_context_irq",
+              "disable_irq",
+              "enable_irq",
+              "fwnode_property_present",
+              "fwnode_property_read_string",
+              "fwnode_property_read_u32_array",
+              "gpio_to_desc",
+              "gpiod_get_raw_value",
+              "gpiod_get_value_cansleep",
+              "gpiod_set_debounce",
+              "gpiod_to_irq",
+              "init_timer_key",
+              "input_event",
+              "input_register_device",
+              "input_set_capability",
+              "irq_get_irq_data",
+              "irq_of_parse_and_map",
+              "irq_set_irq_type",
+              "irq_set_irq_wake",
+              "jiffies",
+              "mod_delayed_work_on",
+              "mod_timer",
+              "mutex_lock",
+              "mutex_unlock",
+              "of_fwnode_ops",
+              "of_get_named_gpio",
+              "of_get_next_child",
+              "of_property_read_string",
+              "platform_driver_unregister",
+              "pm_relax",
+              "pm_stay_awake",
+              "pm_wakeup_dev_event",
+              "scnprintf",
+              "snprintf",
+              "strcmp",
+              "system_wq",
+              "timer_delete_sync"
+            ]
+          },
+          "modinfo": {
+            "alias": [
+              "of:N*T*Cgpio-keys_nubia",
+              "of:N*T*Cgpio-keys_nubiaC*",
+              "platform:gpio-keys_nubia"
+            ],
+            "depends": [
+              ""
+            ],
+            "license": [
+              "GPL"
+            ],
+            "vermagic": [
+              "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "fresh_promoted": true,
+        "kernel_source_identity": true,
+        "missing_imports": [],
+        "namespace_match": true,
+        "promoted_candidate_sha256": "8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8",
+        "stock": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__devm_add_action",
+              "__msecs_to_jiffies",
+              "__mutex_init",
+              "__platform_driver_register",
+              "__stack_chk_fail",
+              "_dev_err",
+              "_dev_warn",
+              "_printk",
+              "_raw_spin_lock_irqsave",
+              "_raw_spin_unlock_irqrestore",
+              "bitmap_free",
+              "bitmap_parselist",
+              "bitmap_zalloc",
+              "cancel_delayed_work_sync",
+              "delayed_work_timer_fn",
+              "device_get_child_node_count",
+              "device_get_next_child_node",
+              "device_property_present",
+              "device_property_read_string",
+              "device_set_wakeup_capable",
+              "device_wakeup_disable",
+              "device_wakeup_enable",
+              "devm_fwnode_gpiod_get_index",
+              "devm_gpio_request_one",
+              "devm_input_allocate_device",
+              "devm_kmalloc",
+              "devm_request_any_context_irq",
+              "disable_irq",
+              "enable_irq",
+              "fwnode_property_present",
+              "fwnode_property_read_string",
+              "fwnode_property_read_u32_array",
+              "gpio_to_desc",
+              "gpiod_get_raw_value",
+              "gpiod_get_value_cansleep",
+              "gpiod_set_debounce",
+              "gpiod_to_irq",
+              "init_timer_key",
+              "input_event",
+              "input_register_device",
+              "input_set_capability",
+              "irq_get_irq_data",
+              "irq_of_parse_and_map",
+              "irq_set_irq_type",
+              "irq_set_irq_wake",
+              "jiffies",
+              "mod_delayed_work_on",
+              "mod_timer",
+              "mutex_lock",
+              "mutex_unlock",
+              "of_fwnode_ops",
+              "of_get_named_gpio",
+              "of_get_next_child",
+              "of_property_read_string",
+              "platform_driver_unregister",
+              "pm_relax",
+              "pm_stay_awake",
+              "pm_wakeup_dev_event",
+              "scnprintf",
+              "snprintf",
+              "strcmp",
+              "system_wq",
+              "timer_delete_sync"
+            ]
+          },
+          "modinfo": {
+            "alias": [
+              "of:N*T*Cgpio-keys_nubia",
+              "of:N*T*Cgpio-keys_nubiaC*",
+              "platform:gpio-keys_nubia"
+            ],
+            "depends": [
+              ""
+            ],
+            "license": [
+              "GPL"
+            ],
+            "vermagic": [
+              "6.12.23-maybe-dirty-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "stock_depends_match_target": true,
+        "target_vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+        "target_vermagic_match": true,
+        "undefined_symbols_match": true,
+        "unexpected_imports": [],
+        "vermagic_accepted": true,
+        "vermagic_match": false
+      },
+      "status": "static_verified",
+      "stock": {
+        "exists": true,
+        "path": "C:\\w_haptic_remove_c6\\reference_modules\\full_vendor_boot\\gpio_keys_nubia.ko",
+        "sha256": "8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3",
+        "size": 42728
+      },
+      "traceability": {
+        "declared_hardening_deviations": [],
+        "exists": true,
+        "mapped_functions": 24,
+        "mapped_identities": [
+          {
+            "stock_entry": "102624",
+            "stock_function": "cleanup_module"
+          },
+          {
+            "stock_entry": "101d44",
+            "stock_function": "gpio_keys_attr_show_helper"
+          },
+          {
+            "stock_entry": "101f24",
+            "stock_function": "gpio_keys_attr_store_helper"
+          },
+          {
+            "stock_entry": "10163c",
+            "stock_function": "gpio_keys_close"
+          },
+          {
+            "stock_entry": "101878",
+            "stock_function": "gpio_keys_gpio_isr"
+          },
+          {
+            "stock_entry": "101684",
+            "stock_function": "gpio_keys_gpio_report_event"
+          },
+          {
+            "stock_entry": "10181c",
+            "stock_function": "gpio_keys_gpio_work_func"
+          },
+          {
+            "stock_entry": "1019b0",
+            "stock_function": "gpio_keys_irq_isr"
+          },
+          {
+            "stock_entry": "101928",
+            "stock_function": "gpio_keys_irq_timer"
+          },
+          {
+            "stock_entry": "101578",
+            "stock_function": "gpio_keys_open"
+          },
+          {
+            "stock_entry": "10071c",
+            "stock_function": "gpio_keys_probe"
+          },
+          {
+            "stock_entry": "101acc",
+            "stock_function": "gpio_keys_quiesce_key"
+          },
+          {
+            "stock_entry": "1023c0",
+            "stock_function": "gpio_keys_resume"
+          },
+          {
+            "stock_entry": "1022b8",
+            "stock_function": "gpio_keys_show_GamekeyStatus"
+          },
+          {
+            "stock_entry": "101eb8",
+            "stock_function": "gpio_keys_show_disabled_keys"
+          },
+          {
+            "stock_entry": "102248",
+            "stock_function": "gpio_keys_show_disabled_switches"
+          },
+          {
+            "stock_entry": "101d18",
+            "stock_function": "gpio_keys_show_keys"
+          },
+          {
+            "stock_entry": "101e88",
+            "stock_function": "gpio_keys_show_switches"
+          },
+          {
+            "stock_entry": "101530",
+            "stock_function": "gpio_keys_shutdown"
+          },
+          {
+            "stock_entry": "102388",
+            "stock_function": "gpio_keys_store_GamekeyStatus"
+          },
+          {
+            "stock_entry": "101ee8",
+            "stock_function": "gpio_keys_store_disabled_keys"
+          },
+          {
+            "stock_entry": "102278",
+            "stock_function": "gpio_keys_store_disabled_switches"
+          },
+          {
+            "stock_entry": "101b04",
+            "stock_function": "gpio_keys_suspend"
+          },
+          {
+            "stock_entry": "1025f4",
+            "stock_function": "init_module"
+          }
+        ],
+        "mapping_review_errors": [],
+        "mapping_review_passed": true,
+        "passed": true,
+        "path": "<CANONICAL_DOCKER_ENGINEERING_ROOT>\\curated\\gpio_keys_nubia\\reconstruction_map.json",
+        "stock_sha256": "8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3",
+        "traceability_errors": [],
+        "traceability_passed": true,
+        "unmapped_functions": []
+      },
+      "warnings": []
+    }
+  ],
+  "generated_utc": "2026-11-04T10:27:45.146506+00:00",
+  "mode": "offline-only",
+  "promote_fresh_requested": true,
+  "rebuild_requested": true,
+  "run_root": "public repository evidence: C:\\w_haptic_remove_c6",
+  "schema_version": "1.0",
+  "summary": {
+    "driver_count": 1,
+    "hardware_verified": [],
+    "not_ready_for_100_percent_claim": [
+      "gpio_keys_nubia"
+    ],
+    "static_verified": [
+      "gpio_keys_nubia"
+    ]
+  },
+  "target_kernel_manifest": "C:\\w_haptic_remove_c6\\kernel_development\\config\\target_kernel.json"
+}

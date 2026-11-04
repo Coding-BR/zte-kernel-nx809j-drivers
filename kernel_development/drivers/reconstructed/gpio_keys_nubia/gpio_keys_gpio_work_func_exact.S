@@ -14,7 +14,8 @@ gpio_keys_gpio_work_func:
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, mutex_lock
     .inst 0xaa1403e0
-    .inst 0x97ffff91
+    .inst 0x94000000
+    .reloc .-4, R_AARCH64_CALL26, gpio_keys_gpio_report_event
     .inst 0xf85b0268
     .inst 0xb9401d08
     .inst 0x34000088

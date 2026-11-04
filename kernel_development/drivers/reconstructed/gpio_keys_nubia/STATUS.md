@@ -1,15 +1,37 @@
 # Status: `gpio_keys_nubia`
 
-Estado: **STAGE5_STATIC_PARTIAL - gates estaticos completos; revisao externa,
-seguranca e hardware ainda pendentes**.
+Estado atual (2026-11-04): **STAGE5_STATIC_PARTIAL**. O candidato com
+serialização do cache global foi recompilado e passou o validador estático de
+build/KMI no Docker; equivalência total, revisão independente e hardware
+continuam pendentes. Este status não significa que o driver esteja concluído.
 
 O fonte foi reconstruido exclusivamente a partir do `.ko` stock, pseudocodigo,
-P-Code, simbolos ELF e Assembly AArch64 locais. O candidato curado compila no
-GKI 6.12.23 com `clang-r536225`. Nao e candidato autorizado para `insmod` ou
-substituicao do modulo OEM enquanto `gpio_keys_probe`, revisao independente e
-os gates de hardware nao fecharem.
+P-Code, simbolos ELF e Assembly AArch64 locais. Candidato atual: SHA-256
+`8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8`, 240272
+bytes. Dois builds Docker limpos coincidiram; o validador reportou
+`static_verified` para build/KMI/mapa. A comparação AArch64 atual é 23/24:
+`gpio_keys_gpio_report_event` é uma divergência intencional de hardening, e o
+helper adicional preserva o corpo stock de 404 bytes. A atestação está em
+`attestation/report_state_serialization_20261104/`.
 
-## Revalidação do candidato atual — 2026-11-02
+Continuam pendentes a revisão humana independente, a validação dinâmica no
+NX809J e a análise da flag `suspended` entre IRQ/PM e da janela de shutdown.
+Nenhum módulo foi carregado no smartphone.
+
+## Revalidação do candidato endurecido — 2026-11-04
+
+- O mapa continua cobrindo as 24 identidades stock; o candidato inclui um
+  helper adicional para manter o corpo assembly stock sob a entrada protegida.
+- A comparação fresca passa 23/24 identidades stock e classifica a única
+  diferença como wrapper de `gpio_keys_gpio_report_event`. O corpo preservado
+  passa a comparação estrita separada.
+- A compilação reproduzível, conteúdo/layout das seções de runtime, `modinfo`,
+  imports e mapa passam no pipeline Docker. O pipeline não executa hardware.
+- KCFI dos chamadores `gpio_keys_open`, `gpio_keys_gpio_work_func` e
+  `gpio_keys_resume` passa 3/3. O wrapper novo só recebe chamadas diretas.
+- Evidência hash-bound: `attestation/report_state_serialization_20261104/`.
+
+## Baseline stock-exact revalidado — 2026-11-02 (histórico)
 
 - Candidato Docker/repositório/mapa: `95e2b7d8352c3039e154f56f32da8f45e3a513b3706d3ebcb2269886424f14cc`; stock: `8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3`.
 - A extração fresca comparou 24/24 identidades: instruções, relocations, seções e tamanhos passaram em todas. As manifests desta extração ligam os resultados aos dois hashes.
