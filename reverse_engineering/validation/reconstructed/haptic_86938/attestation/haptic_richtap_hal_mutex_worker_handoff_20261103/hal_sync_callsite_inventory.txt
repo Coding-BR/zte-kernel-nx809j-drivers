@@ -1,0 +1,37 @@
+Direct PLT call sites in the exact phone HAL, disassembled by canonical Docker llvm-objdump 18.1.3. The two tiktap_on mutex locks are its only pthread_mutex_lock calls within that function; all worker-create sites below use entry 0x1fb18 and immediately detach the returned thread slot without checking pthread_create status.
+   1c614: 940096eb     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   1c624: 940096e7     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   1c660: 940096dc     	bl	0x421d0 <pthread_exit@plt>
+   1d190: 9400943c     	bl	0x42280 <pthread_mutex_lock@plt>
+   1d1a8: 94009436     	bl	0x42280 <pthread_mutex_lock@plt>
+   1d2e4: 940093b7     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   1d2ec: 940093b5     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   1d4b8: 9400937a     	bl	0x422a0 <pthread_create@plt>
+   1d5b4: 9400933b     	bl	0x422a0 <pthread_create@plt>
+   1d6e0: 940092f0     	bl	0x422a0 <pthread_create@plt>
+   1d740: 940092a0     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   1d748: 9400929e     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   21cd8: 9400813a     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   21ce8: 94008136     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   21d1c: 9400812d     	bl	0x421d0 <pthread_exit@plt>
+   21dcc: 940080fd     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   21ddc: 940080f9     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   22044: 9400808f     	bl	0x42280 <pthread_mutex_lock@plt>
+   22054: 9400808b     	bl	0x42280 <pthread_mutex_lock@plt>
+   22644: 94007edf     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   2264c: 94007edd     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   227e4: 94007eaf     	bl	0x422a0 <pthread_create@plt>
+   2281c: 94007e69     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   22824: 94007e67     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   22904: 94007e67     	bl	0x422a0 <pthread_create@plt>
+   22a38: 94007e1a     	bl	0x422a0 <pthread_create@plt>
+   3beec: 940018e5     	bl	0x42280 <pthread_mutex_lock@plt>
+   3bfac: 94001885     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   3c014: 9400189b     	bl	0x42280 <pthread_mutex_lock@plt>
+   3c0e4: 94001837     	bl	0x421c0 <pthread_mutex_unlock@plt>
+   41d88: 9400013e     	bl	0x42280 <pthread_mutex_lock@plt>
+   41db4: 94000103     	bl	0x421c0 <pthread_mutex_unlock@plt>
+00000000000421c0 <pthread_mutex_unlock@plt>:
+00000000000421d0 <pthread_exit@plt>:
+0000000000042280 <pthread_mutex_lock@plt>:
+00000000000422a0 <pthread_create@plt>:
