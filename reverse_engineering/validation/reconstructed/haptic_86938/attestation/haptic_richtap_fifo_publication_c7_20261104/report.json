@@ -1,0 +1,131 @@
+{
+  "schema": "zte-driver-static-attestation-v1",
+  "review_id": "haptic_richtap_fifo_publication_c7_20261104",
+  "review_date": "2026-11-04",
+  "review_type": "static_cross_domain_publication_revalidation",
+  "candidate": {
+    "name": "C7",
+    "sha256": "a2ec3ce4d51e1878e199017bda6cb01623589f54dc3c074f6b22a0586fd3ad0b",
+    "size_bytes": 6723232,
+    "map_sha256": "41a7bdcaa16dea5f62a50dab9967e5fc60f9a4625ab65a4232a5bba7bb1a7002",
+    "canonical_docker_image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "llvm_objdump": "18.1.3",
+    "kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55"
+  },
+  "disposition": {
+    "complete_cross_domain_fifo_ownership_protocol_proven": false,
+    "kernel_irq_worker_serialization_present": true,
+    "hal_participates_in_kernel_mutex": false,
+    "candidate_installed": false,
+    "candidate_runtime_test_performed": false,
+    "runtime_corruption_reproduced": false,
+    "map_status_changed": false,
+    "map_rows_remain": "candidate_under_static_validation",
+    "independent_review": "PENDING"
+  },
+  "fifo_functions": {
+    "richtap_update_fifo_data": {
+      "map_status": "candidate_under_static_validation",
+      "candidate_source_sha256": "c0d0e4340d76024f245759024279f093d7541d220dddca3b13c13adaf2a1e0ec",
+      "candidate_entry": "0x8290",
+      "candidate_state_acquire": "LDARB at 0x830c",
+      "candidate_free_state_release": "STLRB at 0x83cc, after data_size zero at 0x83c4",
+      "stock_assembly_sha256": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2",
+      "stock_ghidra_c_sha256": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e"
+    },
+    "richtap_rtp_work": {
+      "map_status": "candidate_under_static_validation",
+      "candidate_source_sha256": "22953758a2ab1b118dc5f3c05a8cfb04f3b8ede5c6fcf8a510be5df43b26f8d3",
+      "candidate_entry": "0x84a4",
+      "candidate_state_acquire_sites": ["LDARB at 0x858c", "LDARB at 0x8780"],
+      "candidate_free_state_release": "STLRB at 0x864c, after data_size zero at 0x8644",
+      "stock_assembly_sha256": "393de37c1ba2b68f4e42e90f4bd72515fc7650b1542bc48aa14af747012cfa83",
+      "stock_ghidra_c_sha256": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5"
+    },
+    "irq_handle_stock_exact": {
+      "candidate_stock_exact_body_entry": "0xaf80",
+      "ordinary_state_loads": ["LDRB at 0xaff4", "LDRB at 0xb204"],
+      "stock_assembly_sha256": "3cf59ea3df996cd316b402838fbd56a6a02b56515562e4a3eaf955777822bff5",
+      "stock_ghidra_c_sha256": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279"
+    }
+  },
+  "producer": {
+    "identity": "/vendor/lib64/libaacvibrator.so in vendor.qti.hardware.vibrator.service",
+    "library_sha256": "8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61",
+    "writer": "write_data_to_buffer",
+    "ordinary_state_load": "LDRB at 0x1c208",
+    "ordinary_ready_state_store": "STRB at 0x1c22c",
+    "payload_and_length_stores": "ordinary stores; disassembly records payload STRB at 0x1c38c and length STRH at 0x1c398",
+    "live_producer_capture": {
+      "prior_stock_module_capture_calls": 1077,
+      "candidate_tested": false,
+      "evidence": "attestation/haptic_richtap_advanced_envelope_live_probe_20261103"
+    }
+  },
+  "mapping": {
+    "permissions": "shared read/write",
+    "length_bytes": 16384,
+    "kernel_page_protection": "PAGE_SHARED / MT_NORMAL, Normal cacheable RAM",
+    "ordering_conclusion": "cache coherency does not establish the missing release/acquire pair"
+  },
+  "ownership_edges": {
+    "hal_to_kernel": {
+      "producer": "ordinary STRB of U",
+      "kernel": "C7 LDARB in helper and worker",
+      "paired_release_acquire_established": false
+    },
+    "kernel_to_hal": {
+      "kernel": "C7 STLRB of 0xff after clearing size",
+      "consumer": "ordinary HAL LDRB",
+      "paired_release_acquire_established": false
+    }
+  },
+  "adb": {
+    "command": "adb devices -l",
+    "result": "no device listed during this review"
+  },
+  "artifact_sha256": {
+    "candidate_module": "a2ec3ce4d51e1878e199017bda6cb01623589f54dc3c074f6b22a0586fd3ad0b",
+    "candidate_map": "41a7bdcaa16dea5f62a50dab9967e5fc60f9a4625ab65a4232a5bba7bb1a7002",
+    "candidate_function_objdump": "60980152af08063e1c54dd015f770386772781aead748745c3caf5afcff27f65",
+    "hal_writer_disassembly": "478bccbe97d8ce044c93125227bcada66fabb83a8729228f5c2e3a4080e7d6ab",
+    "hal_producer_callsite_scan": "109e79d3b692167983b45b7183ba9100dd0b308bc858fa32fc9585e7f1499a42",
+    "stock_module": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e"
+  },
+  "evidence_files": {
+    "candidate_c7_disassembly": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_publication_c7_20261104/candidate_c7_fifo_functions_objdump.txt",
+    "stock_ghidra_richtap_rtp_work": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0070_001088f8_richtap_rtp_work.c",
+    "stock_assembly_richtap_rtp_work": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0070_richtap_rtp_work_001088f8.asm",
+    "stock_ghidra_richtap_update_fifo_data": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0074_0010946c_richtap_update_fifo_data.c",
+    "stock_assembly_richtap_update_fifo_data": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0074_richtap_update_fifo_data_0010946c.asm",
+    "stock_ghidra_irq_handle": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c",
+    "stock_assembly_irq_handle": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0073_irq_handle_00109090.asm",
+    "hal_writer_disassembly": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_hal_fifo_writer_order_20261103/hal_writer_disassembly.txt",
+    "hal_writer_review": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_hal_fifo_writer_order_20261103/fifo_writer_order_review.json",
+    "hal_device_revalidation": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_device_hal_producer_revalidation_20261103/device_hal_producer_revalidation.json",
+    "hal_callsite_scan": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_device_hal_producer_revalidation_20261103/producer_callsite_scan.txt",
+    "fifo_memory_attributes": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_memory_attributes_20261103/fifo_memory_attributes.json",
+    "fifo_memory_kernel_sources": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_memory_attributes_20261103/docker_kernel_memory_attribute_evidence.txt",
+    "prior_live_probe": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_advanced_envelope_live_probe_20261103/advanced_envelope_live_probe.json"
+  },
+  "referenced_evidence_sha256": {
+    "stock_assembly_richtap_rtp_work": "393de37c1ba2b68f4e42e90f4bd72515fc7650b1542bc48aa14af747012cfa83",
+    "stock_ghidra_richtap_rtp_work": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5",
+    "stock_assembly_richtap_update_fifo_data": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2",
+    "stock_ghidra_richtap_update_fifo_data": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e",
+    "stock_assembly_irq_handle": "3cf59ea3df996cd316b402838fbd56a6a02b56515562e4a3eaf955777822bff5",
+    "stock_ghidra_irq_handle": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279",
+    "hal_writer_disassembly": "478bccbe97d8ce044c93125227bcada66fabb83a8729228f5c2e3a4080e7d6ab",
+    "hal_writer_review": "d39d6da5abde38f34bc5804cf601dd4ecadbe8e6bbd516f506c36fee50bfafe7",
+    "hal_device_revalidation": "b2c6016d610a5a243b85a05195540d52ed4d1710878ffbbed6002a3a73069261",
+    "hal_callsite_scan": "109e79d3b692167983b45b7183ba9100dd0b308bc858fa32fc9585e7f1499a42",
+    "fifo_memory_attributes": "e4ea881fb81b6b44f11653e18ab75aef487eda6184a4af6895c58fda4cb5b512",
+    "fifo_memory_kernel_sources": "9854dc9e1ec4028ff7fbabc13bc662ef81688cb702f0371d9f51b641c1ee08f9",
+    "prior_live_probe": "4d8281a6cd6927b4a521f39864d9cdf932e4fc9bbab851a0b0c1c86d59fe51b2"
+  },
+  "build": {
+    "performed": false,
+    "reason": "No kernel source or map changed; Docker was used read-only to inspect the canonical C7 module"
+  }
+}
