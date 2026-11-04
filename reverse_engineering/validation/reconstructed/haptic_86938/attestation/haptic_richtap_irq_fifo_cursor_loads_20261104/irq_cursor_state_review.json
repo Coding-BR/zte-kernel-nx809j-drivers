@@ -1,0 +1,98 @@
+{
+  "schema_version": "haptic-richtap-irq-fifo-cursor-loads/v1",
+  "review_date": "2026-11-04",
+  "result": "STOCK_EXACT_IRQ_RETAINS_TWO_PLAIN_FIFO_STATE_LOADS",
+  "candidate": {
+    "sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+    "canonical_docker_curated_sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+    "map_sha256": "3773f78f259b46ae3a0d0d06743b1bdf8e043b7c3fe60aa45b445b93affb5fa6",
+    "candidate_installed": false
+  },
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "ghidra_irq_pseudocode": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c",
+      "sha256": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279"
+    },
+    "irq_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0073_irq_handle_00109090.asm",
+      "sha256": "3cf59ea3df996cd316b402838fbd56a6a02b56515562e4a3eaf955777822bff5"
+    }
+  },
+  "candidate_disassembly": {
+    "path": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_fifo_cursor_loads_20261104/candidate_c6_fifo_irq_disassembly.txt",
+    "sha256": "62435a4ddf412b2fbc23298f93d891e808e5742656394fbd4bac5571ef1ec59b",
+    "generated_with": {
+      "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+      "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+      "tool": "llvm-objdump"
+    }
+  },
+  "observations": [
+    {
+      "candidate_vma": "0xafe8",
+      "instructions": [
+        "ldr x8, [x19, #0x620]",
+        "ldrb w8, [x8]",
+        "cmp w8, #0xff"
+      ],
+      "stock_vma": "0x62e0",
+      "stock_instructions": [
+        "ldr x8, [x19, #0x620]",
+        "ldrb w8, [x8]",
+        "cmp w8, #0xff"
+      ],
+      "control_effect": "A matching FF takes the stock path that disables RTP AEI and clears the RTP loop flag."
+    },
+    {
+      "candidate_vma": "0xb1f4",
+      "instructions": [
+        "ldr x8, [x19, #0x620]",
+        "ldrb w8, [x8]",
+        "cmp w8, #0x55"
+      ],
+      "stock_vma": "0x64f0",
+      "stock_instructions": [
+        "ldr x8, [x19, #0x620]",
+        "ldrb w8, [x8]",
+        "cmp w8, #0x55"
+      ],
+      "control_effect": "A matching U allows the stock IRQ loop to re-enter richtap_update_fifo_data."
+    },
+    {
+      "candidate_vma": "0x8300",
+      "instructions": [
+        "ldarb w10, [x28]"
+      ],
+      "control_effect": "The candidate helper uses acquire for its own node-state read; that does not replace the two separate plain loads retained in irq_handle_stock_exact."
+    }
+  ],
+  "synchronization_context": {
+    "irq_wrapper_holds_global_irq_stop_mutex_across_stock_exact_handler": true,
+    "hal_participates_in_that_mutex": false,
+    "hal_writer_state_publication": "ordinary STRB U; no release operation in the hash-bound writer sequence",
+    "hal_state_reads_for_AA_FF": "ordinary LDRB; no acquire operation in the reviewed sequence",
+    "hal_writer_review_sha256": "d39d6da5abde38f34bc5804cf601dd4ecadbe8e6bbd516f506c36fee50bfafe7"
+  },
+  "assessment": {
+    "payload_access_guard": "The direct loads only select control flow. The U branch calls richtap_update_fifo_data, which re-reads state with LDARB before its payload copy; the FF branch disables AEI and does not copy payload.",
+    "possible_effect": "A stale FF observation can choose the stock AEI-disable/loop-clear path. A stale U observation can skip an extra helper iteration; if U is observed, the helper validates state again with LDARB before copying. Runtime effect is unknown and unobserved.",
+    "candidate_only_regression": false,
+    "cross_boundary_fifo_protocol_proven": false,
+    "runtime_race_or_lost_irq_observed": false,
+    "mapping_status_changed": false,
+    "source_changed": false,
+    "module_rebuilt": false,
+    "next_evidence": "Keep the exact IRQ mapping unchanged until the HAL-side ownership protocol is available or a controlled protocol test establishes the needed behavior. Any barrier added to this exact IRQ body must be tracked as a hardening deviation and revalidated in canonical Docker."
+  },
+  "candidate_source": {
+    "exact_irq_source": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_073_irq_handle_exact.S",
+      "sha256": "ac5dace9a1895b9e6f8bbc305a4c4cc78afa1ea928cc0ec16ff6b1cf256f9d7f"
+    },
+    "makefile": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/Makefile",
+      "sha256": "88743e73fd0a783a09c8a000abc796ae2151d71dc84a1f52f5ba1cf50520fd4e"
+    }
+  }
+}
