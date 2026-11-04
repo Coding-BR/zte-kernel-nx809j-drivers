@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_rtp_irq_oneshot_sleep_c7_20261104",
+  "review_date": "2026-11-04",
+  "result": "C7_THREADED_ONESHOT_IRQ_RETAINS_SHARED_MUTEX_ACROSS_REPEATED_FIFO_SLEEP_PATH",
+  "candidate": {
+    "module_sha256": "a2ec3ce4d51e1878e199017bda6cb01623589f54dc3c074f6b22a0586fd3ad0b",
+    "map_sha256": "41a7bdcaa16dea5f62a50dab9967e5fc60f9a4625ab65a4232a5bba7bb1a7002",
+    "installed_on_device": false,
+    "irq_wrapper": {
+      "symbol": "irq_handle",
+      "entry": "0x7510",
+      "shared_mutex": "haptic_irq_stop_lock (.data+0x400)",
+      "lock_call": "0x7564",
+      "stock_exact_call": "0x7598",
+      "unlock_call": "0x7584",
+      "unlock_after_stock_exact_return": true
+    },
+    "registration": {
+      "symbol": "irq_config",
+      "entry": "0x9bec",
+      "registration_call": "0x9c6c",
+      "primary_handler": "NULL (x2=0)",
+      "thread_fn": "irq_handle (x3)",
+      "flags": "0x2002",
+      "flag_names": ["IRQF_ONESHOT", "IRQF_TRIGGER_FALLING"]
+    },
+    "fifo_helper": {
+      "symbol": "richtap_update_fifo_data",
+      "entry": "0x8290",
+      "retry_count": 3,
+      "sleep_call": "usleep_range_state(1000, 1000, 2)",
+      "sleep_call_vma": "0x833c",
+      "requested_sleep_per_call_ms": 3
+    },
+    "stock_exact_irq_path": {
+      "symbol": "irq_handle_stock_exact",
+      "entry": "0xaf80",
+      "helper_call": "0xb1c4",
+      "loop_condition": "reenter while almost-full callback is false, RTP loop is active, and current node state is U",
+      "fixed_total_handler_bound_established": false
+    }
+  },
+  "pinned_kernel": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "irqf_oneshot_semantics": "threaded handler runs with line masked; line unmasked after threaded handler completion",
+    "source_excerpt_sha256": "a5870c36b53646e2f0b6939d9332c1d177e805e20ef61aabf545c3c30037fa93",
+    "interrupt_header_sha256": "aa1a8232a58c8d67f2800abfd2cb72288b90df78c9e89891200ee6701358af64",
+    "irq_manage_source_sha256": "be9d5516fe884186c30a553cbc5a2b53e13d55dc0875dc0826b21991f918330b"
+  },
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "irq_config_ghidra_sha256": "6e1f30fc5e0a16a35a24fa262156061375522d47b4877ea78d6a06ba71fdcc40",
+    "irq_config_assembly_sha256": "193472d744db86fbf869b0339e6de679fe4d73ce58b0d2320e07580b7fa76f65",
+    "irq_handle_ghidra_sha256": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279",
+    "irq_handle_assembly_sha256": "3cf59ea3df996cd316b402838fbd56a6a02b56515562e4a3eaf955777822bff5",
+    "fifo_helper_ghidra_sha256": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e",
+    "fifo_helper_assembly_sha256": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2"
+  },
+  "candidate_sources": {
+    "haptic_86938_lifetime.c": "1294b499efaefa943c9696702c7331424d27cc85ba17e183780a74617c92aabd",
+    "haptic_86938_fn_067_irq_config_exact.S": "cefeed224bd60749bac4bd5c7457e2f720723ac248304d16051a579360ed99ab",
+    "haptic_86938_fn_073_irq_handle_exact.S": "ac5dace9a1895b9e6f8bbc305a4c4cc78afa1ea928cc0ec16ff6b1cf256f9d7f",
+    "haptic_86938_fn_136_richtap_update_fifo_data.c": "c0d0e4340d76024f245759024279f093d7541d220dddca3b13c13adaf2a1e0ec",
+    "haptic_86938_fn_137_richtap_rtp_work.c": "22953758a2ab1b118dc5f3c05a8cfb04f3b8ede5c6fcf8a510be5df43b26f8d3"
+  },
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "llvm_objdump": "18.1.3",
+    "snapshot_module_sha256": "a2ec3ce4d51e1878e199017bda6cb01623589f54dc3c074f6b22a0586fd3ad0b",
+    "command": "llvm-objdump -dr --demangle --disassemble-symbols=irq_config,irq_handle,irq_handle_stock_exact,richtap_update_fifo_data /snapshot/haptic_86938.ko",
+    "disassembly_sha256": "f79d441fa221ac602cfeb79a8db5f649a2e6448c540ec0ec830d2ce6b52b73cb"
+  },
+  "reconstruction": {
+    "source_changed": false,
+    "map_changed": false,
+    "rebuild_required": false,
+    "richtap_rtp_work_status": "candidate_under_static_validation",
+    "richtap_update_fifo_data_status": "candidate_under_static_validation",
+    "driver_complete": false
+  },
+  "runtime": {
+    "handler_duration_measured": false,
+    "irq_latency_measured": false,
+    "edge_loss_observed": false,
+    "deadlock_observed": false,
+    "candidate_tested_on_phone": false
+  },
+  "limitations": [
+    "Three milliseconds is the requested sleep per helper call, not a wall-clock bound.",
+    "The stock-exact IRQ loop can call the helper repeatedly; static evidence establishes no finite total-handler duration.",
+    "No runtime IRQ latency, edge loss, deadlock, or hardware failure was measured or reproduced.",
+    "The per-node producer/consumer protocol remains unverified because the HAL uses ordinary stores and loads."
+  ],
+  "evidence_sha256": {
+    "candidate_c7_irq_fifo_objdump.txt": "f79d441fa221ac602cfeb79a8db5f649a2e6448c540ec0ec830d2ce6b52b73cb",
+    "pinned_kernel_irq_oneshot_excerpt.txt": "a5870c36b53646e2f0b6939d9332c1d177e805e20ef61aabf545c3c30037fa93"
+  }
+}
