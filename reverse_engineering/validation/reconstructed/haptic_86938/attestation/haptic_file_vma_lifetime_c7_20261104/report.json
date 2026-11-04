@@ -1,0 +1,99 @@
+{
+  "schema": "zte-driver-static-attestation-v1",
+  "review_id": "haptic_file_vma_lifetime_c7_20261104",
+  "review_date": "2026-11-04",
+  "review_type": "static_open_file_and_vma_lifetime_review",
+  "candidate": {
+    "name": "C7",
+    "sha256": "a2ec3ce4d51e1878e199017bda6cb01623589f54dc3c074f6b22a0586fd3ad0b",
+    "size_bytes": 6723232,
+    "map_sha256": "41a7bdcaa16dea5f62a50dab9967e5fc60f9a4625ab65a4232a5bba7bb1a7002",
+    "docker_image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "llvm_objdump": "18.1.3"
+  },
+  "target_kernel": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "source_sha256": {
+      "kernel_platform/common/drivers/char/misc.c": "0e6017b294d6dbd395c383de3d17a9171ef898de65fc52bbc98e883295b4922a",
+      "kernel_platform/common/mm/vma.c": "d4a34240fafebcecdb7f48017d07a4cc11d276b0232357e9923d8354823f63d9",
+      "kernel_platform/common/mm/mmap.c": "63f897f869c39a9cd587445f4796268989678965c1bb169ddd621f8246b6a56d",
+      "kernel_platform/common/mm/internal.h": "469bb6ce11f57546351b713ed2d8c76f6b44039521813997d4986f0451cd695e"
+    },
+    "misc_open_holds_misc_mtx_through_driver_open_callback": true,
+    "misc_deregister_uses_same_misc_mtx": true,
+    "vma_open_hook_used_for_split_and_fork_clones": true,
+    "vma_close_hook_invoked_on_vma_removal": true
+  },
+  "lifetime_result": {
+    "new_opens_blocked_after_shutdown": true,
+    "in_flight_misc_open_drained_by_core_mutex": true,
+    "active_ioctl_and_mmap_operations_drained": true,
+    "preexisting_file_reference_keeps_lifetime_object_alive": true,
+    "post_remove_ioctl_rejected_before_state_dereference": true,
+    "initial_vma_reference_attached_only_after_successful_remap": true,
+    "fifo_pages_deferred_until_last_vma_close": true,
+    "read_write_handlers_dereference_device_state": false,
+    "use_after_free_found_in_reviewed_scope": false,
+    "runtime_interleaving_test_performed": false
+  },
+  "remaining_separate_risks": [
+    "A detached HAL worker may continue writing to its VMA until that mapping is closed; retained pages preserve memory lifetime but do not resolve FIFO ownership ordering.",
+    "Cross-domain HAL/kernel FIFO publication remains unproven; see haptic_richtap_fifo_publication_c7_20261104.",
+    "Candidate C7 was not installed and no device was listed by ADB during this review."
+  ],
+  "function_status": {
+    "aw_remove": "reviewed",
+    "richtap_file_open": "reviewed",
+    "richtap_file_release": "reviewed",
+    "richtap_file_mmap": "reviewed",
+    "richtap_file_unlocked_ioctl": "reviewed",
+    "map_changed": false,
+    "whole_driver_complete": false
+  },
+  "candidate_source_sha256": {
+    "haptic_86938_fn_034_richtap_file_release.c": "e605160f2f845f1e6ab1a3db091bbfddb2c3405db6b315589de7936f97f0d5c5",
+    "haptic_86938_fn_035_richtap_file_open.c": "f959c4710eb03b975b8cfdae63a658c1f8c3a60356af7cc2057cbbcecc517835",
+    "haptic_86938_fn_133_richtap_file_mmap.c": "45f44b7c153a6c68dcd053c5ff77a5a2e1a8a53ce5f9048c44c0cda389301c3c",
+    "haptic_86938_fn_134_richtap_file_unlocked_ioctl_exact.S": "fa42f0b17e416d5b9d858485c4c7db220b176867e2c94cd6b9ee91c9cd7fe6c1",
+    "haptic_86938_fn_132_aw_remove.c": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55",
+    "haptic_86938_lifetime.c": "1294b499efaefa943c9696702c7331424d27cc85ba17e183780a74617c92aabd",
+    "haptic_86938_globals.c": "742147506cc03f2f21a11f75ba01e236908642d1deb8a837a1cbd250b76155fa",
+    "haptic_86938_fn_004_richtap_write.c": "7fddbe3131e31e718d00bbf61503fdb15c19211eced1ec5b70037b6bbb49b648",
+    "haptic_86938_fn_005_richtap_read.c": "9dc562c066b91673ac2132f04e734a9eebd856d88c9ce8425516df1c53598388"
+  },
+  "evidence_paths": {
+    "candidate_c7_file_vma_objdump": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_file_vma_lifetime_c7_20261104/candidate_c7_file_vma_lifetime_objdump.txt",
+    "target_kernel_misc_vma_excerpt": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_file_vma_lifetime_c7_20261104/target_kernel_file_vma_lifetime_excerpt.txt",
+    "stock_ghidra_file_open": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0153_0010ea28_richtap_file_open.c",
+    "stock_assembly_file_open": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0153_richtap_file_open_0010ea28.asm",
+    "stock_ghidra_file_release": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0154_0010ea78_richtap_file_release.c",
+    "stock_assembly_file_release": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0154_richtap_file_release_0010ea78.asm",
+    "stock_ghidra_file_mmap": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0152_0010e92c_richtap_file_mmap.c",
+    "stock_assembly_file_mmap": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0152_richtap_file_mmap_0010e92c.asm",
+    "stock_ghidra_file_ioctl": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0151_0010e374_richtap_file_unlocked_ioctl.c",
+    "stock_assembly_file_ioctl": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0151_richtap_file_unlocked_ioctl_0010e374.asm",
+    "stock_ghidra_aw_remove": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c",
+    "stock_assembly_aw_remove": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0065_aw_remove_0010823c.asm"
+  },
+  "evidence_sha256": {
+    "candidate_c7_file_vma_lifetime_objdump": "49f44b9dd190cde4934f295aeeb4bfae33fce55fe6ab22a2e39251881f66a423",
+    "target_kernel_excerpt": "327769f8363ba32d764ce4fdd30e4297644fc6b1d7442a567105e67d5df59adc",
+    "stock_module": "05e946134e27ef741fcbb67cdbd2cc93bf9a75f439fa341178459c3e8825187e",
+    "stock_ghidra_file_open": "0906f0aa9ca932519f6f14791271246b1f59672664671c0601ef752e94ac5d8f",
+    "stock_assembly_file_open": "e5e1d2e60b782a6c5460e0c8b1c8b7a711d0a30474867db64401bfaccaaa60cb",
+    "stock_ghidra_file_release": "649c7b7b4fb604f9db9a03ee7790559a2efffff3a08c4b8256e5c8d9e139a94d",
+    "stock_assembly_file_release": "d1af3ad42062bedcc592de3a2128ba99de50bf7db7e6587cc75b3ebdbfa920be",
+    "stock_ghidra_file_mmap": "6a62ae37c5c18c7377f1c72aa36baf7f3fa9372e09f6b1d95098fdeede63ba4e",
+    "stock_assembly_file_mmap": "1a6d1588a566588ae834a68371cd43ff6e395bf97ce46645b48ebb7aa8e66f0f",
+    "stock_ghidra_file_ioctl": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824",
+    "stock_assembly_file_ioctl": "1c28ebb056e308409fe6892d83aa68aba8bba8a732e8f12b18c6024203dbe0ad",
+    "stock_ghidra_aw_remove": "f11ac7c0a5b01a5564e612e5c6a9693cbebd34e9c198fdd6ef17cb6c804e8438",
+    "stock_assembly_aw_remove": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562",
+    "target_kernel_file_vma_excerpt": "327769f8363ba32d764ce4fdd30e4297644fc6b1d7442a567105e67d5df59adc"
+  },
+  "build": {
+    "performed": false,
+    "reason": "No reconstruction source or map changed; Docker was used read-only for candidate disassembly"
+  }
+}
