@@ -1,0 +1,292 @@
+kernel_commit=3356b35306d35d5a480e3b63df1a9f065b5d9f55
+192be8175ff7fed8445758f98a18fc67e88245801ee75f84378af82fda3dd46e  /work/src/kernel/kernel_platform/common/kernel/workqueue.c
+271dab9b1aaea7f53b44b2b438b3466f988e0692c0529b7094bfbfa049e94a2f  /work/src/kernel/kernel_platform/common/drivers/base/firmware_loader/main.c
+d18cb5cf546c17cc36a8a8a9e9bcf716143169dffd05a4d5d2eefb7857ca0f17  /work/src/kernel/kernel_platform/common/drivers/base/firmware_loader/fallback.c
+1a20f735e2f1dc18d993dac67255f1e261c17867e2517e9fe63b7f8b24cc62b0  /work/src/kernel/kernel_platform/common/drivers/base/firmware_loader/fallback_table.c
+462dc92c984f99e4752bb531ab5097a9e3213628401588d406362b584eb51b33  /work/src/kernel/kernel_platform/common/drivers/base/firmware_loader/sysfs.c
+922418f3d7a1396cf99df51f5ee381cd70feccda008ee30c77a15bf92e367acd  /work/src/kernel/kernel_platform/common/drivers/base/firmware_loader/sysfs.h
+063411df3d77d83414f059be2de77b29e5cc790f12bd89b4c94712eca5a84b51  /work/src/kernel/kernel_platform/common/include/linux/firmware.h
+b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288  /work/src/kernel/.codex-kbuild/identity/.config
+--- target firmware config ---
+CONFIG_FW_LOADER_USER_HELPER=y
+# CONFIG_FW_LOADER_USER_HELPER_FALLBACK is not set
+--- cancel and no-racing-enqueue semantics ---
+static bool __cancel_work(struct work_struct *work, u32 cflags)
+{
+	struct work_offq_data offqd;
+	unsigned long irq_flags;
+	int ret;
+
+	ret = work_grab_pending(work, cflags, &irq_flags);
+
+	work_offqd_unpack(&offqd, *work_data_bits(work));
+
+	if (cflags & WORK_CANCEL_DISABLE)
+		work_offqd_disable(&offqd);
+
+	set_work_pool_and_clear_pending(work, offqd.pool_id,
+					work_offqd_pack_flags(&offqd));
+	local_irq_restore(irq_flags);
+	return ret;
+}
+
+static bool __cancel_work_sync(struct work_struct *work, u32 cflags)
+{
+	bool ret;
+
+	ret = __cancel_work(work, cflags | WORK_CANCEL_DISABLE);
+
+	if (*work_data_bits(work) & WORK_OFFQ_BH)
+		WARN_ON_ONCE(in_hardirq());
+	else
+		might_sleep();
+
+	/*
+	 * Skip __flush_work() during early boot when we know that @work isn't
+	 * executing. This allows canceling during early boot.
+	 */
+	if (wq_online)
+		__flush_work(work, true);
+
+	if (!(cflags & WORK_CANCEL_DISABLE))
+		enable_work(work);
+
+	return ret;
+}
+
+/*
+ * See cancel_delayed_work()
+ */
+bool cancel_work(struct work_struct *work)
+{
+	return __cancel_work(work, 0);
+}
+EXPORT_SYMBOL(cancel_work);
+
+/**
+ * cancel_work_sync - cancel a work and wait for it to finish
+ * @work: the work to cancel
+ *
+ * Cancel @work and wait for its execution to finish. This function can be used
+ * even if the work re-queues itself or migrates to another workqueue. On return
+ * from this function, @work is guaranteed to be not pending or executing on any
+ * CPU as long as there aren't racing enqueues.
+ *
+ * cancel_work_sync(&delayed_work->work) must not be used for delayed_work's.
+ * Use cancel_delayed_work_sync() instead.
+ *
+ * Must be called from a sleepable context if @work was last queued on a non-BH
+ * workqueue. Can also be called from non-hardirq atomic contexts including BH
+ * if @work was last queued on a BH workqueue.
+ *
+ * Returns %true if @work was pending, %false otherwise.
+ */
+bool cancel_work_sync(struct work_struct *work)
+{
+	return __cancel_work_sync(work, 0);
+}
+EXPORT_SYMBOL_GPL(cancel_work_sync);
+
+/**
+ * cancel_delayed_work - cancel a delayed work
+ * @dwork: delayed_work to cancel
+ *
+ * Kill off a pending delayed_work.
+ *
+ * Return: %true if @dwork was pending and canceled; %false if it wasn't
+ * pending.
+ *
+ * Note:
+ * The work callback function may still be running on return, unless
+ * it returns %true and the work doesn't re-arm itself.  Explicitly flush or
+ * use cancel_delayed_work_sync() to wait on it.
+ *
+ * This function is safe to call from any context including IRQ handler.
+ */
+bool cancel_delayed_work(struct delayed_work *dwork)
+{
+	return __cancel_work(&dwork->work, WORK_CANCEL_DELAYED);
+}
+EXPORT_SYMBOL(cancel_delayed_work);
+
+/**
+ * cancel_delayed_work_sync - cancel a delayed work and wait for it to finish
+ * @dwork: the delayed work cancel
+ *
+ * This is cancel_work_sync() for delayed works.
+ *
+ * Return:
+ * %true if @dwork was pending, %false otherwise.
+ */
+bool cancel_delayed_work_sync(struct delayed_work *dwork)
+{
+	return __cancel_work_sync(&dwork->work, WORK_CANCEL_DELAYED);
+}
+EXPORT_SYMBOL(cancel_delayed_work_sync);
+
+/**
+--- nowait work scheduling and callback ---
+	put_device(fw_work->device); /* taken in request_firmware_nowait() */
+
+	module_put(fw_work->module);
+	kfree_const(fw_work->name);
+	kfree(fw_work);
+}
+
+
+static int _request_firmware_nowait(
+	struct module *module, bool uevent,
+	const char *name, struct device *device, gfp_t gfp, void *context,
+	void (*cont)(const struct firmware *fw, void *context), bool nowarn)
+{
+	struct firmware_work *fw_work;
+
+	fw_work = kzalloc(sizeof(struct firmware_work), gfp);
+	if (!fw_work)
+		return -ENOMEM;
+
+	fw_work->module = module;
+	fw_work->name = kstrdup_const(name, gfp);
+	if (!fw_work->name) {
+		kfree(fw_work);
+		return -ENOMEM;
+	}
+	fw_work->device = device;
+	fw_work->context = context;
+	fw_work->cont = cont;
+	fw_work->opt_flags = FW_OPT_NOWAIT |
+		(uevent ? FW_OPT_UEVENT : FW_OPT_USERHELPER) |
+		(nowarn ? FW_OPT_NO_WARN : 0);
+
+	if (!uevent && fw_cache_is_setup(device, name)) {
+		kfree_const(fw_work->name);
+		kfree(fw_work);
+		return -EOPNOTSUPP;
+	}
+
+	if (!try_module_get(module)) {
+		kfree_const(fw_work->name);
+		kfree(fw_work);
+		return -EFAULT;
+	}
+
+	get_device(fw_work->device);
+	INIT_WORK(&fw_work->work, request_firmware_work_func);
+	schedule_work(&fw_work->work);
+	return 0;
+}
+
+/**
+ * request_firmware_nowait() - asynchronous version of request_firmware
+ * @module: module requesting the firmware
+ * @uevent: sends uevent to copy the firmware image if this flag
+ *	is non-zero else the firmware copy must be done manually.
+ * @name: name of firmware file
+ * @device: device for which firmware is being loaded
+ * @gfp: allocation flags
+ * @context: will be passed over to @cont, and
+ *	@fw may be %NULL if firmware request fails.
+ * @cont: function will be called asynchronously when the firmware
+ *	request is over.
+ *
+ *	Caller must hold the reference count of @device.
+ *
+ *	Asynchronous variant of request_firmware() for user contexts:
+ *		- sleep for as small periods as possible since it may
+ *		  increase kernel boot time of built-in device drivers
+ *		  requesting firmware in their ->probe() methods, if
+ *		  @gfp is GFP_KERNEL.
+ *
+ *		- can't sleep at all if @gfp is GFP_ATOMIC.
+ **/
+int request_firmware_nowait(
+	struct module *module, bool uevent,
+	const char *name, struct device *device, gfp_t gfp, void *context,
+	void (*cont)(const struct firmware *fw, void *context))
+{
+	return _request_firmware_nowait(module, uevent, name, device, gfp,
+					context, cont, false);
+
+}
+EXPORT_SYMBOL(request_firmware_nowait);
+--- fallback timeout calculation and wait ---
+static long firmware_loading_timeout(void)
+{
+	return __firmware_loading_timeout() > 0 ?
+		__firmware_loading_timeout() * HZ : MAX_JIFFY_OFFSET;
+}
+
+		if (retval == -ERESTARTSYS)
+			retval = -EINTR;
+	} else if (fw_priv->is_paged_buf && !fw_priv->data)
+		retval = -ENOMEM;
+
+out:
+	device_del(f_dev);
+err_put_dev:
+	put_device(f_dev);
+	return retval;
+}
+
+static int fw_load_from_user_helper(struct firmware *firmware,
+				    const char *name, struct device *device,
+				    u32 opt_flags)
+{
+	struct fw_sysfs *fw_sysfs;
+	long timeout;
+	int ret;
+
+	timeout = firmware_loading_timeout();
+	if (opt_flags & FW_OPT_NOWAIT) {
+		timeout = usermodehelper_read_lock_wait(timeout);
+		if (!timeout) {
+			dev_dbg(device, "firmware: %s loading timed out\n",
+				name);
+			return -EBUSY;
+		}
+	} else {
+		ret = usermodehelper_read_trylock();
+		if (WARN_ON(ret)) {
+--- timeout default ---
+ */
+
+struct firmware_fallback_config fw_fallback_config = {
+	.force_sysfs_fallback = IS_ENABLED(CONFIG_FW_LOADER_USER_HELPER_FALLBACK),
+	.loading_timeout = 60,
+	.old_timeout = 60,
+};
+EXPORT_SYMBOL_NS_GPL(fw_fallback_config, FIRMWARE_LOADER_PRIVATE);
+
+#ifdef CONFIG_SYSCTL
+--- runtime timeout setting ---
+
+#ifdef CONFIG_FW_LOADER_USER_HELPER
+static ssize_t timeout_show(const struct class *class, const struct class_attribute *attr,
+			    char *buf)
+{
+	return sysfs_emit(buf, "%d\n", __firmware_loading_timeout());
+}
+
+/**
+ * timeout_store() - set number of seconds to wait for firmware
+ * @class: device class pointer
+ * @attr: device attribute pointer
+ * @buf: buffer to scan for timeout value
+ * @count: number of bytes in @buf
+ *
+ *	Sets the number of seconds to wait for the firmware.  Once
+ *	this expires an error will be returned to the driver and no
+ *	firmware will be provided.
+ *
+ *	Note: zero means 'wait forever'.
+ **/
+static ssize_t timeout_store(const struct class *class, const struct class_attribute *attr,
+			     const char *buf, size_t count)
+{
+	int tmp_loading_timeout = simple_strtol(buf, NULL, 10);
+
+	if (tmp_loading_timeout < 0)
+		tmp_loading_timeout = 0;
+
+	__fw_fallback_set_timeout(tmp_loading_timeout);
+

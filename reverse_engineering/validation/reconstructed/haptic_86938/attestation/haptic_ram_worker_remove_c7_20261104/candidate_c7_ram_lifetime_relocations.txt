@@ -1,0 +1,584 @@
+
+/work/module/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000001f98 <ram_work_routine>:
+    1f98:      	paciasp
+    1f9c:      	stp	x29, x30, [sp, #-0x20]!
+    1fa0:      	stp	x20, x19, [sp, #0x10]
+    1fa4:      	mov	x29, sp
+    1fa8:      	mov	x19, x0
+    1fac:      	bl	0x1fac <ram_work_routine+0x14>
+		0000000000001fac:  R_AARCH64_CALL26	haptic_lifetime_is_probe_complete
+    1fb0:      	mov	w20, w0
+    1fb4:      	bl	0x1fb4 <ram_work_routine+0x1c>
+		0000000000001fb4:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    1fb8:      	tbz	w20, #0x0, 0x1fd4 <ram_work_routine+0x3c>
+    1fbc:      	tbnz	w0, #0x0, 0x1ff0 <ram_work_routine+0x58>
+    1fc0:      	sub	x8, x19, #0x3bb
+    1fc4:      	sub	x0, x19, #0x3c0
+    1fc8:      	strh	wzr, [x8]
+    1fcc:      	bl	0x1fcc <ram_work_routine+0x34>
+		0000000000001fcc:  R_AARCH64_CALL26	haptic_lifetime_request_ram_firmware
+    1fd0:      	b	0x1ff0 <ram_work_routine+0x58>
+    1fd4:      	tbnz	w0, #0x0, 0x1ff0 <ram_work_routine+0x58>
+    1fd8:      	adrp	x8, 0x1000 <aw8693x_set_wav_seq+0x58>
+		0000000000001fd8:  R_AARCH64_ADR_PREL_PG_HI21	system_wq
+    1fdc:      	mov	w0, #0x20               // =32
+    1fe0:      	mov	x2, x19
+    1fe4:      	ldr	x1, [x8]
+		0000000000001fe4:  R_AARCH64_LDST64_ABS_LO12_NC	system_wq
+    1fe8:      	mov	w3, #0xfa               // =250
+    1fec:      	bl	0x1fec <ram_work_routine+0x54>
+		0000000000001fec:  R_AARCH64_CALL26	queue_delayed_work_on
+    1ff0:      	ldp	x20, x19, [sp, #0x10]
+    1ff4:      	ldp	x29, x30, [sp], #0x20
+    1ff8:      	autiasp
+    1ffc:      	ret
+
+0000000000002004 <ram_load>:
+    2004:      	paciasp
+    2008:      	stp	x29, x30, [sp, #-0x40]!
+    200c:      	stp	x24, x23, [sp, #0x10]
+    2010:      	stp	x22, x21, [sp, #0x20]
+    2014:      	stp	x20, x19, [sp, #0x30]
+    2018:      	mov	x29, sp
+    201c:      	adrp	x21, 0x2000 <ram_work_routine+0x68>
+		000000000000201c:  R_AARCH64_ADR_PREL_PG_HI21	.bss+0x40
+    2020:      	adrp	x9, 0x2000 <ram_work_routine+0x68>
+		0000000000002020:  R_AARCH64_ADR_PREL_PG_HI21	aw_ram_name
+    2024:      	mov	x19, x1
+    2028:      	ldrb	w8, [x21]
+		0000000000002028:  R_AARCH64_LDST8_ABS_LO12_NC	.bss+0x40
+    202c:      	ldr	x4, [x9]
+		000000000000202c:  R_AARCH64_LDST64_ABS_LO12_NC	aw_ram_name
+    2030:      	add	w8, w8, #0x1
+    2034:      	strb	w8, [x21]
+		0000000000002034:  R_AARCH64_LDST8_ABS_LO12_NC	.bss+0x40
+    2038:      	cbnz	x0, 0x20b8 <ram_load+0xb4>
+    203c:      	adrp	x0, 0x2000 <ram_work_routine+0x68>
+		000000000000203c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x8a2
+    2040:      	add	x0, x0, #0x0
+		0000000000002040:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x8a2
+    2044:      	adrp	x1, 0x2000 <ram_work_routine+0x68>
+		0000000000002044:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x18
+    2048:      	add	x1, x1, #0x0
+		0000000000002048:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x18
+    204c:      	adrp	x3, 0x2000 <ram_work_routine+0x68>
+		000000000000204c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0xd4c
+    2050:      	add	x3, x3, #0x0
+		0000000000002050:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0xd4c
+    2054:      	mov	w2, #0x6e9              // =1769
+    2058:      	bl	0x2058 <ram_load+0x54>
+		0000000000002058:  R_AARCH64_CALL26	_printk
+    205c:      	mov	x0, xzr
+    2060:      	bl	0x2060 <ram_load+0x5c>
+		0000000000002060:  R_AARCH64_CALL26	release_firmware
+    2064:      	ldrb	w8, [x21]
+		0000000000002064:  R_AARCH64_LDST8_ABS_LO12_NC	.bss+0x40
+    2068:      	cmp	w8, #0x14
+    206c:      	b.hi	0x2350 <ram_load+0x34c>
+    2070:      	bl	0x2070 <ram_load+0x6c>
+		0000000000002070:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    2074:      	tbnz	w0, #0x0, 0x2350 <ram_load+0x34c>
+    2078:      	adrp	x8, 0x2000 <ram_work_routine+0x68>
+		0000000000002078:  R_AARCH64_ADR_PREL_PG_HI21	system_wq
+    207c:      	add	x2, x19, #0x3c0
+    2080:      	mov	w0, #0x20               // =32
+    2084:      	ldr	x1, [x8]
+		0000000000002084:  R_AARCH64_LDST64_ABS_LO12_NC	system_wq
+    2088:      	mov	w3, #0xfa               // =250
+    208c:      	bl	0x208c <ram_load+0x88>
+		000000000000208c:  R_AARCH64_CALL26	queue_delayed_work_on
+    2090:      	ldrb	w4, [x21]
+		0000000000002090:  R_AARCH64_LDST8_ABS_LO12_NC	.bss+0x40
+    2094:      	adrp	x0, 0x2000 <ram_work_routine+0x68>
+		0000000000002094:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x8c5
+    2098:      	add	x0, x0, #0x0
+		0000000000002098:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x8c5
+    209c:      	adrp	x1, 0x2000 <ram_work_routine+0x68>
+		000000000000209c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x18
+    20a0:      	add	x1, x1, #0x0
+		00000000000020a0:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x18
+    20a4:      	adrp	x3, 0x2000 <ram_work_routine+0x68>
+		00000000000020a4:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0xd4c
+    20a8:      	add	x3, x3, #0x0
+		00000000000020a8:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0xd4c
+    20ac:      	mov	w2, #0x6ef              // =1775
+    20b0:      	bl	0x20b0 <ram_load+0xac>
+		00000000000020b0:  R_AARCH64_CALL26	_printk
+    20b4:      	b	0x2350 <ram_load+0x34c>
+    20b8:      	ldr	x5, [x0]
+    20bc:      	mov	x20, x0
+    20c0:      	adrp	x0, 0x2000 <ram_work_routine+0x68>
+		00000000000020c0:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x128f
+    20c4:      	add	x0, x0, #0x0
+		00000000000020c4:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x128f
+    20c8:      	adrp	x1, 0x2000 <ram_work_routine+0x68>
+		00000000000020c8:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x18
+    20cc:      	add	x1, x1, #0x0
+		00000000000020cc:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x18
+    20d0:      	adrp	x3, 0x2000 <ram_work_routine+0x68>
+		00000000000020d0:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0xd4c
+    20d4:      	add	x3, x3, #0x0
+		00000000000020d4:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0xd4c
+    20d8:      	mov	w2, #0x6f4              // =1780
+    20dc:      	bl	0x20dc <ram_load+0xd8>
+		00000000000020dc:  R_AARCH64_CALL26	_printk
+    20e0:      	ldp	x9, x8, [x20]
+    20e4:      	subs	x14, x9, #0x3
+    20e8:      	b.lo	0x2128 <ram_load+0x124>
+    20ec:      	sub	x13, x9, #0x2
+    20f0:      	cmp	x13, #0x2
+    20f4:      	b.hs	0x21e0 <ram_load+0x1dc>
+    20f8:      	mov	w11, wzr
+    20fc:      	mov	w10, #0x2               // =2
+    2100:      	mov	w12, #0x2               // =2
+    2104:      	add	w12, w12, #0x1
+    2108:      	ldrb	w13, [x8, x10]
+    210c:      	sxtw	x10, w12
+    2110:      	add	w12, w12, #0x1
+    2114:      	cmp	x9, x10
+    2118:      	add	w11, w11, w13
+    211c:      	b.hi	0x2108 <ram_load+0x104>
+    2120:      	and	w21, w11, #0xffff
+    2124:      	b	0x212c <ram_load+0x128>
+    2128:      	mov	w21, wzr
+    212c:      	ldrh	w8, [x8]
+    2130:      	rev	w8, w8
+    2134:      	cmp	w21, w8, lsr #16
+    2138:      	b.ne	0x21b0 <ram_load+0x1ac>
+    213c:      	adrp	x0, 0x2000 <ram_work_routine+0x68>
+		000000000000213c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x15dc
+    2140:      	add	x0, x0, #0x0
+		0000000000002140:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x15dc
+    2144:      	adrp	x1, 0x2000 <ram_work_routine+0x68>
+		0000000000002144:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x18
+    2148:      	add	x1, x1, #0x0
+		0000000000002148:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x18
+    214c:      	adrp	x3, 0x2000 <ram_work_routine+0x68>
+		000000000000214c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0xd4c
+    2150:      	add	x3, x3, #0x0
+		0000000000002150:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0xd4c
+    2154:      	mov	w2, #0x6fd              // =1789
+    2158:      	mov	w4, w21
+    215c:      	bl	0x215c <ram_load+0x158>
+		000000000000215c:  R_AARCH64_CALL26	_printk
+    2160:      	str	w21, [x19, #0x454]
+    2164:      	nop
+
+00000000000031d0 <ram_update_store>:
+    31d0:      	paciasp
+    31d4:      	sub	sp, sp, #0x40
+    31d8:      	stp	x29, x30, [sp, #0x10]
+    31dc:      	str	x21, [sp, #0x20]
+    31e0:      	stp	x20, x19, [sp, #0x30]
+    31e4:      	add	x29, sp, #0x10
+    31e8:      	mrs	x8, SP_EL0
+    31ec:      	mov	x19, x3
+    31f0:      	mov	x20, x2
+    31f4:      	ldr	x8, [x8, #0x710]
+    31f8:      	str	x8, [sp, #0x8]
+    31fc:      	ldr	x21, [x0, #0x98]
+    3200:      	str	wzr, [sp, #0x4]
+    3204:      	bl	0x3204 <ram_update_store+0x34>
+		0000000000003204:  R_AARCH64_CALL26	haptic_lifetime_is_shutting_down
+    3208:      	tbz	w0, #0x0, 0x3214 <ram_update_store+0x44>
+    320c:      	mov	x19, #-0x13             // =-19
+    3210:      	b	0x3244 <ram_update_store+0x74>
+    3214:      	add	x2, sp, #0x4
+    3218:      	mov	x0, x20
+    321c:      	mov	w1, wzr
+    3220:      	bl	0x3220 <ram_update_store+0x50>
+		0000000000003220:  R_AARCH64_CALL26	kstrtouint
+    3224:      	tbnz	w0, #0x1f, 0x3240 <ram_update_store+0x70>
+    3228:      	ldr	w8, [sp, #0x4]
+    322c:      	cbz	w8, 0x3244 <ram_update_store+0x74>
+    3230:      	sub	x0, x21, #0xa8
+    3234:      	sturh	wzr, [x21, #-0xa3]
+    3238:      	bl	0x3238 <ram_update_store+0x68>
+		0000000000003238:  R_AARCH64_CALL26	haptic_lifetime_request_ram_firmware
+    323c:      	b	0x3244 <ram_update_store+0x74>
+    3240:      	sxtw	x19, w0
+    3244:      	mrs	x8, SP_EL0
+    3248:      	ldr	x8, [x8, #0x710]
+    324c:      	ldr	x9, [sp, #0x8]
+    3250:      	cmp	x8, x9
+    3254:      	b.ne	0x3274 <ram_update_store+0xa4>
+    3258:      	mov	x0, x19
+    325c:      	ldp	x20, x19, [sp, #0x30]
+    3260:      	ldr	x21, [sp, #0x20]
+    3264:      	ldp	x29, x30, [sp, #0x10]
+    3268:      	add	sp, sp, #0x40
+    326c:      	autiasp
+    3270:      	ret
+    3274:      	bl	0x3274 <ram_update_store+0xa4>
+		0000000000003274:  R_AARCH64_CALL26	__stack_chk_fail
+
+0000000000006528 <aw_remove>:
+    6528:      	paciasp
+    652c:      	stp	x29, x30, [sp, #-0x30]!
+    6530:      	stp	x22, x21, [sp, #0x10]
+    6534:      	stp	x20, x19, [sp, #0x20]
+    6538:      	mov	x29, sp
+    653c:      	mov	x22, x0
+    6540:      	bl	0x6540 <aw_remove+0x18>
+		0000000000006540:  R_AARCH64_CALL26	haptic_lifetime_transition_begin
+    6544:      	ldr	x19, [x22, #0xb8]
+    6548:      	cbnz	x19, 0x6564 <aw_remove+0x3c>
+    654c:      	bl	0x654c <aw_remove+0x24>
+		000000000000654c:  R_AARCH64_CALL26	haptic_lifetime_transition_end
+    6550:      	ldp	x20, x19, [sp, #0x20]
+    6554:      	ldp	x22, x21, [sp, #0x10]
+    6558:      	ldp	x29, x30, [sp], #0x30
+    655c:      	autiasp
+    6560:      	ret
+    6564:      	adrp	x0, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006564:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x752
+    6568:      	add	x0, x0, #0x0
+		0000000000006568:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x752
+    656c:      	adrp	x1, 0x6000 <aw8693x_get_wav_loop+0x64>
+		000000000000656c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x18
+    6570:      	add	x1, x1, #0x0
+		0000000000006570:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x18
+    6574:      	adrp	x3, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006574:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x12fc
+    6578:      	add	x3, x3, #0x0
+		0000000000006578:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x12fc
+    657c:      	mov	w2, #0x11d9             // =4569
+    6580:      	bl	0x6580 <aw_remove+0x58>
+		0000000000006580:  R_AARCH64_CALL26	_printk
+    6584:      	mov	x0, x19
+    6588:      	bl	0x6588 <aw_remove+0x60>
+		0000000000006588:  R_AARCH64_CALL26	haptic_lifetime_block_file_access
+    658c:      	ldr	x8, [x19, #0xf8]
+    6590:      	mov	w20, w0
+    6594:      	cbz	x8, 0x65a4 <aw_remove+0x7c>
+    6598:      	add	x0, x19, #0xa8
+    659c:      	bl	0x659c <aw_remove+0x74>
+		000000000000659c:  R_AARCH64_CALL26	led_classdev_unregister
+    65a0:      	str	xzr, [x19, #0xf8]
+    65a4:      	ldr	x21, [x19, #0x448]
+    65a8:      	cbz	x21, 0x65c8 <aw_remove+0xa0>
+    65ac:      	add	x0, x19, #0x3c0
+    65b0:      	bl	0x65b0 <aw_remove+0x88>
+		00000000000065b0:  R_AARCH64_CALL26	cancel_delayed_work_sync
+    65b4:      	bl	0x65b4 <aw_remove+0x8c>
+		00000000000065b4:  R_AARCH64_CALL26	haptic_lifetime_wait_ram_callbacks
+    65b8:      	add	x0, x19, #0x3c0
+    65bc:      	bl	0x65bc <aw_remove+0x94>
+		00000000000065bc:  R_AARCH64_CALL26	cancel_delayed_work_sync
+    65c0:      	tbnz	w20, #0x0, 0x65d0 <aw_remove+0xa8>
+    65c4:      	b	0x660c <aw_remove+0xe4>
+    65c8:      	bl	0x65c8 <aw_remove+0xa0>
+		00000000000065c8:  R_AARCH64_CALL26	haptic_lifetime_wait_ram_callbacks
+    65cc:      	tbz	w20, #0x0, 0x65e8 <aw_remove+0xc0>
+    65d0:      	add	x0, x19, #0x628
+    65d4:      	bl	0x65d4 <aw_remove+0xac>
+		00000000000065d4:  R_AARCH64_CALL26	cancel_work_sync
+    65d8:      	add	x0, x19, #0x648
+    65dc:      	bl	0x65dc <aw_remove+0xb4>
+		00000000000065dc:  R_AARCH64_CALL26	cancel_work_sync
+    65e0:      	add	x0, x19, #0x668
+    65e4:      	bl	0x65e4 <aw_remove+0xbc>
+		00000000000065e4:  R_AARCH64_CALL26	cancel_work_sync
+    65e8:      	ldrb	w8, [x19, #0x15]
+    65ec:      	tbnz	w8, #0x0, 0x660c <aw_remove+0xe4>
+    65f0:      	ldr	w0, [x19, #0x50]
+    65f4:      	bl	0x65f4 <aw_remove+0xcc>
+		00000000000065f4:  R_AARCH64_CALL26	gpio_to_desc
+    65f8:      	bl	0x65f8 <aw_remove+0xd0>
+		00000000000065f8:  R_AARCH64_CALL26	gpiod_to_irq
+    65fc:      	mov	w1, w0
+    6600:      	add	x0, x22, #0x20
+    6604:      	mov	x2, x19
+    6608:      	bl	0x6608 <aw_remove+0xe0>
+		0000000000006608:  R_AARCH64_CALL26	devm_free_irq
+    660c:      	add	x0, x19, #0x520
+    6610:      	bl	0x6610 <aw_remove+0xe8>
+		0000000000006610:  R_AARCH64_CALL26	hrtimer_cancel
+    6614:      	add	x0, x19, #0x330
+    6618:      	bl	0x6618 <aw_remove+0xf0>
+		0000000000006618:  R_AARCH64_CALL26	hrtimer_cancel
+    661c:      	add	x0, x19, #0x560
+    6620:      	bl	0x6620 <aw_remove+0xf8>
+		0000000000006620:  R_AARCH64_CALL26	cancel_work_sync
+    6624:      	add	x0, x19, #0x3a0
+    6628:      	bl	0x6628 <aw_remove+0x100>
+		0000000000006628:  R_AARCH64_CALL26	cancel_work_sync
+    662c:      	add	x0, x19, #0x428
+    6630:      	bl	0x6630 <aw_remove+0x108>
+		0000000000006630:  R_AARCH64_CALL26	cancel_work_sync
+    6634:      	add	x0, x19, #0x520
+    6638:      	bl	0x6638 <aw_remove+0x110>
+		0000000000006638:  R_AARCH64_CALL26	hrtimer_cancel
+    663c:      	add	x0, x19, #0x330
+    6640:      	bl	0x6640 <aw_remove+0x118>
+		0000000000006640:  R_AARCH64_CALL26	hrtimer_cancel
+    6644:      	add	x0, x19, #0x560
+    6648:      	bl	0x6648 <aw_remove+0x120>
+		0000000000006648:  R_AARCH64_CALL26	cancel_work_sync
+    664c:      	add	x0, x19, #0x3a0
+    6650:      	bl	0x6650 <aw_remove+0x128>
+		0000000000006650:  R_AARCH64_CALL26	cancel_work_sync
+    6654:      	add	x0, x19, #0x428
+    6658:      	bl	0x6658 <aw_remove+0x130>
+		0000000000006658:  R_AARCH64_CALL26	cancel_work_sync
+    665c:      	cbz	x21, 0x666c <aw_remove+0x144>
+    6660:      	mov	x0, x21
+    6664:      	bl	0x6664 <aw_remove+0x13c>
+		0000000000006664:  R_AARCH64_CALL26	destroy_workqueue
+    6668:      	str	xzr, [x19, #0x448]
+    666c:      	tbz	w20, #0x0, 0x667c <aw_remove+0x154>
+    6670:      	ldr	x0, [x19, #0x608]
+    6674:      	bl	0x6674 <aw_remove+0x14c>
+		0000000000006674:  R_AARCH64_CALL26	kfree
+    6678:      	str	xzr, [x19, #0x608]
+    667c:      	mov	x0, x19
+    6680:      	bl	0x6680 <aw_remove+0x158>
+		0000000000006680:  R_AARCH64_CALL26	haptic_lifetime_retire_state
+    6684:      	b	0x654c <aw_remove+0x24>
+
+0000000000006d7c <haptic_lifetime_block_file_access>:
+    6d7c:      	paciasp
+    6d80:      	sub	sp, sp, #0x60
+    6d84:      	stp	x29, x30, [sp, #0x30]
+    6d88:      	str	x21, [sp, #0x40]
+    6d8c:      	stp	x20, x19, [sp, #0x50]
+    6d90:      	add	x29, sp, #0x30
+    6d94:      	mrs	x8, SP_EL0
+    6d98:      	mov	x19, x0
+    6d9c:      	adrp	x9, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006d9c:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x398
+    6da0:      	ldr	x8, [x8, #0x710]
+    6da4:      	mov	w10, #0x1               // =1
+    6da8:      	adrp	x0, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006da8:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x3d0
+    6dac:      	add	x0, x0, #0x0
+		0000000000006dac:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x3d0
+    6db0:      	stur	x8, [x29, #-0x8]
+    6db4:      	adrp	x8, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006db4:  R_AARCH64_ADR_PREL_PG_HI21	.bss+0x48
+    6db8:      	str	w10, [x9]
+		0000000000006db8:  R_AARCH64_LDST32_ABS_LO12_NC	.data+0x398
+    6dbc:      	strb	wzr, [x8]
+		0000000000006dbc:  R_AARCH64_LDST8_ABS_LO12_NC	.bss+0x48
+    6dc0:      	bl	0x6dc0 <haptic_lifetime_block_file_access+0x44>
+		0000000000006dc0:  R_AARCH64_CALL26	mutex_lock
+    6dc4:      	adrp	x8, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006dc4:  R_AARCH64_ADR_PREL_PG_HI21	g_aw_haptic
+    6dc8:      	ldr	x20, [x8]
+		0000000000006dc8:  R_AARCH64_LDST64_ABS_LO12_NC	g_aw_haptic
+    6dcc:      	cmp	x20, x19
+    6dd0:      	b.ne	0x6dd8 <haptic_lifetime_block_file_access+0x5c>
+    6dd4:      	str	xzr, [x8]
+		0000000000006dd4:  R_AARCH64_LDST64_ABS_LO12_NC	g_aw_haptic
+    6dd8:      	adrp	x8, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006dd8:  R_AARCH64_ADR_PREL_PG_HI21	.bss+0x58
+    6ddc:      	ldr	x9, [x8]
+		0000000000006ddc:  R_AARCH64_LDST64_ABS_LO12_NC	.bss+0x58
+    6de0:      	cmp	x9, x19
+    6de4:      	b.ne	0x6dec <haptic_lifetime_block_file_access+0x70>
+    6de8:      	str	xzr, [x8]
+		0000000000006de8:  R_AARCH64_LDST64_ABS_LO12_NC	.bss+0x58
+    6dec:      	adrp	x8, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006dec:  R_AARCH64_ADR_PREL_PG_HI21	.bss+0x50
+    6df0:      	ldr	x21, [x8]
+		0000000000006df0:  R_AARCH64_LDST64_ABS_LO12_NC	.bss+0x50
+    6df4:      	cbz	x21, 0x6e24 <haptic_lifetime_block_file_access+0xa8>
+    6df8:      	ldr	x8, [x21, #0x50]
+    6dfc:      	cmp	x8, x19
+    6e00:      	b.eq	0x6e0c <haptic_lifetime_block_file_access+0x90>
+    6e04:      	mov	x21, xzr
+    6e08:      	b	0x6e24 <haptic_lifetime_block_file_access+0xa8>
+    6e0c:      	add	x0, x21, #0x8
+    6e10:      	bl	0x6e10 <haptic_lifetime_block_file_access+0x94>
+		0000000000006e10:  R_AARCH64_CALL26	mutex_lock
+    6e14:      	mov	w8, #0x1                // =1
+    6e18:      	add	x0, x21, #0x8
+    6e1c:      	strb	w8, [x21, #0x68]
+    6e20:      	bl	0x6e20 <haptic_lifetime_block_file_access+0xa4>
+		0000000000006e20:  R_AARCH64_CALL26	mutex_unlock
+    6e24:      	adrp	x0, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006e24:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x3d0
+    6e28:      	add	x0, x0, #0x0
+		0000000000006e28:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x3d0
+    6e2c:      	bl	0x6e2c <haptic_lifetime_block_file_access+0xb0>
+		0000000000006e2c:  R_AARCH64_CALL26	mutex_unlock
+    6e30:      	cmp	x20, x19
+    6e34:      	b.ne	0x6e58 <haptic_lifetime_block_file_access+0xdc>
+    6e38:      	adrp	x8, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006e38:  R_AARCH64_ADR_PREL_PG_HI21	.bss+0x68
+    6e3c:      	ldrb	w9, [x8]
+		0000000000006e3c:  R_AARCH64_LDST8_ABS_LO12_NC	.bss+0x68
+    6e40:      	cmp	w9, #0x1
+    6e44:      	b.ne	0x6e58 <haptic_lifetime_block_file_access+0xdc>
+    6e48:      	adrp	x0, 0x6000 <aw8693x_get_wav_loop+0x64>
+		0000000000006e48:  R_AARCH64_ADR_PREL_PG_HI21	richtap_misc
+    6e4c:      	add	x0, x0, #0x0
+		0000000000006e4c:  R_AARCH64_ADD_ABS_LO12_NC	richtap_misc
+    6e50:      	strb	wzr, [x8]
+		0000000000006e50:  R_AARCH64_LDST8_ABS_LO12_NC	.bss+0x68
+    6e54:      	bl	0x6e54 <haptic_lifetime_block_file_access+0xd8>
+		0000000000006e54:  R_AARCH64_CALL26	misc_deregister
+    6e58:      	cbz	x21, 0x6ea8 <haptic_lifetime_block_file_access+0x12c>
+    6e5c:      	ldr	w8, [x21, #0x58]
+    6e60:      	cbz	w8, 0x6ea8 <haptic_lifetime_block_file_access+0x12c>
+    6e64:      	mov	x0, sp
+    6e68:      	mov	w1, wzr
+    6e6c:      	stp	xzr, xzr, [sp, #0x18]
+    6e70:      	stp	xzr, xzr, [sp, #0x8]
+    6e74:      	str	xzr, [sp]
+    6e78:      	bl	0x6e78 <haptic_lifetime_block_file_access+0xfc>
+		0000000000006e78:  R_AARCH64_CALL26	init_wait_entry
+    6e7c:      	add	x0, x21, #0x38
+    6e80:      	mov	x1, sp
+    6e84:      	mov	w2, #0x2                // =2
+    6e88:      	bl	0x6e88 <haptic_lifetime_block_file_access+0x10c>
+		0000000000006e88:  R_AARCH64_CALL26	prepare_to_wait_event
+    6e8c:      	ldr	w8, [x21, #0x58]
+    6e90:      	cbz	w8, 0x6e9c <haptic_lifetime_block_file_access+0x120>
+    6e94:      	bl	0x6e94 <haptic_lifetime_block_file_access+0x118>
+		0000000000006e94:  R_AARCH64_CALL26	schedule
+    6e98:      	b	0x6e7c <haptic_lifetime_block_file_access+0x100>
+    6e9c:      	add	x0, x21, #0x38
+    6ea0:      	mov	x1, sp
+    6ea4:      	bl	0x6ea4 <haptic_lifetime_block_file_access+0x128>
+		0000000000006ea4:  R_AARCH64_CALL26	finish_wait
+    6ea8:      	mrs	x8, SP_EL0
+    6eac:      	ldr	x8, [x8, #0x710]
+    6eb0:      	ldur	x9, [x29, #-0x8]
+    6eb4:      	cmp	x20, x19
+    6eb8:      	cset	w0, eq
+    6ebc:      	cmp	x8, x9
+    6ec0:      	b.ne	0x6edc <haptic_lifetime_block_file_access+0x160>
+    6ec4:      	ldp	x20, x19, [sp, #0x50]
+    6ec8:      	ldr	x21, [sp, #0x40]
+    6ecc:      	ldp	x29, x30, [sp, #0x30]
+    6ed0:      	add	sp, sp, #0x60
+    6ed4:      	autiasp
+    6ed8:      	ret
+    6edc:      	bl	0x6edc <haptic_lifetime_block_file_access+0x160>
+		0000000000006edc:  R_AARCH64_CALL26	__stack_chk_fail
+
+000000000000709c <haptic_lifetime_wait_ram_callbacks>:
+    709c:      	paciasp
+    70a0:      	sub	sp, sp, #0x50
+    70a4:      	stp	x29, x30, [sp, #0x30]
+    70a8:      	stp	x20, x19, [sp, #0x40]
+    70ac:      	add	x29, sp, #0x30
+    70b0:      	mrs	x8, SP_EL0
+    70b4:      	adrp	x20, 0x7000 <haptic_lifetime_retire_state+0x11c>
+		00000000000070b4:  R_AARCH64_ADR_PREL_PG_HI21	.bss+0x6c
+    70b8:      	ldr	x8, [x8, #0x710]
+    70bc:      	stur	x8, [x29, #-0x8]
+    70c0:      	ldr	w8, [x20]
+		00000000000070c0:  R_AARCH64_LDST32_ABS_LO12_NC	.bss+0x6c
+    70c4:      	cbz	w8, 0x7130 <haptic_lifetime_wait_ram_callbacks+0x94>
+    70c8:      	mov	x0, sp
+    70cc:      	mov	w1, wzr
+    70d0:      	stp	xzr, xzr, [sp, #0x18]
+    70d4:      	stp	xzr, xzr, [sp, #0x8]
+    70d8:      	str	xzr, [sp]
+    70dc:      	bl	0x70dc <haptic_lifetime_wait_ram_callbacks+0x40>
+		00000000000070dc:  R_AARCH64_CALL26	init_wait_entry
+    70e0:      	adrp	x0, 0x7000 <haptic_lifetime_retire_state+0x11c>
+		00000000000070e0:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x460
+    70e4:      	add	x0, x0, #0x0
+		00000000000070e4:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x460
+    70e8:      	mov	x1, sp
+    70ec:      	mov	w2, #0x2                // =2
+    70f0:      	bl	0x70f0 <haptic_lifetime_wait_ram_callbacks+0x54>
+		00000000000070f0:  R_AARCH64_CALL26	prepare_to_wait_event
+    70f4:      	ldr	w8, [x20]
+		00000000000070f4:  R_AARCH64_LDST32_ABS_LO12_NC	.bss+0x6c
+    70f8:      	cbz	w8, 0x7120 <haptic_lifetime_wait_ram_callbacks+0x84>
+    70fc:      	adrp	x19, 0x7000 <haptic_lifetime_retire_state+0x11c>
+		00000000000070fc:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x460
+    7100:      	add	x19, x19, #0x0
+		0000000000007100:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x460
+    7104:      	bl	0x7104 <haptic_lifetime_wait_ram_callbacks+0x68>
+		0000000000007104:  R_AARCH64_CALL26	schedule
+    7108:      	mov	x1, sp
+    710c:      	mov	x0, x19
+    7110:      	mov	w2, #0x2                // =2
+    7114:      	bl	0x7114 <haptic_lifetime_wait_ram_callbacks+0x78>
+		0000000000007114:  R_AARCH64_CALL26	prepare_to_wait_event
+    7118:      	ldr	w8, [x20]
+		0000000000007118:  R_AARCH64_LDST32_ABS_LO12_NC	.bss+0x6c
+    711c:      	cbnz	w8, 0x7104 <haptic_lifetime_wait_ram_callbacks+0x68>
+    7120:      	adrp	x0, 0x7000 <haptic_lifetime_retire_state+0x11c>
+		0000000000007120:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x460
+    7124:      	add	x0, x0, #0x0
+		0000000000007124:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x460
+    7128:      	mov	x1, sp
+    712c:      	bl	0x712c <haptic_lifetime_wait_ram_callbacks+0x90>
+		000000000000712c:  R_AARCH64_CALL26	finish_wait
+    7130:      	mrs	x8, SP_EL0
+    7134:      	ldr	x8, [x8, #0x710]
+    7138:      	ldur	x9, [x29, #-0x8]
+    713c:      	cmp	x8, x9
+    7140:      	b.ne	0x7158 <haptic_lifetime_wait_ram_callbacks+0xbc>
+    7144:      	ldp	x20, x19, [sp, #0x40]
+    7148:      	ldp	x29, x30, [sp, #0x30]
+    714c:      	add	sp, sp, #0x50
+    7150:      	autiasp
+    7154:      	ret
+    7158:      	bl	0x7158 <haptic_lifetime_wait_ram_callbacks+0xbc>
+		0000000000007158:  R_AARCH64_CALL26	__stack_chk_fail
+
+0000000000007160 <haptic_lifetime_request_ram_firmware>:
+    7160:      	paciasp
+    7164:      	stp	x29, x30, [sp, #-0x40]!
+    7168:      	stp	x24, x23, [sp, #0x10]
+    716c:      	stp	x22, x21, [sp, #0x20]
+    7170:      	stp	x20, x19, [sp, #0x30]
+    7174:      	mov	x29, sp
+    7178:      	adrp	x22, 0x7000 <haptic_lifetime_retire_state+0x11c>
+		0000000000007178:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x398
+    717c:      	ldr	x20, [x0, #0x320]
+    7180:      	ldr	w8, [x22]
+		0000000000007180:  R_AARCH64_LDST32_ABS_LO12_NC	.data+0x398
+    7184:      	cbz	w8, 0x7190 <haptic_lifetime_request_ram_firmware+0x30>
+    7188:      	mov	w0, #-0x6c              // =-108
+    718c:      	b	0x7254 <haptic_lifetime_request_ram_firmware+0xf4>
+    7190:      	mov	x21, x0
+    7194:      	nop
+
+0000000000007340 <haptic_ram_firmware_complete>:
+    7340:      	paciasp
+    7344:      	stp	x29, x30, [sp, #-0x20]!
+    7348:      	stp	x20, x19, [sp, #0x10]
+    734c:      	mov	x29, sp
+    7350:      	mov	x20, x0
+    7354:      	adrp	x0, 0x7000 <haptic_lifetime_retire_state+0x11c>
+		0000000000007354:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x478
+    7358:      	add	x0, x0, #0x0
+		0000000000007358:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x478
+    735c:      	mov	x19, x1
+    7360:      	bl	0x7360 <haptic_ram_firmware_complete+0x20>
+		0000000000007360:  R_AARCH64_CALL26	mutex_lock
+    7364:      	adrp	x8, 0x7000 <haptic_lifetime_retire_state+0x11c>
+		0000000000007364:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x398
+    7368:      	ldr	w8, [x8]
+		0000000000007368:  R_AARCH64_LDST32_ABS_LO12_NC	.data+0x398
+    736c:      	cbz	w8, 0x737c <haptic_ram_firmware_complete+0x3c>
+    7370:      	mov	x0, x20
+    7374:      	bl	0x7374 <haptic_ram_firmware_complete+0x34>
+		0000000000007374:  R_AARCH64_CALL26	release_firmware
+    7378:      	b	0x7388 <haptic_ram_firmware_complete+0x48>
+    737c:      	ldr	x1, [x19]
+    7380:      	mov	x0, x20
+    7384:      	bl	0x7384 <haptic_ram_firmware_complete+0x44>
+		0000000000007384:  R_AARCH64_CALL26	ram_load
+    7388:      	adrp	x0, 0x7000 <haptic_lifetime_retire_state+0x11c>
+		0000000000007388:  R_AARCH64_ADR_PREL_PG_HI21	.data+0x478
+    738c:      	add	x0, x0, #0x0
+		000000000000738c:  R_AARCH64_ADD_ABS_LO12_NC	.data+0x478
+    7390:      	bl	0x7390 <haptic_ram_firmware_complete+0x50>
+		0000000000007390:  R_AARCH64_CALL26	mutex_unlock
+    7394:      	mov	x0, x19
+    7398:      	bl	0x7398 <haptic_ram_firmware_complete+0x58>
+		0000000000007398:  R_AARCH64_CALL26	kfree
+    739c:      	b	0x73e0 <haptic_ram_firmware_complete+0xa0>

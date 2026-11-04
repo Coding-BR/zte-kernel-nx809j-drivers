@@ -1,0 +1,123 @@
+{
+  "schema": "zte-driver-static-attestation-v1",
+  "review_id": "haptic_ram_worker_remove_c7_20261104",
+  "review_date": "2026-11-04",
+  "review_type": "static_lifecycle_revalidation",
+  "disposition": {
+    "static_lifetime_review": "supported_for_reviewed_ram_firmware_worker_and_remove_paths",
+    "new_uncontained_queue_to_retired_state_path_found": false,
+    "runtime_validation_performed": false,
+    "whole_driver_complete": false,
+    "open_risk": "remove waits for asynchronous firmware callbacks; a runtime firmware timeout value of zero disables the finite default timeout and may make teardown wait indefinitely"
+  },
+  "device_observation": {
+    "command": "adb devices -l",
+    "result": "List of devices attached; no device listed",
+    "candidate_installed": false,
+    "runtime_firmware_timeout_read": false
+  },
+  "candidate": {
+    "name": "C7",
+    "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "sha256": "a2ec3ce4d51e1878e199017bda6cb01623589f54dc3c074f6b22a0586fd3ad0b",
+    "size_bytes": 6723232,
+    "stock_module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "reconstruction_map": {
+      "path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+      "sha256": "41a7bdcaa16dea5f62a50dab9967e5fc60f9a4625ab65a4232a5bba7bb1a7002",
+      "function_count": 160,
+      "status_counts": {
+        "PROMOTED_OFFLINE_EXACT": 135,
+        "reviewed": 23,
+        "candidate_under_static_validation": 2
+      }
+    }
+  },
+  "target_kernel": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "source_sha256": {
+      "kernel/workqueue.c": "192be8175ff7fed8445758f98a18fc67e88245801ee75f84378af82fda3dd46e",
+      "drivers/base/firmware_loader/main.c": "271dab9b1aaea7f53b44b2b438b3466f988e0692c0529b7094bfbfa049e94a2f",
+      "drivers/base/firmware_loader/fallback.c": "d18cb5cf546c17cc36a8a8a9e9bcf716143169dffd05a4d5d2eefb7857ca0f17",
+      "drivers/base/firmware_loader/fallback_table.c": "1a20f735e2f1dc18d993dac67255f1e261c17867e2517e9fe63b7f8b24cc62b0",
+      "fs/sysfs/file.c": "462dc92c984f99e4752bb531ab5097a9e3213628401588d406362b584eb51b33",
+      "include/linux/sysfs.h": "922418f3d7a1396cf99df51f5ee381cd70feccda008ee30c77a15bf92e367acd",
+      "include/linux/firmware.h": "063411df3d77d83414f059be2de77b29e5cc790f12bd89b4c94712eca5a84b51"
+    },
+    "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+    "firmware_timeout": {
+      "configured_default_seconds": 60,
+      "runtime_zero_disables_finite_timeout": true,
+      "device_runtime_value": "unknown; no ADB device connected"
+    }
+  },
+  "reviewed_functions": [
+    {
+      "name": "aw_i2c_probe",
+      "map_status": "reviewed",
+      "candidate_source_sha256": "1294b499efaefa943c9696702c7331424d27cc85ba17e183780a74617c92aabd",
+      "stock_exact_body_assembly_source_sha256": "db68f11430347ce1653d0ddd65f579ec1873d661961da44c176d14a96c24b616"
+    },
+    {
+      "name": "aw_remove",
+      "map_status": "reviewed",
+      "candidate_source_sha256": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55"
+    },
+    {
+      "name": "ram_work_routine",
+      "map_status": "reviewed",
+      "candidate_source_sha256": "a4771b991e0017a8c46a7299a024f01578eaca801c7c80f6a1025df1be075c14"
+    },
+    {
+      "name": "ram_load",
+      "map_status": "reviewed",
+      "candidate_source_sha256": "14ee7fb30d8cce303da5bbadd5e4217c388bc850c4b4e63b8c46cfd6e69084dc"
+    },
+    {
+      "name": "ram_update_store",
+      "map_status": "reviewed",
+      "candidate_source_sha256": "ea0da71006104c0bc809f0b83b6a09020844446e6bd993a87b238ef5227d4a3c"
+    },
+    {
+      "name": "ram_work_init",
+      "candidate_source_sha256": "a337e7a48139df77ca1424ea8433026e71001f648edf9b05c99019dbf05afbee"
+    },
+    {
+      "name": "haptic_lifetime_request_ram_firmware and haptic_ram_firmware_complete",
+      "candidate_source_sha256": "1294b499efaefa943c9696702c7331424d27cc85ba17e183780a74617c92aabd"
+    }
+  ],
+  "candidate_source_files_sha256": {
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_067_ram_work_init.c": "a337e7a48139df77ca1424ea8433026e71001f648edf9b05c99019dbf05afbee",
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_082_ram_work_routine.c": "a4771b991e0017a8c46a7299a024f01578eaca801c7c80f6a1025df1be075c14",
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_083_ram_load.c": "14ee7fb30d8cce303da5bbadd5e4217c388bc850c4b4e63b8c46cfd6e69084dc",
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_093_ram_update_store.c": "ea0da71006104c0bc809f0b83b6a09020844446e6bd993a87b238ef5227d4a3c",
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_132_aw_remove.c": "59a9e5bdfcec67450bf9d8a1a6bc4b8c42b13d324a12554a0e38561d2eff1e55",
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_lifetime.c": "1294b499efaefa943c9696702c7331424d27cc85ba17e183780a74617c92aabd",
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938_fn_143_aw_i2c_probe_exact.S": "db68f11430347ce1653d0ddd65f579ec1873d661961da44c176d14a96c24b616"
+  },
+  "stock_evidence_sha256": {
+    "ghidra_stock_repaired/haptic_86938.ko/decompiled/0064_001073c0_aw_i2c_probe.c": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a",
+    "ghidra_stock_repaired/haptic_86938.ko/decompiled/0065_0010823c_aw_remove.c": "f11ac7c0a5b01a5564e612e5c6a9693cbebd34e9c198fdd6ef17cb6c804e8438",
+    "ghidra_stock_repaired/haptic_86938.ko/decompiled/0147_0010e190_ram_work_routine.c": "155bbdfa785c32033a5c333def5159c22ffe0f21ae5f2120e8c70824fbe4f76b",
+    "ghidra_stock_repaired/haptic_86938.ko/decompiled/0104_0010b2e0_ram_load.c": "9090a42910667067f987d61fe3fc0a0b329d3d2312dbde5383cea87c8d26f99d",
+    "ghidra_stock_repaired/haptic_86938.ko/decompiled/0103_0010b228_ram_update_store.c": "c0c963b0261095d9822598b6ce60fc0baf70a624b8aa03868564411aa0a68cdc",
+    "stock_assembly/0064_aw_i2c_probe_001073c0.asm": "eb753344ac725b5580584e3c3d0525e40b3aaa950dc43fc219b07da16333aeeb",
+    "stock_assembly/0065_aw_remove_0010823c.asm": "1f951d8564be86e06e831d1d8f9880b428e82d6eaeb43ee6c12231e024aec562",
+    "stock_assembly/0147_ram_work_routine_0010e190.asm": "13054948ab64c7f71db498509b16afa399303690f8f4874034c4c1cde209a3bc",
+    "stock_assembly/0104_ram_load_0010b2e0.asm": "f2c47b883c3140880a8f3e07425a98945fb568d02cdced3b62ec0b6a469e9091",
+    "stock_assembly/0103_ram_update_store_0010b228.asm": "5e98b4b789ea94af33b22941273690f1e91bbc245654dc8fe3360eecf7ea21af"
+  },
+  "attestation_evidence_sha256": {
+    "candidate_c7_ram_lifetime_disassembly.txt": "ab3e4444a523da2c72e52e8b05f23203b385412d6a37164492c93a6aecbf5dd2",
+    "candidate_c7_ram_lifetime_relocations.txt": "63d7629d9ba5a82833b4789b3f45d3af956bcd3d46d224a41a5dc35c28b66cac",
+    "target_kernel_ram_lifecycle_excerpt.txt": "d8c324fc8c6b8efd3b5cd676909c463810ab977c4e0660d6c030d373f480d8b5",
+    "target_kernel_led_sysfs_drain_excerpt.txt": "2ef3bbad962c52069fac0cf6cdcd5f6f6627bfd1e44546c1d06a0568c31e452d",
+    "llvm_objdump_version.txt": "c18de73ea9de154862bda491ceae94a4dbdebd1555396fdb0419371fad3ded1a"
+  },
+  "build": {
+    "performed_for_this_review": false,
+    "reason": "No source or module changed; this review inspects the already Docker-built C7 candidate"
+  }
+}
