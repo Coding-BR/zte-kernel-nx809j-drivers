@@ -447,3 +447,11 @@ Canonical Docker disassembly of current C6 confirms that the stock-exact IRQ bod
 ## Static review 2026-11-04 — C6 arming gate and SYSINT order
 
 The current C6 IRQ wrapper deliberately returns IRQ_HANDLED while Richtap is arming, without invoking the stock IRQ body. The worker later clears status and configures AEI. The non-loop branch preserves stock ordering by enabling AEI before reading SYSINT; the loop branch clears status first. This leaves a conditional event-retention question under edge timing, not a reproduced failure. No source/map change or new build was made. ADB currently reports no device. See [the C6 IRQ edge and clear-order review](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_edge_clear_c6_20261104/README.md).
+
+## C7 static follow-up - HAL stop handoff and queue latency (2026-11-04)
+
+Read-only Docker disassembly bound to candidate C7 confirms that Richtap ioctl 0x520a queues richtap_rtp_work at state+0x648 and ioctl 0x5212 queues richtap_stop_work at state+0x668 on the same workqueue pointer at state+0x448. The pinned NX809J workqueue source/config establishes a single active item on its one NUMA node, so these two kernel work items do not overlap. This refines the earlier HAL stop report, which left kernel-worker overlap possible.
+
+The detached HAL producer is still not joined: tiktap_stop sets stop_flag, submits the asynchronous stop ioctl, and returns without waiting for the producer or queued kernel work. A late HAL FIFO publication remains a static possibility, not a reproduced write or corruption; the reviewed stop worker does not access the FIFO payload. The ordered queue also means stop_work may wait behind a running RTP startup poll. The stock-exact timeout path requests 602.5-752.6 ms of sleeps plus I2C and scheduling time; this is a conditional delay, not a measured bound.
+
+No source or map status changed, and no rebuild was needed. The haptic driver remains **INCOMPLETE**. ADB currently lists no attached device, so dynamic confirmation remains pending. See the [C7-bound stop handoff review](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_hal_stop_handoff_c7_20261104/README.md).

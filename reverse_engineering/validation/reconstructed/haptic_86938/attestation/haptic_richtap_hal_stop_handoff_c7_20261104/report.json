@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_richtap_hal_stop_handoff_c7_20261104",
+  "review_date": "2026-11-04",
+  "result": "C7_KERNEL_RTP_STOP_WORK_SERIALIZED; HAL_PRODUCER_COMPLETION_UNPROVEN; CONDITIONAL_STOP_QUEUE_LATENCY",
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "sha256": "a2ec3ce4d51e1878e199017bda6cb01623589f54dc3c074f6b22a0586fd3ad0b",
+    "bytes": 6723232,
+    "map_sha256": "41a7bdcaa16dea5f62a50dab9967e5fc60f9a4625ab65a4232a5bba7bb1a7002",
+    "installed_or_runtime_tested": false
+  },
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "llvm_objdump": "18.1.3",
+    "mount_mode": "read-only canonical curated snapshot",
+    "kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55"
+  },
+  "kernel_workqueue": {
+    "creator": "aw_i2c_probe_stock_exact",
+    "allocation_site": "0xab4c",
+    "flags": "0x6000a",
+    "max_active": 1,
+    "queue_pointer_offset": "0x448",
+    "config": {
+      "CONFIG_NR_CPUS": 32,
+      "CONFIG_NUMA": false
+    },
+    "queue_cpu_argument": "0x20 (WORK_CPU_UNBOUND)",
+    "work_items": [
+      {
+        "ioctl": "0x520a",
+        "function": "richtap_rtp_work",
+        "offset": "0x648",
+        "queue_pointer_offset": "0x448"
+      },
+      {
+        "ioctl": "0x5212",
+        "function": "richtap_stop_work",
+        "offset": "0x668",
+        "queue_pointer_offset": "0x448"
+      }
+    ],
+    "pinned_kernel_evidence": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_worker_queue_bound_serialization_20261103/target_workqueue_source_evidence.txt",
+    "pinned_kernel_evidence_sha256": "c353911924663cb8243bb462146a0123726e128f9df81af5f7ac160914e70933",
+    "conclusion": "Both work items share the same unbound queue. With NUMA disabled, the pinned source/config limits that queue to one active work item on its sole node; these kernel work items cannot execute concurrently.",
+    "scope_limit": "Does not serialize the queue against userspace HAL, synchronous ioctl bodies, IRQ execution, or unrelated workqueues."
+  },
+  "hal_stop": {
+    "hal_path": "/vendor/lib64/libaacvibrator.so",
+    "hal_sha256": "8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61",
+    "function": "tiktap_stop",
+    "sets_stop_flag_vma": "0x23184",
+    "ioctl": "0x5212",
+    "helper": "open -> ioctl -> close",
+    "waits_for_queued_work": false,
+    "joins_detached_producer": false,
+    "producer_stop_flag_reads": [
+      "0x1fe64",
+      "0x201a4",
+      "0x21b58",
+      "0x21bb8"
+    ],
+    "flag_accesses_are_plain_load_store": true,
+    "other_flag_writers": [
+      {
+        "function": "tiktap_start",
+        "clears_flag": true,
+        "external_serialization_established": false
+      },
+      {
+        "function": "tiktap_on",
+        "clears_flag": true,
+        "external_serialization_established": false
+      }
+    ],
+    "interpretation": "The detached HAL producer can remain active until a stop checkpoint. The asynchronous ioctl does not prove it exited when stop_work runs or when tiktap_stop returns. A late FIFO publication is possible statically, but no post-stop write, corruption, or harmful effect was reproduced. stop_work itself does not access FIFO nodes or mapped payload."
+  },
+  "conditional_stop_latency": {
+    "mechanism": "stop_work is serialized behind an already-running richtap_rtp_work.",
+    "startup_call": "richtap_rtp_work calls stock-exact richtap_rtp_start.",
+    "stock_timeout_requested_sleep_ms": "602.5-752.6",
+    "stock_poll_limit": 200,
+    "stock_sleep_per_poll_ms": "2-2.5",
+    "stock_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0148_richtap_rtp_start_0010e1dc.asm",
+    "stock_assembly_sha256": "4564c12a37fbfccb680da5a678a52ad81f415133c06872859dfbd1c5e74c209b3",
+    "interpretation": "If stop_work is queued during this timeout path, it can wait for the remainder of the poll, plus I2C and scheduling. This is conditional, not a measured upper bound."
+  },
+  "stock_evidence": {
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "ioctl_ghidra_sha256": "361b512992b87a35116ce2e8e6234d3f801a5df5f1470a94a1567b331a97d824",
+    "ioctl_assembly_sha256": "1c28ebb056e308409fe6892d83aa68aba8bba8a732e8f12b18c6024203dbe0ad",
+    "stop_work_ghidra_sha256": "ded7c7d4f14825b14120c2d0e45dc9abb6a5001e55f6ca28bd71b5cfa38718a0",
+    "stop_work_assembly_sha256": "255cbe283df945f8e4e62cde2df21f5a94656377412befc2c4be2ad26edc3f14",
+    "probe_ghidra_sha256": "789d65096a541b8b0e3e401d12ba712db83a78ec73a8ea8613b314a799f4745a"
+  },
+  "status": {
+    "aw_i2c_probe": "reviewed",
+    "richtap_file_unlocked_ioctl": "reviewed",
+    "richtap_stop_work": "reviewed",
+    "richtap_rtp_work": "candidate_under_static_validation",
+    "map_statuses_changed": false,
+    "source_changed": false,
+    "rebuild_required": false,
+    "driver_complete": false
+  },
+  "runtime": {
+    "adb_devices": "no device entries",
+    "stop_worker_overlap_captured": false,
+    "runtime_race_reproduced": false,
+    "fifo_corruption_observed": false,
+    "candidate_install_attempted_in_this_review": false
+  },
+  "source_sha256": {
+    "haptic_86938_fn_112_richtap_stop_work.c": "8af350abd856a7eb1ef89f7b02480e85137a565865278f0e1d5cc277f667430d",
+    "haptic_86938_fn_137_richtap_rtp_work.c": "22953758a2ab1b118dc5f3c05a8cfb04f3b8ede5c6fcf8a510be5df43b26f8d3",
+    "haptic_86938_fn_134_richtap_file_unlocked_ioctl.c": "91086f14f35b02db927f7b44518598353339f470de4b068174f0012322a5b736",
+    "haptic_86938_lifetime.c": "1294b499efaefa943c9696702c7331424d27cc85ba17e183780a74617c92aabd",
+    "haptic_86938_fn_143_aw_i2c_probe_exact.S": "db68f11430347ce1653d0ddd65f579ec1873d661961da44c176d14a96c24b616",
+    "haptic_86938_fn_135_richtap_rtp_start_exact.S": "7adb0864e05517c2a558da60e091af5a6de5402acfb12e2318e99e8f7cc187e7"
+  },
+  "evidence_files": {
+    "candidate_c7_ioctl_stop_rtp_disassembly.txt": "ce6858c262be4dc5afd22affcb9af3f82a1799a7c66d9563ebc49ec1ec96f0d1",
+    "candidate_c7_ordered_workqueue_excerpt.txt": "1751fc3d7edfd91923f84ad5c01d0e5f44041f614990dd0c2b8d5ca9b808ff9a",
+    "candidate_c7_richtap_rtp_start_disassembly.txt": "7b2ba3b79e6983836508eaa450b07f0c77f792e0607ddf6900734fe4fe9abb39",
+    "previous_hal_attestation": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_hal_stop_handoff_20261103/hal_stop_worker_handoff.json",
+    "previous_hal_attestation_sha256": "bfedd9c2ab9e464fea0ab42e5f9b80eba33df32b56e0e0721bb184f01aff54bf",
+    "previous_hal_disassembly_sha256": "e0817c12f6d49b13c54b413440f4cda960c41169e3d975cee207bfd277abefaf"
+  },
+  "interpretation": "The prior cross-boundary possibility remains because the HAL producer is detached and tiktap_stop does not wait for it. This C7-bound review narrows the claim by proving the kernel RTP and stop work items share a single-active queue under the pinned target config, so they do not overlap with each other. It also records the conditional stop delay behind the stock-exact RTP startup poll.",
+  "limitations": [
+    "No ADB device is attached, so dynamic confirmation could not be performed.",
+    "The HAL thread and kernel workqueue have no completion handshake in the reviewed path.",
+    "A possible late producer write does not prove stale data consumption or FIFO corruption.",
+    "Requested startup sleep time is not measured stop latency or a strict upper bound."
+  ]
+}
