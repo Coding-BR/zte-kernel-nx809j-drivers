@@ -393,3 +393,35 @@ Disassembly of section .text:
    21eb8:      	mov	w0, #0x3                // =3
    21ebc:      	mov	w4, #0x6f3              // =1779
    21ec0:      	b	0x21e60 <tiktap_start(int const*, int, int, int, int, int)+0x4dbc>
+===== tiktap_start context locks and stop_flag clear [0x1d184-0x1d1e8] =====
+
+/tmp/libaacvibrator_nx809j.so:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+000000000001d0a4 <tiktap_start(int const*, int, int, int, int, int)>:
+   1d184:      	strb	wzr, [x8]
+   1d188:      	ldr	x20, [x20, #0xab8]
+   1d18c:      	add	x0, x20, #0x18
+   1d190:      	bl	0x42280 <pthread_mutex_lock@plt>
+   1d194:      	adrp	x19, 0x49000 <typeinfo for double const*+0x10>
+   1d198:      	ldr	x19, [x19, #0xab0]
+   1d19c:      	ldr	w8, [x19, #0x4]
+   1d1a0:      	cbz	w8, 0x1d1ac <tiktap_start(int const*, int, int, int, int, int)+0x108>
+   1d1a4:      	add	x0, x19, #0x18
+   1d1a8:      	bl	0x42280 <pthread_mutex_lock@plt>
+   1d1ac:      	adrp	x8, 0x49000 <typeinfo for double const*+0x10>
+   1d1b0:      	adrp	x1, 0x11000
+   1d1b4:      	adrp	x2, 0x12000
+   1d1b8:      	adrp	x3, 0x13000
+   1d1bc:      	add	x1, x1, #0xae0
+   1d1c0:      	add	x2, x2, #0x678
+   1d1c4:      	ldr	x8, [x8, #0xaa0]
+   1d1c8:      	add	x3, x3, #0x15b
+   1d1cc:      	mov	w0, #0x4                // =4
+   1d1d0:      	mov	w4, #0xb13              // =2835
+   1d1d4:      	mov	w5, w24
+   1d1d8:      	mov	w6, w21
+   1d1dc:      	mov	w7, w23
+   1d1e0:      	str	wzr, [x8]
+   1d1e4:      	str	w22, [sp]

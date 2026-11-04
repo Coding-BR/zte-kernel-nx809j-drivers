@@ -44,6 +44,31 @@
     "same_global": false,
     "relocation_evidence": "hal_flag_relocations.txt"
   },
+  "flag_writer_audit": {
+    "stop_flag_writes": [
+      {
+        "function": "tiktap_start",
+        "instruction": "0x1d1e0",
+        "value": 0,
+        "context_mutexes_held": ["left", "right_if_active"]
+      },
+      {
+        "function": "tiktap_on",
+        "instruction": "0x22064",
+        "value": 0,
+        "context_mutexes_held": ["left", "right"]
+      },
+      {
+        "function": "tiktap_stop",
+        "instruction": "0x23184",
+        "value": 1,
+        "context_mutexes_held": []
+      }
+    ],
+    "control_symbols_exported_from_hal": true,
+    "external_caller_serialization": "NOT_ESTABLISHED",
+    "possible_stop_clear_interleaving": "If tiktap_start or tiktap_on overlaps tiktap_stop, either zero store can follow the stop_flag=1 store because tiktap_stop does not acquire the context mutexes. No runtime interleaving was captured."
+  },
   "hal_worker": {
     "entry": "0x1fb18",
     "created_as_detached_thread": true,
@@ -79,8 +104,9 @@
     "driver_complete": false
   },
   "evidence_files": {
-    "hal_stop_worker_disassembly.txt": "9e2c039dbaf53f8a2f1312d1a2a4b67b39569eec37dad5890384df43a847866d",
-    "hal_flag_relocations.txt": "174b83e9aba1451a1ef4bbfb58076196c0d108323b3d9832c895373198e8eb99"
+    "hal_stop_worker_disassembly.txt": "e0817c12f6d49b13c54b413440f4cda960c41169e3d975cee207bfd277abefaf",
+    "hal_flag_relocations.txt": "174b83e9aba1451a1ef4bbfb58076196c0d108323b3d9832c895373198e8eb99",
+    "hal_exported_control_symbols.txt": "12b9657375036a43aedc6ffe8ebde24786959c905e1c929e0a34294c1edbdefd"
   },
   "interpretation": "The HAL stop routine sets a cooperative flag and submits an asynchronous kernel stop request but does not wait for its detached producer worker to exit. This permits a possible producer/stop-work overlap; no such overlap or resulting FIFO behavior was observed.",
   "limitations": [

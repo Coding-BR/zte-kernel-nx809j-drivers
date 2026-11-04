@@ -25,3 +25,9 @@ Taken together, the HAL stop request does not establish a completion handoff pro
 ## Reconstruction status and limits
 
 This report is static analysis of the phone's vendor HAL and the preserved stock kernel module. The reconstructed candidate was not installed. No path-specific stop/worker overlap was traced, and no runtime race or data corruption was observed. No kernel source or map status changed; no rebuild was needed. The haptic driver remains **INCOMPLETE**. Existing candidate-side serialization does not by itself prove quiescence of the userspace producer.
+
+## Shared stop-flag mutation
+
+The exact HAL has two additional `stop_flag` writers. `tiktap_start` clears it after taking the left context mutex and, when active, the right mutex. `tiktap_on` clears it after taking both context mutexes. `tiktap_stop` sets it to 1 without taking either mutex. The dynamic symbol table exports all three entrypoints, while serialization by their external callers has not been established.
+
+If a start/on entrypoint overlaps a stop, its zero store can follow the stop's one store and clear the cooperative cancellation request. This is a conditional static interleaving, not a reproduced race; a higher-level caller may serialize these operations, but that contract is not evidenced here. The writer instructions and exported-symbol records are included in the captured disassembly and `hal_exported_control_symbols.txt`.
