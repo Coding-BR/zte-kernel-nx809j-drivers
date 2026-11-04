@@ -1,0 +1,65 @@
+===== stock IRQ handler calls FIFO helper =====
+
+reference_modules/full_vendor_boot/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000006270 <irq_handle>:
+    64a0:      	mov	x4, x3
+    64a4:      	bl	0x64a4 <irq_handle+0x234>
+		00000000000064a4:  R_AARCH64_CALL26	_printk
+    64a8:      	ldr	w8, [x19, #0x458]
+    64ac:      	lsr	w1, w8, #1
+    64b0:      	mov	x0, x19
+    64b4:      	bl	0x664c <richtap_update_fifo_data>
+    64b8:      	ldr	x8, [x19, #0x5c8]
+    64bc:      	mov	x0, x19
+    64c0:      	ldr	x8, [x8, #0x180]
+    64c4:      	ldur	w16, [x8, #-0x4]
+    64c8:      	movk	w17, #0x3854
+    64cc:      	movk	w17, #0x784b, lsl #16
+    64d0:      	cmp	w16, w17
+    64d4:      	b.eq	0x64dc <irq_handle+0x26c>
+    64d8:      	brk	#0x8228
+    64dc:      	blr	x8
+    64e0:      	tst	w0, #0xff
+    64e4:      	b.ne	0x62e0 <irq_handle+0x70>
+    64e8:      	ldr	w8, [x19, #0x6bc]
+    64ec:      	cbz	w8, 0x62e0 <irq_handle+0x70>
+    64f0:      	ldr	x8, [x19, #0x620]
+    64f4:      	ldrb	w8, [x8]
+    64f8:      	cmp	w8, #0x55
+    64fc:      	b.ne	0x62e0 <irq_handle+0x70>
+    6500:      	ldr	w8, [x19, #0x458]
+    6504:      	lsr	w1, w8, #2
+    6508:      	b	0x64b0 <irq_handle+0x240>
+    650c:      	adrp	x0, 0x6000 <tiktap_work_routine+0x1b8>
+		000000000000650c:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x2730
+===== stock FIFO retry and sleep =====
+
+reference_modules/full_vendor_boot/haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+000000000000664c <richtap_update_fifo_data>:
+    6668:      	mov	w21, w1
+    666c:      	mov	x20, x0
+    6670:      	mov	w19, wzr
+    6674:      	mov	w23, #0x3               // =3
+    6678:      	mov	w24, #0xff              // =255
+    667c:      	ldr	x8, [x20, #0x620]
+    6680:      	ldrb	w9, [x8]
+    6684:      	cmp	w9, #0x55
+    6688:      	b.eq	0x66b8 <richtap_update_fifo_data+0x6c>
+    668c:      	cmp	w9, #0xaa
+    6690:      	b.eq	0x677c <richtap_update_fifo_data+0x130>
+    6694:      	cmp	w23, #0x0
+    6698:      	b.le	0x67c8 <richtap_update_fifo_data+0x17c>
+    669c:      	mov	w0, #0x3e8              // =1000
+    66a0:      	mov	w1, #0x3e8              // =1000
+    66a4:      	mov	w2, #0x2                // =2
+    66a8:      	sub	w23, w23, #0x1
+    66ac:      	bl	0x66ac <richtap_update_fifo_data+0x60>
+		00000000000066ac:  R_AARCH64_CALL26	usleep_range_state
+    66b0:      	cbnz	w21, 0x6730 <richtap_update_fifo_data+0xe4>
+    66b4:      	b	0x677c <richtap_update_fifo_data+0x130>

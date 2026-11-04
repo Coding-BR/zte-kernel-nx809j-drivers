@@ -68,7 +68,8 @@
   },
   "limitations": [
     "The three 1 ms intervals are requested sleeps; wall-clock latency may differ due to scheduling.",
-    "The IRQ arming gate returns the threaded handler before mutex acquisition during the normal startup path; no IRQ stall is claimed.",
+    "During normal worker startup, the IRQ arming gate returns before mutex acquisition; this excludes the worker's startup helper call from blocking IRQ dispatch, but does not cover later steady-state IRQ calls to the helper.",
+    "The steady-state threaded IRQ call to the same helper is reviewed separately in attestation/haptic_rtp_irq_oneshot_sleep_20261103/irq_thread_fifo_wait_review.json.",
     "This report does not measure latency on the NX809J or assert functional failure.",
     "The HAL-to-kernel FIFO publication pairing remains independently unresolved."
   ]

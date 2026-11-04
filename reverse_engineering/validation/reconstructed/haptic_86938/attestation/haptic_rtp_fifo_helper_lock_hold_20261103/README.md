@@ -21,3 +21,5 @@ The mutex is sleepable, so this is not a sleep-in-atomic error. It does extend t
 ## Stock comparison and status
 
 Stock `richtap_update_fifo_data` also retries with `usleep_range_state`, and stock `richtap_rtp_work` calls it from the RTP loop. The current candidate adds the IRQ/stop mutex around the shared cursor path as a hardening deviation. The map continues to mark both FIFO functions `candidate_under_static_validation`; semantic equivalence and runtime latency remain unverified. No source or map changed, no rebuild was required, and the driver remains **INCOMPLETE**.
+
+**Scope clarification:** the arming-gate conclusion above applies to the helper call made by `richtap_rtp_work` during startup. The steady-state threaded IRQ handler also calls this helper after the gate clears; that separate call path sleeps under `IRQF_ONESHOT` and the candidate's global mutex. See the [threaded IRQ follow-up](../haptic_rtp_irq_oneshot_sleep_20261103/README.md). This does not establish a runtime stall, and the helper sleep is present in stock.

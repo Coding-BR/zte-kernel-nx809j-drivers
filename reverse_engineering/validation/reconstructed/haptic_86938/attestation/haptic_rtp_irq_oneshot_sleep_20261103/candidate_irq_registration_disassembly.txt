@@ -1,0 +1,89 @@
+
+haptic_86938.ko:	file format elf64-littleaarch64
+
+Disassembly of section .text:
+
+0000000000009be0 <irq_config>:
+    9be0:      	paciasp
+    9be4:      	stp	x29, x30, [sp, #-0x20]!
+    9be8:      	stp	x20, x19, [sp, #0x10]
+    9bec:      	mov	x29, sp
+    9bf0:      	ldr	w8, [x1, #0x50]
+    9bf4:      	mov	x19, x1
+    9bf8:      	mov	x20, x0
+    9bfc:      	tbnz	w8, #0x1f, 0x9c78 <irq_config+0x98>
+    9c00:      	ldrb	w8, [x19, #0x15]
+    9c04:      	tbnz	w8, #0x0, 0x9c78 <irq_config+0x98>
+    9c08:      	ldr	x8, [x19, #0x5c8]
+    9c0c:      	mov	x0, x19
+    9c10:      	ldr	x8, [x8, #0x108]
+    9c14:      	ldur	w16, [x8, #-0x4]
+    9c18:      	movk	w17, #0x830
+    9c1c:      	movk	w17, #0x847a, lsl #16
+    9c20:      	cmp	w16, w17
+    9c24:      	b.eq	0x9c2c <irq_config+0x4c>
+    9c28:      	brk	#0x8228
+    9c2c:      	blr	x8
+    9c30:      	ldr	w0, [x19, #0x50]
+    9c34:      	bl	0x9c34 <irq_config+0x54>
+		0000000000009c34:  R_AARCH64_CALL26	gpio_to_desc
+    9c38:      	bl	0x9c38 <irq_config+0x58>
+		0000000000009c38:  R_AARCH64_CALL26	gpiod_to_irq
+    9c3c:      	mov	w1, w0
+    9c40:      	adrp	x3, 0x9000 <aw8693x_play_mode+0x2cc>
+		0000000000009c40:  R_AARCH64_ADR_PREL_PG_HI21	irq_handle
+    9c44:      	add	x3, x3, #0x0
+		0000000000009c44:  R_AARCH64_ADD_ABS_LO12_NC	irq_handle
+    9c48:      	adrp	x5, 0x9000 <aw8693x_play_mode+0x2cc>
+		0000000000009c48:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x379c
+    9c4c:      	add	x5, x5, #0x0
+		0000000000009c4c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x379c
+    9c50:      	mov	x0, x20
+    9c54:      	mov	x2, xzr
+    9c58:      	mov	w4, #0x2002             // =8194
+    9c5c:      	mov	x6, x19
+    9c60:      	bl	0x9c60 <irq_config+0x80>
+		0000000000009c60:  R_AARCH64_CALL26	devm_request_threaded_irq
+    9c64:      	cbnz	w0, 0x9c9c <irq_config+0xbc>
+    9c68:      	ldp	x20, x19, [sp, #0x10]
+    9c6c:      	ldp	x29, x30, [sp], #0x20
+    9c70:      	autiasp
+    9c74:      	ret
+    9c78:      	adrp	x1, 0x9000 <aw8693x_play_mode+0x2cc>
+		0000000000009c78:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x3afc
+    9c7c:      	add	x1, x1, #0x0
+		0000000000009c7c:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x3afc
+    9c80:      	mov	x0, x20
+    9c84:      	bl	0x9c84 <irq_config+0xa4>
+		0000000000009c84:  R_AARCH64_CALL26	_dev_info
+    9c88:      	ldrb	w8, [x19, #0x15]
+    9c8c:      	mov	w0, wzr
+    9c90:      	orr	w8, w8, #0x1
+    9c94:      	strb	w8, [x19, #0x15]
+    9c98:      	b	0x9c68 <irq_config+0x88>
+    9c9c:      	ldr	w8, [x19, #0x50]
+    9ca0:      	mov	w19, w0
+    9ca4:      	mov	w0, w8
+    9ca8:      	bl	0x9ca8 <irq_config+0xc8>
+		0000000000009ca8:  R_AARCH64_CALL26	gpio_to_desc
+    9cac:      	bl	0x9cac <irq_config+0xcc>
+		0000000000009cac:  R_AARCH64_CALL26	gpiod_to_irq
+    9cb0:      	mov	w4, w0
+    9cb4:      	adrp	x0, 0x9000 <aw8693x_play_mode+0x2cc>
+		0000000000009cb4:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x43ba
+    9cb8:      	add	x0, x0, #0x0
+		0000000000009cb8:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x43ba
+    9cbc:      	adrp	x1, 0x9000 <aw8693x_play_mode+0x2cc>
+		0000000000009cbc:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1c08
+    9cc0:      	add	x1, x1, #0x0
+		0000000000009cc0:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1c08
+    9cc4:      	adrp	x3, 0x9000 <aw8693x_play_mode+0x2cc>
+		0000000000009cc4:  R_AARCH64_ADR_PREL_PG_HI21	.rodata.str1.1+0x1e94
+    9cc8:      	add	x3, x3, #0x0
+		0000000000009cc8:  R_AARCH64_ADD_ABS_LO12_NC	.rodata.str1.1+0x1e94
+    9ccc:      	mov	w2, #0x6ce              // =1742
+    9cd0:      	mov	w5, w19
+    9cd4:      	bl	0x9cd4 <irq_config+0xf4>
+		0000000000009cd4:  R_AARCH64_CALL26	_printk
+    9cd8:      	mov	w0, w19
+    9cdc:      	b	0x9c68 <irq_config+0x88>

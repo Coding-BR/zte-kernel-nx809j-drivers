@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_rtp_irq_oneshot_sleep_20261103",
+  "review_date": "2026-11-03",
+  "result": "STATIC_ONESHOT_THREADED_IRQ_FIFO_SLEEP_UNDER_GLOBAL_MUTEX; STOCK_SLEEP_RETAINED; CANDIDATE_MUTEX_SCOPE_ADDED",
+  "candidate": {
+    "module_sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+    "module_path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "map_sha256": "3773f78f259b46ae3a0d0d06743b1bdf8e043b7c3fe60aa45b445b93affb5fa6",
+    "irq_registration": {
+      "symbol": "irq_config",
+      "candidate_vma": "0x9be0",
+      "primary_handler": "NULL",
+      "threaded_handler": "irq_handle",
+      "flags": "0x2002",
+      "flags_meaning": ["IRQF_ONESHOT", "IRQF_TRIGGER_FALLING"]
+    },
+    "irq_wrapper": {
+      "symbol": "irq_handle",
+      "candidate_vma": "0x7504",
+      "arming_gate_tests_before_lock": true,
+      "arming_gate_rechecked_after_lock": true,
+      "mutex": "haptic_irq_stop_lock (.data+0x400)",
+      "lock_call_vma": "0x7558",
+      "stock_exact_handler_call_vma": "0x758c",
+      "unlock_after_stock_handler": true
+    },
+    "stock_exact_irq_path": {
+      "symbol": "irq_handle_stock_exact",
+      "candidate_vma": "0xaf74",
+      "rtp_branch_calls_fifo_helper": true,
+      "fifo_helper_call_vma": "0xb1b8",
+      "outer_loop_can_reenter_helper": true
+    },
+    "fifo_helper": {
+      "symbol": "richtap_update_fifo_data",
+      "candidate_vma": "0x8284",
+      "retry_count": 3,
+      "sleep_call": "usleep_range_state(1000, 1000, 2)",
+      "sleep_call_vma": "0x8330",
+      "sleep_condition": "FIFO node state is neither 'U' nor 0xaa",
+      "max_requested_sleep_ms_per_helper_call": 3
+    },
+    "worker_startup_scope": {
+      "worker": "richtap_rtp_work",
+      "helper_call_vma": "0x8790",
+      "arming_complete_call_vma": "0x887c",
+      "arming_complete_function_vma": "0x7468",
+      "gate_suppresses_irq_during_this_startup_call": true,
+      "gate_suppresses_steady_state_irq_path": false
+    }
+  },
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "irq_config_entry": "0x00108368",
+    "irq_handler_entry": "0x00109090",
+    "fifo_helper_entry": "0x0010946c",
+    "irq_registration_flags": "0x2002",
+    "irq_rtp_path_calls_fifo_helper": true,
+    "fifo_helper_has_retry_sleep": true,
+    "stock_sleep_behavior_retained": true,
+    "candidate_global_mutex_around_full_irq_handler": true
+  },
+  "pinned_kernel": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "interrupt_h_header_sha256": "aa1a8232a58c8d67f2800abfd2cb72288b90df78c9e89891200ee6701358af64",
+    "irq_manage_c_sha256": "be9d5516fe884186c30a553cbc5a2b53e13d55dc0875dc0826b21991f918330b",
+    "oneshot_behavior": "thread_fn runs with interrupt line masked; line is unmasked when threaded handler completes"
+  },
+  "stock_evidence": {
+    "irq_config_ghidra": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0066_00108368_irq_config.c",
+    "irq_config_ghidra_sha256": "6e1f30fc5e0a16a35a24fa262156061375522d47b4877ea78d6a06ba71fdcc40",
+    "irq_config_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0066_irq_config_00108368.asm",
+    "irq_config_assembly_sha256": "193472d744db86fbf869b0339e6de679fe4d73ce58b0d2320e07580b7fa76f65",
+    "irq_handle_ghidra": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0073_00109090_irq_handle.c",
+    "irq_handle_ghidra_sha256": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279",
+    "irq_handle_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0073_irq_handle_00109090.asm",
+    "irq_handle_assembly_sha256": "3cf59ea3df996cd316b402838fbd56a6a02b56515562e4a3eaf955777822bff5",
+    "fifo_helper_ghidra_sha256": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e",
+    "fifo_helper_assembly_sha256": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2"
+  },
+  "candidate_sources": {
+    "haptic_86938_lifetime.c": "2d7b1ababbf9648296d98db718d30ad3e848da7efd6c8a0c7305bfd7760e1b53",
+    "haptic_86938_fn_073_irq_handle_exact.S": "ac5dace9a1895b9e6f8bbc305a4c4cc78afa1ea928cc0ec16ff6b1cf256f9d7f",
+    "haptic_86938_fn_136_richtap_update_fifo_data.c": "c0d0e4340d76024f245759024279f093d7541d220dddca3b13c13adaf2a1e0ec",
+    "haptic_86938_fn_137_richtap_rtp_work.c": "22953758a2ab1b118dc5f3c05a8cfb04f3b8ede5c6fcf8a510be5df43b26f8d3"
+  },
+  "toolchain": {
+    "docker_image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "llvm_objdump": "18.1.3"
+  },
+  "evidence_files": {
+    "candidate_c6_irq_fifo_disassembly.txt": "fc2890edb8e6749d5971642df292323bfee524e16b75e7f5d44059639aa811a0",
+    "candidate_irq_registration_disassembly.txt": "815e07020c1c03c726739e0710103b8bd9ce6d046d73a5c4353bb75fdc884d3b",
+    "stock_irq_fifo_disassembly.txt": "bbed65dd936ba3312c1c74b02b1338a77461754735b80fb5782f7fba43f4ead4",
+    "pinned_kernel_irq_oneshot_excerpt.txt": "a5870c36b53646e2f0b6939d9332c1d177e805e20ef61aabf545c3c30037fa93"
+  },
+  "reconstruction": {
+    "irq_handle_status": "reviewed; NOT_ESTABLISHED_HARDENED_DEVIATION",
+    "richtap_rtp_work_status": "candidate_under_static_validation",
+    "richtap_update_fifo_data_status": "candidate_under_static_validation",
+    "source_changed": false,
+    "map_changed": false,
+    "rebuild_required": false,
+    "runtime_irq_latency_measured": false,
+    "irq_edge_loss_observed": false,
+    "deadlock_observed": false,
+    "candidate_installed_on_phone": false,
+    "driver_complete": false
+  },
+  "limitations": [
+    "The 3 ms figure is requested sleep per helper invocation, not a wall-clock bound.",
+    "The stock IRQ loop may invoke the helper repeatedly; total threaded-handler duration is not bounded by this report.",
+    "No hardware timing, IRQ edge loss, deadlock, or functional failure was measured or reproduced.",
+    "The sleep and IRQF_ONESHOT behavior are present in the stock path; the candidate-specific change is its global mutex around the full stock-exact handler."
+  ]
+}
