@@ -1,0 +1,86 @@
+{
+  "review_id": "haptic_richtap_irq_edge_clear_c6_20261104",
+  "review_date": "2026-11-04",
+  "disposition": "OPEN_CONDITIONAL_STATIC_CONCERN_NOT_REPRODUCED",
+  "candidate": {
+    "sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+    "repository_path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "canonical_docker_path": "kernel-docker-workspace/engenharia/curated/haptic_86938/haptic_86938.ko",
+    "both_artifacts_match": true
+  },
+  "stock": {
+    "sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "path": "reference_modules/full_vendor_boot/haptic_86938.ko"
+  },
+  "reconstruction_map": {
+    "sha256": "3773f78f259b46ae3a0d0d06743b1bdf8e043b7c3fe60aa45b445b93affb5fa6",
+    "irq_handle_status": "reviewed",
+    "richtap_rtp_work_status": "candidate_under_static_validation"
+  },
+  "inputs": {
+    "candidate_disassembly": {
+      "path": "candidate_c6_irq_edge_clear_disassembly.txt",
+      "sha256": "83b5518864cdf6011522c162c217ea9c511bda97b9a73fe4fdeb0a77023f64b3"
+    },
+    "llvm_objdump_version": {
+      "path": "llvm_objdump_version.txt",
+      "sha256": "c18de73ea9de154862bda491ceae94a4dbdebd1555396fdb0419371fad3ded1a"
+    },
+    "source_sha256": {
+      "haptic_86938_lifetime.c": "2d7b1ababbf9648296d98db718d30ad3e848da7efd6c8a0c7305bfd7760e1b53",
+      "haptic_86938_fn_137_richtap_rtp_work.c": "22953758a2ab1b118dc5f3c05a8cfb04f3b8ede5c6fcf8a510be5df43b26f8d3",
+      "haptic_86938_fn_067_irq_config_exact.S": "cefeed224bd60749bac4bd5c7457e2f720723ac248304d16051a579360ed99ab",
+      "haptic_86938_fn_058_aw8693x_irq_clear.c": "0b811f940f4b1a2245961c5cfefd1155fd0f3a7f5dcb36c73badb7972c4c51c4"
+    },
+    "stock_ghidra_sha256": {
+      "irq_config_decompiled.c": "6e1f30fc5e0a16a35a24fa262156061375522d47b4877ea78d6a06ba71fdcc40",
+      "irq_handle_decompiled.c": "9327e36208b286f19a141dc23bd4e1b50b28157a551605b3d441e42fc1cf2279",
+      "richtap_rtp_work_decompiled.c": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5",
+      "irq_config_stock_assembly": "193472d744db86fbf869b0339e6de679fe4d73ce58b0d2320e07580b7fa76f65",
+      "irq_handle_stock_assembly": "3cf59ea3df996cd316b402838fbd56a6a02b56515562e4a3eaf955777822bff5",
+      "richtap_rtp_work_stock_assembly": "393de37c1ba2b68f4e42e90f4bd72515fc7650b1542bc48aa14af747012cfa83",
+      "aw8693x_set_rtp_aei_stock_assembly": "9d85048e3ac7ae7ed593e4948b169e7a79c39ee561fb2b9a4a7e62de2701ab5c"
+    }
+  },
+  "observations": [
+    {
+      "evidence": "candidate_c6_irq_edge_clear_disassembly.txt",
+      "vma": "irq_handle 0x7504-0x7590",
+      "result": "The arming flag is checked before the mutex and after it; either active-gate path returns IRQ_HANDLED without calling irq_handle_stock_exact."
+    },
+    {
+      "evidence": "candidate_c6_irq_edge_clear_disassembly.txt",
+      "vma": "irq_config 0x9be0-0x9c60",
+      "result": "The compiled request passes flags 0x2002 to devm_request_threaded_irq."
+    },
+    {
+      "evidence": "candidate_c6_irq_edge_clear_disassembly.txt",
+      "vma": "richtap_rtp_work 0x87ec-0x88dc",
+      "result": "One branch calls irq_clear then set_rtp_aei(1); the other calls set_rtp_aei(1) then irq_clear. The worker clears the arming gate after the branch completes."
+    },
+    {
+      "evidence": "haptic_86938_fn_058_aw8693x_irq_clear.c",
+      "result": "The callback reads one byte from register 0x02, named SYSINT in the stock log."
+    },
+    {
+      "evidence": "stock Ghidra and stock assembly for richtap_rtp_work",
+      "result": "The non-loop AEI-before-irq_clear ordering is present in the stock body as well."
+    }
+  ],
+  "assessment": {
+    "confirmed_bug": false,
+    "lost_event_reproduced": false,
+    "hardware_semantics_proven": false,
+    "candidate_installed": false,
+    "source_or_map_changed": false,
+    "docker_build_required": false,
+    "adb_devices_present": false,
+    "next_evidence": "Obtain exact chip latch/reassert semantics or trace a targeted non-loop startup event on the candidate hardware."
+  },
+  "vendor_reference": {
+    "url": "https://www.awinic.com/en/productDetail/AW86938ACSR",
+    "supported_claim": "The product page describes a dedicated interrupt output for real-time FIFO and chip-error status.",
+    "limitation": "The page does not establish the exact SYSINT read-clear and edge reassert timing in this driver sequence."
+  },
+  "curated_snapshot_manifest": "curated_snapshot_manifest_20261104.json"
+}
