@@ -186,26 +186,34 @@ err_parse:
 
 void gf_cleanup(struct gf_dev *gf_dev)
 {
+	int enabled;
+
 	pr_info("[info] %s gf_dev\n", __func__);
 
-	if (gpio_is_valid(gf_dev->irq_gpio)) {
-		gpio_free(gf_dev->irq_gpio);
-		pr_info("gf_dev-gf_cleanup. remove irq_gpio success\n");
-	}
-
-	if (gpio_is_valid(gf_dev->reset_gpio)) {
-		gpio_free(gf_dev->reset_gpio);
-		pr_info("gf_dev-gf_cleanup. remove reset_gpio success\n");
-	}
-
-	if (!IS_ERR(gf_dev->vdd_reg)) {
-		if (regulator_is_enabled(gf_dev->vdd_reg)) {
+	if (!IS_ERR_OR_NULL(gf_dev->vdd_reg)) {
+		enabled = regulator_is_enabled(gf_dev->vdd_reg);
+		if (enabled > 0) {
 			regulator_disable(gf_dev->vdd_reg);
 			pr_info("gf_dev-gf_cleanup. remove vdd success\n");
-		} else {
+		} else if (!enabled) {
 			pr_warn("gf_dev-gf_cleanup vdd regulator already disabled\n");
+		} else {
+			pr_warn("gf_dev-gf_cleanup failed to query vdd state, rc=%d\n",
+				enabled);
 		}
 	}
+
+	if (gf_dev->resource_group && gf_dev->pdev) {
+		devres_release_group(&gf_dev->pdev->dev, gf_dev->resource_group);
+		gf_dev->resource_group = NULL;
+	}
+
+	gf_dev->vdd_reg = NULL;
+	gf_dev->pinctrl = NULL;
+	gf_dev->pins_active = NULL;
+	gf_dev->pins_suspend = NULL;
+	gf_dev->irq_gpio = -EINVAL;
+	gf_dev->reset_gpio = -EINVAL;
 }
 
 int gf_power_on(struct gf_dev *gf_dev)

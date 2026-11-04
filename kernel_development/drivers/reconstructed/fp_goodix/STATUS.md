@@ -1,10 +1,10 @@
 # Status: `fp_goodix`
 
-Estado atual (2026-11-04): **HARDENING_CANDIDATE_BUILD_VERIFIED_WITH_RESIDUAL_LIFETIME_RISKS**. O driver permanece offline-only; nao instalar nem promover este candidato.
+Estado atual (2026-11-04): **HARDENING_CANDIDATE_STATIC_BUILD_VERIFIED; DYNAMIC_VALIDATION_PENDING**. O `fp_goodix` continua em trabalho estático; não está validado no smartphone e não deve ser instalado/promovido.
 
-O baseline stock-exact `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595` continua preservado como evidência histórica. O candidato atual aplica três correções de teardown em `gf_remove`/`zte_fp_exit`; dois builds Docker limpos produziram o mesmo módulo `3dcb65d6844d895ed794d44f09e400a4caf0d08401c5a8ed4454d5c8ba8eae63` (719232 bytes). A comparação de assembly atual passa 28/30 funções; as únicas diferenças são desvios de hardening esperados em `gf_remove` e `cleanup_module`. Atestação: `attestation/lifetime_sync_hardening_20261104/`.
+O baseline stock-exact `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595` e o candidato anterior `3dcb65d6844d895ed794d44f09e400a4caf0d08401c5a8ed4454d5c8ba8eae63` permanecem preservados como evidência histórica. O candidato atual adiciona hardening em IRQ/ioctl, aquisição e liberação de recursos, abertura/fechamento, probe e remoção. Dois builds Docker NX809J limpos produziram o mesmo módulo `756d2e48b902e85ca4e19e7281291ad2895def7922e86750fd2c220ffe030f3a` (723560 bytes). Contra o módulo stock, 23/30 funções são idênticas; as sete diferenças são as alterações de hardening documentadas, sem divergências fora do escopo. Evidência: `attestation/ioctl_irq_resource_group_hardening_20261104/`.
 
-Riscos ainda abertos: `gf_remove` não quiesce a IRQ requisitada durante um descritor aberto, e `gf_ioctl` continua sem serialização/estado de remoção, permitindo corrida com o teardown do input device e recursos gerenciados pela plataforma. Não houve reprodução em runtime nem teste de hardware; revisão independente e validação NX809J seguem pendentes.
+O lote elimina estaticamente os riscos previamente identificados de IRQ durante remoção, ioctl concorrente com teardown e liberação duplicada de GPIO gerenciado. Isso ainda precisa de revisão semântica independente e validação dinâmica controlada. ADB não detecta dispositivo conectado nesta checagem; não houve carga de módulo nem teste de hardware.
 
 Baseline stock-exact revalidado em 2026-11-02: o módulo `fc9a662…` passou comparação AArch64 fresca contra o stock em **30/30 funções**. A extração antiga em `candidate_assembly/` aponta para `13ce11de…`; as rechecagens de 27/30 e 28/30 são de hashes intermediários. A evidência está em `attestation/current_candidate_assembly_review_20261102/`.
 
@@ -16,16 +16,17 @@ Baseline stock-exact revalidado em 2026-11-02: o módulo `fc9a662…` passou com
 | Mapa stock -> fonte | PASS estrutural | 30/30 funções continuam mapeadas; hash do módulo e fonte foram atualizados. Equivalência C continua UNPROVEN e revisão humana independente pendente |
 | Call graph | PASS | 30/30 inventario e chamadas stock/candidato coincidentes |
 | KCFI | DIFERENÃ‡A CLASSIFICADA / STRICT PRESENCE FAILS | A comparaÃ§Ã£o estrita continua diferente em trÃªs preÃ¢mbulos. RevisÃ£o estÃ¡tica encontrou uma chamada direta `R_AARCH64_CALL26` de `gf_ioctl` por funÃ§Ã£o, corpos byte a byte idÃªnticos e nenhuma referÃªncia ELF indireta ou exportaÃ§Ã£o kernel `__ksymtab` para esses alvos. DecisÃ£o: `KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY`; nÃ£o Ã© PASS de igualdade estrita. EvidÃªncia: `attestation/kcfi_direct_call_only_review_20261102/`. |
-| Assembly | PARCIAL / HARDENING | Comparação fresca atual: 28/30 exatas; `gf_remove` e `cleanup_module` diferem intencionalmente pelas correções de teardown. Nenhuma terceira diferença. Ver `attestation/lifetime_sync_hardening_20261104/assembly_comparison_build3.json` |
+| Assembly | PARCIAL / HARDENING | Comparação fresca contra o stock real: 23/30 exatas; sete diferenças intencionais em `cleanup_module`, `gf_cleanup`, `gf_compat_ioctl`, `gf_open`, `gf_probe`, `gf_release` e `gf_remove`. Nenhuma diferença não classificada. Ver `attestation/ioctl_irq_resource_group_hardening_20261104/assembly_comparison_stock.json` |
 | Host harness | HISTÓRICO | 30/30 cobertas no baseline `fc9a662…`; o candidato hardening atual não teve harness nesta rodada |
-| Build GKI/KMI | BUILD PASS | Dois builds Docker canônicos limpos produziram módulo idêntico, SHA-256 `3dcb65d…`; isso não fecha equivalência semântica nem validação de hardware |
+| Build GKI/KMI | BUILD PASS | Dois builds Docker NX809J limpos produziram módulo idêntico, SHA-256 `756d2e48…`; isso não fecha equivalência semântica nem validação de hardware |
 | Microtarefas | HISTÓRICO | As 30 microtarefas foram verificadas no baseline stock-exact; as mudanças hardening atuais não repetiram esses testes |
-| Hardware NX809J | DEFERRED | nenhum `insmod`, `rmmod`, ADB ou fastboot foi executado neste ciclo |
+| Hardware NX809J | DEFERRED | `adb devices -l` confirmou lista vazia; nenhum `insmod`/`rmmod` ou teste no telefone foi executado |
 
 Candidato atual:
 
 - SHA-256 do baseline stock-exact de 2026-11-02: `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595`
-- SHA-256 do candidato atual com hardening: `3dcb65d6844d895ed794d44f09e400a4caf0d08401c5a8ed4454d5c8ba8eae63` (719232 bytes)
+- SHA-256 do candidato hardening anterior: `3dcb65d6844d895ed794d44f09e400a4caf0d08401c5a8ed4454d5c8ba8eae63` (719232 bytes)
+- SHA-256 do candidato atual com hardening de IRQ/ioctl/recursos: `756d2e48b902e85ca4e19e7281291ad2895def7922e86750fd2c220ffe030f3a` (723560 bytes)
 - vermagic: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64`
 
 Reauditoria Docker â€” 2026-11-02:

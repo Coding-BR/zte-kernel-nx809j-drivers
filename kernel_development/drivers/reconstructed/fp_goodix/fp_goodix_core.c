@@ -14,6 +14,8 @@
 extern long gf_ioctl(struct file *file, unsigned int cmd,
 			     unsigned long arg);
 #endif
+static long gf_ioctl_dispatch(struct file *file, unsigned int cmd,
+			      unsigned long arg);
 
 struct zlog_module_info goodix_zlog_fp_dev = {
 	.module_id = 7,
@@ -191,10 +193,26 @@ static irqreturn_t gf_irq(int irq, void *dev_id)
  * File Operations Callbacks
  * ====================================================================== */
 
+static void gf_release_irq(struct gf_dev *gf_dev)
+{
+	if (!gf_dev->irq_requested)
+		return;
+
+	irq_set_irq_wake(gf_dev->irq_num, 0);
+	if (gf_dev->irq_enabled) {
+		gf_dev->irq_enabled = 0;
+		disable_irq(gf_dev->irq_num);
+	}
+
+	free_irq(gf_dev->irq_num, gf_dev);
+	gf_dev->irq_requested = 0;
+}
+
 static int gf_open(struct inode *inode, struct file *file)
 {
 	struct gf_dev *gf_dev;
 	int ret = -ENXIO;
+	void *resource_group;
 
 	pr_info("fp_goodix: %s: enter\n", __func__);
 
@@ -208,71 +226,82 @@ static int gf_open(struct inode *inode, struct file *file)
 		}
 	}
 
-	gf_dev->zlog_client = zlog_register_client(&goodix_zlog_fp_dev);
-	if (gf_dev->zlog_client)
-		pr_info("fp_goodix: %s zlog_register_goodixfp_client success\n",
-			__func__);
-	else
-		pr_err("fp_goodix: %s zlog_register_goodixfp_client fail\n",
-			__func__);
-
 	if (list_entry_is_head(gf_dev, &device_list, device_entry)) {
 		pr_info("fp_goodix: No device for minor %d\n", iminor(inode));
-	} else {
-		gf_dev->ref_count++;
-		file->private_data = gf_dev;
-		nonseekable_open(inode, file);
-		pr_info("fp_goodix: goodix: Succeed to open device. irq = %d\n",
-			gf_dev->irq_num);
-
-		if (gf_dev->ref_count == 1) {
-			ret = gf_parse_dts(gf_dev);
-			if (ret) {
-				goto err_unlock_return;
-			}
-
-			pr_info("fp_goodix: %s: enter", "irq_setup");
-			gf_dev->irq_num = gf_irq_num(gf_dev);
-			ret = request_threaded_irq(gf_dev->irq_num, NULL, gf_irq,
-						   IRQF_TRIGGER_RISING | IRQF_ONESHOT,
-						   "gf", gf_dev);
-			#if defined(__aarch64__)
-			register int wake_irq __asm__("w1");
-			asm volatile("ldr %w0, [%1, #0x40]"
-				     : "=r"(wake_irq)
-				     : "r"(&gf_dev->device_entry));
-			#else
-			int wake_irq = gf_dev->irq_num;
-			#endif
-			if (ret) {
-				#if defined(__aarch64__)
-				#pragma clang diagnostic push
-				#pragma clang diagnostic ignored "-Wformat-insufficient-args"
-				pr_err("fp_goodix: failed to request IRQ:%d\n");
-				#pragma clang diagnostic pop
-				#else
-				pr_err("fp_goodix: failed to request IRQ:%d\n", ret);
-				#endif
-				gf_cleanup(gf_dev);
-				goto err_unlock_return;
-			}
-
-			irq_set_irq_wake(wake_irq, 1);
-			gf_dev->irq_enabled = 1;
-		}
-
-		gf_hw_reset(gf_dev, 5);
-		gf_dev->opened = 1;
-		barrier();
-		ret = 0;
+	}
+	if (list_entry_is_head(gf_dev, &device_list, device_entry))
+		goto out_unlock;
+	if (gf_dev->removing || !gf_dev->devt) {
+		ret = -ENODEV;
+		goto out_unlock;
+	}
+	if (gf_dev->ref_count && !gf_dev->resource_group) {
+		ret = -ENODEV;
+		goto out_unlock;
 	}
 
+	if (!gf_dev->ref_count) {
+		gf_dev->zlog_client = zlog_register_client(&goodix_zlog_fp_dev);
+		if (gf_dev->zlog_client)
+			pr_info("fp_goodix: %s zlog_register_goodixfp_client success\n",
+				__func__);
+		else
+			pr_err("fp_goodix: %s zlog_register_goodixfp_client fail\n",
+				__func__);
+
+		resource_group = devres_open_group(&gf_dev->pdev->dev, NULL,
+						   GFP_KERNEL);
+		if (!resource_group) {
+			ret = -ENOMEM;
+			goto err_zlog;
+		}
+		gf_dev->resource_group = resource_group;
+
+		ret = gf_parse_dts(gf_dev);
+		if (ret)
+			goto err_resources;
+
+		pr_info("fp_goodix: %s: enter", "irq_setup");
+		gf_dev->irq_num = gf_irq_num(gf_dev);
+		ret = request_threaded_irq(gf_dev->irq_num, NULL, gf_irq,
+					   IRQF_TRIGGER_RISING | IRQF_ONESHOT,
+					   "gf", gf_dev);
+		if (ret) {
+			pr_err("fp_goodix: failed to request IRQ: %d\n", ret);
+			goto err_resources;
+		}
+
+		gf_dev->irq_requested = 1;
+		irq_set_irq_wake(gf_dev->irq_num, 1);
+		gf_dev->irq_enabled = 1;
+		/* gf_cleanup() releases this open group with the devm resources. */
+	}
+
+	gf_dev->ref_count++;
+	file->private_data = gf_dev;
+	nonseekable_open(inode, file);
+	pr_info("fp_goodix: goodix: Succeed to open device. irq = %d\n",
+		gf_dev->irq_num);
+	gf_hw_reset(gf_dev, 5);
+	gf_dev->opened = 1;
+	barrier();
+	ret = 0;
+	goto out_unlock;
+
+err_resources:
+	if (gf_dev->irq_requested)
+		gf_release_irq(gf_dev);
+	gf_cleanup(gf_dev);
+	gf_dev->opened = 0;
+err_zlog:
+	if (gf_dev->zlog_client) {
+		zlog_unregister_client(gf_dev->zlog_client);
+		gf_dev->zlog_client = NULL;
+	}
+
+	out_unlock:
 	mutex_unlock(&device_list_lock);
 	pr_info("fp_goodix: %s: end\n", __func__);
-	return ret;
-
-err_unlock_return:
-	mutex_unlock(&device_list_lock);
 	return ret;
 }
 
@@ -285,27 +314,21 @@ static int gf_release(struct inode *inode, struct file *file)
 	mutex_lock(&device_list_lock);
 	gf_dev = file->private_data;
 	file->private_data = NULL;
-	gf_dev->ref_count--;
-	if (gf_dev->ref_count == 0) {
-		pr_info("fp_goodix: disble_irq. irq = %d\n", gf_dev->irq_num);
-		irq_set_irq_wake(gf_dev->irq_num, 0);
+	if (gf_dev && gf_dev->ref_count) {
+		gf_dev->ref_count--;
+		if (!gf_dev->ref_count) {
+			gf_release_irq(gf_dev);
+			if (!gf_dev->removing)
+				gf_cleanup(gf_dev);
+			gf_dev->opened = 0;
 
-		if (gf_dev->irq_enabled) {
-			gf_dev->irq_enabled = 0;
-			disable_irq(gf_dev->irq_num);
-		} else {
-			pr_warn("fp_goodix: IRQ has been disabled.\n");
+			if (gf_dev->zlog_client) {
+				zlog_unregister_client(gf_dev->zlog_client);
+				gf_dev->zlog_client = NULL;
+				pr_info("fp_goodix: %s zlog_unregister_client goodix_zlog_fp_dev\n",
+					__func__);
+			}
 		}
-
-		free_irq(gf_dev->irq_num, gf_dev);
-		gf_cleanup(gf_dev);
-		gf_dev->opened = 0;
-	}
-
-	if (gf_dev->zlog_client) {
-		zlog_unregister_client(gf_dev->zlog_client);
-		pr_info("fp_goodix: %s zlog_unregister_client goodix_zlog_fp_dev\n",
-			__func__);
 	}
 
 	mutex_unlock(&device_list_lock);
@@ -543,15 +566,40 @@ static noinline long gf_compat_ioctl(struct file *file, unsigned int cmd,
 				     unsigned long arg)
 {
 	#ifdef ZTE_FINGERPRINT_HOST_TEST
-	return gf_ioctl(file, cmd, arg);
+	return gf_ioctl_dispatch(file, cmd, arg);
 	#else
-	return gf_ioctl(file, cmd, (unsigned int)arg);
+	return gf_ioctl_dispatch(file, cmd, (unsigned int)arg);
 	#endif
+}
+
+static long gf_ioctl_dispatch(struct file *file, unsigned int cmd,
+			      unsigned long arg)
+{
+	struct gf_dev *gf_dev;
+	long ret;
+
+	mutex_lock(&device_list_lock);
+	gf_dev = file->private_data;
+	if (!gf_dev || gf_dev->removing || !gf_dev->devt ||
+	    !gf_dev->resource_group) {
+		ret = -ENODEV;
+		goto out_unlock;
+	}
+
+	if (cmd == 0x670c)
+		gf_release_irq(gf_dev);
+	ret = gf_ioctl(file, cmd, arg);
+	if (cmd == 0x670c)
+		gf_dev->opened = 0;
+
+out_unlock:
+	mutex_unlock(&device_list_lock);
+	return ret;
 }
 
 static const struct file_operations gf_fops = {
 	.owner          = THIS_MODULE,
-	.unlocked_ioctl = gf_ioctl,
+	.unlocked_ioctl = gf_ioctl_dispatch,
 	.compat_ioctl   = gf_compat_ioctl,
 	.open           = gf_open,
 	.release        = gf_release,
@@ -566,52 +614,48 @@ static int gf_probe(struct platform_device *pdev)
 	struct gf_dev *gf_dev = &gf;
 	struct device *dev_node;
 	unsigned long minor;
+	bool input_registered = false;
+	bool wakeup_added = false;
 	int ret = 0;
 
 	pr_info("fp_goodix: %s\n", __func__);
 
+	mutex_lock(&device_list_lock);
+	if (gf_dev->ref_count || (gf_dev->pdev && !gf_dev->removing)) {
+		mutex_unlock(&device_list_lock);
+		return -EBUSY;
+	}
+
 	INIT_LIST_HEAD(&gf_dev->device_entry);
 	gf_dev->pdev = pdev;
+	gf_dev->devt = 0;
+	gf_dev->input_dev = NULL;
 	gf_dev->irq_gpio = -EINVAL;
 	gf_dev->reset_gpio = -EINVAL;
 	*(u64 *)&gf_dev->reserved_44 = (u64)(u32)-EINVAL;
+	gf_dev->irq_num = 0;
+	gf_dev->irq_enabled = 0;
+	gf_dev->irq_requested = 0;
+	gf_dev->resource_group = NULL;
+	gf_dev->removing = 0;
+	gf_dev->ref_count = 0;
 	gf_dev->opened = 0;
 	gf_dev->screen_state = 0;
-
-	gf_dev->screen_state_wq = create_singlethread_workqueue("screen_state_wq");
-	if (gf_dev->screen_state_wq) {
-		INIT_DELAYED_WORK(&gf_dev->screen_state_work, goodixfp_init_drm_notifier);
-		queue_delayed_work(gf_dev->screen_state_wq,
-				   &gf_dev->screen_state_work, 1250);
-	}
-
-	mutex_lock(&device_list_lock);
-
-	minor = find_first_zero_bit(minors, 32);
-	if (minor >= 32) {
-		mutex_unlock(&device_list_lock);
-		ret = -ENODEV;
-		goto err_cleanup;
-	}
-
-	gf_dev->devt = MKDEV(SPIDEV_MAJOR, minor);
-	dev_node = device_create(gf_class, &gf_dev->pdev->dev, gf_dev->devt,
-				 gf_dev, "goodix_fp");
-	ret = PTR_ERR_OR_ZERO(dev_node);
-	if (ret) {
-		gf_dev->devt = 0;
-		goto err_cleanup;
-	}
-
-	set_bit(minor, minors);
-	list_add(&gf_dev->device_entry, &device_list);
+	gf_dev->zlog_client = NULL;
+	gf_dev->pinctrl = NULL;
+	gf_dev->pins_active = NULL;
+	gf_dev->pins_suspend = NULL;
+	gf_dev->vdd_reg = NULL;
+	gf_dev->screen_state_wq = NULL;
+	cookie = NULL;
+	goodixfp_active_panel = NULL;
 	mutex_unlock(&device_list_lock);
 
 	gf_dev->input_dev = input_allocate_device();
 	if (!gf_dev->input_dev) {
 		pr_err("fp_goodix: %s, failed to allocate input device\n", __func__);
 		ret = -ENOMEM;
-		goto err_device;
+		goto err_probe;
 	}
 
 	input_set_capability(gf_dev->input_dev, EV_KEY, 0x66);
@@ -632,53 +676,117 @@ static int gf_probe(struct platform_device *pdev)
 	ret = input_register_device(gf_dev->input_dev);
 	if (ret) {
 		pr_err("fp_goodix: failed to register input device\n");
-		if (gf_dev->input_dev)
-			input_free_device(gf_dev->input_dev);
-		goto err_device;
+		input_free_device(gf_dev->input_dev);
+		gf_dev->input_dev = NULL;
+		goto err_probe;
 	}
+	input_registered = true;
 
 	wakeup_source_add(&fp_wakelock);
-	pr_info("fp_goodix: version V%d.%d.%02d.%02d\n", 1, 2, 4, 2);
-	return ret;
+	wakeup_added = true;
 
-err_device:
-	if (gf_dev->devt) {
-		pr_info("fp_goodix: Err: status = %d\n", ret);
-		mutex_lock(&device_list_lock);
-		gf_probe_list_del(&gf_dev->device_entry);
-		device_destroy(gf_class, gf_dev->devt);
-		clear_bit(MINOR(gf_dev->devt), minors);
-		mutex_unlock(&device_list_lock);
+	gf_dev->screen_state_wq =
+		create_singlethread_workqueue("screen_state_wq");
+	if (gf_dev->screen_state_wq) {
+		INIT_DELAYED_WORK(&gf_dev->screen_state_work,
+				  goodixfp_init_drm_notifier);
+		queue_delayed_work(gf_dev->screen_state_wq,
+				   &gf_dev->screen_state_work, 1250);
 	}
-err_cleanup:
-	gf_cleanup(gf_dev);
-	gf_dev->opened = 0;
+
+	mutex_lock(&device_list_lock);
+	minor = find_first_zero_bit(minors, 32);
+	if (minor >= 32) {
+		mutex_unlock(&device_list_lock);
+		ret = -ENODEV;
+		goto err_probe;
+	}
+
+	gf_dev->devt = MKDEV(SPIDEV_MAJOR, minor);
+	dev_node = device_create(gf_class, &gf_dev->pdev->dev, gf_dev->devt,
+				 gf_dev, "goodix_fp");
+	ret = PTR_ERR_OR_ZERO(dev_node);
+	if (ret) {
+		gf_dev->devt = 0;
+		mutex_unlock(&device_list_lock);
+		goto err_probe;
+	}
+
+	set_bit(minor, minors);
+	list_add(&gf_dev->device_entry, &device_list);
+	mutex_unlock(&device_list_lock);
+
+	pr_info("fp_goodix: version V%d.%d.%02d.%02d\n", 1, 2, 4, 2);
+	return 0;
+
+err_probe:
+	if (gf_dev->screen_state_wq) {
+		cancel_delayed_work_sync(&gf_dev->screen_state_work);
+		if (cookie) {
+			panel_event_notifier_unregister(cookie);
+			cookie = NULL;
+		}
+		destroy_workqueue(gf_dev->screen_state_wq);
+		gf_dev->screen_state_wq = NULL;
+	}
+	if (wakeup_added)
+		wakeup_source_remove(&fp_wakelock);
+	if (input_registered) {
+		input_unregister_device(gf_dev->input_dev);
+		gf_dev->input_dev = NULL;
+	}
+	mutex_lock(&device_list_lock);
+	gf_dev->pdev = NULL;
+	gf_dev->removing = 1;
+	mutex_unlock(&device_list_lock);
 	return ret;
 }
 
 static void gf_remove(struct platform_device *pdev)
 {
+	struct gf_dev *gf_dev = &gf;
+	dev_t devt;
+
 	pr_info("fp_goodix: %s: gf_remove\n", __func__);
 
-	wakeup_source_remove(&fp_wakelock);
-
-	if (gf.input_dev) {
-		input_unregister_device(gf.input_dev);
-		gf.input_dev = NULL;
-	}
-
 	mutex_lock(&device_list_lock);
-	__list_del_entry(&gf.device_entry);
-	gf.device_entry.next = LIST_POISON1;
-	gf.device_entry.prev = LIST_POISON2;
-	device_destroy(gf_class, gf.devt);
-	clear_bit(MINOR(gf.devt), minors);
-
-	if (gf.screen_state_wq) {
-		cancel_delayed_work_sync(&gf.screen_state_work);
-		panel_event_notifier_unregister(cookie);
-		destroy_workqueue(gf.screen_state_wq);
+	if (gf_dev->removing) {
+		mutex_unlock(&device_list_lock);
+		return;
 	}
+	gf_dev->removing = 1;
+	devt = gf_dev->devt;
+	if (devt) {
+		gf_probe_list_del(&gf_dev->device_entry);
+		device_destroy(gf_class, devt);
+		clear_bit(MINOR(devt), minors);
+		gf_dev->devt = 0;
+	}
+
+	if (gf_dev->screen_state_wq) {
+		cancel_delayed_work_sync(&gf_dev->screen_state_work);
+		if (cookie) {
+			panel_event_notifier_unregister(cookie);
+			cookie = NULL;
+		}
+		destroy_workqueue(gf_dev->screen_state_wq);
+		gf_dev->screen_state_wq = NULL;
+	}
+
+	gf_release_irq(gf_dev);
+	gf_cleanup(gf_dev);
+	if (gf_dev->input_dev) {
+		input_unregister_device(gf_dev->input_dev);
+		gf_dev->input_dev = NULL;
+	}
+	wakeup_source_remove(&fp_wakelock);
+	gf_dev->opened = 0;
+	if (gf_dev->zlog_client) {
+		zlog_unregister_client(gf_dev->zlog_client);
+		gf_dev->zlog_client = NULL;
+	}
+	goodixfp_active_panel = NULL;
+	gf_dev->pdev = NULL;
 	mutex_unlock(&device_list_lock);
 }
 

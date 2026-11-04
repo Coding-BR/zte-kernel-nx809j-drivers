@@ -76,15 +76,21 @@ struct gf_dev {
 	struct regulator *vdd_reg;
 	struct workqueue_struct *screen_state_wq;
 	struct delayed_work screen_state_work;
+	void *resource_group;
+	u32 irq_requested;
+	u32 removing;
 };
 
-static_assert(sizeof(struct gf_dev) == 272);
+static_assert(sizeof(struct gf_dev) == 288);
 static_assert(offsetof(struct gf_dev, device_entry) == 8);
 static_assert(offsetof(struct gf_dev, input_dev) == 48);
 static_assert(offsetof(struct gf_dev, ref_count) == 56);
 static_assert(offsetof(struct gf_dev, opened) == 112);
 static_assert(offsetof(struct gf_dev, zlog_client) == 120);
 static_assert(offsetof(struct gf_dev, screen_state_wq) == 160);
+static_assert(offsetof(struct gf_dev, resource_group) == 272);
+static_assert(offsetof(struct gf_dev, irq_requested) == 280);
+static_assert(offsetof(struct gf_dev, removing) == 284);
 
 extern struct zlog_module_info goodix_zlog_fp_dev;
 

@@ -1,30 +1,34 @@
 # Paridade AArch64: `fp_goodix`
 
-Este relatorio usa o modulo OEM como fonte da verdade. O baseline stock-exact permanece em `reverse_engineering/validation/reconstructed/fp_goodix/assembly_comparison.json`; a comparação do candidato hardening atual está em `reverse_engineering/validation/reconstructed/fp_goodix/attestation/lifetime_sync_hardening_20261104/assembly_comparison_build3.json`.
+Este relatório usa `reference_modules/full_vendor_boot/fp_goodix.ko` como módulo OEM. O baseline stock-exact anterior permanece preservado; a comparação fresca do candidato está em `reverse_engineering/validation/reconstructed/fp_goodix/attestation/ioctl_irq_resource_group_hardening_20261104/assembly_comparison_stock.json`.
 
 ## Resultado
 
 - Funcoes verificadas: 30
-- Identidade exata de opcode, relocacao, secao e tamanho no candidato atual: 28/30
-- Desvios de hardening intencionais: `gf_remove` e `cleanup_module`; nenhum desvio adicional
-- Call graph e KCFI 30/30 e 23 IDs, respectivamente: evidência histórica do baseline `fc9a662…`; não repetida nesta rodada
+- Identidade exata de opcode, relocation, seção e tamanho no candidato atual: 23/30
+- Desvios de hardening classificados: sete funções; zero divergências fora do escopo
+- Dois builds Docker NX809J limpos: hash idêntico `756d2e48b902e85ca4e19e7281291ad2895def7922e86750fd2c220ffe030f3a`
+- Call graph e KCFI: evidência histórica do baseline `fc9a662…`; não repetida nesta rodada
 - Funcoes sem mapeamento stock -> fonte: 0; equivalência semântica total permanece UNPROVEN
 
-| Funcao | Bytes OEM/candidato | Instrucoes OEM/candidato | Relocations OEM/candidato | Diferenca restante |
-|---|---:|---:|---:|---|
-| `gf_ioctl` | 1436/1436 | 359/359 | 122/122 | exata |
-| `gf_open` | 508/508 | 127/127 | 59/59 | exata |
-| `gf_parse_dts` | 828/828 | 207/207 | 118/118 | exata |
-| `gf_probe` | 1040/1040 | 260/260 | 120/120 | exata |
-| `gf_remove` | 340/336 | 85/84 | alterada intencionalmente | teardown do notifier reordenado; chamada de `input_free_device` duplicada removida |
-| `cleanup_module` | 88/88 | 22/22 | mesmos alvos, ordem alterada | unregister do platform driver antes de `netlink_exit` |
+| Função | Bytes OEM/candidato | Instruções OEM/candidato | Classificação |
+|---|---:|---:|---|
+| `cleanup_module` | 88/88 | 22/22 | Hardening anterior: platform driver removido antes de `netlink_exit` |
+| `gf_cleanup` | 172/196 | 43/49 | Hardening: liberação do grupo devres e validação de estado do regulador |
+| `gf_compat_ioctl` | 32/32 | 8/8 | Hardening: encaminha ao dispatcher serializado |
+| `gf_open` | 508/584 | 127/146 | Hardening: unwind seguro, estado de IRQ/recursos e remoção |
+| `gf_probe` | 1040/1096 | 260/274 | Hardening: publicação após input pronto e unwind do probe |
+| `gf_release` | 240/232 | 60/58 | Hardening: IRQ e recursos liberados uma vez no último close |
+| `gf_remove` | 340/432 | 85/108 | Hardening: bloqueio de novas operações, drenagem de IRQ/work e teardown ordenado |
 
-As comparações de assembly atuais cobrem todas as 30 funções: 28 permanecem exatas e duas diferem pelas alterações de hardening descritas acima. Isso não substitui equivalência semântica, revisão independente ou teste no hardware. O candidato atual mantém riscos abertos de IRQ e `ioctl` durante remoção de plataforma.
+As comparações cobrem as 30 identidades do stock: 23 são exatas e as sete diferenças listadas são intencionais. Isso não prova equivalência semântica integral. O resultado é estático; revisão independente e validação dinâmica no NX809J continuam pendentes.
 
 ## Evidencias canonicas
 
-- `attestation/lifetime_sync_hardening_20261104/assembly_comparison_build3.json`: comparacao atual função a função.
-- `attestation/lifetime_sync_hardening_20261104/candidate_assembly_build3/`: assembly extraído do candidato hardening.
+- `attestation/ioctl_irq_resource_group_hardening_20261104/assembly_comparison_stock.json`: comparação atual função a função contra o stock.
+- `attestation/ioctl_irq_resource_group_hardening_20261104/candidate_assembly/`: assembly extraído do candidato atual.
+- `attestation/ioctl_irq_resource_group_hardening_20261104/stock_assembly/`: extração fresca do módulo OEM.
+- `attestation/lifetime_sync_hardening_20261104/`: attestation anterior, preservada como histórico.
 - `candidate_assembly/`: assembly do baseline stock-exact anterior.
 - `offline_static/stock_assembly/`: assembly OEM hashado.
 - `kcfi_comparison.json`: comparacao dos 23 type IDs instrumentados.

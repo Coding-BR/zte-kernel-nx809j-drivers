@@ -1,0 +1,172 @@
+{
+  "schema_version": "1.0",
+  "audit_id": "ioctl_irq_resource_group_hardening_20261104",
+  "generated_utc": "2026-11-04T08:04:24Z",
+  "driver": "fp_goodix",
+  "candidate_status": "HARDENING_CANDIDATE_STATIC_BUILD_VERIFIED_DYNAMIC_VALIDATION_PENDING",
+  "source_changed": true,
+  "candidate_identity": {
+    "core_source_sha256": "2ab506e08a0ef4ed36621afc6db497774e63565afd12a2604f59e74d21cd7cc8",
+    "internal_header_sha256": "c84a269dc2a05c1edee54d4004f7d13dd240a60fed6f4f5fad509cd59fdaceee",
+    "platform_source_sha256": "f8c79d4cf3c842852746d9976603c71e507132072d57ebc4c61f3a7723ccb26f",
+    "module_sha256": "756d2e48b902e85ca4e19e7281291ad2895def7922e86750fd2c220ffe030f3a",
+    "module_size": 723560,
+    "stock_module_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562"
+  },
+  "target_kernel": {
+    "release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_image": "nubia-sm8850-kernel-builder:latest",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "toolchains_volume": "nubia_sm8850_kernel_toolchains",
+    "bindgen_volume": "nx809j_bindgen_0695",
+    "clang": "clang-r536225"
+  },
+  "changes": [
+    {
+      "function": "gf_cleanup",
+      "change": "replace manual gpio_free on devm GPIOs with release of the grouped device resources; validate regulator pointer/state and clear stale handles",
+      "classification": "intentional hardening deviation"
+    },
+    {
+      "function": "gf_open",
+      "change": "open a devres group, unwind parse/IRQ failures, publish refcount/private_data only on success, track the requested IRQ, and reject stale/removing devices",
+      "classification": "intentional hardening deviation"
+    },
+    {
+      "function": "gf_release",
+      "change": "release the requested IRQ and grouped resources once on the last close; avoid repeating teardown after platform removal",
+      "classification": "intentional hardening deviation"
+    },
+    {
+      "function": "gf_compat_ioctl",
+      "change": "route compat calls through the lifecycle-aware dispatcher",
+      "classification": "intentional hardening deviation"
+    },
+    {
+      "function": "gf_ioctl_dispatch",
+      "change": "new helper serializes ioctl with remove, rejects inactive devices, and quiesces IRQ before GF_IOC_REMOVE",
+      "classification": "new non-stock helper"
+    },
+    {
+      "function": "gf_probe",
+      "change": "initialize and register input before exposing the char node, initialize lifecycle state, and unwind failed probe resources",
+      "classification": "intentional hardening deviation"
+    },
+    {
+      "function": "gf_remove",
+      "change": "mark the device removing, prevent new opens/ioctls, drain work and IRQ, release devres and input resources once, then clear device state",
+      "classification": "intentional hardening deviation"
+    },
+    {
+      "function": "gf_release_irq",
+      "change": "new helper tracks IRQ ownership and synchronizes teardown",
+      "classification": "new non-stock helper"
+    }
+  ],
+  "kernel_api_evidence": {
+    "target_module_symvers": "kernel_development/Module.symvers",
+    "available_exports": [
+      "devres_open_group",
+      "devres_release_group"
+    ],
+    "unavailable_export": "devres_close_group",
+    "build_observation": "The target module symbol table lacks devres_close_group; using it fails modpost. The group therefore remains open until gf_cleanup calls devres_release_group.",
+    "scope_limit": "The inspected fp_goodix code uses devm acquisitions in gf_parse_dts; an independent review must confirm no unrelated devres acquisitions use this platform_device while the group stays open."
+  },
+  "docker_build": {
+    "builds": 2,
+    "external_module_clean_before_each_build": true,
+    "output_hashes_match": true,
+    "module_sha256": "756d2e48b902e85ca4e19e7281291ad2895def7922e86750fd2c220ffe030f3a",
+    "module_size": 723560,
+    "build_logs": [
+      {
+        "path": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/ioctl_irq_resource_group_hardening_20261104/docker_build_1.txt",
+        "sha256": "353e4e16e571771eaa379cbade29cebc5c3ffa01d36fe8ac3b49f65f629953bc"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/ioctl_irq_resource_group_hardening_20261104/docker_build_2.txt",
+        "sha256": "783f107538dfedf1edbad4cc61a143e0953b0b8dbe5e0306c1b1fbb8c20610f0"
+      }
+    ],
+    "output_volumes": [
+      "codex-kbuild-fp_goodix-irq-resource-20261104-1",
+      "codex-kbuild-fp_goodix-irq-resource-20261104-2"
+    ],
+    "canonical_curated_snapshot": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\fp_goodix"
+  },
+  "assembly_comparison": {
+    "stock_module": "reference_modules/full_vendor_boot/fp_goodix.ko",
+    "stock_manifest": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/ioctl_irq_resource_group_hardening_20261104/stock_assembly/manifest.json",
+    "stock_manifest_sha256": "a3f05e7246b2dfbdc91db74f5972b935143e606b4c4b0a8a787ec1d4e7bc3c4a",
+    "candidate_manifest": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/ioctl_irq_resource_group_hardening_20261104/candidate_assembly/manifest.json",
+    "candidate_manifest_sha256": "eb5e5836ece8c6135a95f3452d27396acca48c5a85ce433086fe4550b5a57679",
+    "comparison": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/ioctl_irq_resource_group_hardening_20261104/assembly_comparison_stock.json",
+    "comparison_sha256": "f24bd4f06c08233184c500f20d7cda170dab2b2cf33943979b1aa53c01b053c0",
+    "checked_functions": 30,
+    "exact_functions": 23,
+    "intentional_deviations": [
+      "cleanup_module",
+      "gf_cleanup",
+      "gf_compat_ioctl",
+      "gf_open",
+      "gf_probe",
+      "gf_release",
+      "gf_remove"
+    ],
+    "unexplained_failures": 0,
+    "result": "23 exact; 7 classified hardening deviations; no unclassified difference"
+  },
+  "resolved_static_findings": [
+    {
+      "id": "IRQ_REMAINS_ACTIVE_ON_PLATFORM_REMOVE_WITH_OPEN_FD",
+      "status": "ADDRESSED_IN_CANDIDATE",
+      "evidence": "gf_remove quiesces/frees a tracked IRQ before releasing platform resources; gf_release avoids double free."
+    },
+    {
+      "id": "IOCTL_NOT_SERIALIZED_WITH_PLATFORM_REMOVE",
+      "status": "ADDRESSED_IN_CANDIDATE",
+      "evidence": "unlocked and compat ioctl paths use gf_ioctl_dispatch under device_list_lock and reject removing devices."
+    },
+    {
+      "id": "DEVM_GPIO_DOUBLE_RELEASE",
+      "status": "ADDRESSED_IN_CANDIDATE",
+      "evidence": "gf_cleanup releases the devres group instead of manually freeing devm-requested GPIOs."
+    },
+    {
+      "id": "INPUT_DEVICE_PUBLISHED_BEFORE_READY",
+      "status": "ADDRESSED_IN_CANDIDATE",
+      "evidence": "gf_probe registers input before adding the char device to the openable device list."
+    }
+  ],
+  "runtime_failure_reproduced": false,
+  "host_harness_run": false,
+  "adb_devices": "none attached; adb devices -l returned an empty device list",
+  "hardware_validation": "DEFERRED",
+  "independent_review": "PENDING",
+  "promotion_authorized": false,
+  "limits": [
+    "This is static hardening evidence; it does not establish complete semantic equivalence or runtime correctness.",
+    "The devres group remains open because devres_close_group is absent from the target module symbol table; review the group scope before promotion.",
+    "No module load/unload, stress scenario, or smartphone behavior test was run.",
+    "Dynamic NX809J validation and independent review remain pending."
+  ],
+  "incremental_comparison": {
+    "comparison": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/ioctl_irq_resource_group_hardening_20261104/assembly_comparison_previous_candidate.json",
+    "comparison_sha256": "fcd954427ee26be62627614cfaade832c3f227e2b20cdf7b5b04a6dc475cf5fe",
+    "checked_functions": 30,
+    "exact_functions": 24,
+    "intentional_deviations": [
+      "gf_cleanup",
+      "gf_compat_ioctl",
+      "gf_open",
+      "gf_probe",
+      "gf_release",
+      "gf_remove"
+    ],
+    "unexplained_failures": 0,
+    "result": "24 exact against the preceding hardening candidate; 6 intentional differences introduced by this batch"
+  }
+}
