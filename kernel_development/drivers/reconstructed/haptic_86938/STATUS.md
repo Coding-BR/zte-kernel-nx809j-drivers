@@ -309,7 +309,7 @@ The scoped lock-order review bound to 7e996 found no inversion in the worker, se
 
 ## Current static revalidation — Richtap FIFO kernel endpoint ordering (candidate 594C7A2B)
 
-A whole-driver FIFO state search found the `tiktap_work_routine` consumer in addition to the RTP worker and `richtap_update_fifo_data`. The four current readers use `smp_load_acquire`; kernel state publications use `smp_store_release` in `richtap_clean_buf`, both RTP consumers, TikTap completion, and FIFO reset. The Docker disassembly confirms seven `LDARB` instructions and twenty `STLRB` instructions across these paths.
+A whole-driver FIFO state search found three C FIFO consumers: `tiktap_work_routine`, `richtap_rtp_work`, and `richtap_update_fifo_data`. Their data-consuming state reads use `smp_load_acquire`. This does not include the two direct `LDRB` cursor-state checks retained in stock-exact `irq_handle`; those steer refill/AEI control flow and are reviewed in the 2026-11-04 [IRQ cursor-load follow-up](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_irq_fifo_cursor_loads_20261104/README.md). Kernel state publications use `smp_store_release` in `richtap_clean_buf`, both RTP consumers, TikTap completion, and FIFO reset. The Docker disassembly confirms seven `LDARB` instructions and twenty `STLRB` instructions across the reviewed C endpoints.
 
 The captured HAL still publishes `U` using an ordinary `STRB` and reads `AA`/`FF` with ordinary `LDRB`. The kernel-side ordering therefore does not form a release/acquire pair with this HAL; the cross-boundary FIFO contract remains unproven. `richtap_clean_buf` no longer matches stock exact assembly and is now recorded as a reviewed hardening deviation.
 
