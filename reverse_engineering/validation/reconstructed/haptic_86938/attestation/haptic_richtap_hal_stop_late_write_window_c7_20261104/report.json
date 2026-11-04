@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_richtap_hal_stop_late_write_window_c7_20261104",
+  "review_date": "2026-11-04",
+  "result": "CONDITIONAL_POST_CHECK_FIFO_WRITER_REACHABILITY_STATIC_ONLY",
+  "candidate": {
+    "name": "C7",
+    "module_sha256": "a2ec3ce4d51e1878e199017bda6cb01623589f54dc3c074f6b22a0586fd3ad0b",
+    "reconstruction_map_sha256": "41a7bdcaa16dea5f62a50dab9967e5fc60f9a4625ab65a4232a5bba7bb1a7002",
+    "installed_on_device": false
+  },
+  "hal": {
+    "path": "/vendor/lib64/libaacvibrator.so",
+    "sha256": "8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61",
+    "stop_flag_symbol": "stop_flag"
+  },
+  "control_flow": {
+    "worker_checkpoint": {
+      "vma": "0x201a4-0x201ac",
+      "behavior": "load stop_flag; branch to cleanup if nonzero; continue when zero"
+    },
+    "subsequent_fifo_writer_call": {
+      "vma": "0x20a28",
+      "callee": "write_data_to_buffer",
+      "intervening_stop_flag_got_loads": 0
+    },
+    "stop_request_store": {
+      "function": "tiktap_stop",
+      "vma": "0x23184",
+      "value": 1,
+      "joins_or_waits_for_worker": false,
+      "takes_context_mutex": false
+    },
+    "interpretation": "If tiktap_stop stores 1 after the worker reads 0 at 0x201a8 and before the worker reaches 0x20a28, the worker can enter the FIFO writer after the stop flag is set. Actual payload mutation depends on FIFO state."
+  },
+  "runtime": {
+    "adb_devices_l": "no attached device listed at review time",
+    "candidate_tested": false,
+    "observed_late_write": false,
+    "observed_corruption_or_hardware_effect": false
+  },
+  "source_or_map_changed": false,
+  "rebuild_required": false,
+  "evidence_files_sha256": {
+    "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_hal_fifo_writer_order_20261103/hal_tiktap_worker_disassembly.txt": "e53bc60b6d9f0464bf6f41bda6b43f9b0a000d069694e0188c849bb87211ddaa",
+    "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_hal_stop_handoff_20261103/hal_stop_worker_disassembly.txt": "e0817c12f6d49b13c54b413440f4cda960c41169e3d975cee207bfd277abefaf",
+    "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_hal_fifo_writer_order_20261103/hal_writer_disassembly.txt": "478bccbe97d8ce044c93125227bcada66fabb83a8729228f5c2e3a4080e7d6ab",
+    "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko": "a2ec3ce4d51e1878e199017bda6cb01623589f54dc3c074f6b22a0586fd3ad0b",
+    "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json": "41a7bdcaa16dea5f62a50dab9967e5fc60f9a4625ab65a4232a5bba7bb1a7002"
+  },
+  "limitations": [
+    "Static control flow does not establish that this interleaving occurs under runtime scheduling.",
+    "Entering write_data_to_buffer does not guarantee a payload write; the writer first checks FIFO node state.",
+    "No candidate module was installed or tested on the smartphone.",
+    "The driver remains incomplete and the FIFO publication/runtime validation gates remain open."
+  ]
+}

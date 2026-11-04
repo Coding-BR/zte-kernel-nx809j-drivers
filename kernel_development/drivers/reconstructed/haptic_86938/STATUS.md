@@ -1,5 +1,9 @@
 # haptic_86938 reconstruction status
 
+## Current static revalidation — HAL stop-to-FIFO late-write window (candidate C7, 2026-11-04)
+
+The preserved HAL disassembly shows a conditional path where the detached producer reads stop_flag as zero at 0x201a4-0x201ac, then reaches write_data_to_buffer at 0x20a28 without another load from the stop_flag GOT slot in between. tiktap_stop sets stop_flag to one at 0x23184 and does not join or wait for the worker. If that store occurs after the worker's check, the worker can still enter the FIFO writer after stop is requested; actual payload mutation depends on the FIFO node state. This is a static interleaving possibility, not a reproduced write or hardware effect. ADB currently lists no attached device, candidate C7 has not been installed, and no source/map change or rebuild was needed. The driver remains **INCOMPLETE**. See the [C7 late-write window attestation](../../../../reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_hal_stop_late_write_window_c7_20261104/README.md).
+
 ## Current canonical snapshot — 2026-11-04 (candidate C7)
 
 - Stock module SHA-256: `05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e`.
