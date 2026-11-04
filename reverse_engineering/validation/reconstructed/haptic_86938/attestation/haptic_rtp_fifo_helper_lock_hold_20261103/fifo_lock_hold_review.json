@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_rtp_fifo_helper_lock_hold_20261103",
+  "review_date": "2026-11-03",
+  "result": "STATIC_NESTED_FIFO_RETRY_SLEEP_UNDER_IRQ_STOP_MUTEX; MAX_3MS_REQUESTED; RUNTIME_UNMEASURED",
+  "candidate": {
+    "module_sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+    "module_path": "kernel_development/drivers/reconstructed/haptic_86938/haptic_86938.ko",
+    "source_sha256": {
+      "haptic_86938_fn_136_richtap_update_fifo_data.c": "c0d0e4340d76024f245759024279f093d7541d220dddca3b13c13adaf2a1e0ec",
+      "haptic_86938_fn_137_richtap_rtp_work.c": "22953758a2ab1b118dc5f3c05a8cfb04f3b8ede5c6fcf8a510be5df43b26f8d3",
+      "haptic_86938_lifetime.c": "2d7b1ababbf9648296d98db718d30ad3e848da7efd6c8a0c7305bfd7760e1b53"
+    },
+    "rtp_worker_entry": "0x8498",
+    "irq_stop_lock_call": "0x86ac",
+    "fifo_helper_call": "0x8790",
+    "mutex_unlock_between_lock_and_fifo_helper": false,
+    "common_worker_unlock_after_stream_path": "0x8880"
+  },
+  "lock": {
+    "wrapper": "haptic_lifetime_irq_stop_lock",
+    "implementation": "mutex_lock(&haptic_irq_stop_lock)",
+    "storage_offset": ".data+0x400",
+    "also_used_by": "irq_handle",
+    "worker_arming_gate_active_during_nested_helper": true,
+    "irq_handle_returns_before_lock_when_arming": true,
+    "sleep_in_atomic_context": false
+  },
+  "fifo_helper": {
+    "entry": "0x8284",
+    "retries_initial": 3,
+    "sleep_call": "usleep_range_state(1000, 1000, 2)",
+    "sleep_instruction": "0x8330",
+    "sleep_when_state_is_neither": ["'U'", "0xaa"],
+    "maximum_requested_sleep_ms_per_call": 3,
+    "possible_next_node_condition": "Current node is consumed and the next FIFO node remains free before the producer publishes it."
+  },
+  "stock": {
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "richtap_rtp_work_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0070_richtap_rtp_work_001088f8.asm",
+    "richtap_rtp_work_assembly_sha256": "393de37c1ba2b68f4e42e90f4bd72515fc7650b1542bc48aa14af747012cfa83",
+    "richtap_rtp_work_ghidra": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0070_001088f8_richtap_rtp_work.c",
+    "richtap_rtp_work_ghidra_sha256": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5",
+    "richtap_update_fifo_data_assembly": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0074_richtap_update_fifo_data_0010946c.asm",
+    "richtap_update_fifo_data_assembly_sha256": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2",
+    "richtap_update_fifo_data_ghidra": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0074_0010946c_richtap_update_fifo_data.c",
+    "richtap_update_fifo_data_ghidra_sha256": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e"
+  },
+  "toolchain": {
+    "docker_image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "llvm_objdump": "18.1.3"
+  },
+  "reconstruction": {
+    "map_path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "map_sha256": "3773f78f259b46ae3a0d0d06743b1bdf8e043b7c3fe60aa45b445b93affb5fa6",
+    "richtap_rtp_work_status": "candidate_under_static_validation",
+    "richtap_update_fifo_data_status": "candidate_under_static_validation",
+    "semantic_equivalence_established": false,
+    "source_changed": false,
+    "map_changed": false,
+    "module_rebuild": "NOT_REQUIRED_EVIDENCE_ONLY",
+    "runtime_latency_measured": false,
+    "driver_complete": false
+  },
+  "evidence_files": {
+    "current_c6_fifo_lock_sleep_disassembly.txt": "34f946c0907489ecd987cc26599c908ab5720af1db7b41826e543ec24b59b7f2"
+  },
+  "limitations": [
+    "The three 1 ms intervals are requested sleeps; wall-clock latency may differ due to scheduling.",
+    "The IRQ arming gate returns the threaded handler before mutex acquisition during the normal startup path; no IRQ stall is claimed.",
+    "This report does not measure latency on the NX809J or assert functional failure.",
+    "The HAL-to-kernel FIFO publication pairing remains independently unresolved."
+  ]
+}
