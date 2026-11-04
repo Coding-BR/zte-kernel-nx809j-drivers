@@ -114,5 +114,88 @@
     "The HAL memory mapping attributes were not revalidated in this review.",
     "Multiple producer thread overlap, stale data, and corruption were not observed or established.",
     "The reconstructed candidate was not loaded on the phone."
-  ]
+  ],
+  "stock_kernel_comparison": {
+    "scope": "Complete preserved stock function assembly for the two FIFO consumers, compared with the exact stock Ghidra decompilations.",
+    "functions": {
+      "richtap_rtp_work": {
+        "entry": "0x001088f8",
+        "assembly_path": "offline_static/stock_assembly/0070_richtap_rtp_work_001088f8.asm",
+        "assembly_sha256": "393de37c1ba2b68f4e42e90f4bd72515fc7650b1542bc48aa14af747012cfa83",
+        "state_u_read": {
+          "address": "0x5b18",
+          "instruction": "LDRB"
+        },
+        "state_free_store": {
+          "address": "0x5b94",
+          "instruction": "STRB"
+        },
+        "free_store_precedes_length_clear": true,
+        "acquire_release_or_barrier_mnemonics_found": [],
+        "ghidra_decompilation_path": "offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0070_001088f8_richtap_rtp_work.c",
+        "ghidra_decompilation_sha256": "cd81ece564cc93a171a1f99420c8d38887b93bc8b1daf724ed3d6aae57a45ce5"
+      },
+      "richtap_update_fifo_data": {
+        "entry": "0x0010946c",
+        "assembly_path": "offline_static/stock_assembly/0074_richtap_update_fifo_data_0010946c.asm",
+        "assembly_sha256": "df20a89174181b02fbe15dc1c469c4e6c4991b80f4acd91dab0a0f7e6f7b70f2",
+        "state_u_read": {
+          "address": "0x6680",
+          "instruction": "LDRB"
+        },
+        "state_free_store": {
+          "address": "0x6710",
+          "instruction": "STRB"
+        },
+        "free_store_precedes_length_clear": true,
+        "acquire_release_or_barrier_mnemonics_found": [],
+        "ghidra_decompilation_path": "offline_static/ghidra_stock_repaired/haptic_86938.ko/decompiled/0074_0010946c_richtap_update_fifo_data.c",
+        "ghidra_decompilation_sha256": "0d9aee21eaf967437a794f264a1fadfca635485ba405bd1588446339880c315e"
+      }
+    },
+    "candidate_c6_delta": {
+      "consumer_state_reads": [
+        "LDARB at 0x8300",
+        "LDARB at 0x8580",
+        "LDARB at 0x8774"
+      ],
+      "free_state_stores": [
+        "STLRB at 0x83c0",
+        "STLRB at 0x8640"
+      ],
+      "length_cleared_before_free_state_store": true,
+      "classification": "HARDENING_DEVIATION_FROM_STOCK; not promoted as stock-exact"
+    }
+  },
+  "ownership_handoff_assessment": {
+    "hal_to_kernel": {
+      "shared_state": "U",
+      "hal_publication": {
+        "address": "0x1c22c",
+        "instruction": "STRB"
+      },
+      "candidate_kernel_observation": [
+        "LDARB at 0x8300",
+        "LDARB at 0x8580",
+        "LDARB at 0x8774"
+      ],
+      "matching_release_acquire_pair": false,
+      "reason": "HAL publication is not a release store."
+    },
+    "kernel_to_hal": {
+      "shared_state": "free (0xff)",
+      "candidate_kernel_publication": [
+        "STLRB at 0x83c0",
+        "STLRB at 0x8640"
+      ],
+      "hal_observation": {
+        "address": "0x1c208",
+        "instruction": "LDRB"
+      },
+      "matching_release_acquire_pair": false,
+      "reason": "HAL observation is not an acquire load."
+    },
+    "runtime_race_or_corruption_observed": false,
+    "candidate_installed_on_phone": false
+  }
 }
