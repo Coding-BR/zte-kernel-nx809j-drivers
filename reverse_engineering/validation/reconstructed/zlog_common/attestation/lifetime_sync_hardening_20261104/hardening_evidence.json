@@ -1,0 +1,217 @@
+{
+  "schema_version": "1.0",
+  "audit_id": "zlog_common_lifetime_hardening_20261104",
+  "driver": "zlog_common",
+  "date": "2026-11-04",
+  "classification": "STATIC_HARDENING_OF_POTENTIAL_STOCK_INHERITED_WRITE_AFTER_FREE",
+  "runtime_failure_reproduced": false,
+  "hardware_tested": false,
+  "stock_module_sha256": "cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0",
+  "candidate_module_sha256": "7a2a371321d3159d76bd25f91514499f7bd889607802fe95b8a201f8508ed44d",
+  "source_sha256": {
+    "zlog_common.c": "8f638c61333d4d8abc1391cccafdff58b0b671141239d37f9093954ed1b5a933",
+    "zlog_lifecycle.c": "aef4dbd16e4218a4707c51fd0ce0973d0697c6a1cf1f98a8a407ef95e125bb82",
+    "zlog_handle_work_exact.S": "576cedb60583e08634059f019e05e25ee33182a1af2f36d0f59e70b81f7a0ef7",
+    "Makefile": "4a64cdeceddb859177b9c368019768b99ef9f4e87c1739089a0ddb220667be94"
+  },
+  "target_kernel": {
+    "release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030"
+  },
+  "reproducible_build": {
+    "passed": true,
+    "cycle_1_sha256": "7a2a371321d3159d76bd25f91514499f7bd889607802fe95b8a201f8508ed44d",
+    "cycle_2_sha256": "7a2a371321d3159d76bd25f91514499f7bd889607802fe95b8a201f8508ed44d",
+    "size_bytes": 246360,
+    "report": "docker_validation.json"
+  },
+  "module_compatibility": {
+    "aarch64_rel": true,
+    "undefined_symbols_match_stock": true,
+    "alias_match": true,
+    "namespace_match": true,
+    "vermagic_accepted": true
+  },
+  "functions": [
+    {
+      "name": "init_module",
+      "stock_instructions": 65,
+      "stock_bytes": 260,
+      "candidate_instructions": 65,
+      "candidate_bytes": 260,
+      "stock_exact": true,
+      "intentional_deviation": false
+    },
+    {
+      "name": "zlog_client_notify",
+      "stock_instructions": 49,
+      "stock_bytes": 196,
+      "candidate_instructions": 55,
+      "candidate_bytes": 220,
+      "stock_exact": false,
+      "intentional_deviation": true
+    },
+    {
+      "name": "zlog_client_record",
+      "stock_instructions": 101,
+      "stock_bytes": 404,
+      "candidate_instructions": 107,
+      "candidate_bytes": 428,
+      "stock_exact": false,
+      "intentional_deviation": true
+    },
+    {
+      "name": "zlog_comm_create_ctrl_dev",
+      "stock_instructions": 35,
+      "stock_bytes": 140,
+      "candidate_instructions": 35,
+      "candidate_bytes": 140,
+      "stock_exact": true,
+      "intentional_deviation": false
+    },
+    {
+      "name": "zlog_comm_ioctl",
+      "stock_instructions": 2,
+      "stock_bytes": 8,
+      "candidate_instructions": 2,
+      "candidate_bytes": 8,
+      "stock_exact": true,
+      "intentional_deviation": false
+    },
+    {
+      "name": "zlog_comm_open",
+      "stock_instructions": 27,
+      "stock_bytes": 108,
+      "candidate_instructions": 27,
+      "candidate_bytes": 108,
+      "stock_exact": true,
+      "intentional_deviation": false
+    },
+    {
+      "name": "zlog_comm_read",
+      "stock_instructions": 2,
+      "stock_bytes": 8,
+      "candidate_instructions": 2,
+      "candidate_bytes": 8,
+      "stock_exact": true,
+      "intentional_deviation": false
+    },
+    {
+      "name": "zlog_comm_release",
+      "stock_instructions": 28,
+      "stock_bytes": 112,
+      "candidate_instructions": 28,
+      "candidate_bytes": 112,
+      "stock_exact": true,
+      "intentional_deviation": false
+    },
+    {
+      "name": "zlog_comm_write",
+      "stock_instructions": 116,
+      "stock_bytes": 464,
+      "candidate_instructions": 116,
+      "candidate_bytes": 464,
+      "stock_exact": true,
+      "intentional_deviation": false
+    },
+    {
+      "name": "zlog_handle_work",
+      "stock_instructions": 259,
+      "stock_bytes": 1036,
+      "candidate_instructions": 265,
+      "candidate_bytes": 1060,
+      "stock_exact": false,
+      "intentional_deviation": true
+    },
+    {
+      "name": "zlog_register_client",
+      "stock_instructions": 207,
+      "stock_bytes": 828,
+      "candidate_instructions": 207,
+      "candidate_bytes": 828,
+      "stock_exact": true,
+      "intentional_deviation": false
+    },
+    {
+      "name": "zlog_reset_client",
+      "stock_instructions": 47,
+      "stock_bytes": 188,
+      "candidate_instructions": 53,
+      "candidate_bytes": 212,
+      "stock_exact": false,
+      "intentional_deviation": true
+    },
+    {
+      "name": "zlog_unregister_client",
+      "stock_instructions": 78,
+      "stock_bytes": 312,
+      "candidate_instructions": 108,
+      "candidate_bytes": 432,
+      "stock_exact": false,
+      "intentional_deviation": true
+    }
+  ],
+  "mechanism": [
+    "zlog_handle_work acquires zlog_lifetime_lock before scanning clients and retains it through zlog_write_internal and zlog_reset_client.",
+    "zlog_unregister_client acquires the same lifetime mutex before taking client_lock and freeing client state.",
+    "Record and notification paths use client_lock and reject a client with zero capacity, a NULL buffer or registered=false.",
+    "Notify scheduling occurs before client_lock is released, closing the cancel-versus-late-queue race.",
+    "The report worker is not canceled, so queued work for other clients remains queued."
+  ],
+  "review_state": {
+    "independent_review": "PENDING",
+    "device_validation": "PENDING",
+    "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION"
+  },
+  "limits": [
+    "Static analysis and reproducible builds do not exercise scheduler interleavings on the phone.",
+    "Five affected function bodies intentionally differ from OEM stock.",
+    "Do not label the hardening candidate stock-exact."
+  ],
+  "all_function_assembly_comparison": {
+    "functions_compared": 13,
+    "stock_exact_count": 8,
+    "intentional_deviation_count": 5,
+    "intentional_deviations": [
+      "zlog_client_notify",
+      "zlog_client_record",
+      "zlog_handle_work",
+      "zlog_reset_client",
+      "zlog_unregister_client"
+    ],
+    "unexpected_deviations": [],
+    "report": "assembly/comparison_final.json"
+  },
+  "kcfi_comparison": {
+    "passed": true,
+    "function_count": 13,
+    "size_ignored": true,
+    "report": "kcfi/comparison_final.json"
+  },
+  "canonical_validation": {
+    "status": "static_verified",
+    "checks": {
+      "aarch64_rel": true,
+      "alias_match": true,
+      "candidate_hash_matches_map": true,
+      "candidate_modinfo_matches_fresh": true,
+      "candidate_runtime_content_matches_fresh": true,
+      "candidate_runtime_section_layout_matches_fresh": true,
+      "function_traceability": true,
+      "ghidra_export": true,
+      "kernel_source_identity": true,
+      "makefile": true,
+      "mapping_review": true,
+      "namespace_match": true,
+      "reproducible_build": true,
+      "source_directory": true,
+      "source_files": 5,
+      "undefined_symbols_match": true,
+      "vermagic_accepted": true
+    },
+    "errors": [],
+    "hardware_verified": false,
+    "report": "docker_validation.json"
+  }
+}

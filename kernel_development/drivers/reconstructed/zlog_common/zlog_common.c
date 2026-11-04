@@ -28,6 +28,10 @@ extern struct zlog_server g_zlog_server;
 static struct zlog_server g_zlog_server;
 #endif
 
+#ifndef ZLOG_COMMON_HOST_TEST
+DEFINE_MUTEX(zlog_lifetime_lock);
+#endif
+
 #ifdef ZLOG_COMMON_EXACT
 extern void zlog_handle_work(struct work_struct *work);
 #else
@@ -45,12 +49,17 @@ void zlog_client_notify(struct zlog_client *client, int event)
 		message = KERN_ERR "ZLOG_COMM: %s: %s no client to record\n";
 	} else {
 		mutex_lock(&client->client_lock);
+		if (!client->registered || !client->record_capacity ||
+		    !client->record_buffer) {
+			mutex_unlock(&client->client_lock);
+			return;
+		}
 		client->event_no = event;
 		set_bit(ZLOG_FLAG_NOTIFY, &client->flags);
-		mutex_unlock(&client->client_lock);
 		cancel_delayed_work(&g_zlog_server.report_work);
 		queue_delayed_work_on(ZLOG_WORK_CPU, g_zlog_server.workqueue,
 				      &g_zlog_server.report_work, ZLOG_WORK_DELAY);
+		mutex_unlock(&client->client_lock);
 		return;
 	}
 
@@ -280,6 +289,11 @@ void zlog_reset_client(struct zlog_client *client)
 	}
 
 	mutex_lock(&client->client_lock);
+	if (!client->registered || !client->record_capacity ||
+	    !client->record_buffer) {
+		mutex_unlock(&client->client_lock);
+		return;
+	}
 	client->event_no = 0;
 	client->reserved_f0 = 0;
 	client->record_length = 0;

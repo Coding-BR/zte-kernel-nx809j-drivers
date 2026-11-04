@@ -13,6 +13,12 @@ zlog_handle_work:
     .inst 0xa91257f6
     .inst 0xa9134ff4
     .inst 0x910383fd
+    .inst 0x90000000
+    .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, zlog_lifetime_lock
+    .inst 0x91000000
+    .reloc .-4, R_AARCH64_ADD_ABS_LO12_NC, zlog_lifetime_lock
+    .inst 0x94000000
+    .reloc .-4, R_AARCH64_CALL26, mutex_lock
     .inst 0xd5384108
     .inst 0x90000013
     .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, zlog_exact_rodata_str_base+0x4f1
@@ -339,6 +345,12 @@ zlog_handle_work:
     .inst 0xa94f6ffc
     .inst 0xa94e7bfd
     .inst 0x910503ff
+    .inst 0x90000000
+    .reloc .-4, R_AARCH64_ADR_PREL_PG_HI21, zlog_lifetime_lock
+    .inst 0x91000000
+    .reloc .-4, R_AARCH64_ADD_ABS_LO12_NC, zlog_lifetime_lock
+    .inst 0x94000000
+    .reloc .-4, R_AARCH64_CALL26, mutex_unlock
     .inst 0xd50323bf
     .inst 0xd65f03c0
     .inst 0x52800220
