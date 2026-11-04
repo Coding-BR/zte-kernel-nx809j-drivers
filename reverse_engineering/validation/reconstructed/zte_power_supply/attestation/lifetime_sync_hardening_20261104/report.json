@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "audit_id": "zte_power_supply_lifetime_sync_hardening_20261104",
+  "date": "2026-11-04",
+  "classification": "DECLARED_OFFLINE_STATIC_HARDENING_DEVIATION",
+  "outcome": "PASS_DOCKER_BUILD_REPRODUCIBLE_WITH_WARNINGS",
+  "finding": {
+    "summary": "The stock teardown order allowed the delayed registration callback to enqueue changed_work after cancel_work_sync(changed_work) had returned; final device release could then free the containing object before the queued work completed.",
+    "runtime_failure_reproduced": false,
+    "prior_static_audit": "reverse_engineering/validation/reconstructed/zte_power_supply/attestation/lifetime_sync_risk_audit_20261103/lifetime_sync_risk_audit.json"
+  },
+  "correction": {
+    "functions": [
+      "zte_power_supply_changed",
+      "zte_power_supply_deferred_register_work",
+      "zte_power_supply_unregister"
+    ],
+    "mechanism": [
+      "Publish and read psy->removing under psy->lock.",
+      "Check the removal gate and enqueue changed_work under the same lock in zte_power_supply_changed.",
+      "Drain deferred_register_work before changed_work in unregister."
+    ],
+    "mapping_status": "candidate_hardening_deviation",
+    "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+    "independent_review": "PENDING"
+  },
+  "residual_limits": [
+    "This addresses the delayed internal producer. External callers must still respect the zte_power_supply object lifetime and stop using the pointer before unregister completes.",
+    "The change is not claimed to reproduce stock semantics.",
+    "The host harness was not rerun after this patch.",
+    "No module load, unload, or runtime race reproduction was performed."
+  ],
+  "candidate_identity": {
+    "source_sha256": "e9bd827b73ef9e1599afb54a68d6803d12d6506369439e9dee985ebfa5492fe6",
+    "reconstruction_map_sha256": "80a06698bdf98794384fbb33c256682d8de4bcf97b0441b7011a93c183de1553",
+    "module_sha256": "8262839ec50992385ccab55fb815dc5aa84d4acbd1845719c7883b41450810c0",
+    "module_size_bytes": 282728,
+    "stock_module_sha256": "2ae6f7615c9a4fea48a84fb2595d2f52dd049c11749b7cd2a3d9037dfcd813e8",
+    "mapping_count": 47,
+    "hardening_deviation_count": 3
+  },
+  "docker": {
+    "result": "PASS",
+    "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "kernel_config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+    "toolchain": "clang-r536225",
+    "clang_version": "19.0.1",
+    "original_prepared_volume": "nubia_sm8850_kernel_src_nx809j_release_20260711",
+    "validation_copy_volume": "zte_psy_kernel_validation_20261104_a",
+    "command": "make ARCH=arm64 LLVM=1 LLVM_IAS=1 M=/work/validation/zte_power_supply clean && make ARCH=arm64 LLVM=1 LLVM_IAS=1 M=/work/validation/zte_power_supply modules",
+    "runs": [
+      {
+        "staging": "zte_power_supply_lifetime_hardening_20261104_build1",
+        "result": "PASS",
+        "module_sha256": "8262839ec50992385ccab55fb815dc5aa84d4acbd1845719c7883b41450810c0",
+        "module_size_bytes": 282728,
+        "log": "reverse_engineering/validation/reconstructed/zte_power_supply/attestation/lifetime_sync_hardening_20261104/docker_build_1_pinned_release.txt",
+        "log_sha256": "3c292eefef3627c8e747861272eb8c2554e15891bee0d1a223e5c8384c61b071"
+      },
+      {
+        "staging": "zte_power_supply_lifetime_hardening_20261104_build2",
+        "result": "PASS",
+        "module_sha256": "8262839ec50992385ccab55fb815dc5aa84d4acbd1845719c7883b41450810c0",
+        "module_size_bytes": 282728,
+        "log": "reverse_engineering/validation/reconstructed/zte_power_supply/attestation/lifetime_sync_hardening_20261104/docker_build_2_pinned_release.txt",
+        "log_sha256": "0691326f21b9e388a34fc2f4bf200e2104bc868a82230f8d84d995c0cb6e0425"
+      }
+    ],
+    "identical_outputs": true,
+    "warnings": [
+      "The curated Makefile reports a missing FORCE prerequisite.",
+      "modpost warns that exported symbol versions were not generated for the exported zte_power_supply symbols.",
+      "BTF generation was skipped because vmlinux is unavailable."
+    ],
+    "initial_attempt": {
+      "result": "FAILED_DUE_TO_READ_ONLY_KERNEL_SOURCE_MOUNT",
+      "scope": "environment setup only; no source compilation failure",
+      "log": "reverse_engineering/validation/reconstructed/zte_power_supply/attestation/lifetime_sync_hardening_20261104/docker_build_0_readonly_failure.txt"
+    }
+  },
+  "device_validation": {
+    "adb_devices": "NONE",
+    "dynamic_test": "NOT_RUN",
+    "module_loaded": false,
+    "hardware_validation": "PENDING"
+  },
+  "evidence": {
+    "candidate_disassembly": "reverse_engineering/validation/reconstructed/zte_power_supply/attestation/lifetime_sync_hardening_20261104/candidate_hardening_disassembly.txt",
+    "candidate_disassembly_sha256": "3979f3c653e85ec3234ede72a7dba617398a57e62f3617960888b87c7c2d8c39",
+    "curated_manifest": "reverse_engineering/validation/reconstructed/zte_power_supply/attestation/lifetime_sync_hardening_20261104/curated_manifest.json",
+    "ghidra_stock_unregister": "reverse_engineering/validation/reconstructed/zte_power_supply/offline_static/ghidra_stock/decompiled/0030_0010275c_zte_power_supply_unregister.c",
+    "ghidra_stock_deferred_work": "reverse_engineering/validation/reconstructed/zte_power_supply/offline_static/ghidra_stock/decompiled/0035_0010294c_zte_power_supply_deferred_register_work.c",
+    "stock_assembly_unregister": "reverse_engineering/validation/reconstructed/zte_power_supply/offline_static/stock_assembly/0030_zte_power_supply_unregister_0010275c.asm",
+    "stock_assembly_deferred_work": "reverse_engineering/validation/reconstructed/zte_power_supply/offline_static/stock_assembly/0035_zte_power_supply_deferred_register_work_0010294c.asm",
+    "mapping_report": "reverse_engineering/validation/reconstructed/zte_power_supply/reconstruction_map.json",
+    "status": "kernel_development/drivers/reconstructed/zte_power_supply/STATUS.md"
+  }
+}

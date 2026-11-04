@@ -447,11 +447,15 @@ void zte_power_supply_changed(struct zte_power_supply *psy)
 	unsigned long flags;
 
 	spin_lock_irqsave(&psy->lock, flags);
+	if (psy->removing) {
+		spin_unlock_irqrestore(&psy->lock, flags);
+		return;
+	}
 	psy->event_pending = true;
 	pm_stay_awake(&psy->dev);
-	spin_unlock_irqrestore(&psy->lock, flags);
-
+	/* Serialize enqueue with the removal gate. */
 	queue_work(system_wq, &psy->changed_work);
+	spin_unlock_irqrestore(&psy->lock, flags);
 }
 EXPORT_SYMBOL_GPL(zte_power_supply_changed);
 
@@ -541,10 +545,15 @@ static void zte_power_supply_deferred_register_work(struct work_struct *work)
 {
 	struct zte_power_supply *psy = container_of(work, struct zte_power_supply, deferred_register_work.work);
 	struct device *parent = psy->dev.parent;
+	unsigned long flags;
+	bool removing;
 
 	if (parent) {
 		while (!device_trylock(parent)) {
-			if (psy->removing)
+			spin_lock_irqsave(&psy->lock, flags);
+			removing = psy->removing;
+			spin_unlock_irqrestore(&psy->lock, flags);
+			if (removing)
 				return;
 			msleep(10);
 			parent = psy->dev.parent;
@@ -657,11 +666,17 @@ EXPORT_SYMBOL_GPL(zte_power_supply_register_no_ws);
 
 void zte_power_supply_unregister(struct zte_power_supply *psy)
 {
+	unsigned long flags;
+
 	WARN_ON(atomic_dec_return(&psy->use_cnt));
 
+	spin_lock_irqsave(&psy->lock, flags);
 	psy->removing = true;
-	cancel_work_sync(&psy->changed_work);
+	spin_unlock_irqrestore(&psy->lock, flags);
+
+	/* Stop the delayed producer before draining work it can enqueue. */
 	cancel_delayed_work_sync(&psy->deferred_register_work);
+	cancel_work_sync(&psy->changed_work);
 
 	sysfs_remove_link(&psy->dev.kobj, "powers");
 	device_wakeup_disable(&psy->dev);
