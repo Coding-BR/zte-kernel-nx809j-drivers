@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "review_id": "haptic_richtap_hal_context_mapping_20261103",
+  "review_date": "2026-11-03",
+  "result": "DISTINCT_LEFT_RIGHT_CONTEXTS; RIGHT_NODE_ABSENT_IN_CURRENT_NX809J_SNAPSHOT; FIFO_HANDOFF_UNRESOLVED",
+  "device": {
+    "model": "NX809J",
+    "android_major": 16,
+    "service": "vendor.qti.hardware.vibrator.service",
+    "service_pid_at_read": 5737,
+    "root_uid_observed": true,
+    "device_nodes": {
+      "/dev/awinic_haptic": {
+        "present": true,
+        "kind": "misc character device",
+        "major": 10,
+        "minor": 112
+      },
+      "/dev/awinic_x_haptic": {
+        "present": false
+      }
+    },
+    "service_mappings": {
+      "awinic_vmas_observed": 1,
+      "path": "/dev/awinic_haptic",
+      "permissions": "rw-s",
+      "size_bytes": "0x4000",
+      "hal_dso": "/vendor/lib64/libaacvibrator.so",
+      "virtual_addresses_recorded": false
+    },
+    "candidate_installed": false
+  },
+  "hal_producer": {
+    "artifact": "/vendor/lib64/libaacvibrator.so",
+    "sha256": "8a24b3bdab0218c1bb8b5037dbdf59ecc9958181a7bd62f62d91abf1fcf24e61",
+    "docker_image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "llvm_tools": "18.1.3",
+    "operation_context_symbols": {
+      "tiktap_left": {
+        "vma": "0x4e350",
+        "size_bytes": 104,
+        "path_global": "node_file_path",
+        "device_path": "/dev/awinic_haptic",
+        "context_global_got": "0x49ab8"
+      },
+      "tiktap_right": {
+        "vma": "0x4e3b8",
+        "size_bytes": 104,
+        "path_global": "node_file_path_r",
+        "device_path": "/dev/awinic_x_haptic",
+        "context_global_got": "0x49ab0"
+      },
+      "tiktap_mix": {
+        "vma": "0x4e420",
+        "size_bytes": 208,
+        "mapping_source": "tiktap_start copies tiktap_right +0x40 into tiktap_mix +0x40 on a path guarded by right-context active state and non-null base"
+      }
+    },
+    "initialization": {
+      "left_context": "tiktap_init assigns node_file_path to tiktap_left +0x10",
+      "right_context": "tiktap_init assigns node_file_path_r to tiktap_right +0x10",
+      "mapping_helper": {
+        "open_flags": "O_RDWR",
+        "mmap_arguments": {
+          "address": "NULL",
+          "length": "0x4000",
+          "protection": "PROT_READ|PROT_WRITE",
+          "flags": "MAP_SHARED",
+          "offset": 0
+        },
+        "successful_base_store": "context +0x40",
+        "active_flag": "context +0x4"
+      }
+    },
+    "worker_paths": {
+      "worker_entry": "0x1fb18",
+      "mix_create_site": "0x1d4b8",
+      "left_create_site": "0x1d5b4",
+      "right_create_site": "0x1d6e0",
+      "mix_and_right_guards": "right context +0x4 must be active and right context +0x40 must be non-null",
+      "left_guard": "left context +0x4 must be active and left context +0x40 must be non-null",
+      "same_fallback_cfg_can_reach_left_and_right_creates": true,
+      "both_contexts_require_successful_independent_opens_and_mappings": true
+    }
+  },
+  "stock_kernel": {
+    "module_sha256": "05e946134e27ef741fcbb67cdb2dcc93bf9a75f439fa341178459c3e8825187e",
+    "mmap_function": "richtap_file_mmap",
+    "assembly_path": "reverse_engineering/validation/reconstructed/haptic_86938/offline_static/stock_assembly/0152_richtap_file_mmap_0010e92c.asm",
+    "assembly_sha256": "1a6d1588a566588ae834a68371cd43ff6e395bf97ce46645b48ebb7aa8e66f0f",
+    "mapped_length": "0x4000",
+    "fifo_base_offset": "state +0x610",
+    "mapping_call": "remap_pfn_range",
+    "memory_attribute_attestation": "reverse_engineering/validation/reconstructed/haptic_86938/attestation/haptic_richtap_fifo_memory_attributes_20261103/fifo_memory_attributes.json",
+    "ghidra_decompilation": "Breakpoint stub; preserved stock assembly used for instruction-level evidence"
+  },
+  "candidate_c6": {
+    "module_sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+    "docker_curated_sha256": "c6aec6ea8d630255ea10a7aa3db5d8f7de60e960f414818daa901028c2a6d156",
+    "reconstruction_map_sha256": "3773f78f259b46ae3a0d0d06743b1bdf8e043b7c3fe60aa45b445b93affb5fa6",
+    "function_statuses": {
+      "richtap_rtp_work": "candidate_under_static_validation",
+      "richtap_update_fifo_data": "candidate_under_static_validation"
+    },
+    "module_rebuild": "NOT_REQUIRED_EVIDENCE_ONLY",
+    "candidate_installed": false
+  },
+  "assessment": {
+    "left_and_right_operation_objects_distinct": true,
+    "left_and_right_paths_distinct": true,
+    "left_and_right_mmap_calls_independent": true,
+    "same_virtual_base_for_two_live_mmaps_possible": false,
+    "physical_page_aliasing_on_other_configurations_ruled_out": false,
+    "right_mapping_available_in_current_device_snapshot": false,
+    "mix_mapping_available_in_current_device_snapshot": false,
+    "dual_side_worker_path_active_in_current_snapshot": false,
+    "repeated_same_left_context_worker_overlap_proven": false,
+    "writer_overlap_proven": false,
+    "producer_to_kernel_release_acquire_pair": false,
+    "runtime_race_reproduced": false,
+    "data_corruption_observed": false,
+    "driver_complete": false
+  },
+  "reconstruction": {
+    "map_path": "kernel_development/drivers/reconstructed/haptic_86938/reconstruction_map.json",
+    "function_counts": {
+      "PROMOTED_OFFLINE_EXACT": 135,
+      "reviewed_hardening_deviations": 23,
+      "candidate_under_static_validation": 2
+    },
+    "source_changed": false
+  },
+  "evidence_files_sha256": {
+    "hal_context_mapping_disassembly.txt": "85930fe140ddb79d01fa37763a2ac3823ebba444da1f00ea4b1563ff16d32b1c",
+    "hal_context_mapping_symbols.txt": "94317aab8cd1c612987e2aeb14fd7c3f74240e3b59ab94c2bb282d36c4a7b992",
+    "phone_device_nodes.txt": "222aaf20cc8726c2ccaf5ac67a408b2bc834cae8eaf6be8a5435bd18dc0a05aa"
+  },
+  "limitations": [
+    "The phone snapshot proves only the node and mappings visible at capture time; no claim is made about earlier mapping history.",
+    "The HAL ELF proves separate left/right virtual mappings; physical aliasing is not ruled out for a configuration where both device nodes exist.",
+    "The current service mapping view does not provide per-thread writer intervals.",
+    "An earlier 1,077-sample probe establishes writer reachability; the later entry/return attempt recorded zero hits and is inconclusive about overlap.",
+    "The stock richtap_file_mmap Ghidra decompilation is a breakpoint stub; instruction-level mapping evidence comes from preserved stock assembly.",
+    "No release/acquire pair is established across HAL and kernel ownership transfers."
+  ]
+}

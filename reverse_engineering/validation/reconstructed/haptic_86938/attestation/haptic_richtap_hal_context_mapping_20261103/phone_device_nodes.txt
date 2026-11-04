@@ -1,0 +1,20 @@
+NX809J rooted ADB read-only device and process snapshot
+Host local time: 2026-11-03 21:46:30 -03:00
+Commands executed:
+  adb shell su -c 'ls -l /dev/awinic_haptic'
+  adb shell su -c 'ls -l /dev/awinic_x_haptic'
+  adb shell su -c 'cat /proc/misc'
+  adb shell ps -A | Select-String -Pattern vibrator
+  adb shell su -c 'grep awinic /proc/5737/maps'
+  adb shell su -c 'grep libaacvibrator /proc/5737/maps'
+
+Observed:
+  /dev/awinic_haptic: character device major 10, minor 112
+  /dev/awinic_x_haptic: absent
+  /proc/misc: minor 112 awinic_haptic; minor 114 awinic_ctl
+  vendor.qti.hardware.vibrator.service: system PID 5737
+  Its maps contain exactly one observed awinic VMA: rw-s, 0x4000 bytes, /dev/awinic_haptic
+  The same process maps /vendor/lib64/libaacvibrator.so
+  Virtual addresses and inode identifiers are intentionally omitted.
+
+No trigger, write, module operation, or candidate installation was performed for this snapshot.
