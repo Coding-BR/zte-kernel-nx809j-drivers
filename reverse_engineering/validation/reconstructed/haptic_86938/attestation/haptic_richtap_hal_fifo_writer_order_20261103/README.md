@@ -35,6 +35,12 @@ The accompanying disassembly files were generated with `llvm-objdump` 18.1.3 ins
 
 This review establishes source-level instruction order and live reachability only. It does not show that the CPU or mapping exposed a stale/out-of-order observation during the trigger, establish that multiple producer threads overlapped, validate the candidate at runtime, or justify promoting either kernel function. No reconstruction source changed, so no module rebuild was needed.
 
+## Follow-up: context alias and tiktap_on
+
+The later [HAL context mapping review](../haptic_richtap_hal_context_mapping_20261103/README.md) resolves the earlier uncertainty about the `x20` and `x19` arguments at the `tiktap_start` left/right create sites: the HAL ELF has distinct `tiktap_left` and `tiktap_right` objects, with separate path globals and independent mappings. In the preserved NX809J snapshot, `/dev/awinic_x_haptic` is absent, so the right and mix paths are gated out; the left path is the only available side in that snapshot. This does not rule out physical backing-page aliasing on a configuration where both nodes exist.
+
+That narrows the `tiktap_start` dual-side hypothesis, but it does not close producer concurrency. The [HAL mutex/worker review](../haptic_richtap_hal_mutex_worker_handoff_20261103/README.md) shows that successful `tiktap_on` releases both context mutexes before FIFO setup and its left-worker create at `0x22904`, with no reacquire before creation. Repeated or overlapping `tiktap_on` calls could therefore start detached workers for the same left context. No `tiktap_on` hit or per-thread overlap has been captured, so this remains a static possibility. The machine-readable [context/worker follow-up](hal_fifo_worker_context_alias_followup.json) binds these conclusions to the current HAL, C6, map and source reports.
+
 ## Next gate
 
 Keep `richtap_rtp_work` and `richtap_update_fifo_data` at `candidate_under_static_validation`. Close the cross-boundary gate only after validating the producer's memory attributes and an end-to-end publication protocol that pairs both node ownership transfers, or after a controlled runtime protocol test provides the missing evidence. Do not infer a race from the missing pair alone.
