@@ -1,0 +1,121 @@
+{
+  "assembly": {
+    "classified_hardening_deviations": 8,
+    "comparison_to_previous_candidate": {
+      "checked_functions": 30,
+      "differences": [
+        "init_module@001029b0: symbol_size, instructions, relocations"
+      ],
+      "path": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/assembly_comparison_previous_candidate.json",
+      "sha256": "24302af62ebeda178b2ed76334bbee570b5fbca33def8824336159831f4ee4a5"
+    },
+    "exact_functions": 22,
+    "functions_checked": 30,
+    "init_module_candidate": {
+      "bytes": 316,
+      "instructions": 79,
+      "section": ".init.text"
+    },
+    "init_module_stock": {
+      "bytes": 276,
+      "instructions": 69,
+      "section": ".init.text"
+    },
+    "stock_comparison": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/assembly_comparison_stock.json",
+    "stock_comparison_sha256": "2076dd6e0e8bd8d9196db989346f511d048e6b4d22907d0e90381a00637ec529",
+    "unexplained_differences": 0
+  },
+  "audit_id": "fp_goodix_module_init_netlink_ordering_20261110",
+  "candidate_identity": {
+    "candidate_matches_fresh_and_docker": true,
+    "candidate_module_sha256": "155b696fd615aa907936d5328520393873fb458af38ef428764d38e1ce43f77d",
+    "candidate_module_size": 723944,
+    "canonical_docker_module_sha256": "155b696fd615aa907936d5328520393873fb458af38ef428764d38e1ce43f77d",
+    "canonical_docker_module_size": 723944,
+    "core_source_sha256": "ab516de7ada60a4d6798b4aeb9677615dc63ce07c817c633b9d4aa2ff936ee67",
+    "declared_candidate_sha256": "155b696fd615aa907936d5328520393873fb458af38ef428764d38e1ce43f77d",
+    "fresh_docker_build_sha256": "155b696fd615aa907936d5328520393873fb458af38ef428764d38e1ce43f77d",
+    "fresh_docker_build_size": 723944,
+    "reconstruction_map_sha256": "a05e173658533934cddd6413dbe6d202283a4978c5e6ecc7b9449bb0c2594ed1"
+  },
+  "docker": {
+    "build_count": 2,
+    "build_sha256": "155b696fd615aa907936d5328520393873fb458af38ef428764d38e1ce43f77d",
+    "build_size": 723944,
+    "clang": "clang-r536225",
+    "curated_tree_manifest_sha256": "767a1135203adea3ae2cf885249934f2975fd46a2a34116097b34187e267bec9",
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "snapshot_source_sync_passed": true,
+    "source_identity_match": true,
+    "source_tree_manifest_sha256": "767a1135203adea3ae2cf885249934f2975fd46a2a34116097b34187e267bec9",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "two_clean_builds_identical": true,
+    "vermagic_accepted": true
+  },
+  "driver": "fp_goodix",
+  "finding": {
+    "candidate_order": [
+      "netlink_init",
+      "platform_driver_register"
+    ],
+    "class": "INITIALIZATION_ORDER_AND_FAILURE_UNWIND",
+    "failure_unwind": "netlink setup failure returns an error after class/chrdev cleanup; platform registration failure releases netlink, class, and chrdev before returning its error.",
+    "reason": "platform_driver_register may synchronously probe and publish the character device; an immediate open can request the IRQ and call sendnlmsg while nl_sk is still null.",
+    "runtime_failure_reproduced": false,
+    "stock_order": [
+      "platform_driver_register",
+      "netlink_init"
+    ]
+  },
+  "generated_utc": "2026-11-10T20:27:11.255926+00:00",
+  "kcfi": {
+    "candidate_type_id": "0x6fbb3035",
+    "stock_type_id": "0x6fbb3035",
+    "strict_comparison_passed": false,
+    "strict_report": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/kcfi_comparison.json",
+    "symbol_size_matches": false,
+    "type_id_matches": true,
+    "type_only_report": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/kcfi_type_comparison.json"
+  },
+  "limitations": [
+    "No independent human review has been completed.",
+    "No host harness, KCSAN, module load/unload, or NX809J runtime test was run.",
+    "ADB reported no connected device during this turn.",
+    "The candidate remains a declared hardening deviation; full semantic equivalence and hardware behavior are unproven.",
+    "The initial pre-promotion audit is preserved separately; its candidate mismatch reflects that it ran before the fresh module was copied into the repository and curated snapshot."
+  ],
+  "promotion_authorized": false,
+  "schema_version": "1.0",
+  "status": "HARDENING_CANDIDATE_STATIC_BUILD_VERIFIED_STRICT_MODULE_PARITY_INCOMPLETE_DYNAMIC_VALIDATION_PENDING",
+  "stock_identity": {
+    "entry": "001029b0",
+    "function": "init_module",
+    "ghidra_pcode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/pcode/0028_001029b0_init_module.jsonl",
+    "ghidra_pcode_sha256": "afae2522c50dc024c0bfe5090f24a04c32225021c3115aa3168770a47827ab21",
+    "ghidra_pseudocode": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/decompiled/0028_001029b0_init_module.c",
+    "ghidra_pseudocode_sha256": "72ce1f88a1ed9df520a42ba208117b380b1b7840bf96b279e9f1249b5f2ddd43",
+    "module_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
+    "stock_assembly_sha256": "9dbddb0f824d590b17c0aca8b90f6e7fe056a8cf995e77e35ccf51e3a3529491"
+  },
+  "strict_audit": {
+    "candidate_matches_fresh": true,
+    "candidate_runtime_content_matches_fresh": true,
+    "candidate_runtime_layout_matches_fresh": true,
+    "docker_report": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/docker_validation_final.json",
+    "docker_report_sha256": "a3e98d564410c0852c84ce6d14c81131a73c803b8a12bb57be375ec343c46bfa",
+    "errors": [
+      "module parity check failed: undefined_symbols_match"
+    ],
+    "interpretation": "The final fresh candidate matches both Docker builds and the declared map hash. The remaining incomplete gate is strict stock import parity: devres_open_group/devres_release_group are added and gpio_free is removed by the earlier declared resource hardening.",
+    "missing_imports": [
+      "gpio_free"
+    ],
+    "status": "incomplete_or_failed",
+    "unexpected_imports": [
+      "devres_open_group",
+      "devres_release_group"
+    ]
+  }
+}

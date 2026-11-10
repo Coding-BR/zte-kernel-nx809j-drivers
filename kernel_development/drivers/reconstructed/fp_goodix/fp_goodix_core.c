@@ -9,6 +9,7 @@
  */
 
 #include "fp_goodix_internal.h"
+#include <linux/errno.h>
 
 #ifndef ZTE_FINGERPRINT_HOST_TEST
 extern long gf_ioctl(struct file *file, unsigned int cmd,
@@ -828,16 +829,28 @@ static int __init zte_fp_init(void)
 		return PTR_ERR(gf_class);
 	}
 
-	ret = platform_driver_register(&gf_driver);
-	if (ret < 0) {
-		class_destroy(gf_class);
-		unregister_chrdev(SPIDEV_MAJOR, gf_driver.driver.name);
-		pr_warn("fp_goodix: Failed to register SPI driver.\n");
+	ret = netlink_init();
+	if (ret) {
+		pr_warn("fp_goodix: Failed to initialize netlink.\n");
+		if (ret > 0)
+			ret = -EIO;
+		goto err_class;
 	}
 
-	netlink_init();
+	ret = platform_driver_register(&gf_driver);
+	if (ret) {
+		pr_warn("fp_goodix: Failed to register platform driver.\n");
+		netlink_exit();
+		goto err_class;
+	}
+
 	pr_info("fp_goodix: status = 0x%x\n", ret);
 	return 0;
+
+err_class:
+	class_destroy(gf_class);
+	unregister_chrdev(SPIDEV_MAJOR, gf_driver.driver.name);
+	return ret;
 }
 
 static void __exit zte_fp_exit(void)

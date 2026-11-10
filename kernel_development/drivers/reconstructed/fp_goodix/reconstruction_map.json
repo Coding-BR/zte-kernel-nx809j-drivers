@@ -1,13 +1,13 @@
 {
-  "candidate_sha256": "756d2e48b902e85ca4e19e7281291ad2895def7922e86750fd2c220ffe030f3a",
+  "candidate_sha256": "155b696fd615aa907936d5328520393873fb458af38ef428764d38e1ce43f77d",
   "driver": "fp_goodix",
   "function_count": 30,
-  "generated_utc": "2026-11-04T08:04:24Z",
+  "generated_utc": "2026-11-10T20:25:48Z",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
-    "assembly_manifest": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/ioctl_irq_resource_group_hardening_20261104/candidate_assembly/manifest.json",
-    "assembly_manifest_sha256": "eb5e5836ece8c6135a95f3452d27396acca48c5a85ce433086fe4550b5a57679",
+    "assembly_manifest": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/candidate_assembly/manifest.json",
+    "assembly_manifest_sha256": "283c8fd52e719074b12e684c81f722154372c91f2f6204fd094e0d70b1964520",
     "draft_map": "kernel_development/drivers/reconstructed/fp_goodix/reconstruction_map.json",
     "draft_map_sha256": "fed8ce2b042b38b6fb4c7a8bdbfbf7ac3565c971eb869eae77ffbf31a90ab0c4",
     "ghidra_functions": "reverse_engineering/validation/reconstructed/fp_goodix/offline_static/ghidra_stock/functions.jsonl",
@@ -760,18 +760,28 @@
         "kcfi-comparison:attestation/next029_init_module_exact_v1/kcfi.json:sha256:cbbe560b64e19150c09e300c6a5b58ff62e3255990565351dcea80d45038d885",
         "host-harness:attestation/next029_init_module_exact_v1/test.json:sha256:94c6983529db6c4ac17917ec4049b4afc88ec291fa406d1f1cf42ebc488e1c02",
         "joern:attestation/next029_init_module_exact_v1/joern.json:sha256:324f00c495f0fd1cf3764717891b81e7b5eb9c83a0e516b377608f061eafa226",
-        "hard-protocol:attestation/next029_init_module_exact_v1/hard_protocol_report.json:sha256:1695de27ef34d48cdb8ccd626d6dcaf0cfed86033d30ac02c53cd44ce1252874"
+        "hard-protocol:attestation/next029_init_module_exact_v1/hard_protocol_report.json:sha256:1695de27ef34d48cdb8ccd626d6dcaf0cfed86033d30ac02c53cd44ce1252874",
+        "current-hardening-source:fp_goodix_core.c:sha256:ab516de7ada60a4d6798b4aeb9677615dc63ce07c817c633b9d4aa2ff936ee67",
+        "module-init-hardening:reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/module_init_hardening.json",
+        "pre-promotion-docker-audit:reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/docker_validation.json",
+        "final-docker-validation:reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/docker_validation_final.json",
+        "stock-assembly-comparison:reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/assembly_comparison_stock.json:sha256:2076dd6e0e8bd8d9196db989346f511d048e6b4d22907d0e90381a00637ec529",
+        "previous-candidate-comparison:reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/assembly_comparison_previous_candidate.json:sha256:24302af62ebeda178b2ed76334bbe570b5fbca33def8824336159831f4ee4a5",
+        "kcfi-type-comparison:reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/kcfi_type_comparison.json:sha256:e6ec200ffdf04a4fff405eb7e73aabe781f1b3d1f6d7eecdcc39cf8ef2f0645b",
+        "source-sync:reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/source_sync_final.json",
+        "review-summary:reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/README.md"
       ],
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, Docker reproducibility, KCFI, Joern and direct harness evidence; stock init_module alias is bound to source zte_fp_init",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
+      "mapping_basis": "Stock Ghidra pseudocode/P-Code/assembly plus hash-bound Docker rebuild; init now orders netlink setup before device publication and unwinds initialization failures as an explicit hardening deviation.",
+      "review_scope": "static_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENING_DEVIATION",
       "source_file": "fp_goodix_core.c",
       "source_function": "zte_fp_init",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENING_CANDIDATE_BUILD_VERIFIED",
       "stock_body_bytes": 276,
       "stock_entry": "001029b0",
       "stock_function": "init_module",
-      "mapping_note": "Function-level offline parity is promoted for the module-init alias. The attestation records 69 matching AArch64 instructions and 276-byte symbols, two reproducible Docker builds with identical module hashes, matching KCFI type ID 0x6fbb3035, strict Joern scope, and direct module initialization tests. The stock ELF alias init_module is explicitly mapped to source zte_fp_init. This is static/offline evidence; hardware initialization remains unverified."
+      "mapping_note": "The stock-exact baseline is preserved historically. This candidate initializes netlink before platform_driver_register can publish the char device, propagates netlink/driver-registration failures, and unwinds resources in reverse order. This changes init_module behavior intentionally; runtime initialization remains unverified.",
+      "candidate_symbol_bytes": 316
     },
     {
       "evidence": [
@@ -807,14 +817,14 @@
   "schema_version": "2.0",
   "semantic_equivalence": "UNPROVEN",
   "stock_sha256": "534bdb87c4612ef6b7fe5663a10203179181cf3da1ce407b602b5e4fa8e67562",
-  "candidate_size": 723560,
+  "candidate_size": 723944,
   "assembly_parity": {
     "passed": false,
     "checked": 30,
-    "failures": 7,
-    "evidence": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/ioctl_irq_resource_group_hardening_20261104/assembly_comparison_stock.json",
-    "exact_functions": 23,
-    "intentional_deviations": 7,
+    "failures": 8,
+    "evidence": "reverse_engineering/validation/reconstructed/fp_goodix/attestation/module_init_netlink_ordering_20261110/assembly_comparison_stock.json",
+    "exact_functions": 22,
+    "intentional_deviations": 8,
     "unexplained_failures": 0
   },
   "exact_assembly_sources": [

@@ -1,10 +1,10 @@
 # Status: `fp_goodix`
 
-Estado atual (2026-11-04): **HARDENING_CANDIDATE_STATIC_BUILD_VERIFIED; DYNAMIC_VALIDATION_PENDING**. O `fp_goodix` continua em trabalho estático; não está validado no smartphone e não deve ser instalado/promovido.
+Estado atual (2026-11-10): **HARDENING_CANDIDATE_STATIC_BUILD_VERIFIED; STRICT_MODULE_PARITY_INCOMPLETE; DYNAMIC_VALIDATION_PENDING**. O `fp_goodix` continua em trabalho estático; não foi carregado nem validado no smartphone.
 
-O baseline stock-exact `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595` e o candidato anterior `3dcb65d6844d895ed794d44f09e400a4caf0d08401c5a8ed4454d5c8ba8eae63` permanecem preservados como evidência histórica. O candidato atual adiciona hardening em IRQ/ioctl, aquisição e liberação de recursos, abertura/fechamento, probe e remoção. Dois builds Docker NX809J limpos produziram o mesmo módulo `756d2e48b902e85ca4e19e7281291ad2895def7922e86750fd2c220ffe030f3a` (723560 bytes). Contra o módulo stock, 23/30 funções são idênticas; as sete diferenças são as alterações de hardening documentadas, sem divergências fora do escopo. Evidência: `attestation/ioctl_irq_resource_group_hardening_20261104/`.
+O baseline stock-exact `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595` e os candidatos de hardening anteriores permanecem preservados como evidência histórica. O source atual `fp_goodix_core.c` tem SHA-256 `ab516de7ada60a4d6798b4aeb9677615dc63ce07c817c633b9d4aa2ff936ee67`. Dois builds Docker NX809J limpos produziram o mesmo módulo `155b696fd615aa907936d5328520393873fb458af38ef428764d38e1ce43f77d` (723944 bytes). Contra o stock, 22/30 funções são assembly-exact e oito diferenças são desvios de hardening declarados; não foram encontradas diferenças fora desse conjunto. O novo desvio em `init_module` inicializa netlink antes de publicar o dispositivo e desfaz recursos se a inicialização falhar. Evidência: `attestation/module_init_netlink_ordering_20261110/`.
 
-O lote elimina estaticamente os riscos previamente identificados de IRQ durante remoção, ioctl concorrente com teardown e liberação duplicada de GPIO gerenciado. Isso ainda precisa de revisão semântica independente e validação dinâmica controlada. ADB não detecta dispositivo conectado nesta checagem; não houve carga de módulo nem teste de hardware.
+Os hardenings registrados cobrem a janela de registro tardio do notifier, IRQ aberto durante remoção, ioctl concorrente com teardown, liberação de GPIO devm e a ordem netlink/probe na inicialização. A auditoria ampla ainda retorna `incomplete_or_failed`: o strict stock-import gate vê `devres_open_group`/`devres_release_group` adicionados e `gpio_free` removido como desvios já declarados, e não concede `static_verified`. A revisão semântica independente e a validação dinâmica controlada permanecem pendentes. ADB não detecta dispositivo conectado; não houve carga do candidato.
 
 Baseline stock-exact revalidado em 2026-11-02: o módulo `fc9a662…` passou comparação AArch64 fresca contra o stock em **30/30 funções**. A extração antiga em `candidate_assembly/` aponta para `13ce11de…`; as rechecagens de 27/30 e 28/30 são de hashes intermediários. A evidência está em `attestation/current_candidate_assembly_review_20261102/`.
 
@@ -16,9 +16,9 @@ Baseline stock-exact revalidado em 2026-11-02: o módulo `fc9a662…` passou com
 | Mapa stock -> fonte | PASS estrutural | 30/30 funções continuam mapeadas; hash do módulo e fonte foram atualizados. Equivalência C continua UNPROVEN e revisão humana independente pendente |
 | Call graph | PASS | 30/30 inventario e chamadas stock/candidato coincidentes |
 | KCFI | DIFERENÃ‡A CLASSIFICADA / STRICT PRESENCE FAILS | A comparaÃ§Ã£o estrita continua diferente em trÃªs preÃ¢mbulos. RevisÃ£o estÃ¡tica encontrou uma chamada direta `R_AARCH64_CALL26` de `gf_ioctl` por funÃ§Ã£o, corpos byte a byte idÃªnticos e nenhuma referÃªncia ELF indireta ou exportaÃ§Ã£o kernel `__ksymtab` para esses alvos. DecisÃ£o: `KCFI_NOT_APPLICABLE_DIRECT_CALL_ONLY`; nÃ£o Ã© PASS de igualdade estrita. EvidÃªncia: `attestation/kcfi_direct_call_only_review_20261102/`. |
-| Assembly | PARCIAL / HARDENING | Comparação fresca contra o stock real: 23/30 exatas; sete diferenças intencionais em `cleanup_module`, `gf_cleanup`, `gf_compat_ioctl`, `gf_open`, `gf_probe`, `gf_release` e `gf_remove`. Nenhuma diferença não classificada. Ver `attestation/ioctl_irq_resource_group_hardening_20261104/assembly_comparison_stock.json` |
+| Assembly | PARCIAL / HARDENING | Comparação fresca contra o stock real: 22/30 exatas; oito diferenças intencionais em `cleanup_module`, `gf_cleanup`, `gf_compat_ioctl`, `gf_open`, `gf_probe`, `gf_release`, `gf_remove` e `init_module`. Nenhuma diferença não classificada. Ver `attestation/module_init_netlink_ordering_20261110/assembly_comparison_stock.json` |
 | Host harness | HISTÓRICO | 30/30 cobertas no baseline `fc9a662…`; o candidato hardening atual não teve harness nesta rodada |
-| Build GKI/KMI | BUILD PASS | Dois builds Docker NX809J limpos produziram módulo idêntico, SHA-256 `756d2e48…`; isso não fecha equivalência semântica nem validação de hardware |
+| Build GKI/KMI | BUILD PASS / STRICT IMPORT DEVIATION | Dois builds Docker NX809J limpos produziram módulo idêntico, SHA-256 `155b696f…`; o auditor estrito continua marcando as diferenças importadas de hardening e não conclui `static_verified` |
 | Microtarefas | HISTÓRICO | As 30 microtarefas foram verificadas no baseline stock-exact; as mudanças hardening atuais não repetiram esses testes |
 | Hardware NX809J | DEFERRED | `adb devices -l` confirmou lista vazia; nenhum `insmod`/`rmmod` ou teste no telefone foi executado |
 
@@ -26,7 +26,7 @@ Candidato atual:
 
 - SHA-256 do baseline stock-exact de 2026-11-02: `fc9a6624521aad6faf2300dfa5589358e882f7eb80dcbf037e54a5e4aaaa9595`
 - SHA-256 do candidato hardening anterior: `3dcb65d6844d895ed794d44f09e400a4caf0d08401c5a8ed4454d5c8ba8eae63` (719232 bytes)
-- SHA-256 do candidato atual com hardening de IRQ/ioctl/recursos: `756d2e48b902e85ca4e19e7281291ad2895def7922e86750fd2c220ffe030f3a` (723560 bytes)
+- SHA-256 do candidato atual com hardening de IRQ/ioctl/recursos e inicialização netlink ordenada: `155b696fd615aa907936d5328520393873fb458af38ef428764d38e1ce43f77d` (723944 bytes)
 - vermagic: `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64`
 
 Reauditoria Docker â€” 2026-11-02:
@@ -79,3 +79,11 @@ Rechecagem e promoÃ§Ã£o de `gf_open` em 2026-08-28:
 ## Lifetime/synchronization risk audit — 2026-11-03
 
 A static audit found two OEM-inherited teardown risks: `gf_remove` unregisters the current panel cookie before draining delayed work that can create a new registration, and an open-time IRQ is freed by last-file release rather than by platform remove. `zte_fp_exit` also tears down netlink before unregistering the platform driver. The current candidate's exact assembly review confirms the stock order; neither race was reproduced. Source/map remain unchanged; see the [lifetime/synchronization audit](../../../../reverse_engineering/validation/reconstructed/fp_goodix/attestation/lifetime_sync_risk_audit_20261103/README.md). Any correction must be declared as a hardening deviation, rebuilt in canonical Docker, and reviewed. Independent human review and hardware validation remain pending.
+
+## Module-init netlink ordering hardening — 2026-11-10
+
+Stock Ghidra/P-Code and AArch64 assembly show `init_module` calling `platform_driver_register` before `netlink_init`. The probe can create the character-device node during driver registration; an immediate open can request the IRQ and reach `sendnlmsg` while its `nl_sk` is still null. The source now initializes netlink first, then registers the platform driver. If either setup step fails, it returns an error and unwinds the socket, class, and character-device registration in reverse order.
+
+The target Docker build produced two identical modules (`155b696f…`, 723944 bytes). Fresh comparison against stock has 22/30 exact functions and eight classified hardening deviations; comparison against the previous candidate shows only `init_module` changed. Its KCFI type ID remains `0x6fbb3035`; the symbol-size change is expected for the new control flow. The source and module hashes match the canonical Docker curated snapshot.
+
+The overall strict audit remains `incomplete_or_failed` because this candidate intentionally differs from stock imports (`devres_open_group`, `devres_release_group`, and `gpio_free`) and the full driver has not received independent review. No host harness, KCSAN, module load/unload, or phone test was run. ADB was empty. Do not claim full semantic equivalence or hardware validation.
