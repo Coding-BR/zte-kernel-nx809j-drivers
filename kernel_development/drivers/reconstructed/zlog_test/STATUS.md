@@ -2,27 +2,32 @@
 
 - Target: `NX809J (RedMagic 11 Pro+)`
 - Stock SHA-256: `e595c91cb5ef517c620d362c82eb05bca98cd5726757b9a6cb7cb96a788747e1` (`reference_modules/full_vendor_boot/zlog_test.ko`)
-- Current candidate SHA-256: `c779578131ef0131fd4ceb9e77d10332a3ae063bc29adc96a477dd3e7238251a` (canonical Docker snapshot; strict audit 2026-11-02)
-- Primary mapped source SHA-256 (`zlog_test_main.c`): `e7e98e78c4e169726e050fbbb44c1f9dee7a450d0a67bee35773464d06bad96a`
+- Candidate SHA-256: `5c761945f2206ea9ad941a1a95eccb71477d9db9862905ff7ba1d92cf1bd9944` (166,904 bytes; two canonical Docker builds)
+- Primary source SHA-256 (`zlog_test_main.c`): `e78d87dcccc731630dc478e1039ecffe19b499782ace5e8a8de4d57dd003c0a8`
 - Kernel target: Android 16 / GKI `6.12.23` / AArch64 / `vendor_dlkm`
-- Overall verdict: **INCOMPLETE - independent human review and controlled hardware validation remain open**
+- Overall verdict: **INCOMPLETE — hardening deviations, independent review and controlled hardware validation remain open**
 
-| Gate | Result | Current evidence |
+| Gate | Result | Evidence and limit |
 |---|---|---|
-| Stock/Ghidra corpus | PASS | 11 stock function identities in preserved Ghidra export and stock assembly |
-| Stock-to-source map | PASS | 11/11 function mappings; all mapped implementations are in `zlog_test_main.c` |
-| Reproducible build | PASS | Canonical Docker audit on 2026-11-02; two clean builds, reproducible, no errors |
-| ELF/KMI inventory | PASS | AArch64 relocatable module; target vermagic accepted; imports and namespaces match |
-| Layout/ABI | PASS | Four structures and 23 data/BSS symbols match recovered AArch64 layouts |
-| Ghidra comparison | PASS | 11/11 mapped identities, function sizes and call structure checked |
-| KCFI | PASS | 11/11 type IDs, sections and exact symbol sizes match preserved evidence |
-| Host harness | PASS | 11/11 functions covered; two runs and host binaries are identical |
-| Microtasks | PASS | 11/11 hash-backed compile/KCFI/test attestations |
-| Strict assembly | PASS | Fresh stock and current candidate extraction: 11/11 instructions, relocations, sections and symbol sizes |
-| Second-pass mapping review | PASS | Codex second-pass; evidence bound to current stock, candidate, map and Docker audit hashes |
-| Independent human review | PENDING | A distinct human reviewer has not signed this candidate hash |
-| Controlled hardware | DEFERRED | No module-load, concurrency or vendor-service test for this exact candidate |
+| Stock/Ghidra corpus | PASS | 11 stock function identities with preserved Ghidra exports |
+| Stock-to-source map | PASS | 11/11 identities mapped; changed lifecycle functions are marked as deviations |
+| Reproducible Docker build | PASS | Two clean builds produced the same 166,904-byte candidate |
+| Target module metadata | PASS | Target source identity and vermagic match; modpost accepts imports |
+| Candidate/fresh runtime | PASS after promotion | Canonical candidate is bound to the reproducible artifact |
+| Strict import-set parity | INTENTIONAL DELTA | Adds mutex/spinlock helpers, `destroy_workqueue`, `disable_delayed_work_sync`, and `zte_misc_unregister_callback`; removes `flush_delayed_work` |
+| `zte_misc` dependency | CANDIDATE REQUIRED | Requires reconstructed `zte_misc.ko` SHA-256 `4397e8fcd4880b10e2af32a32d361708f2c227c2c135840750061730f4ea8f8c`; callback API CRC is `0x61afab7e`, while stock uses `0x9bec046c` and has no unregister API |
+| KCFI | PASS | 11/11 stock identities match type and section; changed symbol sizes are expected |
+| Strict assembly | 3/11 exact | Eight declared deviations cover setter, five workers, init and exit |
+| Host harness | PASS | Two identical Docker-built host binaries pass; report covers enable/disable, failure unwind, worker requeue and exit |
+| Independent human review | PENDING | No second reviewer has signed this candidate hash |
+| Controlled hardware | DEFERRED | No module load, sysfs action or phone behavior is claimed |
 
-The previous assembly status cited candidate SHA `d1a19d…`, which did not match the canonical Docker candidate `c779578…`. That stale comparison is superseded by `reverse_engineering/validation/reconstructed/zlog_test/attestation/independent_mapping_review_20261102/`. `ASSEMBLY_STATUS.md` records the provenance correction.
+The shared [callback-lifetime attestation](../../../../reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/README.md) contains the Docker, assembly, KCFI, source-sync and host-harness reports. The code changes are deliberate safety deviations and are not described as exact stock semantics.
 
-`static_verified` proves build/KMI/traceability and offline parity only. It does not prove timing, workqueue concurrency or interaction with the physical device and vendor services.
+## Lifetime and failure handling — 2026-11-10
+
+`zlog_test` registers `dump` as a `zlog_common` callback and owns five delayed works that requeue themselves. Stock `cleanup_module` only logged a message. The candidate now unregisters the `zte_misc` callback and waits for SRCU readers, sets the enable flag to zero under the queue gate, drains and permanently disables each delayed work, unregisters registered clients, and destroys the workqueues. `zlog_common` now serializes callback dispatch with client removal so unload waits for an in-flight `dump` call.
+
+The setter serializes concurrent enable/disable calls, gates worker requeues against the stop transition, and rolls back partial client registration. Initialization checks all five workqueue allocations and callback registration, unwinding earlier allocations on failure.
+
+The new `zte_misc_unregister_callback` API exists only in the reconstructed `zte_misc` candidate. The `zlog_test` candidate is not loadable against stock `zte_misc`; device validation must use the matching reconstructed provider. No hardware test has yet been performed.

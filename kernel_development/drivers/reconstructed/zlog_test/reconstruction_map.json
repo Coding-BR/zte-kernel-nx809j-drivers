@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "driver": "zlog_test",
-  "candidate_sha256": "c779578131ef0131fd4ceb9e77d10332a3ae063bc29adc96a477dd3e7238251a",
+  "candidate_sha256": "5c761945f2206ea9ad941a1a95eccb71477d9db9862905ff7ba1d92cf1bd9944",
   "stock_sha256": "e595c91cb5ef517c620d362c82eb05bca98cd5726757b9a6cb7cb96a788747e1",
   "review_scope": "Primary function-by-function technical review with local ROM Ghidra, AArch64 assembly, KCFI and host-test cross-checks",
   "independent_review": "pending; tracked separately by gate O10",
@@ -19,15 +19,25 @@
         "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
         "Joern scoped and usage-slice gates passed",
         "existing host-test receipt records invalid, idempotent, enable, partial-register-failure and disable paths",
-        "no hardware execution claim"
+        "no hardware execution claim",
+        "Intentional offline lifetime/teardown hardening; not claimed stock-exact.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/README.md",
+        "Host harness passed reproducibly; no device execution is claimed.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/assembly/zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/kcfi_zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/host/host_test_report.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/docker_rebuild_audit_final.json"
       ],
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "reviewed",
       "stock_body_bytes": 836,
-      "attestation": "reverse_engineering/validation/reconstructed/zlog_test/attestation/next062_zlog_test_zlog_enable_test_set_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Docker reproducibility, Joern and preserved direct path evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 209 matching AArch64 instructions and 836-byte symbols, matching KCFI type ID 0x4cf999cb, two reproducible Docker builds and strict Joern scope/slice. The preserved host receipt covers invalid/idempotent/enable/partial-register-failure/disable paths; live sysfs, kthread and hardware behavior remain unverified."
+      "attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110",
+      "mapping_basis": "Stock Ghidra/P-Code review plus explicit lifecycle hardening, host harness, and reproducible target Docker builds.",
+      "review_scope": "offline_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "mapping_note": "Serializes concurrent sysfs transitions, rolls back partial registration, and synchronizes the flag with worker requeue/cancel.",
+      "review_disposition": "PENDING_INDEPENDENT_REVIEW",
+      "independent_review": "PENDING",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110"
     },
     {
       "stock_function": "zlog_enable_test_get",
@@ -106,15 +116,25 @@
         "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
         "Joern scoped and usage-slice gates passed",
         "preserved host-test receipt records record, notify and reschedule behavior",
-        "no hardware execution claim"
+        "no hardware execution claim",
+        "Intentional offline lifetime/teardown hardening; not claimed stock-exact.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/README.md",
+        "Host harness passed reproducibly; no device execution is claimed.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/assembly/zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/kcfi_zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/host/host_test_report.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/docker_rebuild_audit_final.json"
       ],
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "reviewed",
       "stock_body_bytes": 236,
-      "attestation": "reverse_engineering/validation/reconstructed/zlog_test/attestation/next065_zlog_test_zlog_test1_thread_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Docker reproducibility, Joern and preserved direct path evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 59 matching AArch64 instructions and 236-byte symbols, matching KCFI type ID 0xa607748c, two reproducible Docker builds, strict Joern scope/slice and the preserved record/notify/reschedule receipt. Live kthread scheduling, workqueue ordering and hardware behavior remain unverified."
+      "attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110",
+      "mapping_basis": "Stock Ghidra/P-Code review plus explicit lifecycle hardening, host harness, and reproducible target Docker builds.",
+      "review_scope": "offline_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "mapping_note": "Requeues only while enabled under the shared queue gate; changed from stock.",
+      "review_disposition": "PENDING_INDEPENDENT_REVIEW",
+      "independent_review": "PENDING",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110"
     },
     {
       "stock_function": "zlog_test2_thread",
@@ -129,15 +149,25 @@
         "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
         "Joern scoped and usage-slice gates passed",
         "preserved host-test receipt records record, notify and reschedule behavior",
-        "no hardware execution claim"
+        "no hardware execution claim",
+        "Intentional offline lifetime/teardown hardening; not claimed stock-exact.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/README.md",
+        "Host harness passed reproducibly; no device execution is claimed.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/assembly/zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/kcfi_zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/host/host_test_report.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/docker_rebuild_audit_final.json"
       ],
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "reviewed",
       "stock_body_bytes": 236,
-      "attestation": "reverse_engineering/validation/reconstructed/zlog_test/attestation/next066_zlog_test_zlog_test2_thread_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Docker reproducibility, Joern and preserved direct path evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 59 matching AArch64 instructions and 236-byte symbols, matching KCFI type ID 0xa607748c, two reproducible Docker builds, strict Joern scope/slice and the preserved record/notify/reschedule receipt. Live kthread scheduling, workqueue ordering and hardware behavior remain unverified."
+      "attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110",
+      "mapping_basis": "Stock Ghidra/P-Code review plus explicit lifecycle hardening, host harness, and reproducible target Docker builds.",
+      "review_scope": "offline_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "mapping_note": "Requeues only while enabled under the shared queue gate; changed from stock.",
+      "review_disposition": "PENDING_INDEPENDENT_REVIEW",
+      "independent_review": "PENDING",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110"
     },
     {
       "stock_function": "zlog_test3_thread",
@@ -152,15 +182,25 @@
         "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
         "Joern scoped and usage-slice gates passed",
         "preserved host-test receipt records record, notify and reschedule behavior",
-        "no hardware execution claim"
+        "no hardware execution claim",
+        "Intentional offline lifetime/teardown hardening; not claimed stock-exact.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/README.md",
+        "Host harness passed reproducibly; no device execution is claimed.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/assembly/zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/kcfi_zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/host/host_test_report.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/docker_rebuild_audit_final.json"
       ],
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "reviewed",
       "stock_body_bytes": 236,
-      "attestation": "reverse_engineering/validation/reconstructed/zlog_test/attestation/next067_zlog_test_zlog_test3_thread_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Docker reproducibility, Joern and preserved direct path evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 59 matching AArch64 instructions and 236-byte symbols, matching KCFI type ID 0xa607748c, two reproducible Docker builds, strict Joern scope/slice and the preserved record/notify/reschedule receipt. Live kthread scheduling, workqueue ordering and hardware behavior remain unverified."
+      "attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110",
+      "mapping_basis": "Stock Ghidra/P-Code review plus explicit lifecycle hardening, host harness, and reproducible target Docker builds.",
+      "review_scope": "offline_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "mapping_note": "Requeues only while enabled under the shared queue gate; changed from stock.",
+      "review_disposition": "PENDING_INDEPENDENT_REVIEW",
+      "independent_review": "PENDING",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110"
     },
     {
       "stock_function": "zlog_test4_thread",
@@ -175,15 +215,25 @@
         "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
         "Joern scoped and usage-slice gates passed",
         "preserved host-test receipt records record, notify and reschedule behavior",
-        "no hardware execution claim"
+        "no hardware execution claim",
+        "Intentional offline lifetime/teardown hardening; not claimed stock-exact.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/README.md",
+        "Host harness passed reproducibly; no device execution is claimed.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/assembly/zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/kcfi_zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/host/host_test_report.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/docker_rebuild_audit_final.json"
       ],
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "reviewed",
       "stock_body_bytes": 236,
-      "attestation": "reverse_engineering/validation/reconstructed/zlog_test/attestation/next068_zlog_test_zlog_test4_thread_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Docker reproducibility, Joern and preserved direct path evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 59 matching AArch64 instructions and 236-byte symbols, matching KCFI type ID 0xa607748c, two reproducible Docker builds, strict Joern scope/slice and the preserved record/notify/reschedule receipt. Live kthread scheduling, workqueue ordering and hardware behavior remain unverified."
+      "attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110",
+      "mapping_basis": "Stock Ghidra/P-Code review plus explicit lifecycle hardening, host harness, and reproducible target Docker builds.",
+      "review_scope": "offline_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "mapping_note": "Requeues only while enabled under the shared queue gate; changed from stock.",
+      "review_disposition": "PENDING_INDEPENDENT_REVIEW",
+      "independent_review": "PENDING",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110"
     },
     {
       "stock_function": "zlog_test5_thread",
@@ -198,15 +248,25 @@
         "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
         "Joern scoped and usage-slice gates passed",
         "preserved host-test receipt records record, notify and reschedule behavior",
-        "no hardware execution claim"
+        "no hardware execution claim",
+        "Intentional offline lifetime/teardown hardening; not claimed stock-exact.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/README.md",
+        "Host harness passed reproducibly; no device execution is claimed.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/assembly/zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/kcfi_zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/host/host_test_report.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/docker_rebuild_audit_final.json"
       ],
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "reviewed",
       "stock_body_bytes": 236,
-      "attestation": "reverse_engineering/validation/reconstructed/zlog_test/attestation/next069_zlog_test_zlog_test5_thread_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Docker reproducibility, Joern and preserved direct path evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 59 matching AArch64 instructions and 236-byte symbols, matching KCFI type ID 0xa607748c, two reproducible Docker builds, strict Joern scope/slice and the preserved record/notify/reschedule receipt. Live kthread scheduling, workqueue ordering and hardware behavior remain unverified."
+      "attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110",
+      "mapping_basis": "Stock Ghidra/P-Code review plus explicit lifecycle hardening, host harness, and reproducible target Docker builds.",
+      "review_scope": "offline_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "mapping_note": "Requeues only while enabled under the shared queue gate; changed from stock.",
+      "review_disposition": "PENDING_INDEPENDENT_REVIEW",
+      "independent_review": "PENDING",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110"
     },
     {
       "stock_function": "init_module",
@@ -222,15 +282,25 @@
         "Joern scoped and usage-slice gates passed",
         "preserved host-test receipt records five workqueues, five callbacks and misc callback registration",
         "module_init(zlog_test_init) to init_module symbol mapping reviewed",
-        "no hardware execution claim"
+        "no hardware execution claim",
+        "Intentional offline lifetime/teardown hardening; not claimed stock-exact.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/README.md",
+        "Host harness passed reproducibly; no device execution is claimed.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/assembly/zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/kcfi_zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/host/host_test_report.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/docker_rebuild_audit_final.json"
       ],
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "reviewed",
       "stock_body_bytes": 616,
-      "attestation": "reverse_engineering/validation/reconstructed/zlog_test/attestation/next070_zlog_test_init_module_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Docker reproducibility, Joern and preserved direct path evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 154 matching AArch64 instructions and 616-byte symbols, matching KCFI type ID 0x6fbb3035, two reproducible Docker builds, strict Joern scope/slice and the preserved five-workqueue/five-callback/misc-registration receipt. The module_init(zlog_test_init) to init_module symbol mapping was reviewed. Live kthread/workqueue ordering, device behavior and hardware execution remain unverified."
+      "attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110",
+      "mapping_basis": "Stock Ghidra/P-Code review plus explicit lifecycle hardening, host harness, and reproducible target Docker builds.",
+      "review_scope": "offline_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "mapping_note": "Checks all five workqueue allocations and callback registration, unwinding allocated queues on every failure.",
+      "review_disposition": "PENDING_INDEPENDENT_REVIEW",
+      "independent_review": "PENDING",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110"
     },
     {
       "stock_function": "cleanup_module",
@@ -245,15 +315,105 @@
         "Docker hard protocol CORE_GATES_PASS with two reproducible builds",
         "Joern scoped and usage-slice gates passed",
         "preserved host-test receipt records stock log-only exit behavior",
-        "no hardware execution claim"
+        "no hardware execution claim",
+        "Intentional offline lifetime/teardown hardening; not claimed stock-exact.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/README.md",
+        "Host harness passed reproducibly; no device execution is claimed.",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/assembly/zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/kcfi_zlog_test_comparison.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/host/host_test_report.json",
+        "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/docker_rebuild_audit_final.json"
       ],
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "reviewed",
       "stock_body_bytes": 44,
-      "attestation": "reverse_engineering/validation/reconstructed/zlog_test/attestation/next071_zlog_test_cleanup_module_exact_v1",
-      "mapping_basis": "Ghidra pseudocode/P-Code review plus exact function-level AArch64 instruction sequence, KCFI, Docker reproducibility, Joern and preserved direct path evidence",
-      "review_scope": "offline_exact_function_level",
-      "semantic_equivalence": "OFFLINE_EXACT",
-      "mapping_note": "Function-level offline parity is promoted. The attestation records 11 matching AArch64 instructions and 44-byte symbols, matching KCFI type ID 0xe5c47d60, two reproducible Docker builds, strict Joern scope/slice and the preserved log-only exit receipt. Live unload, workqueue teardown and hardware behavior remain unverified."
+      "attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110",
+      "mapping_basis": "Stock Ghidra/P-Code review plus explicit lifecycle hardening, host harness, and reproducible target Docker builds.",
+      "review_scope": "offline_hardening_deviation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "mapping_note": "Unregisters the zte_misc callback, disables/drains workers, unregisters clients, and destroys all five workqueues.",
+      "review_disposition": "PENDING_INDEPENDENT_REVIEW",
+      "independent_review": "PENDING",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110"
     }
-  ]
+  ],
+  "hardening_extensions": [
+    {
+      "symbol": "zlog_test_queue_again",
+      "source_file": "zlog_test_main.c",
+      "stock_counterpart": null,
+      "kind": "internal_lifetime_helper"
+    },
+    {
+      "symbol": "zlog_test_cancel_works",
+      "source_file": "zlog_test_main.c",
+      "stock_counterpart": null,
+      "kind": "internal_teardown_helper"
+    },
+    {
+      "symbol": "zlog_test_unregister_clients",
+      "source_file": "zlog_test_main.c",
+      "stock_counterpart": null,
+      "kind": "internal_teardown_helper"
+    }
+  ],
+  "hardening_imports": [
+    {
+      "symbol": "disable_delayed_work_sync",
+      "provider": "vmlinux",
+      "crc": "0xba6d2f6c",
+      "stock_counterpart": null
+    },
+    {
+      "symbol": "destroy_workqueue",
+      "provider": "vmlinux",
+      "crc": "0xc3325950",
+      "stock_counterpart": null
+    },
+    {
+      "symbol": "mutex_lock",
+      "provider": "vmlinux",
+      "crc": "0x995658e3",
+      "stock_counterpart": null
+    },
+    {
+      "symbol": "mutex_unlock",
+      "provider": "vmlinux",
+      "crc": "0x995658e3",
+      "stock_counterpart": null
+    },
+    {
+      "symbol": "_raw_spin_lock_irqsave",
+      "provider": "vmlinux",
+      "crc": "0xaa615763",
+      "stock_counterpart": null
+    },
+    {
+      "symbol": "_raw_spin_unlock_irqrestore",
+      "provider": "vmlinux",
+      "crc": "0x582af1c8",
+      "stock_counterpart": null
+    },
+    {
+      "symbol": "zte_misc_unregister_callback",
+      "provider": "zte_misc",
+      "crc": "0x61afab7e",
+      "stock_counterpart": null,
+      "requires_reconstructed_provider": true
+    }
+  ],
+  "offline_validation": {
+    "candidate_size_bytes": 166904,
+    "docker_rebuilds": 2,
+    "docker_reproducible": true,
+    "assembly_exact_functions": 3,
+    "assembly_deviation_functions": 8,
+    "kcfi_type_section_matches": 11,
+    "host_harness_passed": true,
+    "host_harness_reproducible": true,
+    "hardware_verified": false,
+    "docker_audit": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/docker_rebuild_audit_final.json",
+    "assembly_report": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/assembly/zlog_test_comparison.json",
+    "kcfi_report": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/kcfi_zlog_test_comparison.json",
+    "host_report": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_callback_lifetime_20261110/host/host_test_report.json"
+  }
 }

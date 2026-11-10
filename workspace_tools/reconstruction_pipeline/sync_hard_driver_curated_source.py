@@ -30,14 +30,16 @@ def source_tree_record(root: Path) -> dict[str, Any]:
     records = []
     aggregate = hashlib.sha256()
     for path in sorted(root.rglob("*"), key=lambda item: item.relative_to(root).as_posix()):
+        relative_path = path.relative_to(root)
         if (
             not path.is_file()
+            or relative_path.parts[:2] == ("tests", "out")
             or path.name in GENERATED_NAMES
             or path.suffix in GENERATED_SUFFIXES
             or path.name.endswith(".mod.c")
         ):
             continue
-        relative = path.relative_to(root).as_posix()
+        relative = relative_path.as_posix()
         digest = sha256_file(path)
         size = path.stat().st_size
         records.append({"file": relative, "size_bytes": size, "sha256": digest})
@@ -143,6 +145,7 @@ def main() -> int:
         "remaining": remaining,
         "notes": [
             "All versioned files are hashed; generated module/build artifacts are excluded.",
+            "Generated host-test outputs under tests/out are preserved and excluded from source sync.",
             "Only versioned source files absent from the candidate tree are removed from curated/.",
             "A Docker build independently validates the synchronized snapshot.",
         ],

@@ -5,6 +5,8 @@ u32 zlog_host_random;
 int zlog_host_register_fail_at;
 int zlog_host_misc_result;
 unsigned int zlog_host_alloc_count;
+int zlog_host_alloc_fail_at;
+unsigned int zlog_host_destroy_count;
 unsigned int zlog_host_register_count;
 unsigned int zlog_host_unregister_count;
 unsigned int zlog_host_record_count;
@@ -12,7 +14,10 @@ unsigned int zlog_host_notify_count;
 unsigned int zlog_host_queue_count;
 unsigned int zlog_host_flush_count;
 unsigned int zlog_host_cancel_count;
+unsigned int zlog_host_disable_count;
 unsigned int zlog_host_print_count;
+unsigned int zlog_host_misc_register_count;
+unsigned int zlog_host_misc_unregister_count;
 struct zlog_mod_info *zlog_host_registered_modules[5];
 struct zlog_client *zlog_host_unregistered_clients[5];
 const char *zlog_host_records[8];
@@ -22,6 +27,7 @@ int zlog_host_notify_event;
 struct zlog_test_queue_call zlog_host_queue_calls[8];
 struct delayed_work *zlog_host_flushed_works[5];
 struct delayed_work *zlog_host_cancelled_works[5];
+struct delayed_work *zlog_host_disabled_works[5];
 struct zte_misc_ops *zlog_host_misc_node;
 
 #include "../zlog_test_main.c"
@@ -86,8 +92,21 @@ void zlog_client_notify(struct zlog_client *client, int event)
 int zte_misc_register_callback(struct zte_misc_ops *callback, void *priv)
 {
 	(void)priv;
+	zlog_host_misc_register_count++;
+	if (zlog_host_misc_result)
+		return zlog_host_misc_result;
 	zlog_host_misc_node = callback;
-	return zlog_host_misc_result;
+	return 0;
+}
+
+int zte_misc_unregister_callback(struct zte_misc_ops *callback, void *priv)
+{
+	(void)priv;
+	zlog_host_misc_unregister_count++;
+	if (zlog_host_misc_node != callback)
+		return -ENOENT;
+	zlog_host_misc_node = NULL;
+	return 0;
 }
 
 #define CHECK(condition) \
@@ -103,6 +122,8 @@ static void reset_observations(void)
 {
 	zlog_host_register_fail_at = 0;
 	zlog_host_misc_result = 0;
+	zlog_host_misc_register_count = 0;
+	zlog_host_misc_unregister_count = 0;
 	zlog_host_register_count = 0;
 	zlog_host_unregister_count = 0;
 	zlog_host_record_count = 0;
@@ -110,6 +131,8 @@ static void reset_observations(void)
 	zlog_host_queue_count = 0;
 	zlog_host_flush_count = 0;
 	zlog_host_cancel_count = 0;
+	zlog_host_disable_count = 0;
+	zlog_host_destroy_count = 0;
 	zlog_host_print_count = 0;
 	zlog_host_notify_client = NULL;
 	zlog_host_notify_event = 0;
@@ -125,6 +148,8 @@ static void reset_observations(void)
 	memset(zlog_host_flushed_works, 0, sizeof(zlog_host_flushed_works));
 	memset(zlog_host_cancelled_works, 0,
 	       sizeof(zlog_host_cancelled_works));
+	memset(zlog_host_disabled_works, 0,
+	       sizeof(zlog_host_disabled_works));
 }
 
 static int test_init_and_exit(void)
@@ -141,9 +166,12 @@ static int test_init_and_exit(void)
 
 	reset_observations();
 	zlog_host_alloc_count = 0;
-	zlog_host_misc_result = -EBUSY;
+	zlog_host_alloc_fail_at = 0;
+	zlog_host_misc_result = 0;
+	zlog_enable_test_flag = 0;
 	CHECK(zlog_test_init() == 0);
 	CHECK(zlog_host_alloc_count == 5);
+	CHECK(zlog_host_misc_register_count == 1);
 	CHECK(zlog_host_misc_node == &zlog_enable_test_node);
 	CHECK(strcmp(zlog_enable_test_node.name, "zlog_enable_test") == 0);
 	CHECK(zlog_enable_test_node.set == zlog_enable_test_set);
@@ -152,8 +180,38 @@ static int test_init_and_exit(void)
 	CHECK(zlog_enable_test_node.priv == NULL);
 	for (index = 0; index < 5; index++)
 		CHECK(works[index]->callback == callbacks[index]);
+	CHECK(zlog_enable_test_set("1", NULL) == 0);
 	zlog_test_exit();
-	CHECK(zlog_host_print_count >= 3);
+	CHECK(zlog_host_misc_unregister_count == 1);
+	CHECK(zlog_host_disable_count == 5);
+	CHECK(zlog_host_unregister_count == 5);
+	CHECK(zlog_host_destroy_count == 5);
+	CHECK(zlog_enable_test_flag == 0);
+	CHECK(zlog_host_misc_node == NULL);
+	for (index = 0; index < 5; index++)
+		CHECK(zlog_host_disabled_works[index] == works[index]);
+	return 0;
+}
+
+static int test_init_failure_unwind(void)
+{
+	reset_observations();
+	zlog_host_alloc_count = 0;
+	zlog_host_alloc_fail_at = 3;
+	CHECK(zlog_test_init() == -ENOMEM);
+	CHECK(zlog_host_alloc_count == 2);
+	CHECK(zlog_host_misc_register_count == 0);
+	CHECK(zlog_host_destroy_count == 2);
+
+	reset_observations();
+	zlog_host_alloc_count = 0;
+	zlog_host_alloc_fail_at = 0;
+	zlog_host_misc_result = -EBUSY;
+	CHECK(zlog_test_init() == -EBUSY);
+	CHECK(zlog_host_alloc_count == 5);
+	CHECK(zlog_host_misc_register_count == 1);
+	CHECK(zlog_host_destroy_count == 5);
+	CHECK(zlog_host_misc_unregister_count == 0);
 	return 0;
 }
 
@@ -193,10 +251,20 @@ static int test_enable_get_poll(void)
 	reset_observations();
 	zlog_enable_test_flag = 0;
 	zlog_host_register_fail_at = 3;
+	CHECK(zlog_enable_test_set("7", NULL) == -ENOMEM);
+	CHECK(zlog_enable_test_flag == 0);
+	CHECK(zlog_host_register_count == 3);
+	CHECK(client_1 == NULL && client_2 == NULL && client_3 == NULL);
+	CHECK(client_4 == NULL && client_5 == NULL);
+	CHECK(zlog_host_unregister_count == 2);
+	CHECK(zlog_host_queue_count == 0);
+
+	reset_observations();
+	zlog_enable_test_flag = 0;
 	CHECK(zlog_enable_test_set("7", NULL) == 0);
 	CHECK(zlog_enable_test_flag == 1);
 	CHECK(zlog_host_register_count == 5);
-	CHECK(client_1 != NULL && client_2 != NULL && client_3 == NULL);
+	CHECK(client_1 != NULL && client_2 != NULL && client_3 != NULL);
 	CHECK(client_4 != NULL && client_5 != NULL);
 	CHECK(zlog_host_queue_count == 5);
 	for (index = 0; index < 5; index++) {
@@ -267,6 +335,7 @@ static int test_worker(void (*worker)(struct work_struct *),
 
 static int test_workers(void)
 {
+	zlog_enable_test_flag = 1;
 	client_1 = &host_clients[0];
 	client_2 = &host_clients[1];
 	client_3 = &host_clients[2];
@@ -306,12 +375,11 @@ static int test_disable(void)
 	reset_observations();
 	CHECK(zlog_enable_test_set("0", NULL) == 0);
 	CHECK(zlog_enable_test_flag == 0);
-	CHECK(zlog_host_flush_count == 5);
+	CHECK(zlog_host_flush_count == 0);
 	CHECK(zlog_host_cancel_count == 5);
 	CHECK(zlog_host_unregister_count == 5);
 	CHECK(zlog_host_queue_count == 0);
 	for (index = 0; index < 5; index++) {
-		CHECK(zlog_host_flushed_works[index] == works[index]);
 		CHECK(zlog_host_cancelled_works[index] == works[index]);
 		CHECK(zlog_host_unregistered_clients[index] == clients[index]);
 	}
@@ -322,7 +390,8 @@ static int test_disable(void)
 
 int main(void)
 {
-	if (test_init_and_exit() || test_set_parse_and_idempotence() ||
+	if (test_init_and_exit() || test_init_failure_unwind() ||
+	    test_set_parse_and_idempotence() ||
 	    test_enable_get_poll() || test_dump() || test_workers() ||
 	    test_disable())
 		return 1;

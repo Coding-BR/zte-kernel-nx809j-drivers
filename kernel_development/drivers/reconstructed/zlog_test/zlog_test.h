@@ -54,5 +54,6 @@ int zlog_client_record(struct zlog_client *client, const char *format, ...);
 struct zlog_client *zlog_register_client(struct zlog_mod_info *module);
 void zlog_unregister_client(struct zlog_client *client);
 int zte_misc_register_callback(struct zte_misc_ops *callback, void *priv);
+int zte_misc_unregister_callback(struct zte_misc_ops *callback, void *priv);
 
 #endif /* _ZLOG_TEST_RECONSTRUCTED_H */

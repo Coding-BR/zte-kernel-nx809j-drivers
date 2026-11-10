@@ -445,12 +445,15 @@ static ssize_t zlog_comm_write(struct file *file, const char __user *buffer,
 	}
 	module_no = command.module_no;
 
+	/* Keep callback code resident until unregister has drained this call. */
+	mutex_lock(&zlog_lifetime_lock);
 	for (i = 0; i < ZLOG_CLIENT_MAX; i++) {
 		client = &g_zlog_server.client_list[i];
 		if (client->registered && client->module_no == module_no &&
 		    client->ops && client->ops->notify)
 			client->ops->notify(client, module_no);
 	}
+	mutex_unlock(&zlog_lifetime_lock);
 	return count;
 }
 

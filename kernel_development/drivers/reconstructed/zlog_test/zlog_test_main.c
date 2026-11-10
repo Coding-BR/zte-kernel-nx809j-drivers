@@ -3,7 +3,9 @@
 #include <linux/init.h>
 #include <linux/kernel.h>
 #include <linux/module.h>
+#include <linux/mutex.h>
 #include <linux/random.h>
+#include <linux/spinlock.h>
 #include <linux/workqueue.h>
 
 #include "zlog_test.h"
@@ -12,6 +14,9 @@
 #define ZLOG_TEST_WQ_FLAGS 0x6000a
 #define ZLOG_TEST_EVENT 5
 #define ZLOG_TEST_DUMP_EVENT 0x40010a
+
+static DEFINE_MUTEX(zlog_enable_test_lock);
+static DEFINE_SPINLOCK(zlog_test_queue_lock);
 
 static int zlog_enable_test_set(const char *value, const void *priv);
 static int zlog_enable_test_get(char *buffer, const void *priv);
@@ -57,6 +62,46 @@ extern struct delayed_work zlog_test4_work;
 extern struct workqueue_struct *zlog_test5_workqueue;
 extern struct delayed_work zlog_test5_work;
 
+static void zlog_test_queue_again(struct workqueue_struct *workqueue,
+				  struct delayed_work *work,
+				  unsigned long delay)
+{
+	unsigned long irq_flags;
+
+	spin_lock_irqsave(&zlog_test_queue_lock, irq_flags);
+	if (READ_ONCE(zlog_enable_test_flag))
+		queue_delayed_work_on(ZLOG_TEST_CPU, workqueue, work, delay);
+	spin_unlock_irqrestore(&zlog_test_queue_lock, irq_flags);
+}
+
+static void zlog_test_cancel_works(void)
+{
+	cancel_delayed_work_sync(&zlog_test1_work);
+	cancel_delayed_work_sync(&zlog_test2_work);
+	cancel_delayed_work_sync(&zlog_test3_work);
+	cancel_delayed_work_sync(&zlog_test4_work);
+	cancel_delayed_work_sync(&zlog_test5_work);
+}
+
+static void zlog_test_unregister_clients(void)
+{
+	if (client_1)
+		zlog_unregister_client(client_1);
+	if (client_2)
+		zlog_unregister_client(client_2);
+	if (client_3)
+		zlog_unregister_client(client_3);
+	if (client_4)
+		zlog_unregister_client(client_4);
+	if (client_5)
+		zlog_unregister_client(client_5);
+	client_1 = NULL;
+	client_2 = NULL;
+	client_3 = NULL;
+	client_4 = NULL;
+	client_5 = NULL;
+}
+
 static const char *zlog_test_client_name(const struct zlog_client *client)
 {
 	const struct zlog_client_prefix *prefix = (const void *)client;
@@ -68,74 +113,74 @@ static int zlog_enable_test_set(const char *value, const void *priv)
 {
 	int requested = 0;
 	int ret;
+	unsigned long irq_flags;
 
 	(void)priv;
-	if (sscanf(value, "%d", &requested) == 1) {
-		pr_info("ZLOG_TEST: %s: zlog_enable_test_set %d\n",
-			__func__, !!requested);
-		if (zlog_enable_test_flag == !!requested) {
-			pr_info("ZLOG_TEST: %s: zlog_enable_test_flag alreay is %d\n",
-				__func__, zlog_enable_test_flag);
-			ret = 0;
-		} else {
-			zlog_enable_test_flag = !!requested;
-			if (!requested) {
-				flush_delayed_work(&zlog_test1_work);
-				cancel_delayed_work_sync(&zlog_test1_work);
-				flush_delayed_work(&zlog_test2_work);
-				cancel_delayed_work_sync(&zlog_test2_work);
-				flush_delayed_work(&zlog_test3_work);
-				cancel_delayed_work_sync(&zlog_test3_work);
-				flush_delayed_work(&zlog_test4_work);
-				cancel_delayed_work_sync(&zlog_test4_work);
-				flush_delayed_work(&zlog_test5_work);
-				cancel_delayed_work_sync(&zlog_test5_work);
-
-				zlog_unregister_client(client_1);
-				zlog_unregister_client(client_2);
-				zlog_unregister_client(client_3);
-				zlog_unregister_client(client_4);
-				zlog_unregister_client(client_5);
-				client_1 = NULL;
-				client_2 = NULL;
-				client_3 = NULL;
-				client_4 = NULL;
-				client_5 = NULL;
-				ret = 0;
-			} else {
-				client_1 = zlog_register_client(&test_dev_1);
-				if (!client_1)
-					pr_err("ZLOG_TEST: %s: dsm1 reg failed\n", __func__);
-				client_2 = zlog_register_client(&test_dev_2);
-				if (!client_2)
-					pr_err("ZLOG_TEST: %s: dsm2 reg failed\n", __func__);
-				client_3 = zlog_register_client(&test_dev_3);
-				if (!client_3)
-					pr_err("ZLOG_TEST: %s: dsm3 reg failed\n", __func__);
-				client_4 = zlog_register_client(&test_dev_4);
-				if (!client_4)
-					pr_err("ZLOG_TEST: %s: dsm4 reg failed\n", __func__);
-				client_5 = zlog_register_client(&test_dev_5);
-				if (!client_5)
-					pr_err("ZLOG_TEST: %s: dsm5 reg failed\n", __func__);
-
-				queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test1_workqueue,
-						      &zlog_test1_work, 0);
-				queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test2_workqueue,
-						      &zlog_test2_work, 0);
-				queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test3_workqueue,
-						      &zlog_test3_work, 0);
-				queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test4_workqueue,
-						      &zlog_test4_work, 0);
-				queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test5_workqueue,
-						      &zlog_test5_work, 0);
-				ret = 0;
-			}
-		}
-	} else {
+	mutex_lock(&zlog_enable_test_lock);
+	if (sscanf(value, "%d", &requested) != 1) {
 		pr_info("ZLOG_TEST: %s: para is invalid\n", __func__);
 		ret = -EINVAL;
+		goto out_unlock;
 	}
+	requested = !!requested;
+	pr_info("ZLOG_TEST: %s: zlog_enable_test_set %d\n",
+		__func__, requested);
+	if (READ_ONCE(zlog_enable_test_flag) == (unsigned int)requested) {
+		pr_info("ZLOG_TEST: %s: zlog_enable_test_flag already is %d\n",
+			__func__, requested);
+		ret = 0;
+		goto out_unlock;
+	}
+
+	if (!requested) {
+		spin_lock_irqsave(&zlog_test_queue_lock, irq_flags);
+		WRITE_ONCE(zlog_enable_test_flag, 0);
+		spin_unlock_irqrestore(&zlog_test_queue_lock, irq_flags);
+		zlog_test_cancel_works();
+		zlog_test_unregister_clients();
+		ret = 0;
+		goto out_unlock;
+	}
+
+	client_1 = zlog_register_client(&test_dev_1);
+	if (!client_1)
+		goto register_failed;
+	client_2 = zlog_register_client(&test_dev_2);
+	if (!client_2)
+		goto register_failed;
+	client_3 = zlog_register_client(&test_dev_3);
+	if (!client_3)
+		goto register_failed;
+	client_4 = zlog_register_client(&test_dev_4);
+	if (!client_4)
+		goto register_failed;
+	client_5 = zlog_register_client(&test_dev_5);
+	if (!client_5)
+		goto register_failed;
+
+	spin_lock_irqsave(&zlog_test_queue_lock, irq_flags);
+	WRITE_ONCE(zlog_enable_test_flag, 1);
+	queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test1_workqueue,
+			      &zlog_test1_work, 0);
+	queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test2_workqueue,
+			      &zlog_test2_work, 0);
+	queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test3_workqueue,
+			      &zlog_test3_work, 0);
+	queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test4_workqueue,
+			      &zlog_test4_work, 0);
+	queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test5_workqueue,
+			      &zlog_test5_work, 0);
+	spin_unlock_irqrestore(&zlog_test_queue_lock, irq_flags);
+	ret = 0;
+	goto out_unlock;
+
+register_failed:
+	pr_err("ZLOG_TEST: %s: client registration failed\n", __func__);
+	zlog_test_unregister_clients();
+	ret = -ENOMEM;
+
+out_unlock:
+	mutex_unlock(&zlog_enable_test_lock);
 
 	return ret;
 }
@@ -143,7 +188,8 @@ static int zlog_enable_test_set(const char *value, const void *priv)
 static int zlog_enable_test_get(char *buffer, const void *priv)
 {
 	(void)priv;
-	return snprintf(buffer, PAGE_SIZE, "%d", zlog_enable_test_flag);
+	return snprintf(buffer, PAGE_SIZE, "%d",
+			READ_ONCE(zlog_enable_test_flag));
 }
 
 static int poll(void)
@@ -186,8 +232,7 @@ static void zlog_test1_thread(struct work_struct *work)
 	zlog_client_notify(client_1, ZLOG_TEST_EVENT);
 	pr_info("ZLOG_TEST: %s: %s zlog_client_notify\n",
 		__func__, zlog_test_client_name(client_1));
-	queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test1_workqueue,
-			      &zlog_test1_work,
+	zlog_test_queue_again(zlog_test1_workqueue, &zlog_test1_work,
 			      msecs_to_jiffies((random % 5) * 1000));
 }
 
@@ -204,8 +249,7 @@ static void zlog_test2_thread(struct work_struct *work)
 	zlog_client_notify(client_2, ZLOG_TEST_EVENT);
 	pr_info("ZLOG_TEST: %s: %s zlog_client_notify\n",
 		__func__, zlog_test_client_name(client_2));
-	queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test2_workqueue,
-			      &zlog_test2_work,
+	zlog_test_queue_again(zlog_test2_workqueue, &zlog_test2_work,
 			      msecs_to_jiffies((random % 5) * 1000));
 }
 
@@ -222,8 +266,7 @@ static void zlog_test3_thread(struct work_struct *work)
 	zlog_client_notify(client_3, ZLOG_TEST_EVENT);
 	pr_info("ZLOG_TEST: %s: %s zlog_client_notify\n",
 		__func__, zlog_test_client_name(client_3));
-	queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test3_workqueue,
-			      &zlog_test3_work,
+	zlog_test_queue_again(zlog_test3_workqueue, &zlog_test3_work,
 			      msecs_to_jiffies((random % 5) * 1000));
 }
 
@@ -240,8 +283,7 @@ static void zlog_test4_thread(struct work_struct *work)
 	zlog_client_notify(client_4, ZLOG_TEST_EVENT);
 	pr_info("ZLOG_TEST: %s: %s zlog_client_notify\n",
 		__func__, zlog_test_client_name(client_4));
-	queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test4_workqueue,
-			      &zlog_test4_work,
+	zlog_test_queue_again(zlog_test4_workqueue, &zlog_test4_work,
 			      msecs_to_jiffies((random % 5) * 1000));
 }
 
@@ -258,8 +300,7 @@ static void zlog_test5_thread(struct work_struct *work)
 	zlog_client_notify(client_5, ZLOG_TEST_EVENT);
 	pr_info("ZLOG_TEST: %s: %s zlog_client_notify\n",
 		__func__, zlog_test_client_name(client_5));
-	queue_delayed_work_on(ZLOG_TEST_CPU, zlog_test5_workqueue,
-			      &zlog_test5_work,
+	zlog_test_queue_again(zlog_test5_workqueue, &zlog_test5_work,
 			      msecs_to_jiffies((random % 5) * 1000));
 }
 
@@ -267,33 +308,109 @@ static int __init zlog_test_init(void)
 {
 	int ret;
 
-	zlog_test1_workqueue = alloc_workqueue("%s", ZLOG_TEST_WQ_FLAGS, 1,
-					       "zlog_test1_workqueue");
 	INIT_DELAYED_WORK(&zlog_test1_work, zlog_test1_thread);
-	zlog_test2_workqueue = alloc_workqueue("%s", ZLOG_TEST_WQ_FLAGS, 1,
-					       "zlog_test2_workqueue");
 	INIT_DELAYED_WORK(&zlog_test2_work, zlog_test2_thread);
-	zlog_test3_workqueue = alloc_workqueue("%s", ZLOG_TEST_WQ_FLAGS, 1,
-					       "zlog_test3_workqueue");
 	INIT_DELAYED_WORK(&zlog_test3_work, zlog_test3_thread);
-	zlog_test4_workqueue = alloc_workqueue("%s", ZLOG_TEST_WQ_FLAGS, 1,
-					       "zlog_test4_workqueue");
 	INIT_DELAYED_WORK(&zlog_test4_work, zlog_test4_thread);
-	zlog_test5_workqueue = alloc_workqueue("%s", ZLOG_TEST_WQ_FLAGS, 1,
-					       "zlog_test5_workqueue");
 	INIT_DELAYED_WORK(&zlog_test5_work, zlog_test5_thread);
 
+	zlog_test1_workqueue = alloc_workqueue("%s", ZLOG_TEST_WQ_FLAGS, 1,
+					       "zlog_test1_workqueue");
+	if (!zlog_test1_workqueue) {
+		ret = -ENOMEM;
+		goto err_destroy_workqueues;
+	}
+	zlog_test2_workqueue = alloc_workqueue("%s", ZLOG_TEST_WQ_FLAGS, 1,
+					       "zlog_test2_workqueue");
+	if (!zlog_test2_workqueue) {
+		ret = -ENOMEM;
+		goto err_destroy_workqueues;
+	}
+	zlog_test3_workqueue = alloc_workqueue("%s", ZLOG_TEST_WQ_FLAGS, 1,
+					       "zlog_test3_workqueue");
+	if (!zlog_test3_workqueue) {
+		ret = -ENOMEM;
+		goto err_destroy_workqueues;
+	}
+	zlog_test4_workqueue = alloc_workqueue("%s", ZLOG_TEST_WQ_FLAGS, 1,
+					       "zlog_test4_workqueue");
+	if (!zlog_test4_workqueue) {
+		ret = -ENOMEM;
+		goto err_destroy_workqueues;
+	}
+	zlog_test5_workqueue = alloc_workqueue("%s", ZLOG_TEST_WQ_FLAGS, 1,
+					       "zlog_test5_workqueue");
+	if (!zlog_test5_workqueue) {
+		ret = -ENOMEM;
+		goto err_destroy_workqueues;
+	}
+
 	ret = zte_misc_register_callback(&zlog_enable_test_node, NULL);
-	if (ret < 0)
+	if (ret) {
 		pr_info("ZLOG_TEST: %s: %s zlog_enable_test_node register error ret :%d\n",
 			__func__, __func__, ret);
+		goto err_destroy_workqueues;
+	}
 	pr_info("ZLOG_TEST: %s: %s end\n", __func__, __func__);
 	return 0;
+
+err_destroy_workqueues:
+	if (zlog_test5_workqueue) {
+		destroy_workqueue(zlog_test5_workqueue);
+		zlog_test5_workqueue = NULL;
+	}
+	if (zlog_test4_workqueue) {
+		destroy_workqueue(zlog_test4_workqueue);
+		zlog_test4_workqueue = NULL;
+	}
+	if (zlog_test3_workqueue) {
+		destroy_workqueue(zlog_test3_workqueue);
+		zlog_test3_workqueue = NULL;
+	}
+	if (zlog_test2_workqueue) {
+		destroy_workqueue(zlog_test2_workqueue);
+		zlog_test2_workqueue = NULL;
+	}
+	if (zlog_test1_workqueue) {
+		destroy_workqueue(zlog_test1_workqueue);
+		zlog_test1_workqueue = NULL;
+	}
+	return ret;
 }
 module_init(zlog_test_init);
 
 static void __exit zlog_test_exit(void)
 {
+	unsigned long irq_flags;
+	int ret;
+
+	ret = zte_misc_unregister_callback(&zlog_enable_test_node, NULL);
+	if (ret)
+		pr_err("ZLOG_TEST: %s: callback unregister failed: %d\n",
+		       __func__, ret);
+
+	mutex_lock(&zlog_enable_test_lock);
+	spin_lock_irqsave(&zlog_test_queue_lock, irq_flags);
+	WRITE_ONCE(zlog_enable_test_flag, 0);
+	spin_unlock_irqrestore(&zlog_test_queue_lock, irq_flags);
+	disable_delayed_work_sync(&zlog_test1_work);
+	disable_delayed_work_sync(&zlog_test2_work);
+	disable_delayed_work_sync(&zlog_test3_work);
+	disable_delayed_work_sync(&zlog_test4_work);
+	disable_delayed_work_sync(&zlog_test5_work);
+	zlog_test_unregister_clients();
+
+	destroy_workqueue(zlog_test5_workqueue);
+	destroy_workqueue(zlog_test4_workqueue);
+	destroy_workqueue(zlog_test3_workqueue);
+	destroy_workqueue(zlog_test2_workqueue);
+	destroy_workqueue(zlog_test1_workqueue);
+	zlog_test5_workqueue = NULL;
+	zlog_test4_workqueue = NULL;
+	zlog_test3_workqueue = NULL;
+	zlog_test2_workqueue = NULL;
+	zlog_test1_workqueue = NULL;
+	mutex_unlock(&zlog_enable_test_lock);
 	pr_info("ZLOG_TEST: %s: driver remove finished\n", __func__);
 }
 module_exit(zlog_test_exit);

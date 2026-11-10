@@ -17,6 +17,8 @@ typedef uint32_t u32;
 #define PAGE_SIZE 4096
 #define EBUSY 16
 #define EINVAL 22
+#define ENOMEM 12
+#define ENOENT 2
 #define static_assert(condition, ...) _Static_assert(condition, #condition)
 
 struct work_struct { int unused; };
@@ -29,6 +31,21 @@ struct delayed_work {
 struct workqueue_struct {
 	unsigned int id;
 };
+
+struct mutex { int unused; };
+typedef int spinlock_t;
+
+#define DEFINE_MUTEX(name) struct mutex name = { 0 }
+#define DEFINE_SPINLOCK(name) spinlock_t name = 0
+#define READ_ONCE(value) (value)
+#define WRITE_ONCE(value, new_value) ((value) = (new_value))
+
+static inline void mutex_lock(struct mutex *lock) { (void)lock; }
+static inline void mutex_unlock(struct mutex *lock) { (void)lock; }
+#define spin_lock_irqsave(lock, flags) \
+	do { (void)(lock); (flags) = 0; } while (0)
+#define spin_unlock_irqrestore(lock, flags) \
+	do { (void)(lock); (void)(flags); } while (0)
 
 struct zlog_client {
 	u32 client_id;
@@ -49,6 +66,8 @@ extern u32 zlog_host_random;
 extern int zlog_host_register_fail_at;
 extern int zlog_host_misc_result;
 extern unsigned int zlog_host_alloc_count;
+extern int zlog_host_alloc_fail_at;
+extern unsigned int zlog_host_destroy_count;
 extern unsigned int zlog_host_register_count;
 extern unsigned int zlog_host_unregister_count;
 extern unsigned int zlog_host_record_count;
@@ -56,7 +75,10 @@ extern unsigned int zlog_host_notify_count;
 extern unsigned int zlog_host_queue_count;
 extern unsigned int zlog_host_flush_count;
 extern unsigned int zlog_host_cancel_count;
+extern unsigned int zlog_host_disable_count;
 extern unsigned int zlog_host_print_count;
+extern unsigned int zlog_host_misc_register_count;
+extern unsigned int zlog_host_misc_unregister_count;
 extern struct zlog_mod_info *zlog_host_registered_modules[5];
 extern struct zlog_client *zlog_host_unregistered_clients[5];
 extern const char *zlog_host_records[8];
@@ -66,6 +88,7 @@ extern int zlog_host_notify_event;
 extern struct zlog_test_queue_call zlog_host_queue_calls[8];
 extern struct delayed_work *zlog_host_flushed_works[5];
 extern struct delayed_work *zlog_host_cancelled_works[5];
+extern struct delayed_work *zlog_host_disabled_works[5];
 extern struct zte_misc_ops *zlog_host_misc_node;
 
 static inline u32 get_random_u32(void)
@@ -88,10 +111,17 @@ alloc_workqueue(const char *format, unsigned int flags, int max_active, ...)
 	(void)format;
 	(void)flags;
 	(void)max_active;
-	if (zlog_host_alloc_count >= 5)
+	if ((int)zlog_host_alloc_count + 1 == zlog_host_alloc_fail_at ||
+	    zlog_host_alloc_count >= 5)
 		return NULL;
 	queues[zlog_host_alloc_count].id = zlog_host_alloc_count + 1;
 	return &queues[zlog_host_alloc_count++];
+}
+
+static inline void destroy_workqueue(struct workqueue_struct *workqueue)
+{
+	(void)workqueue;
+	zlog_host_destroy_count++;
 }
 
 #define INIT_DELAYED_WORK(delayed, function) \
