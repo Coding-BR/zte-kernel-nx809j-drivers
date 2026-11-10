@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "batch_id": "lifetime_sync_hardening_20261110",
+  "generated_utc": "2026-11-10T22:43:48.7009324Z",
+  "finding": "The old charger policy candidate imported the stock register-callback CRC, which differed from the reconstructed provider CRC.",
+  "target_stock": {
+    "module_symvers_record": "0x9bec046c\tzte_misc_register_callback\tdrivers/soc/qcom/zte/zte_misc/zte_misc\tEXPORT_SYMBOL\t",
+    "register_callback_crc": "0x9bec046c",
+    "namespace": ""
+  },
+  "candidate_provider": {
+    "path": "kernel_development/drivers/reconstructed/zte_misc/zte_misc.ko",
+    "sha256": "4397e8fcd4880b10e2af32a32d361708f2c227c2c135840750061730f4ea8f8c",
+    "exported_register_callback_crc": "0x61afab7e",
+    "exported_unregister_callback_crc": "0x61afab7e",
+    "namespace": "",
+    "elf_observation": "   169: 0000000000000004     0 NOTYPE  LOCAL  DEFAULT     2 __crc_zte_misc_register_callback\n   171: 0000000000000008     0 NOTYPE  LOCAL  DEFAULT     2 __crc_zte_misc_unregister_callback\nHex dump of section '__kcrctab':\n0x00000000 f8b01c59 7eabaf61 7eabaf61 11be5178 ...Y~..a~..a..Qx"
+  },
+  "prior_consumer": {
+    "sha256": "a94a1e26ae3b424cc135b1ab0e3e378c4778dcd996a2b1e6ea64fd349862adbd",
+    "imported_register_callback_crc": "0x9bec046c",
+    "compatibility": "mismatch_with_candidate_provider"
+  },
+  "corrected_consumer": {
+    "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.ko",
+    "sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec",
+    "imported_register_callback_crc": "0x61afab7e",
+    "imported_unregister_callback_crc": "0x61afab7e",
+    "namespace": "",
+    "elf_observation": "0x000006c0 7eabaf61 00000000 7a74655f 6d697363 ~..a....zte_misc\n0x00000740 7eabaf61 00000000 7a74655f 6d697363 ~..a....zte_misc"
+  },
+  "source_record": "kernel_development/drivers/reconstructed/zte_charger_policy/vendor.Module.symvers: both zte_misc callback imports use CRC 0x61afab7e.",
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "build_1_sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec",
+    "build_2_sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec",
+    "reproducible": true,
+    "current_validator_error": "undefined_symbols_match remains false due to declared hardening imports"
+  },
+  "conclusion": "Provider and consumer callback symbol CRCs now match. This is a static KMI check and does not claim a phone module load or runtime validation."
+}

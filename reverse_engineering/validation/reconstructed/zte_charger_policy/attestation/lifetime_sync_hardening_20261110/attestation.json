@@ -13,60 +13,85 @@
   },
   "candidate": {
     "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.ko",
-    "sha256": "a94a1e26ae3b424cc135b1ab0e3e378c4778dcd996a2b1e6ea64fd349862adbd",
+    "sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec",
     "size_bytes": 331368,
-    "reconstruction_map_sha256": "9fccb67e3b331449447984f246e272fcb7b061f15b86f97e8ecaa04e18752c7a"
+    "reconstruction_map_sha256": "e64658685c150290856b06a930a9d02684516e8f925649d3459dc0f641e4577f"
   },
   "changes": [
     "Drain timeout_work before unregistering policy_psy, with a second drain after unregister to cover work queued by a property callback that was already active.",
     "Keep the alarm, workqueue, wake source, and policy power supply alive until their users have been synchronized.",
     "Initialize the timeout workqueue and wake source before publishing the supply and callbacks; register the notifier last.",
     "Set runtime_stopping before probe-work cancellation and stop retry work while teardown is active.",
-    "Avoid enable_delayed_work because the pinned target Module.symvers does not export it."
+    "Avoid enable_delayed_work because the pinned target Module.symvers does not export it.",
+    "Align zte_misc_register_callback import CRC with the reconstructed zte_misc provider; the prior consumer CRC matched stock and did not match the candidate provider."
   ],
   "evidence": {
     "status": {
       "path": "kernel_development/drivers/reconstructed/zte_charger_policy/STATUS.md",
-      "sha256": "19aeff39a4f3057ff12996cc3308eaeb3b5a12356c2dea337ab2ac5e80b4cb8c"
+      "sha256": "eefe7e34d6abb78ff74b9dff562cfdd44663b1285743ff84e2b2bc6dca78c463"
     },
     "readme": {
       "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/README.md",
-      "sha256": "07024a0c835fd99f755a003455e6e01ee28f94ed937be41219a8e3d6eed2dd82"
+      "sha256": "ca95efab0d6930b3ebddae9e098144b83828d9a902f7ee7e1bc2117623d3f549"
     },
     "docker_validation": {
       "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/docker_validation.json",
-      "sha256": "2352dd9dcaf8b0543c7e60fcad8125bab6b7795f20970b5d62f321bcb0d11dde"
+      "sha256": "a2d10c02c199a52f681e7e30d8923f59e4c35f0384bd257d5d61ec479ef5881f"
     },
     "docker_validation_markdown": {
       "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/docker_validation.md",
-      "sha256": "022c125de931ed5250248fbaa7b23fb4d6519da8edfa69fe0e77514891104991"
+      "sha256": "0a6535febd367e0c21b9d58b19d7f7fd3ced5b16231f80ff89a7365ff1b78ce5"
     },
     "assembly_comparison": {
       "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/assembly_comparison.json",
-      "sha256": "4a5fecf013fb013dbe742473953e7c70551c284811494d6193213afa075a512f"
+      "sha256": "1b0465e53e4a991298857b0cfaee94f0632e555d90c46167c9ff72aff495ade5"
     },
     "candidate_assembly_manifest": {
       "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/candidate_assembly/manifest.json",
-      "sha256": "e056c13c71c624d9ee17795b3628292e793eecbe623ca7d019ff682ac22906ea"
+      "sha256": "a2e29d38840fc018ad0084384b108362fd9e4a0f979c5beae8db652b39d1dcb3"
     },
     "candidate_kcfi": {
       "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/candidate_kcfi.json",
-      "sha256": "08e6d3be1d1b402d383743d98b18dbfcb5a0c166a4f537f0f54cd1577ef70346"
+      "sha256": "6e4fda4890844c5d17fc4d4c658ee4fba7474b037211212f7f1317021641f660"
     },
     "kcfi_comparison": {
       "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/kcfi_comparison.json",
-      "sha256": "a5886593bde2260106da9ac6eaa75d1a6ac3476385ae8b10c0cc3744f529bc89"
+      "sha256": "dc571ad25ca7ca1e2388676399c8d9cece919932c6f46fb9eda73825d6561935"
     },
     "target_kernel_manifest": {
       "path": "kernel_development/config/target_kernel.json",
       "sha256": "652fd572c3c3b3ea25fd1ceeac8f09eba59262f7686de54f1dc292e8c149a847"
+    },
+    "stock_kcfi": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/stock_kcfi.json",
+      "sha256": "6c817e0dd07ec774d032c6a73435571bc3429cff4dea67611e1a932a5f3dbb95"
+    },
+    "module_version_crc_audit": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/module_version_crc_audit.json",
+      "sha256": "c16d549f20848d1a69ae2f9cc75df3b79a6539dca8dda67d69eb155c784d06e1"
+    },
+    "source_sync_kmi_fix": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/source_sync_kmi_fix.json",
+      "sha256": "7a980134558cbd0f677d4668d4108848df649055e1e96a6c6d55305ffdafaaf5"
+    },
+    "source_sync_kmi_fix_final": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/source_sync_kmi_fix_final.json",
+      "sha256": "8f72dc0f03cb33c7cd41adc810eb682617aa8469a29b8a198ca1841b77314625"
+    },
+    "docker_validation_crc_probe": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/docker_validation_crc_probe.json",
+      "sha256": "20231b2ff42a008cd1f59aacec7bae855ecfdbdee1f024cbb6ff75de00457b61"
+    },
+    "source_sync_kmi_fix_dryrun": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/source_sync_kmi_fix_dryrun.json",
+      "sha256": "5901711026a94e88380bb8918d85385cba27986c021fc90636df570b867550db"
     }
   },
   "docker": {
     "validator_status": "incomplete_or_failed",
     "reproducible": true,
-    "first_build_sha256": "a94a1e26ae3b424cc135b1ab0e3e378c4778dcd996a2b1e6ea64fd349862adbd",
-    "second_build_sha256": "a94a1e26ae3b424cc135b1ab0e3e378c4778dcd996a2b1e6ea64fd349862adbd",
+    "first_build_sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec",
+    "second_build_sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec",
     "candidate_matches_fresh": true,
     "runtime_content_matches_fresh": true,
     "runtime_layout_matches_fresh": true,
@@ -105,8 +130,10 @@
   "independent_review": "PENDING",
   "limitations": [
     "Undefined-symbol parity remains a declared hardening deviation; this candidate is not static_verified.",
-    "Strict assembly matches only 3 of 38 stock function identities.",
+    "Strict assembly matches only 3 of 38 stock function identities; the other 35 remain reviewed deviations.",
+    "No current-candidate host harness run was performed.",
     "No charger-policy-specific NX809J test or candidate module load was performed.",
-    "No current-candidate host harness run or independent human review was performed."
+    "Independent human review remains pending.",
+    "The corrected callback CRC pairing is static ELF evidence and is not a runtime load test."
   ]
 }

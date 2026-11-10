@@ -2,7 +2,7 @@
 
 Esta auditoria é offline. Ela não executa ADB, fastboot, insmod, rmmod ou escrita de partições.
 
-- Gerado em: `2026-11-10T18:40:31.860871+00:00`
+- Gerado em: `2026-11-10T22:42:47.657832+00:00`
 - Run de evidência: `public repository evidence: C:\w_haptic_remove_c6`
 - Rebuild limpo: `sim`
 - Manifesto do kernel alvo: `C:\w_haptic_remove_c6\kernel_development\config\target_kernel.json`

@@ -3,8 +3,9 @@
 ## Estado atual — lote `lifetime_sync_hardening_20261110`
 
 - Fonte atual: SHA-256 `ef0ff259425e6851d48f0be467eff7c004f0d13ea2aa3fec35ab60c18c98091d`.
-- Candidato: SHA-256 `a94a1e26ae3b424cc135b1ab0e3e378c4778dcd996a2b1e6ea64fd349862adbd` (331368 bytes), sincronizado entre o repositorio e o snapshot curado do Docker. O mapa declara o mesmo hash.
+- Candidato: SHA-256 `2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec` (331368 bytes), sincronizado entre o repositorio e o snapshot curado do Docker. O mapa declara o mesmo hash.
 - Docker canonico NX809J: duas builds limpas produziram o mesmo hash do candidato; identidade do kernel/toolchain, ELF AArch64 relocavel, vermagic do alvo, aliases, namespaces, conteudo das secoes runtime e modinfo passaram.
+- CRC de KMI corrigido para a integração: o módulo agora importa `zte_misc_register_callback` com `0x61afab7e`, igual ao export do candidato `zte_misc` (o binário anterior esperava o CRC stock `0x9bec046c`).
 - O validador permanece `incomplete_or_failed` somente em `undefined_symbols_match`: o hardening remove `devm_kfree` e `devm_power_supply_register` e importa `alarm_cancel`, `cancel_delayed_work_sync`, `destroy_workqueue`, `power_supply_register`, `power_supply_unregister` e `zte_misc_unregister_callback`. Essa diferenca intencional ainda impede declarar o candidato estaticamente equivalente ao stock.
 - Assembly estrito: 3/38 funcoes passam; 35 permanecem `reviewed`, sem alegacao de equivalencia. Seis falham tambem em instrucoes/tamanho e 29 em relocalizacoes.
 - KCFI: os cinco IDs comparados para as funcoes de probe, remove, alarme e timeout correspondem ao stock.
@@ -12,7 +13,7 @@
 - O retry reutiliza a flag de parada e nao importa `enable_delayed_work`, ausente no `Module.symvers` fixado. O harness de host nao foi reexecutado para este novo candidato; o recibo de 2026-11-04 nao e transferido.
 - Validacao dinamica/carregamento no smartphone: nao executados. O ADB desconectou durante a inspecao; nenhum candidato foi carregado. Revisao independente permanece pendente.
 
-Recibos hash-bound: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/README.md`, `attestation.json`, `docker_validation.json`, `assembly_comparison.json` e `kcfi_comparison.json`.
+Recibos hash-bound: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/README.md`, `attestation.json`, `docker_validation.json`, `assembly_comparison.json`, `kcfi_comparison.json` e `module_version_crc_audit.json`. Os recibos `source_sync_kmi_fix*.json` registram a sincronização com o Docker canônico.
 
 ## Lote anterior — `lifetime_sync_hardening_20261104` (substituido)
 
