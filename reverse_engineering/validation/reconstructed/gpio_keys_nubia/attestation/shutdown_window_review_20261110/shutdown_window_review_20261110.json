@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "generated_date": "2026-11-10",
+  "driver": "gpio_keys_nubia",
+  "finding_id": "GPIO_KEYS_SHUTDOWN_ASYNC_DRAIN",
+  "review_type": "offline_static_lifetime_and_synchronization_review",
+  "candidate": {
+    "sha256": "71e0d676926830b9c108ef11172057405dfce9dee88d96717630d8381b035fdf",
+    "path": "kernel_development/drivers/reconstructed/gpio_keys_nubia/gpio_keys_nubia.ko"
+  },
+  "stock": {
+    "sha256": "8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3",
+    "path": "reference_modules/full_vendor_boot/gpio_keys_nubia.ko"
+  },
+  "function_comparison": {
+    "function": "gpio_keys_shutdown",
+    "stock_identity": "gpio_keys_shutdown@00101530",
+    "strict_comparison_passed": true,
+    "checks": [
+      "instructions",
+      "relocations",
+      "section",
+      "symbol_size"
+    ],
+    "comparison_report": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/assembly_comparison_stock.json",
+    "comparison_report_sha256": "ee6a3fb22689f7ca695b817a7675ce9620c649457f9e1689971e4f57cb900a50"
+  },
+  "stock_ghidra_evidence": {
+    "decompiled": {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/decompiled/0001_00101530_gpio_keys_shutdown.c",
+      "sha256": "837996342fcacbace4ece5a427e9ccc0f3506993bba82d850c5a79f05d04bd1a"
+    },
+    "pcode": {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/ghidra_stock/pcode/0001_00101530_gpio_keys_shutdown.jsonl",
+      "sha256": "0ee2965f67ad50fcf1ea310436064c9e1cfa47664221b9faefe73548d387a766"
+    },
+    "assembly": {
+      "path": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/offline_static/stock_assembly/0001_gpio_keys_shutdown_00101530.asm",
+      "sha256": "3c3441565e7378eaccb237d8685b5adae4eb92d6ff7432278c8047399e5bf875"
+    }
+  },
+  "lifecycle_evidence": {
+    "shutdown_callback": "calls gpio_keys_suspend; does not disable IRQs or drain timer/work",
+    "gpio_irq": "continues to enqueue delayed work after the suspended-state check",
+    "irq_only_path": "can continue to arm the release timer",
+    "devres_unbind": "managed IRQ release synchronizes handlers before gpio_keys_quiesce_key drains work/timer; input device is released later",
+    "pinned_kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "pinned_kernel_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "device_shutdown_source": "drivers/base/core.c:4811-4877",
+    "devres_unbind_source": "drivers/base/dd.c:547-553"
+  },
+  "assessment": {
+    "classification": "OPEN_SHUTDOWN_WINDOW_OBSERVATION",
+    "severity": "low",
+    "late_callback_possible": true,
+    "callback_memory_lifetime_issue_found": false,
+    "detach_and_probe_unwind_static_order": "PASS_STATIC_ORDER",
+    "runtime_reproduced": false,
+    "hardware_shutdown_test": "NOT_RUN",
+    "source_changed": false,
+    "candidate_module_changed": false,
+    "new_docker_build_required": false,
+    "decision": "Keep the low-severity late-event observation open; static evidence does not justify changing shutdown or wake-IRQ behavior."
+  }
+}

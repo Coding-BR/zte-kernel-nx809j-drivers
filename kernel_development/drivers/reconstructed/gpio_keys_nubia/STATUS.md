@@ -17,8 +17,27 @@ Equivalência semântica integral continua **UNPROVEN**.
 
 A revisão independente continua pendente. O NX809J está visível no ADB, mas
 nenhum módulo foi carregado nem ação GPIO foi disparada neste lote estático.
-A janela de shutdown também permanece em análise. Evidência:
-`attestation/suspended_flag_serialization_20261104/`. O driver não está concluído.
+A janela de shutdown foi revisada estaticamente: permanece possível um evento
+tardio, mas não foi encontrado caminho de liberação de memória nesse callback.
+Evidência: `attestation/shutdown_window_review_20261110/`. O driver não está
+concluído.
+
+## Revisão estática da janela de shutdown — 2026-11-10
+
+- Ghidra, P-Code e Assembly stock mostram `gpio_keys_shutdown` chamando
+  `gpio_keys_suspend` sem desabilitar IRQ ou drenar timer/work. A função do
+  candidato continua estritamente igual ao stock.
+- A ISR GPIO ainda pode enfileirar delayed work e a ISR IRQ-only pode armar o
+  timer depois do callback. Isso caracteriza uma janela para evento tardio
+  durante o desligamento; não demonstra acesso a memória liberada.
+- No kernel fixado, `device_shutdown()` despacha callbacks de shutdown sem
+  liberar devres. No detach/unwind, a ordem de devres sincroniza IRQs antes da
+  ação `gpio_keys_quiesce_key`, que drena timer/work antes da liberação do input.
+- Chamar apenas o quiesce em shutdown permitiria novo enfileiramento por IRQ;
+  desabilitar IRQ altera a configuração de wake do caminho suspend. A evidência
+  estática não sustenta essa mudança. A observação continua aberta como risco
+  operacional baixo; não foi reproduzida em hardware.
+- Nenhum fonte ou módulo mudou nesta revisão; rebuild Docker não era necessário.
 
 ## Revalidação anterior do estado global de report — 2026-11-04 (histórico)
 
