@@ -284,6 +284,8 @@ int rdbg_open(struct inode *inode, struct file *filp)
 	return 0;
 
 smq_bail:
+	/* The IRQ is owned only after request_threaded_irq() succeeds. */
+	free_irq(rdbgdata->in.irq_base_id, &device->rdbg_data[device_id]);
 	smq_dtor(&rdbgdata->producer_smrb);
 	smq_dtor(&rdbgdata->consumer_smrb);
 	mutex_destroy(&rdbgdata->write_mutex);

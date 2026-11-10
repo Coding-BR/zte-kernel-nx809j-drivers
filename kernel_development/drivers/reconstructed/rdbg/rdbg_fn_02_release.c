@@ -4,6 +4,7 @@
 #include <linux/errno.h>
 #include <linux/fs.h>
 #include <linux/kernel.h>
+#include <linux/interrupt.h>
 #include <linux/mutex.h>
 #include <linux/slab.h>
 
@@ -47,11 +48,13 @@ int rdbg_release(struct inode *inode, struct file *filp)
 	device_id = MINOR(inode->i_rdev);
 	rdbgdata = &rdbgdevice->rdbg_data[device_id];
 	if (rdbgdata->device_opened == 1) {
-		rdbgdata->device_opened = 0;
 		complete(&rdbgdata->work);
+		/* free_irq() removes the action and waits for its handler to finish. */
+		free_irq(rdbgdata->in.irq_base_id, rdbgdata);
 		rdbg_smq_destroy(&rdbgdevice->rdbg_data[device_id].producer_smrb);
 		rdbg_smq_destroy(&rdbgdevice->rdbg_data[device_id].consumer_smrb);
 		mutex_destroy(&rdbgdata->write_mutex);
+		rdbgdata->device_opened = 0;
 	}
 	filp->private_data = NULL;
 

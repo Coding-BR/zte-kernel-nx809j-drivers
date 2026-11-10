@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "review_id": "rdbg_irq_lifetime_hardening_20261110",
+  "review_date": "2026-11-10",
+  "result": "HARDENED_CANDIDATE_BUILT_REPRODUCIBLY_RUNTIME_UNVERIFIED",
+  "runtime_or_hardware_validation": false,
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/rdbg/rdbg.ko",
+    "sha256": "caeaecef9cb59d128114bb7b3fe01726580382dd05d41407cdd68d8d753fd7db",
+    "size_bytes": 782112,
+    "reconstruction_map_path": "kernel_development/drivers/reconstructed/rdbg/reconstruction_map.json",
+    "reconstruction_map_sha256": "21d3e1e5cfa355a1428d9a5044b42690b7678322abda59992d25f1ba67bea04a",
+    "mapping_status_counts": {
+      "PROMOTED_OFFLINE_EXACT": 6,
+      "HARDENED_STOCK_DEVIATION": 2
+    }
+  },
+  "stock": {
+    "path": "reference_modules/full_vendor_boot/rdbg.ko",
+    "sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12"
+  },
+  "source_files": [
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_03_open.c",
+      "sha256": "174658b611b5b2c5c5d7480575a0b7f39c3fec6736d4d658096d366567769a9e",
+      "change": "On the post-request SMQ initialization failure path, call free_irq with the same IRQ and dev_id before destroying the queues and write mutex."
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_02_release.c",
+      "sha256": "5ec99a5cf5ba989e7cb7c184f51e708c898e493ca57f11dcfb67ab2401032b56",
+      "change": "Wake readers, call free_irq to remove and synchronize the handler, destroy SMQ/mutex state, then clear device_opened."
+    }
+  ],
+  "pinned_kernel": {
+    "commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+    "free_irq_export": {
+      "crc": "0xdd0d6b2a",
+      "provider": "vmlinux",
+      "export_type": "EXPORT_SYMBOL"
+    },
+    "irq_core_source_sha256": "be9d5516fe884186c30a553cbc5a2b53e13d55dc0875dc0826b21991f918330b"
+  },
+  "docker_validation": {
+    "report_path": "reverse_engineering/validation/reconstructed/rdbg/attestation/irq_lifetime_hardening_20261110/docker_final_audit.json",
+    "report_sha256": "830732906be58f85bbb3326f211c3d6f77080655ebdc3776e86c74e353d81ac1",
+    "status": "incomplete_or_failed",
+    "clean_builds": [
+      "caeaecef9cb59d128114bb7b3fe01726580382dd05d41407cdd68d8d753fd7db",
+      "caeaecef9cb59d128114bb7b3fe01726580382dd05d41407cdd68d8d753fd7db"
+    ],
+    "candidate_matches_fresh": true,
+    "kernel_source_identity": "MATCH",
+    "target_vermagic": "PASS",
+    "aarch64_rel": true,
+    "aliases_namespaces_and_runtime_sections": "PASS",
+    "undefined_symbol_delta": {
+      "unexpected_imports": ["free_irq"],
+      "missing_imports": [],
+      "classification": "INTENTIONAL_HARDENING_IMPORT_EXPORTED_BY_PINNED_TARGET"
+    },
+    "remaining_audit_warnings": [
+      "rdbg_open and rdbg_release have not received an independent second review"
+    ]
+  },
+  "assembly_review": {
+    "candidate_manifest_path": "reverse_engineering/validation/reconstructed/rdbg/attestation/irq_lifetime_hardening_20261110/candidate_assembly/manifest.json",
+    "candidate_manifest_sha256": "26c771612a6a61e7b11e9a328dc5cb0b52673ef0710e9e9edf484c706ac5f6f4",
+    "comparison_path": "reverse_engineering/validation/reconstructed/rdbg/attestation/irq_lifetime_hardening_20261110/assembly_comparison.json",
+    "comparison_sha256": "bf6006e9b628be4280562860bd20f63d9bcc5f7b6cba5fef80f70fd2b5bf2efe",
+    "strict_stock_comparison_passed": false,
+    "checked_functions": 2,
+    "classification": "EXPECTED_HARDENING_DEVIATION"
+  },
+  "unresolved_findings": [
+    "Concurrent read calls can still race on consumer SMQ indices.",
+    "Platform-driver/module teardown hazards documented in the 2026-11-03 audit remain open.",
+    "Remote firmware memory-order behavior remains unproven."
+  ],
+  "device_check": {
+    "adb_device_list_empty": true,
+    "candidate_loaded": false,
+    "phone_action_triggered": false
+  }
+}

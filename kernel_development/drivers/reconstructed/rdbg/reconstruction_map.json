@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "driver": "rdbg",
-  "candidate_sha256": "6a25975d91059eae065cd28058515a767ceefe6ec4210347bc5712d3071ca2bc",
+  "candidate_sha256": "caeaecef9cb59d128114bb7b3fe01726580382dd05d41407cdd68d8d753fd7db",
   "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
   "reconstruction_mode": "partial_c_microtasks",
   "mappings": [
@@ -42,7 +42,8 @@
       "stock_entry": "001014cc",
       "source_file": "rdbg_fn_02_release.c",
       "source_function": "rdbg_release",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
+      "mapping_note": "Intentional lifetime hardening: call free_irq(irq, dev_id) after waking readers and before destroying SMQ/mutex state; reset device_opened only after teardown. This differs from stock and requires separate runtime/hardware validation. Historical exactness evidence remains valid only for the pre-hardening candidate.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0004_001014cc_rdbg_release.jsonl",
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0004_rdbg_release_001014cc.asm",
@@ -60,7 +61,8 @@
       "stock_entry": "00100ecc",
       "source_file": "rdbg_fn_03_open.c",
       "source_function": "rdbg_open",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
+      "mapping_note": "Intentional lifetime hardening: release the successfully requested IRQ on the post-request SMQ initialization failure path before destroying queue/mutex state. This differs from stock; historical exactness evidence remains valid only for the pre-hardening candidate.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0003_00100ecc_rdbg_open.jsonl",
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0003_rdbg_open_00100ecc.asm",
