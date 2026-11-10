@@ -10,6 +10,7 @@
 #include <linux/of.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
+#include <linux/soc/qcom/smem_state.h>
 
 #include "rdbg_reconstruction_layout.h"
 
@@ -65,6 +66,8 @@ struct platform_driver rdbg_driver __used = {
 static int __init rdbg_init(void)
 {
 	struct device *device;
+	struct rdbg_device_layout *rdbgdevice =
+		(struct rdbg_device_layout *)&g_rdbg_instance;
 	dev_t major;
 	int index;
 	int devices_created = 0;
@@ -133,6 +136,21 @@ unregister_cdev:
 unregister_platform_driver:
 	platform_driver_unregister(&rdbg_driver);
 free_clients:
+	/* Probe may have acquired non-devm qcom_smem_state handles. */
+	if (rdbgdevice->rdbg_data) {
+		for (index = 0; index < rdbgdevice->num_devices; index++) {
+			struct rdbg_data_layout *rdbgdata =
+				&rdbgdevice->rdbg_data[index];
+
+			if (!IS_ERR_OR_NULL(rdbgdata->out.smem_state)) {
+				struct qcom_smem_state *state =
+					rdbgdata->out.smem_state;
+
+				rdbgdata->out.smem_state = NULL;
+				qcom_smem_state_put(state);
+			}
+		}
+	}
 	kfree(g_rdbg_instance.clients);
 	g_rdbg_instance.clients = NULL;
 	return ret;

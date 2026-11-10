@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "driver": "rdbg",
+  "review_date": "2026-11-10",
+  "finding": "qcom_smem_state_get handles were retained without qcom_smem_state_put on init failure or module exit",
+  "result": "FIXED_FOR_INIT_UNWIND_AND_MODULE_EXIT",
+  "stock_evidence": {
+    "probe_function": "rdbg_probe@001004ac",
+    "stock_probe_decomp_sha256": "4813e3941b68d7446d68e69c1f18e12b2cc0792e273723a42cadd2bc32a356e6",
+    "stock_probe_assembly_sha256": "363d63c568c1d02b822efac9d5ce29bd41ab172e1bb8e08c59c7bf0432f9ca5b",
+    "observed_acquire": "qcom_smem_state_get",
+    "observed_release_in_stock": false
+  },
+  "kernel_api": {
+    "qcom_smem_state_source_sha256": "39360f4a65caf991621d7c19438b500cb0bd807d617491bd95fbda9cfb0b3265",
+    "header_sha256": "3579033bbf3fa5efb3e7368a37177108278c2f3b390ac2f5a0b59569d76299e1",
+    "preserved_api_excerpt_sha256": "b28d16c5d039b003771efed0269247597e5b54d2b9c421dc1eb3dfc71537a512",
+    "get_increments_kref": true,
+    "put_required_for_successful_handle": true,
+    "put_symbol_target_crc": "0xc4ec5251",
+    "put_symbol_export": "EXPORT_SYMBOL_GPL"
+  },
+  "fix": {
+    "release_on_module_exit": true,
+    "release_on_init_unwind": true,
+    "release_order": "after platform_driver_unregister and before kfree(clients)",
+    "error_pointers_skipped": true,
+    "stored_pointer_cleared_before_put": true,
+    "per_device_remove_callback_added": false
+  },
+  "source_sha256": {
+    "rdbg_fn_01_cleanup_module.c": "f83d87947051b07fa96cdadfad74594191256cc7408986d8cf19df688eda1407",
+    "rdbg_fn_07_init_module.c": "1d2a99c66c6ca9eba607695bd4d51deb7532fb1020dc820c4a30f0ca3ca775bd"
+  },
+  "candidate": {
+    "sha256": "7accb38ca56d57cced2ddb9c8f829e01f80aca37a54ea53aab05ab189573d5a9",
+    "size_bytes": 785760,
+    "two_clean_docker_builds_identical": true
+  },
+  "final_docker_audit": {
+    "status": "incomplete_or_failed",
+    "candidate_matches_map": true,
+    "candidate_matches_fresh_build": true,
+    "two_builds_reproducible": true,
+    "target_vermagic_accepted": true,
+    "undefined_symbols_match_stock": false,
+    "mapping_review_passed": false,
+    "intentional_candidate_only_imports": [
+      "free_irq",
+      "platform_driver_unregister",
+      "qcom_smem_state_put"
+    ]
+  },
+  "stock_assembly_sizes": {
+    "init_module": 824,
+    "cleanup_module": 180
+  },
+  "candidate_assembly_sizes": {
+    "init_module": 940,
+    "cleanup_module": 260
+  },
+  "status": "Intentional hardening deviation; whole-driver audit remains incomplete because of the import delta and pending independent review of hardened mappings",
+  "residual_risk": "The platform driver has no per-device remove callback. Unbind/rebind while loaded may retain or overwrite a handle and needs a separate lifecycle review.",
+  "dynamic_validation": "NOT_RUN_ADB_EMPTY"
+}

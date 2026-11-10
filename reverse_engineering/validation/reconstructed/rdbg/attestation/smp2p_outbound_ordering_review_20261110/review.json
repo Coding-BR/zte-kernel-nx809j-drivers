@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "driver": "rdbg",
+  "review_date": "2026-11-10",
+  "scope": "AP-side shared SMQ queue publication before SMP2P outbound kick",
+  "result": "KERNEL_SIDE_OUTBOUND_WRITES_ORDERED_BEFORE_KICK",
+  "candidate_sha256": "7accb38ca56d57cced2ddb9c8f829e01f80aca37a54ea53aab05ab189573d5a9",
+  "stock": {
+    "function": "rdbg_write@00100a9c",
+    "symbol_size": 1068,
+    "instruction_count": 267,
+    "ghidra_decomp_sha256": "c568df841facdfd6df498e092308dc570b533933e804a474f527fab7af376830",
+    "assembly_sha256": "d9c2c2660011b85913d276cb6842ebefce4b35a524725818ae9bbdc38a4429d0"
+  },
+  "candidate": {
+    "function": "rdbg_write",
+    "symbol_size": 1060,
+    "instruction_count": 265,
+    "assembly_sha256": "36c709e4bc51a5303e8435adea960c011681e9565b2271ed73ab8c02a040241e",
+    "module_sha256": "7accb38ca56d57cced2ddb9c8f829e01f80aca37a54ea53aab05ab189573d5a9",
+    "qcom_smem_state_update_bits_relocation_present": true
+  },
+  "comparison": {
+    "whole_function_passed": false,
+    "relocation_check_passed": true,
+    "instruction_and_size_difference_expected_from_hardening": true
+  },
+  "kernel_provider": {
+    "smp2p_source_sha256": "372f7eca2129e779693843e032facbb62b245c526446414d19cbb4ee3cb3f465",
+    "preserved_provider_excerpt_sha256": "fcacc20dfb3f8cb8727c8e659ed5455796888da680b38503aa2d6df14e3dcf4f",
+    "smem_state_source_sha256": "39360f4a65caf991621d7c19438b500cb0bd807d617491bd95fbda9cfb0b3265",
+    "smem_state_header_sha256": "3579033bbf3fa5efb3e7368a37177108278c2f3b390ac2f5a0b59569d76299e1",
+    "smp2p_update_calls_kick_after_state_write": true,
+    "kick_executes_wmb_before_mailbox_or_regmap_notification": true
+  },
+  "not_proven": [
+    "remote firmware cache/coherency behavior",
+    "remote consumer ordering contract",
+    "inbound queue ordering",
+    "NX809J runtime behavior"
+  ],
+  "adb_devices": 0
+}

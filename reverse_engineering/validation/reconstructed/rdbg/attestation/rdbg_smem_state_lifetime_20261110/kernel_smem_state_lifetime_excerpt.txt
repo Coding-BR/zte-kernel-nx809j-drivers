@@ -1,0 +1,29 @@
+Pinned NX809J kernel source: kernel_platform/common/drivers/soc/qcom/smem_state.c
+SHA-256: 39360f4a65caf991621d7c19438b500cb0bd807d617491bd95fbda9cfb0b3265
+
+The qcom_smem_state_get() API documentation at lines 80-88 states that the
+returned handle must be released with qcom_smem_state_put(). The lookup path
+at lines 59-76 calls kref_get() for a matching state. The put implementation
+at lines 144-154 calls kref_put() while holding list_lock. The final release
+at lines 135-142 drops the provider device-tree node reference and frees the
+state object.
+
+Relevant implementation:
+
+static void qcom_smem_state_release(struct kref *ref)
+{
+	struct qcom_smem_state *state =
+		container_of(ref, struct qcom_smem_state, refcount);
+
+	list_del(&state->list);
+	of_node_put(state->of_node);
+	kfree(state);
+}
+
+void qcom_smem_state_put(struct qcom_smem_state *state)
+{
+	mutex_lock(&list_lock);
+	kref_put(&state->refcount, qcom_smem_state_release);
+	mutex_unlock(&list_lock);
+}
+

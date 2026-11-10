@@ -1,0 +1,30 @@
+Pinned NX809J kernel source: kernel_platform/common/drivers/soc/qcom/smp2p.c
+SHA-256: 372f7eca2129e779693843e032facbb62b245c526446414d19cbb4ee3cb3f465
+
+Relevant source at lines 167-178 and 411-430:
+
+static void qcom_smp2p_kick(struct qcom_smp2p *smp2p)
+{
+	/* Make sure any updated data is written before the kick */
+	wmb();
+
+	if (smp2p->mbox_chan) {
+		mbox_send_message(smp2p->mbox_chan, NULL);
+		mbox_client_txdone(smp2p->mbox_chan, 0);
+	} else {
+		regmap_write(smp2p->ipc_regmap, smp2p->ipc_offset,
+			     BIT(smp2p->ipc_bit));
+	}
+}
+
+static int smp2p_update_bits(void *data, u32 mask, u32 value)
+{
+	struct smp2p_entry *entry = data;
+	...
+	writel(val, entry->value);
+	...
+	if (val != orig)
+		qcom_smp2p_kick(entry->smp2p);
+	return 0;
+}
+
