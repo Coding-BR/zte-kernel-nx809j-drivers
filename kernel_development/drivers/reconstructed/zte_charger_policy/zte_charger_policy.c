@@ -1352,20 +1352,25 @@ static void charger_policy_stop_runtime(struct charger_policy_info *policy)
 		policy->notifier_registered = 0;
 	}
 
-	if (policy->policy_psy) {
-		power_supply_unregister(policy->policy_psy);
-		policy->policy_psy = NULL;
-	}
-
 	if (policy->timeout_alarm_initialized)
 		alarm_cancel(&policy->timeout_alarm);
 
 	if (policy->timeout_work_initialized)
 		cancel_delayed_work_sync(&policy->timeout_work);
 
-	/* A running timeout work item may have armed the alarm before it drained. */
+	/* Draining timeout_work can finish a handler that rearmed the alarm. */
 	if (policy->timeout_alarm_initialized)
 		alarm_cancel(&policy->timeout_alarm);
+
+	/* The first drain keeps policy_psy alive for any running timeout handler. */
+	if (policy->policy_psy) {
+		power_supply_unregister(policy->policy_psy);
+		policy->policy_psy = NULL;
+	}
+
+	/* Drain work queued by a property callback that was active during unregister. */
+	if (policy->timeout_work_initialized)
+		cancel_delayed_work_sync(&policy->timeout_work);
 
 	if (policy->timeout_wq) {
 		destroy_workqueue(policy->timeout_wq);
@@ -1542,6 +1547,9 @@ static __used void charger_policy_probe_work_model(struct work_struct *work)
 	size_t i;
 	int ret;
 
+	if (READ_ONCE(policy->runtime_stopping))
+		return;
+
 	pr_info("policy: %s(): begin execution\n", "charger_policy_probe_work");
 
 	policy->raw_field_472 = 0;
@@ -1563,20 +1571,19 @@ static __used void charger_policy_probe_work_model(struct work_struct *work)
 		goto check_retry;
 	}
 
-	policy->nb.notifier_call = charger_policy_notifier_switch;
-	ret = power_supply_reg_notifier(&policy->nb);
-	if (ret < 0) {
-		pr_info("policy: %s(): Couldn't register psy notifier rc = %d\n", "charger_policy_probe_work", ret);
-		goto destroy_wq;
+	/* Publish no callback source until workqueue and wake source are ready. */
+	policy->ws = wakeup_source_register(policy->dev, "charger_policy_service");
+	if (!policy->ws) {
+		pr_info("policy: %s(): charger_policy_service wakelock register failed\n", "charger_policy_probe_work");
+		goto stop_runtime;
 	}
-	policy->notifier_registered = 1;
 
 	psy_cfg.drv_data = policy;
 	policy->policy_psy = power_supply_register(policy->dev, &policy_psy_desc, &psy_cfg);
 	if (IS_ERR(policy->policy_psy)) {
 		pr_info("policy: %s(): failed to register policy_psy rc = %ld\n", "charger_policy_probe_work", PTR_ERR(policy->policy_psy));
 		policy->policy_psy = NULL;
-		goto unreg_notifier;
+		goto stop_runtime;
 	}
 
 	/* Register node ops callbacks into zte_misc node manager */
@@ -1586,22 +1593,24 @@ static __used void charger_policy_probe_work_model(struct work_struct *work)
 		callback_ret = zte_misc_register_callback(
 			charger_policy_misc_callbacks[i], policy);
 		if (callback_ret < 0) {
-			goto unreg_notifier;
+			goto stop_runtime;
 		}
 		policy->misc_callbacks_registered = 1;
 	}
 
-	policy->ws = wakeup_source_register(policy->dev, "charger_policy_service");
-	if (policy->ws) {
-		queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(100));
-		pr_info("policy: %s(): probe successfully completed\n", "charger_policy_probe_work");
-		return;
+	policy->nb.notifier_call = charger_policy_notifier_switch;
+	ret = power_supply_reg_notifier(&policy->nb);
+	if (ret < 0) {
+		pr_info("policy: %s(): Couldn't register psy notifier rc = %d\n", "charger_policy_probe_work", ret);
+		goto stop_runtime;
 	}
+	policy->notifier_registered = 1;
 
-	pr_info("policy: %s(): charger_policy_service wakelock register failed\n", "charger_policy_probe_work");
+	queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(100));
+	pr_info("policy: %s(): probe successfully completed\n", "charger_policy_probe_work");
+	return;
 
-unreg_notifier:
-destroy_wq:
+stop_runtime:
 	charger_policy_stop_runtime(policy);
 check_retry:
 	charger_policy_check_retry_probe_count++;
@@ -1837,6 +1846,7 @@ static __used void charger_policy_remove_model(struct platform_device *pdev)
 
 	if (policy) {
 		platform_set_drvdata(pdev, NULL);
+		WRITE_ONCE(policy->runtime_stopping, 1);
 		if (policy->probe_wq) {
 			cancel_delayed_work_sync(&policy->probe_work);
 			charger_policy_stop_runtime(policy);

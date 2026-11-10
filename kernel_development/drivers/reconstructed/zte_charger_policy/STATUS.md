@@ -1,17 +1,24 @@
 # Status do Driver `zte_charger_policy`
 
-## Estado atual — lote `lifetime_sync_hardening_20261104`
+## Estado atual — lote `lifetime_sync_hardening_20261110`
 
-- Candidato atual: SHA-256 `37ec41388d9e6a971f15e4222e6685a926b362f7a5eff36eddd8128d5a865f6a` (331352 bytes), copiado para o repositorio e para o snapshot Docker curado.
-- Duas builds Docker limpas produziram o mesmo hash. Conteudo ELF, secoes runtime, modinfo e hash do mapa correspondem ao candidato.
-- Harness de host: PASS reproduzivel, 39 funcoes cobertas. KCFI: PASS para as cinco funcoes alteradas.
-- Comparacao estrita de assembly: 3/38 funcoes correspondem integralmente. As outras 35 foram reclassificadas como `reviewed`; seis falham tambem nas instrucoes/tamanho e 29 falham nas relocalizacoes. `charger_policy_demo_sts_set` aparece entre as seis diferencas de instrucoes, embora nao tenha sido alterada neste lote.
-- O validador permanece `incomplete_or_failed` somente em `undefined_symbols_match`: o candidato deixa de importar `devm_kfree` e `devm_power_supply_register` e acrescenta `alarm_cancel`, `cancel_delayed_work_sync`, `destroy_workqueue`, `power_supply_register`, `power_supply_unregister` e `zte_misc_unregister_callback`.
-- ADB sem dispositivo conectado. Nenhum teste no telefone; revisao independente pendente.
+- Fonte atual: SHA-256 `ef0ff259425e6851d48f0be467eff7c004f0d13ea2aa3fec35ab60c18c98091d`.
+- Candidato: SHA-256 `a94a1e26ae3b424cc135b1ab0e3e378c4778dcd996a2b1e6ea64fd349862adbd` (331368 bytes), sincronizado entre o repositorio e o snapshot curado do Docker. O mapa declara o mesmo hash.
+- Docker canonico NX809J: duas builds limpas produziram o mesmo hash do candidato; identidade do kernel/toolchain, ELF AArch64 relocavel, vermagic do alvo, aliases, namespaces, conteudo das secoes runtime e modinfo passaram.
+- O validador permanece `incomplete_or_failed` somente em `undefined_symbols_match`: o hardening remove `devm_kfree` e `devm_power_supply_register` e importa `alarm_cancel`, `cancel_delayed_work_sync`, `destroy_workqueue`, `power_supply_register`, `power_supply_unregister` e `zte_misc_unregister_callback`. Essa diferenca intencional ainda impede declarar o candidato estaticamente equivalente ao stock.
+- Assembly estrito: 3/38 funcoes passam; 35 permanecem `reviewed`, sem alegacao de equivalencia. Seis falham tambem em instrucoes/tamanho e 29 em relocalizacoes.
+- KCFI: os cinco IDs comparados para as funcoes de probe, remove, alarme e timeout correspondem ao stock.
+- O teardown agora marca `runtime_stopping`, desregistra notifier/callbacks, cancela alarme e drena `timeout_work` enquanto `policy_psy` permanece vivo; remove a fonte de alimentacao e faz uma segunda drenagem para cobrir setters que ja estavam ativos. A inicializacao publica o notifier por ultimo, depois de workqueue e wake source estarem prontos.
+- O retry reutiliza a flag de parada e nao importa `enable_delayed_work`, ausente no `Module.symvers` fixado. O harness de host nao foi reexecutado para este novo candidato; o recibo de 2026-11-04 nao e transferido.
+- Validacao dinamica/carregamento no smartphone: nao executados. O ADB desconectou durante a inspecao; nenhum candidato foi carregado. Revisao independente permanece pendente.
 
-Recibos hash-bound: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261104/README.md` e `attestation.json`. A comparacao vigente e `assembly_comparison.json`.
+Recibos hash-bound: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/README.md`, `attestation.json`, `docker_validation.json`, `assembly_comparison.json` e `kcfi_comparison.json`.
 
-As secoes seguintes descrevem um candidato anterior ao lote; seus hashes e gates nao devem ser atribuidos ao binario atual. Os gates 8-10 continuam incompletos.
+## Lote anterior — `lifetime_sync_hardening_20261104` (substituido)
+
+O candidato anterior tinha SHA-256 `37ec41388d9e6a971f15e4222e6685a926b362f7a5eff36eddd8128d5a865f6a`. Seus recibos e o harness de host permanecem em `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261104/`; nao os atribuir ao candidato atual.
+
+As secoes seguintes preservam historicos de candidatos anteriores. Os seus hashes e gates nao devem ser atribuidos ao binario atual. Revisao independente, paridade estrita de imports e validacao em hardware continuam incompletas.
 
 ## Artefato anterior ao lote
 

@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0",
+  "batch_id": "lifetime_sync_hardening_20261110",
+  "driver": "zte_charger_policy",
+  "stage": "offline_static_lifetime_hardening",
+  "result": "reproducible_candidate_with_declared_import_parity_gap",
+  "stock": {
+    "sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c"
+  },
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c",
+    "sha256": "ef0ff259425e6851d48f0be467eff7c004f0d13ea2aa3fec35ab60c18c98091d"
+  },
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.ko",
+    "sha256": "a94a1e26ae3b424cc135b1ab0e3e378c4778dcd996a2b1e6ea64fd349862adbd",
+    "size_bytes": 331368,
+    "reconstruction_map_sha256": "9fccb67e3b331449447984f246e272fcb7b061f15b86f97e8ecaa04e18752c7a"
+  },
+  "changes": [
+    "Drain timeout_work before unregistering policy_psy, with a second drain after unregister to cover work queued by a property callback that was already active.",
+    "Keep the alarm, workqueue, wake source, and policy power supply alive until their users have been synchronized.",
+    "Initialize the timeout workqueue and wake source before publishing the supply and callbacks; register the notifier last.",
+    "Set runtime_stopping before probe-work cancellation and stop retry work while teardown is active.",
+    "Avoid enable_delayed_work because the pinned target Module.symvers does not export it."
+  ],
+  "evidence": {
+    "status": {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/STATUS.md",
+      "sha256": "19aeff39a4f3057ff12996cc3308eaeb3b5a12356c2dea337ab2ac5e80b4cb8c"
+    },
+    "readme": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/README.md",
+      "sha256": "07024a0c835fd99f755a003455e6e01ee28f94ed937be41219a8e3d6eed2dd82"
+    },
+    "docker_validation": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/docker_validation.json",
+      "sha256": "2352dd9dcaf8b0543c7e60fcad8125bab6b7795f20970b5d62f321bcb0d11dde"
+    },
+    "docker_validation_markdown": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/docker_validation.md",
+      "sha256": "022c125de931ed5250248fbaa7b23fb4d6519da8edfa69fe0e77514891104991"
+    },
+    "assembly_comparison": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/assembly_comparison.json",
+      "sha256": "4a5fecf013fb013dbe742473953e7c70551c284811494d6193213afa075a512f"
+    },
+    "candidate_assembly_manifest": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/candidate_assembly/manifest.json",
+      "sha256": "e056c13c71c624d9ee17795b3628292e793eecbe623ca7d019ff682ac22906ea"
+    },
+    "candidate_kcfi": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/candidate_kcfi.json",
+      "sha256": "08e6d3be1d1b402d383743d98b18dbfcb5a0c166a4f537f0f54cd1577ef70346"
+    },
+    "kcfi_comparison": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/kcfi_comparison.json",
+      "sha256": "a5886593bde2260106da9ac6eaa75d1a6ac3476385ae8b10c0cc3744f529bc89"
+    },
+    "target_kernel_manifest": {
+      "path": "kernel_development/config/target_kernel.json",
+      "sha256": "652fd572c3c3b3ea25fd1ceeac8f09eba59262f7686de54f1dc292e8c149a847"
+    }
+  },
+  "docker": {
+    "validator_status": "incomplete_or_failed",
+    "reproducible": true,
+    "first_build_sha256": "a94a1e26ae3b424cc135b1ab0e3e378c4778dcd996a2b1e6ea64fd349862adbd",
+    "second_build_sha256": "a94a1e26ae3b424cc135b1ab0e3e378c4778dcd996a2b1e6ea64fd349862adbd",
+    "candidate_matches_fresh": true,
+    "runtime_content_matches_fresh": true,
+    "runtime_layout_matches_fresh": true,
+    "undefined_symbol_parity": false,
+    "failed_checks": [
+      "undefined_symbols_match"
+    ],
+    "missing_imports": [
+      "devm_kfree",
+      "devm_power_supply_register"
+    ],
+    "unexpected_imports": [
+      "alarm_cancel",
+      "cancel_delayed_work_sync",
+      "destroy_workqueue",
+      "power_supply_register",
+      "power_supply_unregister",
+      "zte_misc_unregister_callback"
+    ]
+  },
+  "assembly": {
+    "strict_comparator_passed": false,
+    "functions_checked": 38,
+    "exact_matches": 3,
+    "not_exact": 35
+  },
+  "kcfi": {
+    "passed": true,
+    "functions_checked": 5
+  },
+  "host_harness": {
+    "current_candidate_run": false,
+    "previous_candidate_report_transfers": false
+  },
+  "hardware_validation": "NOT_RUN",
+  "independent_review": "PENDING",
+  "limitations": [
+    "Undefined-symbol parity remains a declared hardening deviation; this candidate is not static_verified.",
+    "Strict assembly matches only 3 of 38 stock function identities.",
+    "No charger-policy-specific NX809J test or candidate module load was performed.",
+    "No current-candidate host harness run or independent human review was performed."
+  ]
+}
