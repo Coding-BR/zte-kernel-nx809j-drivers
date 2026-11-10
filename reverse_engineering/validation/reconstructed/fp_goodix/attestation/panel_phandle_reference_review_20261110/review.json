@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "driver": "fp_goodix",
+  "review_date": "2026-11-10",
+  "scope": "goodixfp_drm_get_pannel phandle ownership in the pinned NX809J build",
+  "result": "NO_RUNTIME_REFERENCE_LEAK_IN_PINNED_CONFIGURATION",
+  "source_sha256": "ab516de7ada60a4d6798b4aeb9677615dc63ce07c817c633b9d4aa2ff936ee67",
+  "effective_target_config": {
+    "path": "/work/src/kernel/.codex-kbuild/identity/.config",
+    "sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+    "CONFIG_OF": "y",
+    "CONFIG_OF_DYNAMIC": "unset",
+    "effect": "of_node_put is compiled as an empty inline function"
+  },
+  "kernel_api": {
+    "of_header_sha256": "0327bce1706869299f93cde91fe48573c694de9db41548a8360fe3952cf2abbc",
+    "drm_panel_source_sha256": "1372b1c1fe342ead18d48ea1641373d90a30ef28405069cb7d04d3c0af810fa7",
+    "of_parse_phandle_returns_incremented_reference": true,
+    "of_drm_find_panel_consumes_reference": false,
+    "of_node_put_runtime_refcounting_enabled": false
+  },
+  "decision": "No source change for the pinned NX809J configuration. Add of_node_put after the panel lookup if a future target enables CONFIG_OF_DYNAMIC, then rebuild and recheck function parity.",
+  "adb_devices": 0,
+  "dynamic_validation": "NOT_RUN_DEVICE_NOT_PRESENT"
+}
