@@ -174,7 +174,9 @@ static void send_interrupt_to_subsystem(struct rdbg_data_layout *rdbgdata)
 ssize_t rdbg_write(struct file *filp, const char __user *buffer, size_t count,
 		   loff_t *position)
 {
-	struct rdbg_data_layout *rdbgdata = filp->private_data;
+	struct rdbg_file_context_layout *file_context = filp->private_data;
+	struct rdbg_data_layout *rdbgdata = file_context ?
+		file_context->rdbgdata : NULL;
 	int err = 0;
 	int num_retries = 0;
 

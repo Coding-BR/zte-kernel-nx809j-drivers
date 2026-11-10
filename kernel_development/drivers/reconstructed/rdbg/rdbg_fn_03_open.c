@@ -91,8 +91,7 @@ static int smq_ctor(struct rdbg_smq_layout *smq, void *base_addr, int size,
 		err = RDBG_SMQ_EBADPARM;
 		goto bail;
 	}
-	if (type == RDBG_SMQ_PRODUCER)
-		smq->lock = lock_ptr;
+	smq->lock = lock_ptr;
 
 	pb_orig = base_addr;
 	smq->hdr = (struct rdbg_smq_header_layout *)pb_orig;
@@ -182,7 +181,8 @@ static int initialize_smq(struct rdbg_data_layout *rdbgdata)
 		goto bail;
 	}
 	if (smq_ctor(&rdbgdata->consumer_smrb, smem_consumer_buffer,
-		     rdbgdata->smem_size / 2, RDBG_SMQ_CONSUMER, NULL)) {
+		     rdbgdata->smem_size / 2, RDBG_SMQ_CONSUMER,
+		     &rdbgdata->write_mutex)) {
 		dev_err(rdbgdata->device,
 			"%s: smq consumer allocation failed\n", __func__);
 		err = -ENOMEM;
@@ -197,6 +197,7 @@ int rdbg_open(struct inode *inode, struct file *filp)
 	struct rdbg_device_layout *device =
 		(struct rdbg_device_layout *)&g_rdbg_instance;
 	struct rdbg_data_layout *rdbgdata = NULL;
+	struct rdbg_file_context_layout *file_context = NULL;
 	int err = 0;
 
 	if (!inode || !device->rdbg_data) {
@@ -255,6 +256,14 @@ int rdbg_open(struct inode *inode, struct file *filp)
 		goto bail;
 	}
 
+	file_context = kzalloc(sizeof(*file_context), GFP_KERNEL);
+	if (!file_context) {
+		err = -ENOMEM;
+		goto bail;
+	}
+	file_context->rdbgdata = rdbgdata;
+	mutex_init(&file_context->read_mutex);
+
 	init_completion(&rdbgdata->work);
 	err = request_threaded_irq(rdbgdata->in.irq_base_id, NULL,
 				   on_interrupt_from,
@@ -267,7 +276,7 @@ int rdbg_open(struct inode *inode, struct file *filp)
 			"%s: Failed to register interrupt.Err=%d,irqid=%d.\n",
 			__func__, err, rdbgdata->in.irq_base_id);
 		pr_err("rdbg : Failed to register interrupt %d\n", err);
-		goto bail;
+		goto file_context_bail;
 	}
 
 	mutex_init(&rdbgdata->write_mutex);
@@ -280,7 +289,7 @@ int rdbg_open(struct inode *inode, struct file *filp)
 	}
 
 	rdbgdata->device_opened = 1;
-	filp->private_data = rdbgdata;
+	filp->private_data = file_context;
 	return 0;
 
 smq_bail:
@@ -289,6 +298,9 @@ smq_bail:
 	smq_dtor(&rdbgdata->producer_smrb);
 	smq_dtor(&rdbgdata->consumer_smrb);
 	mutex_destroy(&rdbgdata->write_mutex);
+file_context_bail:
+	mutex_destroy(&file_context->read_mutex);
+	kfree(file_context);
 bail:
 	return err;
 }

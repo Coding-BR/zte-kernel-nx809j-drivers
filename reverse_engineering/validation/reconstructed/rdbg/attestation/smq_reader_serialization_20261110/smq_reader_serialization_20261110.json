@@ -1,0 +1,198 @@
+{
+  "schema_version": "1.0",
+  "batch": "rdbg_smq_reader_serialization_20261110",
+  "generated_utc": "2026-11-10T19:32:15.7928417Z",
+  "scope": "offline_static_concurrency_hardening",
+  "result": "incomplete_or_failed",
+  "driver": "rdbg",
+  "change_summary": "Serialize reads through a per-open mutex and synchronize consumer free-node handoff with the existing write mutex. Preserve the occupied stock rdbg_data tail.",
+  "map_summary": {
+    "total": 8,
+    "status_counts": {
+      "PROMOTED_OFFLINE_EXACT": 4,
+      "HARDENED_STOCK_DEVIATION": 4
+    }
+  },
+  "candidate": {
+    "repository_path": "kernel_development/drivers/reconstructed/rdbg/rdbg.ko",
+    "repository_sha256": "1f817300dd6a431c692441943d6fb84539f3112457e09a95d809fcb9c02700e9",
+    "size_bytes": 784800,
+    "docker_curated_path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\rdbg\\rdbg.ko",
+    "docker_curated_sha256": "1f817300dd6a431c692441943d6fb84539f3112457e09a95d809fcb9c02700e9",
+    "reproducible_builds": [
+      {
+        "cycle": 1,
+        "sha256": "1f817300dd6a431c692441943d6fb84539f3112457e09a95d809fcb9c02700e9",
+        "size_bytes": 784800
+      },
+      {
+        "cycle": 2,
+        "sha256": "1f817300dd6a431c692441943d6fb84539f3112457e09a95d809fcb9c02700e9",
+        "size_bytes": 784800
+      }
+    ]
+  },
+  "stock_reference": {
+    "path": "reference_modules/full_vendor_boot/rdbg.ko",
+    "sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
+    "size_bytes": 35280
+  },
+  "offline_audit": {
+    "status": "incomplete_or_failed",
+    "traceability_passed": true,
+    "mapping_review_passed": false,
+    "aarch64_rel": true,
+    "target_vermagic_match": true,
+    "aliases_match": true,
+    "namespaces_match": true,
+    "candidate_matches_fresh": true,
+    "runtime_sections_match": true,
+    "runtime_content_match": true,
+    "missing_imports": [],
+    "unexpected_imports": [
+      "free_irq"
+    ],
+    "mapping_review_warnings": [
+      "mapping 2 is not independently reviewed",
+      "mapping 3 is not independently reviewed",
+      "mapping 5 is not independently reviewed",
+      "mapping 6 is not independently reviewed"
+    ]
+  },
+  "kcfi": {
+    "passed": true,
+    "required_functions": [
+      "rdbg_open",
+      "rdbg_read",
+      "rdbg_release",
+      "rdbg_write"
+    ],
+    "size_is_gating": false
+  },
+  "strict_stock_assembly": {
+    "passed": false,
+    "checked_functions": 4,
+    "failures": [
+      "rdbg_open@00100ecc=rdbg_open: symbol_size, instructions, relocations",
+      "rdbg_release@001014cc=rdbg_release: symbol_size, instructions, relocations",
+      "rdbg_read@00100708=rdbg_read: symbol_size, instructions",
+      "rdbg_write@00100a9c=rdbg_write: symbol_size, instructions"
+    ]
+  },
+  "docker_source_sync": {
+    "passed": true,
+    "copied": [
+      "STATUS.md"
+    ],
+    "curated_path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\rdbg"
+  },
+  "runtime": {
+    "hardware_test": "not_performed",
+    "adb_devices_attached": false,
+    "module_loaded": false
+  },
+  "implementation_files": [
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/STATUS.md",
+      "size_bytes": 2208,
+      "sha256": "1e251d4a217163d5cac33b94c85ce43e008cb2c275e6f8a6dfe40636142a0856"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/reconstruction_map.json",
+      "size_bytes": 16854,
+      "sha256": "948b6266d3ffd53243aa6419aa235082ce2a570bc360c6ce803a7bb17bd4cf9a"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg.ko",
+      "size_bytes": 784800,
+      "sha256": "1f817300dd6a431c692441943d6fb84539f3112457e09a95d809fcb9c02700e9"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_02_release.c",
+      "size_bytes": 1828,
+      "sha256": "e194cb311307fbcbfa9e922716654e6fc95c123e68731fa040e2d584ce128d5d"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_03_open.c",
+      "size_bytes": 8508,
+      "sha256": "3288c48c7014a9d2e0fa64ad58332ee4cc0d61bb72a6d58931ef9654f0fe1239"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_05_read.c",
+      "size_bytes": 4940,
+      "sha256": "f1b406c7261b19b6c0d003608f0830f7eca82815edad4ce0cd601ceedafb02e6"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_06_write.c",
+      "size_bytes": 5144,
+      "sha256": "7da8f12f6acb9f148028bf7450bd44f758dd48d585d915656e79e2ab327cefea"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_reconstruction_layout.h",
+      "size_bytes": 4446,
+      "sha256": "90ceaf31440c36432c642864c789fb34ceadadf2ec9d6cc28a3f6e9454500062"
+    }
+  ],
+  "evidence_files": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/smq_reader_serialization_20261110/assembly_comparison.json",
+      "size_bytes": 57105,
+      "sha256": "7ba7f36bf4ae40d1ad5ea8ab9529c42fcf919af3ed26acdd6f2be5352a41b9cc"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/smq_reader_serialization_20261110/candidate_assembly/0000_rdbg_open.asm",
+      "size_bytes": 26787,
+      "sha256": "fcb2b2a3ec1f569e7528e60da65d239b87a31b75abe17138021b8eec1a0946ad"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/smq_reader_serialization_20261110/candidate_assembly/0001_rdbg_release.asm",
+      "size_bytes": 4849,
+      "sha256": "f7472154d3e2728b7dd9a242ea7aae3a55fba09b048f4fe53525c2381686d246"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/smq_reader_serialization_20261110/candidate_assembly/0002_rdbg_read.asm",
+      "size_bytes": 12512,
+      "sha256": "b1408d418f5c5498cdd1b49ed84e833a00dc2b852fb7878109464ce5ab57c807"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/smq_reader_serialization_20261110/candidate_assembly/0003_rdbg_write.asm",
+      "size_bytes": 13131,
+      "sha256": "36c709e4bc51a5303e8435adea960c011681e9565b2271ed73ab8c02a040241e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/smq_reader_serialization_20261110/candidate_assembly/manifest.json",
+      "size_bytes": 3566,
+      "sha256": "33603dad449e96e837e9e251f420f501b52277e16ef6200bdf52d99dd84ad607"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/smq_reader_serialization_20261110/candidate_kcfi.json",
+      "size_bytes": 1422,
+      "sha256": "f21cddb9049d0cf1418b1982f668a5226d51ea9304436516ba71d3d3301c4624"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/smq_reader_serialization_20261110/docker_final_audit.json",
+      "size_bytes": 35664,
+      "sha256": "f1344289bc27a1e34e6cd774fc21a9768c71d90dddd9bef05cf81967c70b45fb"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/smq_reader_serialization_20261110/docker_final_audit.md",
+      "size_bytes": 1007,
+      "sha256": "f102992530ed86c7973048afa1c309c64176c0c6d699272b7505b31b069265e9"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/smq_reader_serialization_20261110/kcfi_comparison.json",
+      "size_bytes": 2709,
+      "sha256": "1cc1f7ff92aa6aa537774f24c571fbd944be3fe4ad5504c879c006c2225572a6"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/smq_reader_serialization_20261110/README.md",
+      "size_bytes": 3724,
+      "sha256": "fd2a1f62eec217242f51112ceba13565c9184bd242d70e45426e943886c5882e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/smq_reader_serialization_20261110/source_sync_final.json",
+      "size_bytes": 9732,
+      "sha256": "d7a5431a471b833d020c6c835c3a3af7b0fc42e607ae31939dd6ad632da6c9a1"
+    }
+  ]
+}

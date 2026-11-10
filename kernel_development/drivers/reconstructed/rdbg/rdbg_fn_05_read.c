@@ -20,7 +20,9 @@
 ssize_t rdbg_read(struct file *filp, char __user *buffer, size_t count,
 		  loff_t *position)
 {
-	struct rdbg_data_layout *rdbgdata = filp->private_data;
+	struct rdbg_file_context_layout *file_context = filp->private_data;
+	struct rdbg_data_layout *rdbgdata = file_context ?
+		file_context->rdbgdata : NULL;
 	struct rdbg_smq_layout *consumer;
 	struct rdbg_smq_layout *producer;
 	struct rdbg_smq_node_layout *node;
@@ -39,7 +41,7 @@ ssize_t rdbg_read(struct file *filp, char __user *buffer, size_t count,
 	int error;
 	int result;
 
-	if (!rdbgdata) {
+	if (!file_context || !rdbgdata) {
 		pr_err("Invalid argument\n");
 		result = -EINVAL;
 		goto out;
@@ -54,6 +56,7 @@ ssize_t rdbg_read(struct file *filp, char __user *buffer, size_t count,
 
 	consumer = &rdbgdata->consumer_smrb;
 	producer = &rdbgdata->producer_smrb;
+	mutex_lock(&file_context->read_mutex);
 	if (consumer->type == RDBG_SMQ_TYPE_CONSUMER &&
 	    consumer->out->s.init == RDBG_SMQ_MAGIC_PRODUCER &&
 	    consumer->hdr->producer_version == 1) {
@@ -138,20 +141,22 @@ ssize_t rdbg_read(struct file *filp, char __user *buffer, size_t count,
 			if (consumer->lock)
 				mutex_unlock(consumer->lock);
 			result = (int)copy_size;
-			goto out;
+			goto read_unlock;
 		}
 
 		dev_err(rdbgdata->device,
 			"%s: Error in copy_to_user(). Err code = %d\n",
 			"rdbg_read", (int)copy_error);
 		result = -ENODATA;
-		goto out;
+		goto read_unlock;
 	}
 
 smq_error:
 	dev_err(rdbgdata->device,
 		"%s: Error in smq_recv(). Err code = %d\n", "rdbg_read", 0);
 	result = -ENODATA;
+read_unlock:
+	mutex_unlock(&file_context->read_mutex);
 out:
 	return result;
 }

@@ -37,6 +37,7 @@ int rdbg_release(struct inode *inode, struct file *filp)
 	struct rdbg_device_layout *rdbgdevice =
 		(struct rdbg_device_layout *)&g_rdbg_instance;
 	struct rdbg_data_layout *rdbgdata = NULL;
+	struct rdbg_file_context_layout *file_context = filp->private_data;
 	int err = 0;
 
 	if (!inode || !rdbgdevice->rdbg_data) {
@@ -57,6 +58,10 @@ int rdbg_release(struct inode *inode, struct file *filp)
 		rdbgdata->device_opened = 0;
 	}
 	filp->private_data = NULL;
+	if (file_context) {
+		mutex_destroy(&file_context->read_mutex);
+		kfree(file_context);
+	}
 
 bail:
 	return err;

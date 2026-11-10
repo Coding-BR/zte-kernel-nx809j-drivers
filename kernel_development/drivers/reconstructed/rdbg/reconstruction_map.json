@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "driver": "rdbg",
-  "candidate_sha256": "caeaecef9cb59d128114bb7b3fe01726580382dd05d41407cdd68d8d753fd7db",
+  "candidate_sha256": "1f817300dd6a431c692441943d6fb84539f3112457e09a95d809fcb9c02700e9",
   "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
   "reconstruction_mode": "partial_c_microtasks",
   "mappings": [
@@ -108,7 +108,8 @@
       "stock_entry": "00100708",
       "source_file": "rdbg_fn_05_read.c",
       "source_function": "rdbg_read",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
+      "mapping_note": "Intentional concurrency hardening: serialize the per-open consumer dequeue/free-index operation with a file-context mutex. The consumer SMQ uses the existing write mutex for free-node handoff, preserving synchronization with writers; no per-client layout bytes are repurposed. This differs from stock and requires runtime stress validation.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0001_00100708_rdbg_read.jsonl",
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0001_rdbg_read_00100708.asm",
@@ -136,7 +137,8 @@
       "stock_entry": "00100a9c",
       "source_file": "rdbg_fn_06_write.c",
       "source_function": "rdbg_write",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
+      "mapping_note": "The write operation now resolves rdbg_data through the per-open file context that owns the consumer read mutex. Its SMQ write behavior remains serialized by the existing write mutex; the representation change is part of the declared concurrency hardening.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0002_00100a9c_rdbg_write.jsonl",
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0002_rdbg_write_00100a9c.asm",

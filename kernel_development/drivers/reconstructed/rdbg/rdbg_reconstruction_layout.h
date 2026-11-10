@@ -110,6 +110,11 @@ struct rdbg_data_layout {
 	u8 unmodeled_tail[0x1c8 - 0x118 - sizeof(struct mutex)];
 };
 
+struct rdbg_file_context_layout {
+	struct rdbg_data_layout *rdbgdata;
+	struct mutex read_mutex;
+};
+
 struct rdbg_device_layout {
 	struct cdev cdev;
 	struct class *class;
