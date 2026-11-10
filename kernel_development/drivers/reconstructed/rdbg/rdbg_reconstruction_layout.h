@@ -20,6 +20,9 @@ struct rdbg_module_storage {
 
 extern struct rdbg_module_storage g_rdbg_instance;
 
+struct platform_driver;
+extern struct platform_driver rdbg_driver;
+
 struct rdbg_proc_info_layout {
 	const char *name;
 	u32 smem_buffer_addr;

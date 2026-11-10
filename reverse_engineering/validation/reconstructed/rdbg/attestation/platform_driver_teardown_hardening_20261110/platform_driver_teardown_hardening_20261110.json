@@ -1,0 +1,271 @@
+{
+  "schema_version": "1.0",
+  "batch": "platform_driver_teardown_hardening_20261110",
+  "generated_utc": "2026-11-10T19:50:22.1039597Z",
+  "driver": "rdbg",
+  "result": "offline_hardening_build_reproduced_audit_incomplete",
+  "scope": "platform driver registration, module teardown, client storage lifetime, chrdev range",
+  "findings_addressed": [
+    {
+      "id": "RDBG-LIFE-001",
+      "change": "Unregister platform driver on all post-registration init failures and before normal teardown frees shared client storage."
+    },
+    {
+      "id": "RDBG-LIFE-002",
+      "change": "Pass the full reserved minor count to unregister_chrdev_region during cleanup."
+    },
+    {
+      "id": "RDBG-LIFE-003",
+      "change": "Free and clear clients when platform_driver_register fails."
+    }
+  ],
+  "candidate": {
+    "repository_path": "kernel_development/drivers/reconstructed/rdbg/rdbg.ko",
+    "repository_sha256": "0a4382429d683cf40fb4027f02ab7f3988d56fc5f5bcf3de3609d442389a0580",
+    "size_bytes": 784784,
+    "docker_curated_path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\rdbg\\rdbg.ko",
+    "docker_curated_sha256": "0a4382429d683cf40fb4027f02ab7f3988d56fc5f5bcf3de3609d442389a0580",
+    "reproducible_builds": [
+      {
+        "cycle": 1,
+        "sha256": "0a4382429d683cf40fb4027f02ab7f3988d56fc5f5bcf3de3609d442389a0580",
+        "size_bytes": 784784
+      },
+      {
+        "cycle": 2,
+        "sha256": "0a4382429d683cf40fb4027f02ab7f3988d56fc5f5bcf3de3609d442389a0580",
+        "size_bytes": 784784
+      }
+    ]
+  },
+  "map": {
+    "candidate_sha256": "0a4382429d683cf40fb4027f02ab7f3988d56fc5f5bcf3de3609d442389a0580",
+    "mapped_functions": 8,
+    "status_counts": {
+      "HARDENED_STOCK_DEVIATION": 6,
+      "PROMOTED_OFFLINE_EXACT": 2
+    }
+  },
+  "target_exports": {
+    "platform_driver_unregister": {
+      "crc": "0xbd0cdbf7",
+      "provider": "vmlinux",
+      "export": "EXPORT_SYMBOL_GPL"
+    },
+    "unregister_chrdev_region": {
+      "crc": "0x0bc5fb0d",
+      "provider": "vmlinux",
+      "export": "EXPORT_SYMBOL"
+    }
+  },
+  "docker_audit": {
+    "status": "incomplete_or_failed",
+    "build_passed": true,
+    "reproducible": true,
+    "candidate_matches_fresh": true,
+    "target_kernel_identity": true,
+    "target_vermagic_match": true,
+    "aarch64_rel": true,
+    "aliases_match": true,
+    "namespaces_match": true,
+    "traceability_passed": true,
+    "mapping_review_passed": false,
+    "unexpected_imports": [
+      "free_irq",
+      "platform_driver_unregister"
+    ],
+    "missing_imports": [],
+    "audit_errors": [
+      "module parity check failed: undefined_symbols_match"
+    ],
+    "mapping_review_warnings": [
+      "mapping 1 is not independently reviewed",
+      "mapping 2 is not independently reviewed",
+      "mapping 3 is not independently reviewed",
+      "mapping 5 is not independently reviewed",
+      "mapping 6 is not independently reviewed",
+      "mapping 7 is not independently reviewed"
+    ],
+    "build_reproducible": true
+  },
+  "kcfi": {
+    "passed": true,
+    "required_functions": [
+      "cleanup_module",
+      "init_module"
+    ],
+    "size_is_gating": false
+  },
+  "strict_stock_assembly": {
+    "passed": false,
+    "checked_functions": 2,
+    "results": [
+      {
+        "function": "init_module",
+        "passed": false,
+        "checks": {
+          "instructions": false,
+          "relocations": false,
+          "section": true,
+          "symbol_size": false
+        },
+        "stock_symbol_size": 824,
+        "candidate_symbol_size": 844
+      },
+      {
+        "function": "cleanup_module",
+        "passed": false,
+        "checks": {
+          "instructions": false,
+          "relocations": false,
+          "section": true,
+          "symbol_size": false
+        },
+        "stock_symbol_size": 180,
+        "candidate_symbol_size": 192
+      }
+    ]
+  },
+  "docker_source_sync": {
+    "passed": true,
+    "copied": [
+      "STATUS.md",
+      "reconstruction_map.json"
+    ],
+    "curated_root": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\rdbg"
+  },
+  "independent_review": {
+    "completed": false,
+    "note": "Implementing agent performed the source and emitted-assembly review; no independent reviewer was available."
+  },
+  "runtime": {
+    "hardware_test": "not_performed",
+    "adb_devices_attached": false,
+    "module_loaded": false
+  },
+  "implementation_files": [
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/STATUS.md",
+      "size_bytes": 1972,
+      "sha256": "7ea1770316fde5bbbf93bacf1bff867b5da4ac4dc9f7832b5e327f0849abbc33"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/reconstruction_map.json",
+      "size_bytes": 17453,
+      "sha256": "d48d9e8f73d1b09084d32c4c64ad496b7955071d23d6a5d96c39ccfdf4e98b8f"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg.ko",
+      "size_bytes": 784784,
+      "sha256": "0a4382429d683cf40fb4027f02ab7f3988d56fc5f5bcf3de3609d442389a0580"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_01_cleanup_module.c",
+      "size_bytes": 1289,
+      "sha256": "1d7319e12453ff35504b6f9a60fe35d98514a857498a47ac6df03d42a5473591"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_07_init_module.c",
+      "size_bytes": 4140,
+      "sha256": "122b1045ee05f333537ecfade6da28131128d045d5c3d882ba979f0f741e5a70"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/rdbg/rdbg_reconstruction_layout.h",
+      "size_bytes": 4514,
+      "sha256": "234e4d3285a8773e7fb78445bc4102ee6123b49a8be8c102c74347145137d956"
+    }
+  ],
+  "stock_and_historical_evidence_files": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/decompiled/0006_00101638_init_module.c",
+      "size_bytes": 4345,
+      "sha256": "7c1b2db312c99f9555857ce105ad548fd44c92db0c1c278843108be4e0da304e"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/decompiled/0007_00101974_cleanup_module.c",
+      "size_bytes": 661,
+      "sha256": "536ecbc39e8aac56844bb49ea27d7921ebe8715d7e2d916d9f10df5bf0329adb"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0006_init_module_00101638.asm",
+      "size_bytes": 14624,
+      "sha256": "b954e8e9e4b88a60a9fc12bb6f514b0adb7504b5889bbfdb033fec6f44131928"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0007_cleanup_module_00101974.asm",
+      "size_bytes": 2961,
+      "sha256": "e409e3bd3f39089b3628250b43861ec76567285153fb11af6079aa2232cef492"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/platform_driver_lifecycle_audit_20261103/platform_driver_lifecycle_audit_20261103.json",
+      "size_bytes": 6339,
+      "sha256": "6bce0b6839a7879dc7f6bb742486c124986e53e019f9553ffb666f69e1c94ed1"
+    },
+    {
+      "path": "kernel_development/config/nx809j_target_Module.symvers",
+      "size_bytes": 469648,
+      "sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83"
+    }
+  ],
+  "versioned_batch_evidence_files": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/platform_driver_teardown_hardening_20261110/assembly_comparison.json",
+      "size_bytes": 32814,
+      "sha256": "58348a0276bd4b61140b3a22b3382d538dbcdb2f4f8a7c5bc8e3ba59e6295fa3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/platform_driver_teardown_hardening_20261110/candidate_assembly/0000_init_module.asm",
+      "size_bytes": 15443,
+      "sha256": "1110809064bad0239f9b3321ae361ff9d182592b66bdf409bda9533008707772"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/platform_driver_teardown_hardening_20261110/candidate_assembly/0001_cleanup_module.asm",
+      "size_bytes": 3368,
+      "sha256": "39dc7c759dd1d42b8d1296eb176da28dd2021d40e0f9dc29786c19bf635cd730"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/platform_driver_teardown_hardening_20261110/candidate_assembly/manifest.json",
+      "size_bytes": 2211,
+      "sha256": "2f79a4a639fd1fbb2cbe548f5981afebb7b6e8fda38b9a59322bf1537dbeb1fe"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/platform_driver_teardown_hardening_20261110/candidate_kcfi.json",
+      "size_bytes": 900,
+      "sha256": "e119707361a62999d3088916db53a0bfee13154609214a40c61fd0c52ad6636d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/platform_driver_teardown_hardening_20261110/docker_final_audit.json",
+      "size_bytes": 36017,
+      "sha256": "44b3dbeb879bec93f129b001c5a11fd13d824f2740206c8bfb5827daed74c8c3"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/platform_driver_teardown_hardening_20261110/docker_final_audit.md",
+      "size_bytes": 1007,
+      "sha256": "e69f1704a62210f4984e81e41080e654bcc796cea074c2fc815e99c345a93f53"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/platform_driver_teardown_hardening_20261110/kcfi_comparison.json",
+      "size_bytes": 1641,
+      "sha256": "0d1bbdb97d675e273be25645c9a0214c6e672be2f95940698a8a06edb40924a1"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/platform_driver_teardown_hardening_20261110/README.md",
+      "size_bytes": 4661,
+      "sha256": "7c47843ba899ab8efa213bd43cda2e33e389fe4bb1a6929c3162cde6612fa071"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/platform_driver_teardown_hardening_20261110/source_sync_final.json",
+      "size_bytes": 9796,
+      "sha256": "7be2386e6caac454df9303bb8f4145d784f0fd1b8c06549d7e30f53477a7cf50"
+    }
+  ],
+  "joern_gate": {
+    "status": "not_run_unpinned_installation",
+    "java21_available": true,
+    "task_pinned_installation_present": false,
+    "global_launcher_present": true,
+    "global_launcher_hash_bound_to_lock": false,
+    "reason": "The strict gate was not run because the global Joern launcher is not bound to the repository lock; the task-pinned install marker is absent."
+  },
+  "host_lifecycle_validation": "not_performed"
+}

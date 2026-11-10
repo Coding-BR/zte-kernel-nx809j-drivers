@@ -54,7 +54,7 @@ const struct rdbg_proc_info_layout proc_info[16] __used = {
 	},
 };
 
-static struct platform_driver rdbg_driver __used = {
+struct platform_driver rdbg_driver __used = {
 	.probe = rdbg_probe,
 	.driver = {
 		.name = "rdbg",
@@ -80,12 +80,12 @@ static int __init rdbg_init(void)
 		return -ENOMEM;
 	ret = platform_driver_register(&rdbg_driver);
 	if (ret)
-		return ret;
+		goto free_clients;
 	ret = alloc_chrdev_region(&g_rdbg_instance.devt, 0,
 				 g_rdbg_instance.count, "rdbgctl");
 	if (ret) {
 		pr_err("Error in alloc_chrdev_region.\n");
-		goto free_clients;
+		goto unregister_platform_driver;
 	}
 	major = g_rdbg_instance.devt & 0xfff00000U;
 	cdev_init(&g_rdbg_instance.cdev, &rdbg_fops);
@@ -130,8 +130,11 @@ destroy_class:
 	cdev_del(&g_rdbg_instance.cdev);
 unregister_cdev:
 	unregister_chrdev_region(g_rdbg_instance.devt, g_rdbg_instance.count);
+unregister_platform_driver:
+	platform_driver_unregister(&rdbg_driver);
 free_clients:
 	kfree(g_rdbg_instance.clients);
+	g_rdbg_instance.clients = NULL;
 	return ret;
 }
 module_init(rdbg_init);

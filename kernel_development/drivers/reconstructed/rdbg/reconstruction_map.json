@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "driver": "rdbg",
-  "candidate_sha256": "1f817300dd6a431c692441943d6fb84539f3112457e09a95d809fcb9c02700e9",
+  "candidate_sha256": "0a4382429d683cf40fb4027f02ab7f3988d56fc5f5bcf3de3609d442389a0580",
   "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
   "reconstruction_mode": "partial_c_microtasks",
   "mappings": [
@@ -26,7 +26,8 @@
       "stock_entry": "00101974",
       "source_file": "rdbg_fn_01_cleanup_module.c",
       "source_function": "cleanup_module",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
+      "mapping_note": "Intentional lifetime hardening: unregister the platform driver before destroying client storage and release the full character-device range reserved at init (stock passes count 1 for the 16-minor allocation). This differs from stock and requires runtime/reload validation.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0007_00101974_cleanup_module.jsonl",
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0007_cleanup_module_00101974.asm",
@@ -162,7 +163,8 @@
       "stock_entry": "00101638",
       "source_file": "rdbg_fn_07_init_module.c",
       "source_function": "rdbg_init",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "HARDENED_STOCK_DEVIATION",
+      "mapping_note": "Intentional lifetime hardening: free clients if platform_driver_register fails; unregister a successfully registered platform driver on every subsequent init failure before freeing client storage. This differs from stock and requires failure-injection/runtime validation.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0006_00101638_init_module.jsonl",
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0006_init_module_00101638.asm",

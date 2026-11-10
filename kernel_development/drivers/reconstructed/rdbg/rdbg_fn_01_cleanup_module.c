@@ -2,6 +2,7 @@
 #include <linux/device.h>
 #include <linux/fs.h>
 #include <linux/init.h>
+#include <linux/platform_device.h>
 #include <linux/slab.h>
 
 #include "rdbg_reconstruction_layout.h"
@@ -19,6 +20,9 @@ void __exit cleanup_module(void)
 	long slot = 0;
 	long client_offset = RDBG_CLIENT_DEVICE_CREATED_OFFSET;
 
+	/* Stop new probes before destroying their shared client storage. */
+	platform_driver_unregister(&rdbg_driver);
+
 	if (g_rdbg_instance.count > 0) {
 		do {
 			if (*((u8 *)g_rdbg_instance.clients + client_offset) == 1) {
@@ -33,6 +37,7 @@ void __exit cleanup_module(void)
 
 	class_destroy(g_rdbg_instance.class);
 	cdev_del(&g_rdbg_instance.cdev);
-	unregister_chrdev_region(g_rdbg_instance.devt, 1);
+	unregister_chrdev_region(g_rdbg_instance.devt, g_rdbg_instance.count);
 	kfree(g_rdbg_instance.clients);
+	g_rdbg_instance.clients = NULL;
 }
