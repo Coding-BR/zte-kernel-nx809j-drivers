@@ -1,24 +1,26 @@
 # Status: `gpio_keys_nubia`
 
-Estado atual (2026-11-04): **STAGE5_STATIC_PARTIAL**. O candidato com
-serialização do cache global foi recompilado e passou o validador estático de
-build/KMI no Docker; equivalência total, revisão independente e hardware
-continuam pendentes. Este status não significa que o driver esteja concluído.
-
-O fonte foi reconstruido exclusivamente a partir do `.ko` stock, pseudocodigo,
-P-Code, simbolos ELF e Assembly AArch64 locais. Candidato atual: SHA-256
-`8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8`, 240272
+Estado atual (2026-11-04): **STAGE5_STATIC_PARTIAL**. O lote mais recente
+serializa a leitura/escrita de `suspended` entre IRQ e PM com o spinlock já
+existente por botão. O candidato tem SHA-256
+`71e0d676926830b9c108ef11172057405dfce9dee88d96717630d8381b035fdf` e 242256
 bytes. Dois builds Docker limpos coincidiram; o validador reportou
-`static_verified` para build/KMI/mapa. A comparação AArch64 atual é 23/24:
-`gpio_keys_gpio_report_event` é uma divergência intencional de hardening, e o
-helper adicional preserva o corpo stock de 404 bytes. A atestação está em
-`attestation/report_state_serialization_20261104/`.
+`static_verified`.
 
-Continuam pendentes a revisão humana independente, a validação dinâmica no
-NX809J e a análise da flag `suspended` entre IRQ/PM e da janela de shutdown.
-Nenhum módulo foi carregado no smartphone.
+A extração fresca cobre 24/24 identidades stock. Na comparação estrita, 20
+funções permanecem exatas e quatro têm diferenças esperadas pelo hardening:
+`gpio_keys_gpio_isr`, `gpio_keys_gpio_report_event`, `gpio_keys_resume` e
+`gpio_keys_suspend`; não há outras diferenças. O corpo original de
+`gpio_keys_gpio_report_event` passa a comparação estrita separada. O mapa
+registra 20 `PROMOTED_OFFLINE_EXACT` e quatro desvios de hardening revisados.
+Equivalência semântica integral continua **UNPROVEN**.
 
-## Revalidação do candidato endurecido — 2026-11-04
+A revisão independente continua pendente. O NX809J está visível no ADB, mas
+nenhum módulo foi carregado nem ação GPIO foi disparada neste lote estático.
+A janela de shutdown também permanece em análise. Evidência:
+`attestation/suspended_flag_serialization_20261104/`. O driver não está concluído.
+
+## Revalidação anterior do estado global de report — 2026-11-04 (histórico)
 
 - O mapa continua cobrindo as 24 identidades stock; o candidato inclui um
   helper adicional para manter o corpo assembly stock sob a entrada protegida.

@@ -89,6 +89,37 @@ static_assert(offsetof(struct gpio_button_data, key_pressed) == 0x109);
 static_assert(offsetof(struct gpio_button_data, suspended) == 0x10a);
 static_assert(sizeof(struct gpio_button_data) == 0x110);
 
+bool __visible gpio_keys_suspended_read_serialized(bool *suspended);
+void __visible gpio_keys_suspended_write_serialized(bool *suspended, bool value);
+
+/*
+ * The GPIO ISR reads suspended while PM updates it. Serialize both sides
+ * with the per-button lock, and retain access marking for compiler/KCSAN.
+ */
+bool __visible gpio_keys_suspended_read_serialized(bool *suspended)
+{
+	struct gpio_button_data *bdata =
+		container_of(suspended, struct gpio_button_data, suspended);
+	unsigned long flags;
+	bool value;
+
+	spin_lock_irqsave(&bdata->lock, flags);
+	value = READ_ONCE(*suspended);
+	spin_unlock_irqrestore(&bdata->lock, flags);
+	return value;
+}
+
+void __visible gpio_keys_suspended_write_serialized(bool *suspended, bool value)
+{
+	struct gpio_button_data *bdata =
+		container_of(suspended, struct gpio_button_data, suspended);
+	unsigned long flags;
+
+	spin_lock_irqsave(&bdata->lock, flags);
+	WRITE_ONCE(*suspended, value);
+	spin_unlock_irqrestore(&bdata->lock, flags);
+}
+
 /*
  * SYSFS interface for enabling/disabling keys and switches:
  *
@@ -873,7 +904,7 @@ gpio_keys_enable_wakeup(struct gpio_keys_drvdata *ddata)
 			if (error)
 				goto err_out;
 		}
-		bdata->suspended = true;
+		gpio_keys_suspended_write_serialized(&bdata->suspended, true);
 	}
 
 	return 0;
@@ -883,7 +914,7 @@ err_out:
 		bdata = &ddata->data[i];
 		if (bdata->button->wakeup)
 			gpio_keys_button_disable_wakeup(bdata);
-		bdata->suspended = false;
+		gpio_keys_suspended_write_serialized(&bdata->suspended, false);
 	}
 
 	return error;
@@ -897,7 +928,7 @@ gpio_keys_disable_wakeup(struct gpio_keys_drvdata *ddata)
 
 	for (i = 0; i < ddata->pdata->nbuttons; i++) {
 		bdata = &ddata->data[i];
-		bdata->suspended = false;
+		gpio_keys_suspended_write_serialized(&bdata->suspended, false);
 		if (irqd_is_wakeup_set(irq_get_irq_data(bdata->irq)))
 			gpio_keys_button_disable_wakeup(bdata);
 	}

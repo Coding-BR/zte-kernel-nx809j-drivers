@@ -25,7 +25,8 @@ gpio_keys_suspend:
     .inst 0x52800036
     .inst 0x14000008
     .inst 0xf9400288
-    .inst 0x39054af6
+    b .Lgpio_keys_suspend_write_suspended_true
+.Lgpio_keys_suspend_after_write_true:
     .inst 0x91000673
     .inst 0x910442b5
     .inst 0xb9800908
@@ -118,7 +119,8 @@ gpio_keys_suspend:
     .inst 0x2a1603e0
     .inst 0x35000303
     .inst 0xf10442b5
-    .inst 0x39010a7f
+    b .Lgpio_keys_suspend_write_suspended_false
+.Lgpio_keys_suspend_after_write_false:
     .inst 0x54fffc80
     .inst 0x8b150293
     .inst 0xf8538268
@@ -155,6 +157,31 @@ gpio_keys_suspend:
     .reloc .-4, R_AARCH64_CALL26, _dev_warn
     .inst 0x2a1603e0
     .inst 0x17ffffe2
+.Lgpio_keys_suspend_write_suspended_true:
+    sub sp, sp, #16
+    str x8, [sp]
+    add x0, x23, #0x152
+    mov w1, #1
+    .inst 0x94000000
+    .reloc .-4, R_AARCH64_CALL26, gpio_keys_suspended_write_serialized
+    ldr x8, [sp]
+    add sp, sp, #16
+    b .Lgpio_keys_suspend_after_write_true
+
+.Lgpio_keys_suspend_write_suspended_false:
+    sub sp, sp, #16
+    str x0, [sp]
+    mrs x8, nzcv
+    str x8, [sp, #8]
+    add x0, x19, #0x42
+    mov w1, wzr
+    .inst 0x94000000
+    .reloc .-4, R_AARCH64_CALL26, gpio_keys_suspended_write_serialized
+    ldr x0, [sp]
+    ldr x8, [sp, #8]
+    msr nzcv, x8
+    add sp, sp, #16
+    b .Lgpio_keys_suspend_after_write_false
 .size gpio_keys_suspend, .-gpio_keys_suspend
 
 .section .rodata.str1.1,"aMS",@progbits,1

@@ -1,8 +1,8 @@
 {
-  "candidate_sha256": "8ce42c5e81d2b472db89c69a137a8d54bfca01e90dc34f3b3dfd3346fdcf56f8",
+  "candidate_sha256": "71e0d676926830b9c108ef11172057405dfce9dee88d96717630d8381b035fdf",
   "driver": "gpio_keys_nubia",
   "function_count": 24,
-  "generated_utc": "2026-11-04T10:34:09.117Z",
+  "generated_utc": "2026-11-04T11:09:35Z",
   "hardware_validation": "DEFERRED",
   "independent_review": "NOT_PERFORMED",
   "inputs": {
@@ -138,7 +138,7 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:ADF57E877A89644C6F6679A147BF2DDCAD4E300D1A42715F2F78ED5BAC77D6E6",
+        "source:gpio_keys_nubia.c:sha256:17C0C019258A44AED51EA6BE37CF83506A1645CACEFAE728953F39424AFC434E",
         "source:gpio_keys_gpio_report_event_exact.S:sha256:BAFB4B3E0CAB9015D0A5383373894B29B933C21D592A336C8F037AA3654C2610",
         "source:gpio_keys_open_exact.S:sha256:6A9AAE891CAB6F8FEBFB9A64A59A49033A6C5E057B83EBCC89C0053E2EFC155D",
         "source:gpio_keys_gpio_work_func_exact.S:sha256:B7A30B9D2BEBF742F6F0EC1453A8BF292FE50FE0132CD12DCE2D281715634E76",
@@ -151,7 +151,12 @@
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/assembly_comparison_preserved_body.json",
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/kcfi_comparison.json",
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/candidate_direct_refs.json",
-        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/docker_validation_final.json"
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/docker_validation_final.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/README.md",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/hardening_attestation.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/docker_validation_final.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/assembly_comparison_stock.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/assembly_comparison_reporter_body.json"
       ],
       "mapping_basis": "Ghidra identity retained; stock body is called under a global report-state mutex",
       "review_scope": "static_synchronization_hardening",
@@ -161,7 +166,7 @@
       "status": "reviewed",
       "attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/README.md",
       "historical_stock_exact_attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next026_gpio_keys_gpio_report_event_exact_v1/decision.json",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/report_state_serialization_20261104/hardening_attestation.json",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/hardening_attestation.json",
       "independent_review": "NOT_PERFORMED",
       "hardening_status": "STATICALLY_VERIFIED; SEMANTIC_AND_HARDWARE_VALIDATION_PENDING",
       "candidate_helper": {
@@ -202,19 +207,27 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_gpio_isr_exact.S:sha256:b84c14eee4f6474a0bd8fc8b537a9415002e8410c7b0827adb45a1fb92151f89",
+        "source:gpio_keys_gpio_isr_exact.S:sha256:543B7AF6FFE121B9376E1AF24161790D5E910AEF57ED09A62DB8D39EFD4CC476",
         "ghidra-pseudocode:decompiled/0006_00101878_gpio_keys_gpio_isr.c:sha256:49bdba8a9d464c3b530d1a04311a0898ab4d8851bd97dec4607d078c2441ab38",
         "ghidra-pcode:pcode/0006_00101878_gpio_keys_gpio_isr.jsonl:sha256:ddeda81494e8295495976cd4212a4e3e96eb2776c65e8ae5248bdc6697fbfd3d",
-        "stock-assembly:0006_gpio_keys_gpio_isr_00101878.asm:sha256:546941a34e4017f6e4899fc02870d09b8e6775e1f674fb26c907938b8bf562a4"
+        "stock-assembly:0006_gpio_keys_gpio_isr_00101878.asm:sha256:546941a34e4017f6e4899fc02870d09b8e6775e1f674fb26c907938b8bf562a4",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/README.md",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/hardening_attestation.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/docker_validation_final.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/assembly_comparison_stock.json"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "PROVEN_OFFLINE_EXACT",
+      "mapping_basis": "Ghidra identity retained; IRQ and PM accesses to suspended are serialized with the existing per-button spinlock",
+      "review_scope": "static_synchronization_hardening",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
       "source_file": "gpio_keys_gpio_isr_exact.S",
       "source_function": "gpio_keys_gpio_isr",
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next028_gpio_keys_gpio_isr_exact_v1/decision.json",
-      "exact_evidence": [
+      "status": "reviewed",
+      "attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/README.md",
+      "stock_body_bytes": 172,
+      "stock_entry": "00101878",
+      "stock_function": "gpio_keys_gpio_isr",
+      "historical_stock_exact_attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next028_gpio_keys_gpio_isr_exact_v1/decision.json",
+      "historical_stock_exact_evidence": [
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next028_gpio_keys_gpio_isr_exact_v1/hard_protocol_report.json",
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next028_gpio_keys_gpio_isr_exact_v1/assembly.json",
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next028_gpio_keys_gpio_isr_exact_v1/kcfi.json",
@@ -222,10 +235,10 @@
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next028_gpio_keys_gpio_isr_exact_v1/compile.json",
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next028_gpio_keys_gpio_isr_exact_v1/ghidra.json"
       ],
-      "promotion_basis": "exact Assembly/relocation parity, direct Ghidra/P-Code equality, matching KCFI, strict Joern and reproducible Docker candidate identity",
-      "stock_body_bytes": 172,
-      "stock_entry": "00101878",
-      "stock_function": "gpio_keys_gpio_isr"
+      "historical_promotion_basis": "exact Assembly/relocation parity, direct Ghidra/P-Code equality, matching KCFI, strict Joern and reproducible Docker candidate identity",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/hardening_attestation.json",
+      "independent_review": "NOT_PERFORMED",
+      "hardening_status": "STATICALLY_VERIFIED; SEMANTIC_AND_HARDWARE_VALIDATION_PENDING"
     },
     {
       "evidence": [
@@ -310,19 +323,27 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_suspend_exact.S:sha256:84aba92398522817ad776459b8ba3c017acbb529fe13714344f18c7ceeee1cd1",
+        "source:gpio_keys_suspend_exact.S:sha256:C65CDA0300B185A0FDD3147FADF74137EAAD34510D6ED4B0F1E60D28AF46CA57",
         "ghidra-pseudocode:decompiled/0010_00101b04_gpio_keys_suspend.c:sha256:531dbbbb69738f238aed41f8948de22d908e62554c37454eb8ab0561001b40c0",
         "ghidra-pcode:pcode/0010_00101b04_gpio_keys_suspend.jsonl:sha256:38f5a360e985a81425d5243615f0fbc07668298b0895da6b47832e3ac6257913",
-        "stock-assembly:0010_gpio_keys_suspend_00101b04.asm:sha256:fcf47fa4ac47d70f95b8928201888b3dd599fe55370cb602abf9ee4077c896cb"
+        "stock-assembly:0010_gpio_keys_suspend_00101b04.asm:sha256:fcf47fa4ac47d70f95b8928201888b3dd599fe55370cb602abf9ee4077c896cb",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/README.md",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/hardening_attestation.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/docker_validation_final.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/assembly_comparison_stock.json"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "PROVEN_OFFLINE_EXACT",
+      "mapping_basis": "Ghidra identity retained; IRQ and PM accesses to suspended are serialized with the existing per-button spinlock",
+      "review_scope": "static_synchronization_hardening",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
       "source_file": "gpio_keys_suspend_exact.S",
       "source_function": "gpio_keys_suspend",
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next032_gpio_keys_suspend_exact_v1/decision.json",
-      "exact_evidence": [
+      "status": "reviewed",
+      "attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/README.md",
+      "stock_body_bytes": 528,
+      "stock_entry": "00101b04",
+      "stock_function": "gpio_keys_suspend",
+      "historical_stock_exact_attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next032_gpio_keys_suspend_exact_v1/decision.json",
+      "historical_stock_exact_evidence": [
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next032_gpio_keys_suspend_exact_v1/hard_protocol_report.json",
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next032_gpio_keys_suspend_exact_v1/assembly.json",
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next032_gpio_keys_suspend_exact_v1/kcfi.json",
@@ -330,10 +351,10 @@
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next032_gpio_keys_suspend_exact_v1/compile.json",
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next032_gpio_keys_suspend_exact_v1/ghidra.json"
       ],
-      "promotion_basis": "exact Assembly/relocation parity, direct Ghidra/P-Code equality, matching KCFI, strict Joern and reproducible Docker candidate identity",
-      "stock_body_bytes": 528,
-      "stock_entry": "00101b04",
-      "stock_function": "gpio_keys_suspend"
+      "historical_promotion_basis": "exact Assembly/relocation parity, direct Ghidra/P-Code equality, matching KCFI, strict Joern and reproducible Docker candidate identity",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/hardening_attestation.json",
+      "independent_review": "NOT_PERFORMED",
+      "hardening_status": "STATICALLY_VERIFIED; SEMANTIC_AND_HARDWARE_VALIDATION_PENDING"
     },
     {
       "evidence": [
@@ -472,7 +493,7 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:3953ffd4ff9f3d917cea4a1d710e2bbefc1cb8f5a23881aa14409b133b9f4f38",
+        "source:gpio_keys_nubia.c:sha256:17C0C019258A44AED51EA6BE37CF83506A1645CACEFAE728953F39424AFC434E",
         "ghidra-pseudocode:decompiled/0016_00101f24_gpio_keys_attr_store_helper.c:sha256:98340dd69a31779c41d54897812a403697c564399cbef0782c0f7ed44badca5e",
         "ghidra-pcode:pcode/0016_00101f24_gpio_keys_attr_store_helper.jsonl:sha256:426d0e774a3dc2817b43b1f579754dd7624b28922d207cf3c4fa0d0c2f841c20",
         "stock-assembly:0016_gpio_keys_attr_store_helper_00101f24.asm:sha256:f824e509cff50ae1dbc036b27a398d1b8491d65eac5d41e7143edf165e9a2a2a"
@@ -499,7 +520,7 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:3953ffd4ff9f3d917cea4a1d710e2bbefc1cb8f5a23881aa14409b133b9f4f38",
+        "source:gpio_keys_nubia.c:sha256:17C0C019258A44AED51EA6BE37CF83506A1645CACEFAE728953F39424AFC434E",
         "ghidra-pseudocode:decompiled/0017_00102248_gpio_keys_show_disabled_switches.c:sha256:275df71c25da00e3efcd0232b5247846695f347c8bd45c870402fa1f5ec44eb6",
         "ghidra-pcode:pcode/0017_00102248_gpio_keys_show_disabled_switches.jsonl:sha256:0a33e573c53e52879099c3e40febc6655dd26ba91d813fb79f5f1eb7037f0239",
         "stock-assembly:0017_gpio_keys_show_disabled_switches_00102248.asm:sha256:796b0574ce758ce6bef3ccf12c9d4af43337159654e4085562cda3ddf29fc517"
@@ -526,7 +547,7 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:3953ffd4ff9f3d917cea4a1d710e2bbefc1cb8f5a23881aa14409b133b9f4f38",
+        "source:gpio_keys_nubia.c:sha256:17C0C019258A44AED51EA6BE37CF83506A1645CACEFAE728953F39424AFC434E",
         "ghidra-pseudocode:decompiled/0018_00102278_gpio_keys_store_disabled_switches.c:sha256:0cbbca5caa13e4d3be461f6fbc85cb15132a3d3ea997e41b0e0dac3096db2d4f",
         "ghidra-pcode:pcode/0018_00102278_gpio_keys_store_disabled_switches.jsonl:sha256:eefb1ca6a5c10cac5daec3e9a37ed551fabe33e7e6210a26559e582e8c3687da",
         "stock-assembly:0018_gpio_keys_store_disabled_switches_00102278.asm:sha256:4bf712a5818fa3c559657f54e23028b13779e48020c3de4491c159a928153616"
@@ -553,7 +574,7 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:3953ffd4ff9f3d917cea4a1d710e2bbefc1cb8f5a23881aa14409b133b9f4f38",
+        "source:gpio_keys_nubia.c:sha256:17C0C019258A44AED51EA6BE37CF83506A1645CACEFAE728953F39424AFC434E",
         "ghidra-pseudocode:decompiled/0019_001022b8_gpio_keys_show_GamekeyStatus.c:sha256:e15c6b5d25cc2b78be316d16810f8b7c6bb17b27ca706d4b21fcbd1d97828028",
         "ghidra-pcode:pcode/0019_001022b8_gpio_keys_show_GamekeyStatus.jsonl:sha256:cc77f5c38df29db531a51c03fe4db2ced5a486057d2c340722753ad41d71ef63",
         "stock-assembly:0019_gpio_keys_show_GamekeyStatus_001022b8.asm:sha256:9ea9bbcea1484ea0b1e0331c029ee665f3d6996743555cf257f9bdea1e916e4c"
@@ -580,7 +601,7 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:3953ffd4ff9f3d917cea4a1d710e2bbefc1cb8f5a23881aa14409b133b9f4f38",
+        "source:gpio_keys_nubia.c:sha256:17C0C019258A44AED51EA6BE37CF83506A1645CACEFAE728953F39424AFC434E",
         "ghidra-pseudocode:decompiled/0020_00102388_gpio_keys_store_GamekeyStatus.c:sha256:228a8d08ac0881fdd341ebf4293a5d50319e55ccac4bfa93d83e5090e358ff1d",
         "ghidra-pcode:pcode/0020_00102388_gpio_keys_store_GamekeyStatus.jsonl:sha256:2572c7a666c2fc89e649d9f2183f4d8f02270097e64fdf741b8bac08433461fa",
         "stock-assembly:0020_gpio_keys_store_GamekeyStatus_00102388.asm:sha256:28650da68349a96491b487fd519de4e0a799a88607d5680711b294efb0025192"
@@ -607,19 +628,27 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:3953ffd4ff9f3d917cea4a1d710e2bbefc1cb8f5a23881aa14409b133b9f4f38",
+        "source:gpio_keys_nubia.c:sha256:17C0C019258A44AED51EA6BE37CF83506A1645CACEFAE728953F39424AFC434E",
         "ghidra-pseudocode:decompiled/0021_001023c0_gpio_keys_resume.c:sha256:4e422442c2a6e498a81134446ae81c1808e972cc79caadcacb6b389ae7ca84ed",
         "ghidra-pcode:pcode/0021_001023c0_gpio_keys_resume.jsonl:sha256:b4669cf8e43012ec85b18f68f27f720b9be9f4450ef873794746a5d2b5d0fcfc",
-        "stock-assembly:0021_gpio_keys_resume_001023c0.asm:sha256:33efda6441ff8c9b63208aaf59615406d538de6a4085dc27f017c46fda566847"
+        "stock-assembly:0021_gpio_keys_resume_001023c0.asm:sha256:33efda6441ff8c9b63208aaf59615406d538de6a4085dc27f017c46fda566847",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/README.md",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/hardening_attestation.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/docker_validation_final.json",
+        "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/assembly_comparison_stock.json"
       ],
-      "mapping_basis": "exact filename and function-token match",
-      "review_scope": "structural_identity_only",
-      "semantic_equivalence": "PROVEN_OFFLINE_EXACT",
+      "mapping_basis": "Ghidra identity retained; IRQ and PM accesses to suspended are serialized with the existing per-button spinlock",
+      "review_scope": "static_synchronization_hardening",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
       "source_file": "gpio_keys_nubia.c",
       "source_function": "gpio_keys_resume",
-      "status": "PROMOTED_OFFLINE_EXACT",
-      "attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next043_gpio_keys_resume_exact_v1/decision.json",
-      "exact_evidence": [
+      "status": "reviewed",
+      "attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/README.md",
+      "stock_body_bytes": 560,
+      "stock_entry": "001023c0",
+      "stock_function": "gpio_keys_resume",
+      "historical_stock_exact_attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next043_gpio_keys_resume_exact_v1/decision.json",
+      "historical_stock_exact_evidence": [
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next043_gpio_keys_resume_exact_v1/hard_protocol_report.json",
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next043_gpio_keys_resume_exact_v1/assembly.json",
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next043_gpio_keys_resume_exact_v1/kcfi.json",
@@ -627,14 +656,14 @@
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next043_gpio_keys_resume_exact_v1/compile.json",
         "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/next043_gpio_keys_resume_exact_v1/ghidra.json"
       ],
-      "promotion_basis": "exact Assembly/relocation parity, Ghidra synthetic-call resolution artifact with direct P-Code equality, matching KCFI, strict Joern and reproducible Docker candidate identity",
-      "stock_body_bytes": 560,
-      "stock_entry": "001023c0",
-      "stock_function": "gpio_keys_resume"
+      "historical_promotion_basis": "exact Assembly/relocation parity, Ghidra synthetic-call resolution artifact with direct P-Code equality, matching KCFI, strict Joern and reproducible Docker candidate identity",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/hardening_attestation.json",
+      "independent_review": "NOT_PERFORMED",
+      "hardening_status": "STATICALLY_VERIFIED; SEMANTIC_AND_HARDWARE_VALIDATION_PENDING"
     },
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:3953ffd4ff9f3d917cea4a1d710e2bbefc1cb8f5a23881aa14409b133b9f4f38",
+        "source:gpio_keys_nubia.c:sha256:17C0C019258A44AED51EA6BE37CF83506A1645CACEFAE728953F39424AFC434E",
         "ghidra-pseudocode:decompiled/0022_001025f4_init_module.c:sha256:a9f6985b84acb0dce1cbf080c95e27ecb0eb26f367caae7c4ecc4ba6aabd057a",
         "ghidra-pcode:pcode/0022_001025f4_init_module.jsonl:sha256:510e3e53ac9737592627fa664d53b219eb4b035f934e209f793111a4d7667e91",
         "stock-assembly:0022_init_module_001025f4.asm:sha256:40c903e1bc3a3fbc5ca1cb0c940babe88ce9f9618fadf1a93f87a7173ddc6b8a"
@@ -661,7 +690,7 @@
     },
     {
       "evidence": [
-        "source:gpio_keys_nubia.c:sha256:3953ffd4ff9f3d917cea4a1d710e2bbefc1cb8f5a23881aa14409b133b9f4f38",
+        "source:gpio_keys_nubia.c:sha256:17C0C019258A44AED51EA6BE37CF83506A1645CACEFAE728953F39424AFC434E",
         "ghidra-pseudocode:decompiled/0023_00102624_cleanup_module.c:sha256:3e228a66e8259d0384308a3dc06bef9a8fc9c4c203e2e13892ba8171404319ef",
         "ghidra-pcode:pcode/0023_00102624_cleanup_module.jsonl:sha256:7144582e958d1cd61063733e7975120f0633cb05f9ed022fb566d6f59f2e66f4",
         "stock-assembly:0023_cleanup_module_00102624.asm:sha256:0dea3bca09471b44dbc40b426bc1f928a3110b97e98da05c8ad1d257580ecd9f"
@@ -688,9 +717,22 @@
     }
   ],
   "override_count": 6,
-  "review_scope": "structural_identity_only",
+  "review_scope": "static_synchronization_hardening_candidate",
   "review_status": "PASS",
   "schema_version": "2.0",
   "semantic_equivalence": "UNPROVEN",
-  "stock_sha256": "8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3"
+  "stock_sha256": "8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3",
+  "candidate_only_helpers": [
+    {
+      "source_file": "gpio_keys_nubia.c",
+      "source_function": "gpio_keys_suspended_read_serialized",
+      "purpose": "read the suspended byte under the per-button spinlock"
+    },
+    {
+      "source_file": "gpio_keys_nubia.c",
+      "source_function": "gpio_keys_suspended_write_serialized",
+      "purpose": "write the suspended byte under the per-button spinlock"
+    }
+  ],
+  "suspended_flag_hardening_attestation": "reverse_engineering/validation/reconstructed/gpio_keys_nubia/attestation/suspended_flag_serialization_20261104/hardening_attestation.json"
 }

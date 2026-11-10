@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "driver": "gpio_keys_nubia",
+  "generated_utc": "2026-11-04T11:20:48.092207+00:00",
+  "objective": "Serialize GPIO IRQ and PM accesses to gpio_button_data.suspended using the initialized per-button spinlock.",
+  "candidate": {
+    "sha256": "71e0d676926830b9c108ef11172057405dfce9dee88d96717630d8381b035fdf",
+    "size": 242256,
+    "path": "kernel_development/drivers/reconstructed/gpio_keys_nubia/gpio_keys_nubia.ko"
+  },
+  "stock_sha256": "8cb89f5068195396a5db5fba1c51f2cf6056884dbb00f7ee8af5041ccd6f32b3",
+  "source_sha256": {
+    "gpio_keys_nubia.c": "17c0c019258a44aed51ea6be37cf83506a1645cacefae728953f39424afc434e",
+    "gpio_keys_gpio_isr_exact.S": "543b7af6ffe121b9376e1af24161790d5e910aef57ed09a62db8d39efd4cc476",
+    "gpio_keys_suspend_exact.S": "c65cda0300b185a0fdd3147fadf74137eaad34510d6ed4b0f1e60d28af46ca57",
+    "gpio_keys_resume_exact.S": "8c96c299a18e932a1dff6ca08fe2b4076a82377db3d8bf75099e461244ccce43"
+  },
+  "reconstruction_map": {
+    "sha256": "f35d70cd06548a4f170b0156a98364efd4c1737cfecb41c974c0ee974bb05f42",
+    "stock_identity_count": 24,
+    "statuses": {
+      "PROMOTED_OFFLINE_EXACT": 20,
+      "reviewed_hardening_deviation": 4
+    }
+  },
+  "docker_validation": {
+    "path": "docker_validation_final.json",
+    "sha256": "092c538ef65995c876c9a82527a776dd0f24f1c072e304e0542cf000fdb08511",
+    "status": "static_verified",
+    "hardware_verified": false,
+    "reproducible": true,
+    "first_build_sha256": "71e0d676926830b9c108ef11172057405dfce9dee88d96717630d8381b035fdf",
+    "second_build_sha256": "71e0d676926830b9c108ef11172057405dfce9dee88d96717630d8381b035fdf",
+    "checks": {
+      "aarch64_rel": true,
+      "alias_match": true,
+      "candidate_hash_matches_map": true,
+      "candidate_modinfo_matches_fresh": true,
+      "candidate_runtime_content_matches_fresh": true,
+      "candidate_runtime_section_layout_matches_fresh": true,
+      "function_traceability": true,
+      "ghidra_export": true,
+      "kernel_source_identity": true,
+      "makefile": true,
+      "mapping_review": true,
+      "namespace_match": true,
+      "reproducible_build": true,
+      "source_directory": true,
+      "source_files": 2,
+      "undefined_symbols_match": true,
+      "vermagic_accepted": true
+    },
+    "errors": [],
+    "warnings": []
+  },
+  "stock_candidate_assembly": {
+    "path": "assembly_comparison_stock.json",
+    "sha256": "ee6a3fb22689f7ca695b817a7675ce9620c649457f9e1689971e4f57cb900a50",
+    "checked_stock_identities": 24,
+    "exact_identities": 20,
+    "strict_gate_passed": false,
+    "expected_hardening_deviations": [
+      "gpio_keys_gpio_isr@00101878: symbol_size, instructions",
+      "gpio_keys_gpio_report_event@00101684: symbol_size, instructions, relocations",
+      "gpio_keys_resume@001023c0: symbol_size, instructions",
+      "gpio_keys_suspend@00101b04: symbol_size, instructions"
+    ],
+    "unintended_differences": []
+  },
+  "preserved_reporter_body": {
+    "path": "assembly_comparison_reporter_body.json",
+    "sha256": "48eb6f6ab03abe809444ea30cc3b67946e59e2711d02c18056c51cf9f1a13754",
+    "passed": true,
+    "checked": 1
+  },
+  "candidate_assembly_manifests": {
+    "stock_identities": {
+      "path": "candidate_assembly/manifest.json",
+      "sha256": "95df3794b3b45f6af8fed63c24dfd3e7127946b5a7e5c888429c65c2fee072ac",
+      "functions": 24,
+      "passed": true
+    },
+    "serialized_accessors": {
+      "path": "helper_assembly/manifest.json",
+      "sha256": "d2d04c47b2ce372b9e3ec1f984eaf5c830416757404749359cfda1ee95ed49a1",
+      "functions": 2,
+      "passed": true
+    },
+    "reporter_body": {
+      "path": "auxiliary_assembly/manifest.json",
+      "sha256": "9e20e984fdfef5c59580288bda379d404308f991861cc198baa0f463dab05d7d",
+      "functions": 1,
+      "passed": true
+    }
+  },
+  "validation_artifact_sha256": {
+    "docker_validation_final.json": "092c538ef65995c876c9a82527a776dd0f24f1c072e304e0542cf000fdb08511",
+    "assembly_comparison_stock.json": "ee6a3fb22689f7ca695b817a7675ce9620c649457f9e1689971e4f57cb900a50",
+    "assembly_comparison_reporter_body.json": "48eb6f6ab03abe809444ea30cc3b67946e59e2711d02c18056c51cf9f1a13754",
+    "candidate_assembly/manifest.json": "95df3794b3b45f6af8fed63c24dfd3e7127946b5a7e5c888429c65c2fee072ac",
+    "helper_assembly/manifest.json": "d2d04c47b2ce372b9e3ec1f984eaf5c830416757404749359cfda1ee95ed49a1",
+    "auxiliary_assembly/manifest.json": "9e20e984fdfef5c59580288bda379d404308f991861cc198baa0f463dab05d7d"
+  },
+  "independent_review": "NOT_PERFORMED",
+  "hardware_validation": "PENDING; ADB listed no attached device during this work.",
+  "remaining_lifetime_finding": "gpio_keys_shutdown still calls suspend without draining pending work/timers; no detach use-after-free was identified, and the shutdown-window question remains open."
+}

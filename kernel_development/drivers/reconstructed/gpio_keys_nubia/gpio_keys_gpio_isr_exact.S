@@ -22,7 +22,8 @@ gpio_keys_gpio_isr:
     .inst 0xf9414900
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, pm_stay_awake
-    .inst 0x39442a68
+    b .Lgpio_keys_gpio_isr_read_suspended
+.Lgpio_keys_gpio_isr_after_suspended:
     .inst 0x7100051f
     .inst 0x54000121
     .inst 0xb9401a88
@@ -53,4 +54,10 @@ gpio_keys_gpio_isr:
     .inst 0xd50323bf
     .inst 0xd65f03c0
     .inst 0xd4210000
+.Lgpio_keys_gpio_isr_read_suspended:
+    add x0, x19, #0x10a
+    .inst 0x94000000
+    .reloc .-4, R_AARCH64_CALL26, gpio_keys_suspended_read_serialized
+    mov w8, w0
+    b .Lgpio_keys_gpio_isr_after_suspended
 .size gpio_keys_gpio_isr, .-gpio_keys_gpio_isr

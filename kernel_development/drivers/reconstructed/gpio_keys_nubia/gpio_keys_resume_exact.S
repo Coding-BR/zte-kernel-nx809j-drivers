@@ -43,7 +43,8 @@ gpio_keys_resume:
     .inst 0xeb0902df
     .inst 0x540009ea
     .inst 0xb94002e0
-    .inst 0x39013aff
+    b .Lgpio_keys_resume_write_suspended_false
+.Lgpio_keys_resume_after_write_false:
     .inst 0x94000000
     .reloc .-4, R_AARCH64_CALL26, irq_get_irq_data
     .inst 0xf9400808
@@ -160,4 +161,11 @@ gpio_keys_resume:
     .inst 0xa8c47bfd
     .inst 0xd50323bf
     .inst 0xd65f03c0
+.Lgpio_keys_resume_write_suspended_false:
+    add x0, x23, #0x4e
+    mov w1, wzr
+    .inst 0x94000000
+    .reloc .-4, R_AARCH64_CALL26, gpio_keys_suspended_write_serialized
+    ldr w0, [x23]
+    b .Lgpio_keys_resume_after_write_false
 .size gpio_keys_resume, .-gpio_keys_resume
