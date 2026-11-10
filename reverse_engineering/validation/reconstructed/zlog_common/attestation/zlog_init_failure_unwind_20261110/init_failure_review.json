@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-10T21:17:02.332962+00:00",
+  "driver": "zlog_common",
+  "scope": "static stock/Ghidra and target-kernel API review; no runtime failure injection",
+  "stock_module": {
+    "path": "C:\\w_haptic_remove_c6\\reference_modules\\full_vendor_boot\\zlog_common.ko",
+    "sha256": "cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0"
+  },
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zlog_common/zlog_common.ko",
+    "sha256": "633ca1d22cacf6ebe70b7520896c55d9a9df7a9ee6da30112439b36dbddb5779",
+    "size": 248368,
+    "source_sha256": "b030cddb6929cfa317ed2d9f628a208ff55f903a63124e292ddb718ca3ca9245"
+  },
+  "ghidra_stock_evidence": {
+    "init_module": {
+      "entry": "00101268",
+      "instruction_count": 65,
+      "body_bytes": 260
+    },
+    "zlog_comm_create_ctrl_dev": {
+      "entry": "0010136c",
+      "instruction_count": 35,
+      "body_bytes": 140
+    },
+    "hashes": {
+      "init_module_pseudocode": "5a44229da438c1a43119beb3313422069746aaadbd630652487cbb9a3a8979a0",
+      "init_module_pcode": "613aa3bfec1a42fd0079a63f99b9e2f0ce8eee6a6762c43d5d33163e2c05d8d4",
+      "init_module_stock_assembly": "246a106eac66123abb832c785c3577af0a9449b30e81f64133107c7762bbf119",
+      "create_ctrl_dev_pseudocode": "1f6ce95572bf4628ec50c12f546b895be9cdb4b5ce28c7873fdb1a99a7c053b6",
+      "create_ctrl_dev_pcode": "030ab61011d69a34d06c00a83c2bb37380e3326ac48bcf5013ce99387464da8d",
+      "create_ctrl_dev_stock_assembly": "8362a6edad5f5f67dd201101d349950d30d9695afc7f56a4476b9c55a31a8121",
+      "notify_pseudocode": "9828e8f2f95e440875ba3dd3ba76f4f97eb2de0063c7b4b722ef1d1bf1512d68",
+      "notify_pcode": "bb30ab9d4329211d136b91a2ef3564b4e378684af5ed394ede6b26a7bb9a8553",
+      "notify_stock_assembly": "7ed2df11ae98808c6735b8bdf439225fc73b6cef7fa5d63ef255c26b52da6e6c"
+    }
+  },
+  "findings": [
+    {
+      "id": "unchecked_workqueue_allocation",
+      "stock_behavior": "init_module calls alloc_workqueue without checking its return value, then initializes delayed work, marks the server initialized, and returns success.",
+      "risk_basis": "The stock notifier can pass the global workqueue to delayed-work APIs. Exact target kernel code warns on a null queue, stores it in delayed_work, and arms a timer; later callback behavior is not runtime-verified here.",
+      "correction": "Candidate returns -ENOMEM if alloc_workqueue fails and does not publish the misc device or initialized flag."
+    },
+    {
+      "id": "misc_device_registration_error_discarded",
+      "stock_behavior": "zlog_comm_create_ctrl_dev silently returns on kstrdup failure and only logs misc_register failure; its void return cannot fail module initialization.",
+      "risk_basis": "Module initialization may report success without an available control device.",
+      "correction": "Candidate helper returns -ENOMEM or the misc_register error, frees and nulls the allocated name on registration failure, and the initializer destroys the not-yet-queued workqueue before returning the error."
+    }
+  ],
+  "target_kernel": {
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "source_revision": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "workqueue_c_sha256": "192be8175ff7fed8445758f98a18fc67e88245801ee75f84378af82fda3dd46e",
+    "misc_c_sha256": "0e6017b294d6dbd395c383de3d17a9171ef898de65fc52bbc98e883295b4922a",
+    "module_main_c_sha256": "59ac8a6ba1bedda5311205a834a4210d2f4f37f37d67afac8f872f5b1a5f3354",
+    "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+    "destroy_workqueue": {
+      "crc": "0xc3325950",
+      "export": "EXPORT_SYMBOL_GPL",
+      "module_license": "GPL v2",
+      "modpost_accepted": true
+    },
+    "normal_unload_without_exit": "target kernel rejects ordinary unload when init exists but exit does not, unless force-unload is requested; this batch does not add module_exit"
+  },
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "clang_revision": "clang-r536225",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "clean_builds": [
+      {
+        "cycle": 1,
+        "sha256": "633ca1d22cacf6ebe70b7520896c55d9a9df7a9ee6da30112439b36dbddb5779",
+        "size": 248368
+      },
+      {
+        "cycle": 2,
+        "sha256": "633ca1d22cacf6ebe70b7520896c55d9a9df7a9ee6da30112439b36dbddb5779",
+        "size": 248368
+      }
+    ],
+    "reproducible": true
+  },
+  "static_comparison": {
+    "assembly_identities_checked": 13,
+    "stock_exact_count": 5,
+    "declared_deviation_count": 8,
+    "nonexact_stock_functions": [
+      "init_module",
+      "zlog_client_notify",
+      "zlog_client_record",
+      "zlog_comm_create_ctrl_dev",
+      "zlog_handle_work",
+      "zlog_register_client",
+      "zlog_reset_client",
+      "zlog_unregister_client"
+    ],
+    "registration_stock_helper": {
+      "passed": true,
+      "instruction_count": 207,
+      "body_bytes": 828
+    },
+    "kcfi": {
+      "passed": true,
+      "identities_checked": 13,
+      "size_is_gating": false
+    }
+  },
+  "final_pipeline": {
+    "report": "docker_validation_final.json",
+    "status": "incomplete_or_failed",
+    "errors": [
+      "module parity check failed: undefined_symbols_match"
+    ],
+    "unexpected_imports": [
+      "destroy_workqueue"
+    ],
+    "candidate_hash_binding": true,
+    "reproducible_build": true,
+    "kernel_source_identity": true,
+    "target_vermagic": true,
+    "runtime_content_layout_and_modinfo_match_fresh_build": true
+  },
+  "review_state": {
+    "runtime_failure_reproduced": false,
+    "device_test": "NOT_RUN",
+    "independent_human_review": "PENDING",
+    "complete_reconstruction_claim": false
+  }
+}

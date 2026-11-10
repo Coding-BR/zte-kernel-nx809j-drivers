@@ -51,7 +51,7 @@ extern void zlog_handle_work(struct work_struct *work);
 #else
 static void zlog_handle_work(struct work_struct *work);
 #endif
-static noinline void __init zlog_comm_create_ctrl_dev(void);
+static noinline int __init zlog_comm_create_ctrl_dev(void);
 
 void zlog_client_notify(struct zlog_client *client, int event)
 {
@@ -486,37 +486,55 @@ static const struct file_operations zlog_comm_fops = {
 	.release = zlog_comm_release,
 };
 
-static noinline void __init zlog_comm_create_ctrl_dev(void)
+static noinline int __init zlog_comm_create_ctrl_dev(void)
 {
 	int ret;
 
 	g_zlog_server.miscdev.minor = MISC_DYNAMIC_MINOR;
 	g_zlog_server.miscdev.name = kstrdup("zlog_comm", GFP_KERNEL);
-	if (!g_zlog_server.miscdev.name)
-		return;
+	if (!g_zlog_server.miscdev.name) {
+		pr_err("ZLOG_COMM: %s: failed to allocate misc device name\n",
+		       __func__);
+		return -ENOMEM;
+	}
 	g_zlog_server.miscdev.fops = &zlog_comm_fops;
 	g_zlog_server.miscdev.parent = NULL;
 	ret = misc_register(&g_zlog_server.miscdev);
-	if (ret)
+	if (ret) {
 		pr_err("ZLOG_COMM: %s: failed to register misc device for log '%s'!\n",
 		       __func__, g_zlog_server.miscdev.name);
-	else
-		pr_info("ZLOG_COMM: %s: created zlog '%s'\n",
-			__func__, g_zlog_server.miscdev.name);
+		kfree(g_zlog_server.miscdev.name);
+		g_zlog_server.miscdev.name = NULL;
+		return ret;
+	}
+	pr_info("ZLOG_COMM: %s: created zlog '%s'\n",
+		__func__, g_zlog_server.miscdev.name);
+	return 0;
 }
 
 static int __init zlog_common_init(void)
 {
 	unsigned int i;
+	int ret;
 
 	memset(&g_zlog_server, 0, sizeof(g_zlog_server));
 	for (i = 0; i < ZLOG_CLIENT_MAX; i++)
 		mutex_init(&g_zlog_server.client_list[i].client_lock);
-	zlog_comm_create_ctrl_dev();
 	g_zlog_server.workqueue = alloc_workqueue("%s", 0x6000a, 1,
 						  "zlog_handle_service");
+	if (!g_zlog_server.workqueue) {
+		pr_err("ZLOG_COMM: %s: failed to allocate report workqueue\n",
+		       __func__);
+		return -ENOMEM;
+	}
 	INIT_DELAYED_WORK(&g_zlog_server.report_work, zlog_handle_work);
 	atomic_set(&g_zlog_server.use_count, 0);
+	ret = zlog_comm_create_ctrl_dev();
+	if (ret) {
+		destroy_workqueue(g_zlog_server.workqueue);
+		g_zlog_server.workqueue = NULL;
+		return ret;
+	}
 	g_zlog_server.init_flags = 1;
 	pr_info("ZLOG_COMM: %s: %s called\n", __func__, __func__);
 	return 0;
