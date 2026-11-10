@@ -33,6 +33,20 @@ DEFINE_MUTEX(zlog_lifetime_lock);
 #endif
 
 #ifdef ZLOG_COMMON_EXACT
+extern struct zlog_client *zlog_register_client_stock(
+	struct zlog_mod_info *module);
+
+struct zlog_client *zlog_register_client(struct zlog_mod_info *module)
+{
+	struct zlog_client *client;
+
+	/* Serialize duplicate detection, slot selection and publication. */
+	mutex_lock(&zlog_lifetime_lock);
+	client = zlog_register_client_stock(module);
+	mutex_unlock(&zlog_lifetime_lock);
+	return client;
+}
+
 extern void zlog_handle_work(struct work_struct *work);
 #else
 static void zlog_handle_work(struct work_struct *work);

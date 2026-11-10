@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "driver": "zlog_common",
+  "review_date": "2026-11-10",
+  "stage": "offline_static_lifetime_synchronization_review",
+  "finding": {
+    "id": "zlog_register_client_slot_selection_toctou",
+    "classification": "potential_concurrent_registration_race",
+    "runtime_reproduced": false,
+    "stock": {
+      "module": "reference_modules/full_vendor_boot/zlog_common.ko",
+      "module_sha256": "cc84a3119927bc189fb60a2d2d5e339e93e5ab0bb127316a1fd4f4ccfcad8da0",
+      "function": "zlog_register_client",
+      "entry": "00100644",
+      "body_bytes": 828,
+      "instruction_count": 207,
+      "pseudocode": "reverse_engineering/validation/reconstructed/zlog_common/offline_static/ghidra_stock/decompiled/0002_00100644_zlog_register_client.c",
+      "pseudocode_sha256": "a946028e2c513c1e80e94ba44c1e9e919ee14371f838a6e368f5c31eb02c4a7d",
+      "pcode": "reverse_engineering/validation/reconstructed/zlog_common/offline_static/ghidra_stock/pcode/0002_00100644_zlog_register_client.jsonl",
+      "pcode_sha256": "ba8010441bac383ad2bbeb68a77083272fbe1ca7980248b767caabd2276ce640",
+      "assembly": "reverse_engineering/validation/reconstructed/zlog_common/offline_static/stock_assembly/0002_zlog_register_client_00100644.asm",
+      "assembly_sha256": "b09af131e7b67f644f32ad439c9d006d88e21cc88e319df70d43790134166f5b",
+      "kcfi_type_id": "0x09fbc74f"
+    },
+    "interleaving": [
+      "Callers A and B both scan the client table for an existing module identity; each releases every per-client mutex after checking and both find no match.",
+      "Both callers scan for the first unused slot. Caller A observes slot 0 as unregistered and unlocks it; caller B can observe the same state and also selects slot 0.",
+      "Caller A reacquires slot 0, allocates record_buffer A, fills the module identity, marks the slot registered and returns the slot pointer.",
+      "Caller B then reacquires slot 0 without rechecking registered, allocates record_buffer B and overwrites the slot pointer and identity. The first allocation becomes unreachable; both callers hold the same slot for different registration operations."
+    ],
+    "impact": "A simultaneous probe/open registration can leak the first record buffer and alias two registrations to one mutable client slot. Later record, notify or unregister operations can act on the wrong module identity or invalidate the other caller's client state.",
+    "evidence_scope": "The Ghidra pseudocode, P-Code and stock AArch64 body show separate duplicate lookup, unused-slot lookup and publication phases; the selected slot is locked for publication but registered is not rechecked after that lock is acquired. This establishes a possible interleaving, not that it has occurred on the phone."
+  },
+  "correction": {
+    "public_wrapper": "zlog_register_client in zlog_common.c",
+    "stock_body_symbol": "zlog_register_client_stock in zlog_register_client_exact.S",
+    "serialization": "The wrapper holds zlog_lifetime_lock across the complete stock body, making duplicate lookup, slot selection, allocation and publication atomic against other registrations, unregister and report work.",
+    "lock_order": "zlog_lifetime_lock -> client_lock, matching zlog_unregister_client and zlog_handle_work. Record, notify and reset paths take client_lock only; static source/call-graph review found no client_lock -> zlog_lifetime_lock path.",
+    "stock_body_preserved": true,
+    "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION"
+  },
+  "validation": {
+    "source_sha256": "dcb63f027ecb0ce12a3894ab7939d8373b33c430f82abd7b3cdfd41f7b4af636",
+    "assembly_source_sha256": "256306a0a10b2edb41f3fece8fdcb10e6f3b056c0e9f65a420ff476ee9b3a6f8",
+    "candidate_module_sha256": "717730eb013be53ebeef1f8cc4a4be473c5c0e52f4efd2bac352179eaac69119",
+    "candidate_module_size_bytes": 247056,
+    "docker": {
+      "clean_build_count": 2,
+      "first_build_sha256": "717730eb013be53ebeef1f8cc4a4be473c5c0e52f4efd2bac352179eaac69119",
+      "second_build_sha256": "717730eb013be53ebeef1f8cc4a4be473c5c0e52f4efd2bac352179eaac69119",
+      "reproducible": true,
+      "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+      "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+      "source_identity": "MATCH",
+      "target_vermagic": "ACCEPTED",
+      "final_validator_status": "static_verified",
+      "final_validator_errors": [],
+      "final_validator_warnings": [],
+      "final_report": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_register_serialization_20261110/docker_validation_final.json",
+      "pre_promotion_report": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_register_serialization_20261110/docker_validation_rebuild.json",
+      "pre_promotion_report_status": "incomplete_or_failed_due_to_old_candidate_hash; superseded by final report after candidate sync"
+    },
+    "assembly": {
+      "full_module_functions_checked": 13,
+      "stock_exact_functions": 7,
+      "declared_hardening_deviations": 6,
+      "registration_stock_helper_exact": true,
+      "registration_helper_instruction_count": 207,
+      "registration_helper_bytes": 828,
+      "public_wrapper_instruction_count": 19,
+      "public_wrapper_bytes": 76,
+      "full_comparison": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_register_serialization_20261110/assembly_comparison_all.json",
+      "helper_comparison": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_register_serialization_20261110/assembly_stock-helper.json",
+      "wrapper_comparison_expected_deviation": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_register_serialization_20261110/assembly_public-wrapper.json"
+    },
+    "kcfi": {
+      "stock_type_id": "0x09fbc74f",
+      "public_wrapper_type_id": "0x09fbc74f",
+      "type_match": true,
+      "comparison": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_register_serialization_20261110/kcfi_comparison.json"
+    },
+    "source_snapshot": {
+      "required_versioned_files_match": true,
+      "files_checked": [
+        "zlog_common.c",
+        "zlog_register_client_exact.S",
+        "reconstruction_map.json",
+        "STATUS.md",
+        "zlog_common.ko"
+      ],
+      "source_sync_report": "reverse_engineering/validation/reconstructed/zlog_common/attestation/zlog_register_serialization_20261110/source_sync_final.json",
+      "unversioned_outputs_preserved": [
+        "tests/out/host_test_a",
+        "tests/out/host_test_b",
+        "tests/out/host_test_report.json"
+      ]
+    },
+    "hardware_validation": "DEFERRED",
+    "independent_review": "PENDING"
+  },
+  "limitations": [
+    "No host concurrency harness or device runtime test was run for this finding.",
+    "The canonical Docker gate and static function analysis do not prove live concurrency behavior; runtime contention has not been measured.",
+    "The initial pre-promotion build report is retained; docker_validation_final.json is authoritative after candidate and map synchronization."
+  ]
+}

@@ -1,9 +1,9 @@
 .section .text,"ax",@progbits
 .align 2
-.global zlog_register_client
-.type zlog_register_client, %function
+.global zlog_register_client_stock
+.type zlog_register_client_stock, %function
     .word 0x09fbc74f
-zlog_register_client:
+zlog_register_client_stock:
     .inst 0xd503233f
     .inst 0xa9bc7bfd
     .inst 0xa9015ff8
@@ -281,4 +281,4 @@ zlog_register_client:
     .inst 0xc80a7d09
     .inst 0x35ffffaa
     .inst 0x17fffff0
-.size zlog_register_client, .-zlog_register_client
+.size zlog_register_client_stock, .-zlog_register_client_stock
