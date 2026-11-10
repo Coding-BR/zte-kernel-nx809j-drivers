@@ -15,6 +15,10 @@
 
 Recibos hash-bound: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/README.md`, `attestation.json`, `docker_validation.json`, `assembly_comparison.json`, `kcfi_comparison.json` e `module_version_crc_audit.json`. Os recibos `source_sync_kmi_fix*.json` registram a sincronização com o Docker canônico.
 
+## Revisao suplementar — retry de `probe_work` — 2026-11-10
+
+A implementacao do kernel fixado mostra que `cancel_delayed_work_sync()` desabilita temporariamente o trabalho, espera a execucao terminar e o reabilita. A fonte reconstruida agenda `probe_work` no probe inicial e, em falha, pelo proprio worker; nao foi encontrado outro produtor. A suspeita de que o retry ativo escaparia durante essa drenagem nao se confirmou. Nenhuma alteracao de fonte ou candidato foi mantida; os hashes acima continuam atuais. Evidencia: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/retry_teardown_race_review_20261110/`.
+
 ## Lote anterior — `lifetime_sync_hardening_20261104` (substituido)
 
 O candidato anterior tinha SHA-256 `37ec41388d9e6a971f15e4222e6685a926b362f7a5eff36eddd8128d5a865f6a`. Seus recibos e o harness de host permanecem em `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261104/`; nao os atribuir ao candidato atual.

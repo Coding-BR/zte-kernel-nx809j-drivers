@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "batch_id": "retry_teardown_race_review_20261110",
+  "driver": "zte_charger_policy",
+  "generated_utc": "2026-11-10T23:08:44Z",
+  "decision": "no_code_change",
+  "result": "retry_race_not_confirmed_for_current_queue_producers",
+  "source": {
+    "sha256": "ef0ff259425e6851d48f0be467eff7c004f0d13ea2aa3fec35ab60c18c98091d",
+    "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c"
+  },
+  "candidate": {
+    "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.ko",
+    "size_bytes": 331368,
+    "sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec"
+  },
+  "reconstruction_map": {
+    "sha256": "e64658685c150290856b06a930a9d02684516e8f925649d3459dc0f641e4577f",
+    "path": "kernel_development/drivers/reconstructed/zte_charger_policy/reconstruction_map.json"
+  },
+  "kernel_source": {
+    "evidence_path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/retry_teardown_race_review_20261110/kernel_workqueue_sync_excerpt.txt",
+    "volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "file": "kernel/kernel_platform/common/kernel/workqueue.c",
+    "sha256": "daf5a144b523dcbeec74d56ec6391bededc48ebf6cbdaafeec77dd127a96f387"
+  },
+  "target_export": {
+    "namespace": "",
+    "export": "EXPORT_SYMBOL_GPL",
+    "symbol": "disable_delayed_work_sync",
+    "crc": "0xba6d2f6c"
+  },
+  "semantics": [
+    "cancel_delayed_work_sync enters __cancel_work_sync with WORK_CANCEL_DELAYED.",
+    "__cancel_work_sync temporarily adds WORK_CANCEL_DISABLE, drains with __flush_work, then calls enable_work when permanent disable was not requested.",
+    "Therefore the active probe worker cannot successfully requeue itself while the synchronous cancellation drains it."
+  ],
+  "queue_sites": [
+    {
+      "role": "retry from probe_work itself",
+      "file": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c",
+      "line": 1624
+    },
+    {
+      "role": "initial queue from probe",
+      "file": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c",
+      "line": 1818
+    }
+  ],
+  "source_sync": {
+    "passed": true,
+    "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/retry_teardown_race_review_20261110/source_sync.json",
+    "sha256": "7d298e899e0a7b3e3f505a8301f2cff4602ba6a903f9db69eee5156c8acf1ddb"
+  },
+  "code_changed": false,
+  "candidate_changed": false,
+  "hardware_validation": "NOT_RUN",
+  "independent_review": "PENDING",
+  "scope": "Static review of probe_work queue producers and the pinned kernel workqueue cancellation semantics.",
+  "limitation": "This review does not establish runtime behavior on the NX809J; it rejects only the specific self-requeue-during-cancel hypothesis."
+}
