@@ -1,5 +1,13 @@
 # Status de Reconstrucao e Validacao do Driver `zte_tpd`
 
+## Reconciliação completa do snapshot e rebuild canônico — 2026-11-11
+
+- Auditoria do snapshot encontrou 73 arquivos versionados com conteúdo diferente no Docker, incluindo fontes, unidades Assembly, microtarefas, status e mapa. A sincronização copiou 73 arquivos e removeu zero; a verificação posterior não encontrou diferenças.
+- Dois builds limpos no Docker canônico produziram SHA-256 `43a470c39c92f063c0fb42dec7a70277dfbde1ec681db8eb4e7c81dad8cbc5c1` (7.276.328 bytes), iguais entre si. O candidato versionado/curado permanece `05169eb97da2317d87b6921c946bd3970d3d111c4ba708a04378668a99d1e251` (7.276.320 bytes), ligado ao mapa.
+- O conteúdo de runtime e o layout das seções de runtime coincidem entre o candidato e o rebuild. As diferenças de artefato ficaram no `.note.gnu.build-id`, seções de debug/relocations de debug e `.symtab`; nenhum módulo foi promovido.
+- A auditoria permanece `incomplete_or_failed`: paridade estrita de imports difere por nove imports adicionais e `remove_proc_entry` ausente, e 35 mapeamentos de hardening continuam sem revisão independente. A rastreabilidade dos 367 símbolos Ghidra passou. Nenhuma equivalência integral ou validação de hardware é alegada.
+- Evidência: `reverse_engineering/validation/reconstructed/zte_tpd/attestation/syna_mmap_vma_lifetime_review_20261111/` e inventário global `reverse_engineering/validation/reconstructed/driver_inventory_post_zte_tpd_sync_20261111.md`.
+
 ## Estado atual — 2026-11-03
 
 - **Classificação do mapa:** `PARTIAL_SOURCE_MAP`; revisão `PASS_WITH_HARDENING_DEVIATION`;

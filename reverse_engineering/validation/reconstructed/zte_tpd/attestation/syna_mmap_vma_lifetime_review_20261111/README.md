@@ -34,3 +34,11 @@
 - Não houve mudança de fonte, mapa, candidato ou snapshot; por isso não foi executado novo build Docker. O estado geral continua incompleto.
 
 Evidência estruturada e hashes: `review.json`.
+
+## Follow-up: reconciliação do snapshot e rebuild canônico — 2026-11-11
+
+Uma auditoria integral posterior encontrou 73 arquivos versionados divergentes no snapshot curado, além das oito fontes examinadas na revisão original. A sincronização copiou 73 arquivos, removeu zero, e o dry-run posterior confirmou zero diferenças. Depois de registrar o rebuild no `STATUS.md`, uma sincronização adicional copiou somente esse documento e a verificação seguinte confirmou novamente zero diferenças. Relatórios: `curated_sync_dryrun_20261111.json`, `curated_sync_applied_20261111.json`, `curated_sync_verified_20261111.json` e `status_sync_*_20261111.json`.
+
+Dois builds limpos no Docker canônico produziram o mesmo SHA-256 `43a470c39c92f063c0fb42dec7a70277dfbde1ec681db8eb4e7c81dad8cbc5c1`, 7.276.328 bytes. O candidato curado continua no SHA-256 `05169eb97da2317d87b6921c946bd3970d3d111c4ba708a04378668a99d1e251`, 7.276.320 bytes. A comparação confirmou conteúdo de runtime e layout das seções de runtime idênticos; as diferenças observadas foram `.note.gnu.build-id`, seções de debug/relocations de debug e `.symtab`. O rebuild não foi promovido.
+
+A auditoria continua `incomplete_or_failed`: nove imports adicionais e o import `remove_proc_entry` ausente deixam a paridade estrita incompleta, e 35 desvios de hardening no mapa aguardam revisão independente. A rastreabilidade das 367 identidades Ghidra passou. O inventário global pós-sincronização está em `../../../driver_inventory_post_zte_tpd_sync_20261111.md`; o relatório integral do build está em `docker_validation_20261111.json` e `.md`.
