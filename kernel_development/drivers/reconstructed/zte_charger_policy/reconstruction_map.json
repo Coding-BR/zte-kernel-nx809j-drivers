@@ -3,7 +3,7 @@
   "driver": "zte_charger_policy",
   "candidate_sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec",
   "stock_sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c",
-  "generated_utc": "2026-11-10T18:39:41.416639+00:00",
+  "generated_utc": "2026-11-11T01:11:51.668156+00:00",
   "mappings": [
     {
       "evidence": [
@@ -449,19 +449,25 @@
         "attestation/next989_zte_charger_policy_get_status_exact_v1/kcfi/comparison.json",
         "attestation/next989_zte_charger_policy_get_status_exact_v1/host_test_report.json",
         "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261104/assembly_comparison.json",
-        "current-candidate-assembly:reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/assembly_comparison.json#charger_policy_get_status@00101b04"
+        "current-candidate-assembly:reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/assembly_comparison.json#charger_policy_get_status@00101b04",
+        "attestation/power_supply_ref_cleanup_20261110/source_sync_applied.json",
+        "attestation/power_supply_ref_cleanup_20261110/reference_lifetime_review.json",
+        "attestation/power_supply_ref_cleanup_20261110/canonical_docker/driver_audit.json",
+        "attestation/power_supply_ref_cleanup_20261110/hard_protocol_core_public_evidence/hard_protocol_report.json",
+        "attestation/power_supply_ref_cleanup_20261110/hard_protocol_core_public_evidence/kcfi/comparison_type_id_only.json",
+        "attestation/power_supply_ref_cleanup_20261110/hard_protocol_core_final/hard_protocol_report.json"
       ],
       "source_file": "zte_charger_policy.c",
       "source_function": "charger_policy_get_status",
-      "status": "reviewed",
+      "status": "candidate_under_static_validation",
       "stock_entry": "00101b04",
       "stock_function": "charger_policy_get_status",
       "stock_pseudocode": "decompiled/0019_00101b04_charger_policy_get_status.c",
-      "review_scope": "current_candidate_static_review_not_exact",
+      "review_scope": "reference_lifetime_fix_static_validation_incomplete",
       "semantic_equivalence": "NOT_ESTABLISHED",
-      "attestation": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110",
-      "mapping_basis": "Ghidra stock evidence reviewed; current candidate assembly comparison and hardening batch attestation are hash-bound; strict offline exactness is not claimed.",
-      "mapping_note": "Current candidate SHA-256 2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec fails strict AArch64 comparison: relocations. This mapping remains reviewed only. Evidence: reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/assembly_comparison.json. Independent review and NX809J hardware validation remain pending."
+      "attestation": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/power_supply_ref_cleanup_20261110",
+      "mapping_basis": "Stock Ghidra/assembly shows the provider reference is put on success but omitted on negative get_property. The reconstruction intentionally adds the required error-path put; this is a lifetime correction, not a claim of stock semantic equivalence.",
+      "mapping_note": "Two pinned Docker build paths and strict Joern/slices are recorded in attestation/power_supply_ref_cleanup_20261110. KCFI type IDs match with body size ignored; strict assembly differs at the intended cleanup instructions. The active .ko remains the previous hash because full-driver KMI parity is incomplete; independent review, host harness and device validation remain pending."
     },
     {
       "evidence": [
@@ -471,19 +477,25 @@
         "attestation/next990_zte_charger_policy_get_prop_by_name_exact_v1/kcfi/comparison.json",
         "attestation/next990_zte_charger_policy_get_prop_by_name_exact_v1/host_test_report.json",
         "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261104/assembly_comparison.json",
-        "current-candidate-assembly:reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/assembly_comparison.json#charger_policy_get_prop_by_name@00101bd8"
+        "current-candidate-assembly:reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/assembly_comparison.json#charger_policy_get_prop_by_name@00101bd8",
+        "attestation/power_supply_ref_cleanup_20261110/source_sync_applied.json",
+        "attestation/power_supply_ref_cleanup_20261110/reference_lifetime_review.json",
+        "attestation/power_supply_ref_cleanup_20261110/canonical_docker/driver_audit.json",
+        "attestation/power_supply_ref_cleanup_20261110/hard_protocol_core_public_evidence/hard_protocol_report.json",
+        "attestation/power_supply_ref_cleanup_20261110/hard_protocol_core_public_evidence/kcfi/comparison_type_id_only.json",
+        "attestation/power_supply_ref_cleanup_20261110/hard_protocol_core_final/hard_protocol_report.json"
       ],
       "source_file": "zte_charger_policy.c",
       "source_function": "charger_policy_get_prop_by_name",
-      "status": "reviewed",
+      "status": "candidate_under_static_validation",
       "stock_entry": "00101bd8",
       "stock_function": "charger_policy_get_prop_by_name",
       "stock_pseudocode": "decompiled/0020_00101bd8_charger_policy_get_prop_by_name.c",
-      "review_scope": "current_candidate_static_review_not_exact",
+      "review_scope": "reference_lifetime_fix_static_validation_incomplete",
       "semantic_equivalence": "NOT_ESTABLISHED",
-      "attestation": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110",
-      "mapping_basis": "Ghidra stock evidence reviewed; current candidate assembly comparison and hardening batch attestation are hash-bound; strict offline exactness is not claimed.",
-      "mapping_note": "Current candidate SHA-256 2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec fails strict AArch64 comparison: relocations. This mapping remains reviewed only. Evidence: reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/assembly_comparison.json. Independent review and NX809J hardware validation remain pending."
+      "attestation": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/power_supply_ref_cleanup_20261110",
+      "mapping_basis": "Stock Ghidra/assembly shows the provider reference is put on success but omitted on negative get_property. The reconstruction intentionally adds the required error-path put; this is a lifetime correction, not a claim of stock semantic equivalence.",
+      "mapping_note": "Two pinned Docker build paths and strict Joern/slices are recorded in attestation/power_supply_ref_cleanup_20261110. KCFI type IDs match with body size ignored; strict assembly differs at the intended cleanup instructions. The active .ko remains the previous hash because full-driver KMI parity is incomplete; independent review, host harness and device validation remain pending."
     },
     {
       "evidence": [
@@ -537,19 +549,25 @@
         "attestation/next990_zte_charger_policy_zte_get_prop_by_name_exact_v1/kcfi/comparison.json",
         "attestation/next990_zte_charger_policy_zte_get_prop_by_name_exact_v1/host_test_report.json",
         "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261104/assembly_comparison.json",
-        "current-candidate-assembly:reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/assembly_comparison.json#zte_charger_policy_get_prop_by_name@00102020"
+        "current-candidate-assembly:reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/assembly_comparison.json#zte_charger_policy_get_prop_by_name@00102020",
+        "attestation/power_supply_ref_cleanup_20261110/source_sync_applied.json",
+        "attestation/power_supply_ref_cleanup_20261110/reference_lifetime_review.json",
+        "attestation/power_supply_ref_cleanup_20261110/canonical_docker/driver_audit.json",
+        "attestation/power_supply_ref_cleanup_20261110/hard_protocol_core_public_evidence/hard_protocol_report.json",
+        "attestation/power_supply_ref_cleanup_20261110/hard_protocol_core_public_evidence/kcfi/comparison_type_id_only.json",
+        "attestation/power_supply_ref_cleanup_20261110/hard_protocol_core_final/hard_protocol_report.json"
       ],
       "source_file": "zte_charger_policy.c",
       "source_function": "zte_charger_policy_get_prop_by_name",
-      "status": "reviewed",
+      "status": "candidate_under_static_validation",
       "stock_entry": "00102020",
       "stock_function": "zte_charger_policy_get_prop_by_name",
       "stock_pseudocode": "decompiled/0023_00102020_zte_charger_policy_get_prop_by_name.c",
-      "review_scope": "current_candidate_static_review_not_exact",
+      "review_scope": "reference_lifetime_fix_static_validation_incomplete",
       "semantic_equivalence": "NOT_ESTABLISHED",
-      "attestation": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110",
-      "mapping_basis": "Ghidra stock evidence reviewed; current candidate assembly comparison and hardening batch attestation are hash-bound; strict offline exactness is not claimed.",
-      "mapping_note": "Current candidate SHA-256 2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec fails strict AArch64 comparison: relocations. This mapping remains reviewed only. Evidence: reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_hardening_20261110/assembly_comparison.json. Independent review and NX809J hardware validation remain pending."
+      "attestation": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/power_supply_ref_cleanup_20261110",
+      "mapping_basis": "Stock Ghidra/assembly shows the provider reference is put on success but omitted on negative get_property. The reconstruction intentionally adds the required error-path put; this is a lifetime correction, not a claim of stock semantic equivalence.",
+      "mapping_note": "Two pinned Docker build paths and strict Joern/slices are recorded in attestation/power_supply_ref_cleanup_20261110. KCFI type IDs match with body size ignored; strict assembly differs at the intended cleanup instructions. The active .ko remains the previous hash because full-driver KMI parity is incomplete; independent review, host harness and device validation remain pending."
     },
     {
       "evidence": [

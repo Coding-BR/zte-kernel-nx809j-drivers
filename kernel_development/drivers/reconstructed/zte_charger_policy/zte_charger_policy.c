@@ -206,6 +206,7 @@ static __used int charger_policy_get_prop_by_name_model(const char *name, unsign
 	ret = power_supply_get_property(psy, prop, &pval);
 	if (ret < 0) {
 		pr_info("policy: %s(): get property %u failed from %s\n", "charger_policy_get_prop_by_name", prop, name);
+		power_supply_put(psy);
 		return ret;
 	}
 
@@ -242,6 +243,7 @@ static __used int zte_charger_policy_get_prop_by_name_model(const char *name, un
 	ret = zte_power_supply_get_property(psy, prop, &pval);
 	if (ret < 0) {
 		pr_info("policy: %s(): get property %u failed from %s\n", "zte_charger_policy_get_prop_by_name", prop, name);
+		zte_power_supply_put(psy);
 		return ret;
 	}
 
@@ -1525,6 +1527,7 @@ static __used bool charger_policy_get_status_model(void)
 	ret = power_supply_get_property(psy, POWER_SUPPLY_PROP_AUTHENTIC, &pval);
 	if (ret < 0) {
 		pr_info("policy: %s(): get property %u failed from %s\n", "charger_policy_get_status", POWER_SUPPLY_PROP_AUTHENTIC, "policy");
+		power_supply_put(psy);
 		return false;
 	}
 

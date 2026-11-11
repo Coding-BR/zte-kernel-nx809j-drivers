@@ -1,9 +1,20 @@
 # Status do Driver `zte_charger_policy`
 
-## Estado atual — lote `lifetime_sync_hardening_20261110`
+## Estado atual — lote `power_supply_ref_cleanup_20261110`
 
-- Fonte atual: SHA-256 `ef0ff259425e6851d48f0be467eff7c004f0d13ea2aa3fec35ab60c18c98091d`.
-- Candidato: SHA-256 `2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec` (331368 bytes), sincronizado entre o repositorio e o snapshot curado do Docker. O mapa declara o mesmo hash.
+- Fonte atual: SHA-256 `8c2efe95c8d244873a49283441cacaa8ea9f0cff804b9cddb810fa3e58a6aa51`.
+- Candidato `.ko` ativo continua no SHA-256 `2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec` (331.368 bytes), anterior à fonte atual; não foi substituído.
+- O candidato recém-compilado, ainda não promovido, está em `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/power_supply_ref_cleanup_20261110/fresh_candidate_unpromoted.ko`: SHA-256 `4465ab8dc3cc09335a0f361ce28e2d6f3fa1602e77d0d89960b647fc5d439760` (331.704 bytes). As duas compilações do protocolo e as duas do snapshot Docker canônico produziram o mesmo hash; identidade kernel/toolchain e `vermagic` NX809J passaram.
+- Corrigidos os caminhos de erro nas entradas stock `00101b04`, `00101bd8` e `00102020`: cada chamada que obteve referência agora a libera quando `get_property` falha; o errno/log e o retorno stock são preservados.
+- Joern estrito e slices: PASS. KCFI: os IDs/tipos coincidem com tamanho de corpo ignorado; os tamanhos aumentaram pelos caminhos de cleanup. Assembly estrito: FAIL 3/3 em opcodes/tamanho de símbolo, com seção e relocations correspondentes.
+- A paridade KMI do módulo permanece incompleta: seis imports inesperados e dois ausentes, iguais ao delta de hardening já descrito no baseline. `power_supply_put` e `zte_power_supply_put` já eram imports usados pelos caminhos stock de sucesso; a correção não adiciona novos imports.
+- Equivalência semântica com o stock não estabelecida, pois a correção remove intencionalmente o vazamento. Revisão independente, harness de host e teste no smartphone permanecem pendentes. Nenhum módulo foi carregado no aparelho.
+- Gates e hashes: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/power_supply_ref_cleanup_20261110/README.md` e `reference_lifetime_review.json`.
+
+## Baseline anterior à correção — lote `lifetime_sync_hardening_20261110`
+
+- Fonte naquele baseline: SHA-256 `ef0ff259425e6851d48f0be467eff7c004f0d13ea2aa3fec35ab60c18c98091d`.
+- Candidato daquele baseline: SHA-256 `2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec` (331368 bytes), sincronizado entre o repositorio e o snapshot curado do Docker. O mapa declara o mesmo hash.
 - Docker canonico NX809J: duas builds limpas produziram o mesmo hash do candidato; identidade do kernel/toolchain, ELF AArch64 relocavel, vermagic do alvo, aliases, namespaces, conteudo das secoes runtime e modinfo passaram.
 - CRC de KMI corrigido para a integração: o módulo agora importa `zte_misc_register_callback` com `0x61afab7e`, igual ao export do candidato `zte_misc` (o binário anterior esperava o CRC stock `0x9bec046c`).
 - O validador permanece `incomplete_or_failed` somente em `undefined_symbols_match`: o hardening remove `devm_kfree` e `devm_power_supply_register` e importa `alarm_cancel`, `cancel_delayed_work_sync`, `destroy_workqueue`, `power_supply_register`, `power_supply_unregister` e `zte_misc_unregister_callback`. Essa diferenca intencional ainda impede declarar o candidato estaticamente equivalente ao stock.
@@ -17,7 +28,7 @@ Recibos hash-bound: `reverse_engineering/validation/reconstructed/zte_charger_po
 
 ## Revisao suplementar — retry de `probe_work` — 2026-11-10
 
-A implementacao do kernel fixado mostra que `cancel_delayed_work_sync()` desabilita temporariamente o trabalho, espera a execucao terminar e o reabilita. A fonte reconstruida agenda `probe_work` no probe inicial e, em falha, pelo proprio worker; nao foi encontrado outro produtor. A suspeita de que o retry ativo escaparia durante essa drenagem nao se confirmou. Nenhuma alteracao de fonte ou candidato foi mantida; os hashes acima continuam atuais. Evidencia: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/retry_teardown_race_review_20261110/`.
+A implementacao do kernel fixado mostra que `cancel_delayed_work_sync()` desabilita temporariamente o trabalho, espera a execucao terminar e o reabilita. A fonte reconstruida agenda `probe_work` no probe inicial e, em falha, pelo proprio worker; nao foi encontrado outro produtor. A suspeita de que o retry ativo escaparia durante essa drenagem nao se confirmou. Nenhuma alteracao de fonte ou candidato resultou daquela revisao de retry. Os hashes citados ali pertencem ao baseline anterior à correção de power_supply_ref_cleanup_20261110. Evidencia: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/retry_teardown_race_review_20261110/`.
 
 ## Lote anterior — `lifetime_sync_hardening_20261104` (substituido)
 
@@ -62,4 +73,4 @@ Consulte `validation/zte_charger_policy/cycle_validation.json` e o guia de harne
 
 O probe agenda probe_work para 5 segundos depois; falhas podem reagendar esse trabalho. A remocao desregistra o notifier e libera policy, mas nao cancela nem drena probe_work ou o timeout_work recorrente e nao destroi suas workqueues. Um unbind durante a janela inicial ou durante retry pode deixar um callback acessar policy apos devm_kfree; o caminho de timeout tem o mesmo risco. O pseudocodigo Ghidra e o assembly stock confirmam a mesma ordem de agendamento e liberacao. E um risco estatico herdado do stock; nenhuma falha foi reproduzida em runtime.
 
-O modulo atual e o snapshot Docker curado compartilham SHA-256 1dc77ef1d5755fb218d9fcffefd6b078ca0ffcca679cffa6aff4029c184442c4 (344928 bytes), mas o hash anterior registrado neste status era diferente. As atestacoes de gates anteriores nao sao transferidas automaticamente para esta imagem; uma revalidacao completa do binario atual continua pendente. Veja a auditoria de vida util e sincronizacao (../../../../reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_risk_audit_20261103/README.md).
+Naquele retrato de 2026-11-03, o modulo e o snapshot Docker curado compartilhavam SHA-256 1dc77ef1d5755fb218d9fcffefd6b078ca0ffcca679cffa6aff4029c184442c4 (344928 bytes), mas o hash anterior registrado neste status era diferente. As atestacoes de gates anteriores nao sao transferidas automaticamente para esta imagem; uma revalidacao completa do binario atual continua pendente. Veja a auditoria de vida util e sincronizacao (../../../../reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_risk_audit_20261103/README.md).

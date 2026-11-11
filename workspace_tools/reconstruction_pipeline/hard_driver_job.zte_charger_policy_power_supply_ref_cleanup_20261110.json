@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_charger_policy",
+  "stock_sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c",
+  "profiles": [
+    "CALLBACK_ABI",
+    "STATEFUL_MEMORY",
+    "CONCURRENCY_LIFETIME"
+  ],
+  "functions": [
+    {
+      "stock_function": "charger_policy_get_status",
+      "source_function": "charger_policy_get_status",
+      "assembly_only": false,
+      "candidate_function": "charger_policy_get_status",
+      "stock_entry": "00101b04",
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "charger_policy_get_prop_by_name",
+      "source_function": "charger_policy_get_prop_by_name",
+      "assembly_only": false,
+      "candidate_function": "charger_policy_get_prop_by_name",
+      "stock_entry": "00101bd8",
+      "kcfi_required": true
+    },
+    {
+      "stock_function": "zte_charger_policy_get_prop_by_name",
+      "source_function": "zte_charger_policy_get_prop_by_name",
+      "assembly_only": false,
+      "candidate_function": "zte_charger_policy_get_prop_by_name",
+      "stock_entry": "00102020",
+      "kcfi_required": true
+    }
+  ],
+  "paths": {
+    "source_root": "kernel_development/drivers/reconstructed/zte_charger_policy",
+    "stock_module": "reference_modules/stock/zte_charger_policy.ko",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_charger_policy/reconstruction_map.json",
+    "ghidra_export": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock"
+  },
+  "docker": {
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang_revision": "clang-r536225",
+    "adapter": "generic_driver_audit",
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "cycles": 2,
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "parallelism": 1
+  },
+  "joern": {
+    "slice": {
+      "mode": "usages",
+      "parallelism": 1,
+      "min_num_calls": 1
+    },
+    "define": [
+      "__user",
+      "__init",
+      "__exit",
+      "noinline",
+      "__used"
+    ],
+    "source_view_root": "kernel_development/drivers/reconstructed/zte_charger_policy"
+  },
+  "kcfi": {
+    "ignore_size": true
+  }
+}

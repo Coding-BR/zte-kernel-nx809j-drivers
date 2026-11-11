@@ -1,0 +1,256 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-11T01:09:09.968891+00:00",
+  "driver": "zte_charger_policy",
+  "batch": "power_supply_ref_cleanup_20261110",
+  "finding": {
+    "status": "INCOMPLETE; static correction is built and hash-bound, but it is not semantically equivalent to the stock failure path and is not promoted.",
+    "stock_behavior": "Each get-by-name path holds a reference and drops it on success. The negative get_property path logs and exits without a put. The status helper returns false on this error.",
+    "api_contract": "Pinned power_supply_get_by_name increments use_cnt and documents caller power_supply_put; power_supply_put decrements use_cnt and put_device; unregister warns for retained use_cnt and documents release at final put. Reconstructed ZTE provider get-by-name/put implement the analogous use_cnt increment/decrement.",
+    "impact": "The supported finding is a leaked caller reference on each affected error return, which can retain provider device resources and trigger the unregister use_cnt warning. This evidence does not establish a use-after-free or a reproduced runtime fault.",
+    "correction": "Both the C host model and production AArch64 assembly islands now release the reference only on the negative get_property path, while preserving the original error/log/return value. The successful path continues to put exactly once.",
+    "semantic_equivalence": "NOT_ESTABLISHED; the intentional reference cleanup differs from stock behavior."
+  },
+  "functions": [
+    {
+      "stock_function": "charger_policy_get_status",
+      "entry": "00101b04",
+      "source_function": "charger_policy_get_status",
+      "stock_pseudocode": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/decompiled/0019_00101b04_charger_policy_get_status.c",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0019_charger_policy_get_status_00101b04.asm",
+      "correction": "On negative power_supply_get_property, save errno, call power_supply_put, restore errno to the logging argument, then preserve stock false return.",
+      "stock_pseudocode_evidence": {
+        "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/decompiled/0019_00101b04_charger_policy_get_status.c",
+        "sha256": "0657da6f5a600a42f30d9b4909a89fef04f5d32cf219df70c84c2d8f4d478167",
+        "size_bytes": 868
+      },
+      "stock_assembly_evidence": {
+        "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0019_charger_policy_get_status_00101b04.asm",
+        "sha256": "62e88e6978596c60f81ca795d922cd0cccd35b043c69deabdbb2763f39d7f4c1",
+        "size_bytes": 4272
+      },
+      "assembly_comparison": {
+        "passed": false,
+        "checks": {
+          "instructions": false,
+          "relocations": true,
+          "section": true,
+          "symbol_size": false
+        },
+        "stock_symbol_size": 212,
+        "candidate_symbol_size": 224,
+        "stock_instruction_count": 53,
+        "candidate_instruction_count": 56,
+        "stock_instruction_sha256": "62e88e6978596c60f81ca795d922cd0cccd35b043c69deabdbb2763f39d7f4c1",
+        "candidate_instruction_sha256": "0a8b230846bc2a8f9ae1c94b8974a073797d90d5ac7eda9bfaee36432c3f701b"
+      }
+    },
+    {
+      "stock_function": "charger_policy_get_prop_by_name",
+      "entry": "00101bd8",
+      "source_function": "charger_policy_get_prop_by_name",
+      "stock_pseudocode": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/decompiled/0020_00101bd8_charger_policy_get_prop_by_name.c",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0020_charger_policy_get_prop_by_name_00101bd8.asm",
+      "correction": "On negative power_supply_get_property, preserve errno in callee-saved w21, call power_supply_put on the held power_supply reference, then log and return the original errno.",
+      "stock_pseudocode_evidence": {
+        "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/decompiled/0020_00101bd8_charger_policy_get_prop_by_name.c",
+        "sha256": "b123ce884e7febfa80f7fd5e02e683ddfd02e335912b3aa58b2f2cbdf80c9d37",
+        "size_bytes": 1048
+      },
+      "stock_assembly_evidence": {
+        "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0020_charger_policy_get_prop_by_name_00101bd8.asm",
+        "sha256": "60bcf21b4e9a89d6fc6a523123a6f5de81166d828d211e179ff5426295a8790c",
+        "size_bytes": 4789
+      },
+      "assembly_comparison": {
+        "passed": false,
+        "checks": {
+          "instructions": false,
+          "relocations": true,
+          "section": true,
+          "symbol_size": false
+        },
+        "stock_symbol_size": 260,
+        "candidate_symbol_size": 268,
+        "stock_instruction_count": 65,
+        "candidate_instruction_count": 67,
+        "stock_instruction_sha256": "60bcf21b4e9a89d6fc6a523123a6f5de81166d828d211e179ff5426295a8790c",
+        "candidate_instruction_sha256": "7d036677e1ed5ea28d6e8cc28d9aa7152564dd38e512839cf03354ae1171d286"
+      }
+    },
+    {
+      "stock_function": "zte_charger_policy_get_prop_by_name",
+      "entry": "00102020",
+      "source_function": "zte_charger_policy_get_prop_by_name",
+      "stock_pseudocode": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/decompiled/0023_00102020_zte_charger_policy_get_prop_by_name.c",
+      "stock_assembly": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0023_zte_charger_policy_get_prop_by_name_00102020.asm",
+      "correction": "On negative zte_power_supply_get_property, preserve errno in callee-saved w21, call zte_power_supply_put on the held reference, then log and return the original errno.",
+      "stock_pseudocode_evidence": {
+        "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/decompiled/0023_00102020_zte_charger_policy_get_prop_by_name.c",
+        "sha256": "87de021733a3ac997292935636ee0eb949236496b0aa06235af6059a9ab83d04",
+        "size_bytes": 1076
+      },
+      "stock_assembly_evidence": {
+        "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0023_zte_charger_policy_get_prop_by_name_00102020.asm",
+        "sha256": "b0628f5ee7b193dd6392405cffee4709785454b0cb61f77bfd6689120ed5e865",
+        "size_bytes": 4867
+      },
+      "assembly_comparison": {
+        "passed": false,
+        "checks": {
+          "instructions": false,
+          "relocations": true,
+          "section": true,
+          "symbol_size": false
+        },
+        "stock_symbol_size": 260,
+        "candidate_symbol_size": 268,
+        "stock_instruction_count": 65,
+        "candidate_instruction_count": 67,
+        "stock_instruction_sha256": "b0628f5ee7b193dd6392405cffee4709785454b0cb61f77bfd6689120ed5e865",
+        "candidate_instruction_sha256": "6bc337fa2d823f9bc3eb89d11ff18105f0a2f2e1099fa8c0da5ac1b4c4d791ba"
+      }
+    }
+  ],
+  "api_evidence": {
+    "pinned_kernel_source": {
+      "volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+      "path_in_volume": "/kernel/kernel_platform/common/drivers/power/supply/power_supply_core.c",
+      "sha256": "e02c8813380a478a00665788c28c0f0ca09f349e57213d61efe765b14101afb2",
+      "line_ranges": {
+        "get_by_name": "459-483",
+        "put": "486-497",
+        "unregister": "1663-1673"
+      }
+    },
+    "reconstructed_zte_provider": {
+      "path": "kernel_development/drivers/reconstructed/zte_power_supply/zte_power_supply.c",
+      "sha256": "e9bd827b73ef9e1599afb54a68d6803d12d6506369439e9dee985ebfa5492fe6",
+      "size_bytes": 36794,
+      "line_ranges": {
+        "get_by_name_and_use_cnt_increment": "759-771",
+        "put_and_use_cnt_decrement": "773-777",
+        "unregister_warning": "668-673"
+      }
+    }
+  },
+  "source_files": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c",
+      "sha256": "8c2efe95c8d244873a49283441cacaa8ea9f0cff804b9cddb810fa3e58a6aa51",
+      "size_bytes": 65086
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/charger_policy_get_prop_by_name_exact.inc",
+      "sha256": "8e7fc75aa2afc45044c3e35e75dd4da21008a335bcb6413ddd7ecd9542b17208",
+      "size_bytes": 4640
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/charger_policy_get_status_exact.inc",
+      "sha256": "c1bcab7a660088dd78b4dcf8f25f57b4a31527c3466187e3bf842a443dfeff06",
+      "size_bytes": 4316
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy_get_prop_by_name_exact.inc",
+      "sha256": "8788643d06345a6e535d937836f43a4e80364f81fa9dac367b6d75f454201277",
+      "size_bytes": 4522
+    }
+  ],
+  "module_identity": {
+    "stock": {
+      "path": "reference_modules/stock/zte_charger_policy.ko",
+      "sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c",
+      "size_bytes": 68872
+    },
+    "current_unmodified_candidate": {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.ko",
+      "sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec",
+      "size_bytes": 331368
+    },
+    "fresh_candidate_unpromoted": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/power_supply_ref_cleanup_20261110/fresh_candidate_unpromoted.ko",
+      "sha256": "4465ab8dc3cc09335a0f361ce28e2d6f3fa1602e77d0d89960b647fc5d439760",
+      "size_bytes": 331704
+    },
+    "fresh_build_sha256s": [
+      "4465ab8dc3cc09335a0f361ce28e2d6f3fa1602e77d0d89960b647fc5d439760",
+      "4465ab8dc3cc09335a0f361ce28e2d6f3fa1602e77d0d89960b647fc5d439760"
+    ]
+  },
+  "validation": {
+    "docker_protocol": {
+      "core_status": "CORE_GATES_FAIL",
+      "gate_status": {
+        "ASSEMBLY_RELOCATIONS": "FAIL",
+        "DOCKER_REPRODUCIBLE": "PASS",
+        "INPUT_IDENTITY": "PASS",
+        "JOERN_SCOPED": "PASS",
+        "JOERN_SLICE": "PASS",
+        "KCFI": "PASS",
+        "MAP_IDENTITY": "PASS"
+      },
+      "promotion_authorized": false,
+      "build_reproducible": true,
+      "build_first_sha256": "4465ab8dc3cc09335a0f361ce28e2d6f3fa1602e77d0d89960b647fc5d439760",
+      "build_second_sha256": "4465ab8dc3cc09335a0f361ce28e2d6f3fa1602e77d0d89960b647fc5d439760",
+      "kernel_source_identity": "MATCH",
+      "target_vermagic_match": true
+    },
+    "joern": {
+      "passed": true,
+      "strict": true,
+      "release": "v4.0.548",
+      "source_commit": "75a15a7b86ea1b2df5a4406d9b13bfa2c15ee990",
+      "slice_artifact": "hard_protocol_core_final/joern/slices/slices.json"
+    },
+    "kcfi_type_only": {
+      "passed": true,
+      "report": "hard_protocol_core_final/kcfi/comparison.json",
+      "note": "KCFI type/section parity passes with body size ignored; function sizes differ because of the additional cleanup path."
+    },
+    "strict_assembly": {
+      "passed": false,
+      "checked_functions": 3,
+      "report": "hard_protocol_core_final/assembly/comparison.json",
+      "note": "Relocations and section match; opcodes and symbol sizes differ by the intended error-path puts and branch adjustments."
+    },
+    "kmi": {
+      "undefined_symbols_match": false,
+      "unexpected_imports": [
+        "alarm_cancel",
+        "cancel_delayed_work_sync",
+        "destroy_workqueue",
+        "power_supply_register",
+        "power_supply_unregister",
+        "zte_misc_unregister_callback"
+      ],
+      "missing_imports": [
+        "devm_kfree",
+        "devm_power_supply_register"
+      ],
+      "note": "No power_supply_put or zte_power_supply_put import was newly introduced; those symbols already exist in the stock success paths. The remaining import delta is the previously recorded hardening delta."
+    },
+    "candidate_promoted": false,
+    "host_harness_run": false,
+    "independent_review_complete": false,
+    "device_runtime_tested": false,
+    "final_core_report": "hard_protocol_core_final/hard_protocol_report.json",
+    "assembly_strict_passed": false,
+    "kcfi_protocol_gate": "PASS",
+    "input_identity_gate": "PASS",
+    "job_file": {
+      "path": "workspace_tools/reconstruction_pipeline/hard_driver_job.zte_charger_policy_power_supply_ref_cleanup_20261110.json",
+      "sha256": "db58478cdceaca245f7e7945b6d180eeacb89962de484a48809a6c81b1109d51"
+    }
+  },
+  "evidence_files": [
+    "canonical_docker/driver_audit.json",
+    "hard_protocol_core_final/hard_protocol_report.json",
+    "hard_protocol_core_final/assembly/comparison.json",
+    "hard_protocol_core_final/kcfi/comparison.json",
+    "source_sync_final_applied.json",
+    "source_sync_final_dryrun.json",
+    "hard_protocol_core_final/joern/joern_gate_summary.json",
+    "hard_protocol_core_final/joern/slices/slices.json"
+  ]
+}
