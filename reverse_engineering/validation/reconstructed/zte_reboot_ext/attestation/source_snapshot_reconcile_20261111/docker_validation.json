@@ -1,0 +1,954 @@
+{
+  "drivers": [
+    {
+      "build": {
+        "commands": {
+          "build_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext_snapshot_reconcile_20261111:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_reboot_ext-1-2fc61d44c7fe:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_reboot_ext/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_reboot_ext/cycle_1=/zte_reboot_ext -fdebug-prefix-map=/work/validation/zte_reboot_ext/cycle_1=/zte_reboot_ext",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/zte_reboot_ext/cycle_1/vendor.Module.symvers",
+              "-j",
+              "8",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "Skipping BTF generation for /work/validation/zte_reboot_ext/cycle_1/zte_reboot_ext.ko due to unavailability of vmlinux\n",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\n  CC [M]  /work/validation/zte_reboot_ext/cycle_1/zte_reboot_ext.o\n  MODPOST /work/validation/zte_reboot_ext/cycle_1/Module.symvers\n  CC [M]  /work/validation/zte_reboot_ext/cycle_1/zte_reboot_ext.mod.o\n  CC [M]  /work/validation/zte_reboot_ext/cycle_1/.module-common.o\n  LD [M]  /work/validation/zte_reboot_ext/cycle_1/zte_reboot_ext.ko\n  BTF [M] /work/validation/zte_reboot_ext/cycle_1/zte_reboot_ext.ko\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "build_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext_snapshot_reconcile_20261111:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_reboot_ext-2-56a2da254c5f:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_reboot_ext/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_reboot_ext/cycle_2=/zte_reboot_ext -fdebug-prefix-map=/work/validation/zte_reboot_ext/cycle_2=/zte_reboot_ext",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/zte_reboot_ext/cycle_2/vendor.Module.symvers",
+              "-j",
+              "8",
+              "modules"
+            ],
+            "returncode": 0,
+            "stderr": "Skipping BTF generation for /work/validation/zte_reboot_ext/cycle_2/zte_reboot_ext.ko due to unavailability of vmlinux\n",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\n  CC [M]  /work/validation/zte_reboot_ext/cycle_2/zte_reboot_ext.o\n  MODPOST /work/validation/zte_reboot_ext/cycle_2/Module.symvers\n  CC [M]  /work/validation/zte_reboot_ext/cycle_2/zte_reboot_ext.mod.o\n  CC [M]  /work/validation/zte_reboot_ext/cycle_2/.module-common.o\n  LD [M]  /work/validation/zte_reboot_ext/cycle_2/zte_reboot_ext.ko\n  BTF [M] /work/validation/zte_reboot_ext/cycle_2/zte_reboot_ext.ko\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "clean_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext_snapshot_reconcile_20261111:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_reboot_ext-1-2fc61d44c7fe:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_reboot_ext/cycle_1",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_reboot_ext/cycle_1=/zte_reboot_ext -fdebug-prefix-map=/work/validation/zte_reboot_ext/cycle_1=/zte_reboot_ext",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/zte_reboot_ext/cycle_1/vendor.Module.symvers",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "clean_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext_snapshot_reconcile_20261111:/work/validation",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_reboot_ext-2-56a2da254c5f:/work/kernel_out",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "make",
+              "-C",
+              "/work/src/kernel/kernel_platform/common",
+              "O=/work/kernel_out",
+              "ARCH=arm64",
+              "LLVM=1",
+              "LLVM_IAS=1",
+              "M=/work/validation/zte_reboot_ext/cycle_2",
+              "KCFLAGS=-ffile-prefix-map=/work/validation/zte_reboot_ext/cycle_2=/zte_reboot_ext -fdebug-prefix-map=/work/validation/zte_reboot_ext/cycle_2=/zte_reboot_ext",
+              "KBUILD_EXTRA_SYMBOLS=/work/validation/zte_reboot_ext/cycle_2/vendor.Module.symvers",
+              "clean"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "make: Entering directory '/work/src/kernel/kernel_platform/common'\nmake[1]: Entering directory '/work/kernel_out'\nmake[1]: Leaving directory '/work/kernel_out'\nmake: Leaving directory '/work/src/kernel/kernel_platform/common'\n"
+          },
+          "create_kernel_output_volume_first": {
+            "argv": [
+              "docker",
+              "volume",
+              "create",
+              "codex-kbuild-zte_reboot_ext-1-2fc61d44c7fe"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "codex-kbuild-zte_reboot_ext-1-2fc61d44c7fe\n"
+          },
+          "create_kernel_output_volume_second": {
+            "argv": [
+              "docker",
+              "volume",
+              "create",
+              "codex-kbuild-zte_reboot_ext-2-56a2da254c5f"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "codex-kbuild-zte_reboot_ext-2-56a2da254c5f\n"
+          },
+          "prepare_first": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_reboot_ext-1-2fc61d44c7fe:/work/kernel_out",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext_snapshot_reconcile_20261111:/work/validation",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "bash",
+              "-lc",
+              "set -eu\nS=/work/src/kernel/kernel_platform/common\nO=/work/kernel_out\nI=/work/src/kernel/.codex-kbuild/identity\nmake -s -C \"$S\" O=\"$O\" ARCH=arm64 mrproper\nmkdir -p \"$O\"\ncp -a \"$I/.\" \"$O/\"\ncmp \"$O/.config\" \"$I/.config\"\ncmp \"$O/Module.symvers\" \"$I/Module.symvers\"\ntest \"$(make -s -C \"$S\" O=\"$O\" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)\" = \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\""
+            ],
+            "returncode": 0,
+            "stderr": "/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:98: \"KSU_GIT_VERSION not defined! It is better to make KernelSU-Next a git repository!\"\n/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:109: \"KSU_VERSION_TAG not defined! It is better to make KernelSU-Next a git submodule!\"\n",
+            "stdout": "-- KernelSU-Next version fallback: 33129\n-- KernelSU-Next tag fallback: v3.2.0\n-- KernelSU-Next new DCACHE flush: 1\n-- KernelSU-Next Manager signature size: 0x3e6\n-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7\n"
+          },
+          "prepare_second": {
+            "argv": [
+              "docker",
+              "run",
+              "--rm",
+              "-v",
+              "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+              "-v",
+              "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+              "-v",
+              "nx809j_bindgen_0695:/work/bindgen:ro",
+              "-v",
+              "codex-kbuild-zte_reboot_ext-2-56a2da254c5f:/work/kernel_out",
+              "-v",
+              "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext_snapshot_reconcile_20261111:/work/validation",
+              "-e",
+              "PATH=/work/bindgen/bin:/work/toolchains/clang-r536225/bin:/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+              "-e",
+              "KBUILD_BUILD_TIMESTAMP=2000-01-01 00:00:00 UTC",
+              "-e",
+              "KBUILD_BUILD_USER=codex",
+              "-e",
+              "KBUILD_BUILD_HOST=reproducible",
+              "-w",
+              "/work/src/kernel",
+              "nubia-sm8850-kernel-builder:latest",
+              "bash",
+              "-lc",
+              "set -eu\nS=/work/src/kernel/kernel_platform/common\nO=/work/kernel_out\nI=/work/src/kernel/.codex-kbuild/identity\nmake -s -C \"$S\" O=\"$O\" ARCH=arm64 mrproper\nmkdir -p \"$O\"\ncp -a \"$I/.\" \"$O/\"\ncmp \"$O/.config\" \"$I/.config\"\ncmp \"$O/Module.symvers\" \"$I/Module.symvers\"\ntest \"$(make -s -C \"$S\" O=\"$O\" ARCH=arm64 LLVM=1 LLVM_IAS=1 kernelrelease)\" = \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\""
+            ],
+            "returncode": 0,
+            "stderr": "/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:98: \"KSU_GIT_VERSION not defined! It is better to make KernelSU-Next a git repository!\"\n/work/src/kernel/kernel_platform/common/drivers/kernelsu/Kbuild:109: \"KSU_VERSION_TAG not defined! It is better to make KernelSU-Next a git submodule!\"\n",
+            "stdout": "-- KernelSU-Next version fallback: 33129\n-- KernelSU-Next tag fallback: v3.2.0\n-- KernelSU-Next new DCACHE flush: 1\n-- KernelSU-Next Manager signature size: 0x3e6\n-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7\n"
+          }
+        },
+        "cycle_dirs": [
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext_snapshot_reconcile_20261111\\zte_reboot_ext\\cycle_1",
+          "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext_snapshot_reconcile_20261111\\zte_reboot_ext\\cycle_2"
+        ],
+        "first_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext_snapshot_reconcile_20261111\\zte_reboot_ext\\cycle_1\\zte_reboot_ext.ko",
+          "sha256": "a6a823e3a35abc50292883f43951838b8715ed851da5d27304ebe94c68f498a2",
+          "size": 242336
+        },
+        "kernel_output_volumes": {
+          "cycle_1": "codex-kbuild-zte_reboot_ext-1-2fc61d44c7fe",
+          "cycle_2": "codex-kbuild-zte_reboot_ext-2-56a2da254c5f"
+        },
+        "passed": true,
+        "reproducible": true,
+        "second_build": {
+          "exists": true,
+          "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext_snapshot_reconcile_20261111\\zte_reboot_ext\\cycle_2\\zte_reboot_ext.ko",
+          "sha256": "a6a823e3a35abc50292883f43951838b8715ed851da5d27304ebe94c68f498a2",
+          "size": 242336
+        },
+        "work_dir": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\validation\\work\\zte_reboot_ext_snapshot_reconcile_20261111\\zte_reboot_ext"
+      },
+      "candidate": {
+        "exists": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\zte_reboot_ext\\zte_reboot_ext.ko",
+        "sha256": "42ef53dce4e2b7decf091877ef395b35250045aae0dd159f21a526d6002672e0",
+        "size": 243160
+      },
+      "candidate_hash_binding": {
+        "current_candidate_sha256": "42ef53dce4e2b7decf091877ef395b35250045aae0dd159f21a526d6002672e0",
+        "declared_candidate_sha256": "42ef53dce4e2b7decf091877ef395b35250045aae0dd159f21a526d6002672e0",
+        "matches": true
+      },
+      "checks": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_hash_matches_map": true,
+        "candidate_modinfo_matches_fresh": true,
+        "candidate_runtime_content_matches_fresh": true,
+        "candidate_runtime_section_layout_matches_fresh": true,
+        "function_traceability": true,
+        "ghidra_export": true,
+        "kernel_source_identity": true,
+        "makefile": true,
+        "mapping_review": true,
+        "namespace_match": true,
+        "reproducible_build": true,
+        "source_directory": true,
+        "source_files": 2,
+        "undefined_symbols_match": true,
+        "vermagic_accepted": true
+      },
+      "driver": "zte_reboot_ext",
+      "errors": [],
+      "ghidra": {
+        "document": "C:\\w_haptic_remove_c6\\kernel_development\\drivers\\reconstructed\\zte_reboot_ext\\STATUS.md",
+        "export": "C:\\w_haptic_remove_c6\\reverse_engineering\\validation\\reconstructed\\zte_reboot_ext\\offline_static\\ghidra_stock",
+        "function_count": 14,
+        "function_identities": [
+          {
+            "stock_entry": "100554",
+            "stock_function": "fill_nvmem_buf"
+          },
+          {
+            "stock_entry": "100654",
+            "stock_function": "count_format_args"
+          },
+          {
+            "stock_entry": "10073c",
+            "stock_function": "entry_panic"
+          },
+          {
+            "stock_entry": "100acc",
+            "stock_function": "zte_reboot_ext_probe"
+          },
+          {
+            "stock_entry": "100ea8",
+            "stock_function": "zte_reboot_ext_remove"
+          },
+          {
+            "stock_entry": "100eec",
+            "stock_function": "save_panic_buf_data_to_nvmem"
+          },
+          {
+            "stock_entry": "10105c",
+            "stock_function": "register_panic_hook"
+          },
+          {
+            "stock_entry": "1010bc",
+            "stock_function": "zte_reboot_ext_panic"
+          },
+          {
+            "stock_entry": "1010fc",
+            "stock_function": "attr_show"
+          },
+          {
+            "stock_entry": "101144",
+            "stock_function": "attr_store"
+          },
+          {
+            "stock_entry": "10118c",
+            "stock_function": "boot_nvmem_show"
+          },
+          {
+            "stock_entry": "10131c",
+            "stock_function": "boot_nvmem_store"
+          },
+          {
+            "stock_entry": "101348",
+            "stock_function": "init_module"
+          },
+          {
+            "stock_entry": "101378",
+            "stock_function": "cleanup_module"
+          }
+        ],
+        "function_names": [
+          "attr_show",
+          "attr_store",
+          "boot_nvmem_show",
+          "boot_nvmem_store",
+          "cleanup_module",
+          "count_format_args",
+          "entry_panic",
+          "fill_nvmem_buf",
+          "init_module",
+          "register_panic_hook",
+          "save_panic_buf_data_to_nvmem",
+          "zte_reboot_ext_panic",
+          "zte_reboot_ext_probe",
+          "zte_reboot_ext_remove"
+        ],
+        "manifest": {
+          "compiler_spec": "default",
+          "executable_format": "Executable and Linking Format (ELF)",
+          "executable_md5": "6901a7b66016560d0eede1206cc81656",
+          "function_count": 14,
+          "image_base": "00100000",
+          "language": "AARCH64:LE:64:v8A",
+          "max_address": "_elfSectionHeaders::00000b3f",
+          "min_address": "00100000",
+          "pointer_size": 8,
+          "program": "zte_reboot_ext.ko",
+          "schema_version": 1
+        },
+        "passed": true
+      },
+      "hardware_verified": false,
+      "kernel_source_identity": {
+        "checks": {
+          "bindgen_sha256": true,
+          "bindgen_version": true,
+          "clang_binary_sha256": true,
+          "clang_revision": true,
+          "clang_version": true,
+          "config_sha256": true,
+          "docker_image_id": true,
+          "kernel_release": true,
+          "localversion_sha256": true,
+          "module_symvers_sha256": true,
+          "rust_toolchain": true,
+          "rustc_sha256": true,
+          "source_head": true,
+          "source_repository": true
+        },
+        "expected": {
+          "bindgen_sha256": "548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706",
+          "bindgen_version": "0.69.5",
+          "clang_binary_sha256": "69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044",
+          "clang_revision": "clang-r536225",
+          "clang_version": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+          "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+          "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+          "localversion_sha256": "e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475",
+          "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+          "rust_toolchain": "rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)",
+          "rustc_sha256": "ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c",
+          "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+          "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git"
+        },
+        "image_command": {
+          "argv": [
+            "docker",
+            "image",
+            "inspect",
+            "--format",
+            "{{.Id}}",
+            "nubia-sm8850-kernel-builder:latest"
+          ],
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390\n"
+        },
+        "mismatches": [],
+        "observed": {
+          "bindgen_sha256": "548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706",
+          "bindgen_version": "bindgen 0.69.5",
+          "clang_binary_sha256": "69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044",
+          "clang_revision": "clang-r536225",
+          "clang_version": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+          "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+          "docker_image": "nubia-sm8850-kernel-builder:latest",
+          "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+          "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+          "localversion_sha256": "e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475",
+          "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+          "rust_toolchain": "rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)",
+          "rustc_sha256": "ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c",
+          "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+          "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git"
+        },
+        "passed": true,
+        "probe_command": {
+          "argv": [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+            "-v",
+            "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+            "-v",
+            "nx809j_bindgen_0695:/work/bindgen:ro",
+            "-e",
+            "PATH=/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "-w",
+            "/work/src/kernel",
+            "nubia-sm8850-kernel-builder:latest",
+            "python3",
+            "-c",
+            "\nimport hashlib\nimport json\nimport pathlib\nimport subprocess\n\ndef run(args):\n    result = subprocess.run(args, capture_output=True, text=True, check=False)\n    return result.stdout.strip() if result.returncode == 0 else None\n\ndef digest(path):\n    try:\n        return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()\n    except OSError:\n        return None\n\nsource_root = pathlib.Path(\"/work/src/kernel\")\ncommon = source_root / \"kernel_platform/common\"\nbuild_output = source_root / \".codex-kbuild/identity\"\nbuild_inputs = source_root / \"target_build_inputs\"\nlocalversion_rel = \"kernel_platform/common/localversion.nx809j-target\"\nbindgen = pathlib.Path(\"/work/bindgen/bin/bindgen\")\nclang = pathlib.Path(\"/work/toolchains/clang-r536225/bin/clang.real\")\nrustc = pathlib.Path(\"/work/toolchains/rust-1.82.0/bin/rustc\")\nclang_version = run([str(clang), \"--version\"])\nrust_toolchain = run([str(rustc), \"--version\"])\n\nprint(json.dumps({\n    \"source_head\": run([\"git\", \"-C\", str(source_root), \"rev-parse\", \"HEAD\"]),\n    \"source_repository\": run([\"git\", \"-C\", str(source_root), \"config\", \"--get\", \"remote.origin.url\"]),\n    \"kernel_release\": run([\"make\", \"-s\", \"-C\", str(common), f\"O={build_output}\", \"ARCH=arm64\", \"LLVM=1\", \"LLVM_IAS=1\", \"kernelrelease\"]),\n    \"config_sha256\": digest(build_output / \".config\"),\n    \"module_symvers_sha256\": digest(build_output / \"Module.symvers\"),\n    \"localversion_sha256\": digest(common / \"localversion.nx809j-target\"),\n    \"bindgen_version\": run([str(bindgen), \"--version\"]),\n    \"bindgen_sha256\": digest(bindgen),\n    \"clang_revision\": \"clang-r536225\",\n    \"clang_version\": clang_version.splitlines()[0] if clang_version else None,\n    \"clang_binary_sha256\": digest(clang),\n    \"rust_toolchain\": rust_toolchain,\n    \"rustc_sha256\": digest(rustc),\n}))\n"
+          ],
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "{\"source_head\": \"3356b35306d35d5a480e3b63df1a9f065b5d9f55\", \"source_repository\": \"https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git\", \"kernel_release\": \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\", \"config_sha256\": \"b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288\", \"module_symvers_sha256\": \"28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83\", \"localversion_sha256\": \"e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475\", \"bindgen_version\": \"bindgen 0.69.5\", \"bindgen_sha256\": \"548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706\", \"clang_revision\": \"clang-r536225\", \"clang_version\": \"Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)\", \"clang_binary_sha256\": \"69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044\", \"rust_toolchain\": \"rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)\", \"rustc_sha256\": \"ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c\"}\n"
+        },
+        "probe_error": null,
+        "required": true,
+        "status": "MATCH"
+      },
+      "metadata": {
+        "aarch64_rel": true,
+        "alias_match": true,
+        "candidate_allocated_metadata_differences": [
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "b4f735feecf8b0f3d7a75fb02896295305eda6457ab11c30e5cff20942ff60df",
+              "size": 36,
+              "type": 7
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "5305b4bebb74cae9bdf5f550c239de0aff5b9b9f693a5bb0fd385c2ab9d7d715",
+              "size": 36,
+              "type": 7
+            },
+            "section": ".note.gnu.build-id"
+          }
+        ],
+        "candidate_depends_match_target": true,
+        "candidate_loadable_section_differences": [
+          {
+            "candidate": {
+              "flags": 2,
+              "sha256": "b4f735feecf8b0f3d7a75fb02896295305eda6457ab11c30e5cff20942ff60df",
+              "size": 36,
+              "type": 7
+            },
+            "fresh": {
+              "flags": 2,
+              "sha256": "5305b4bebb74cae9bdf5f550c239de0aff5b9b9f693a5bb0fd385c2ab9d7d715",
+              "size": 36,
+              "type": 7
+            },
+            "section": ".note.gnu.build-id"
+          }
+        ],
+        "candidate_loadable_sections_match_fresh": false,
+        "candidate_matches_fresh": false,
+        "candidate_modinfo": {
+          "alias": [
+            "of:N*T*Czte,reboot-ext",
+            "of:N*T*Czte,reboot-extC*"
+          ],
+          "depends": [
+            "qcom_q6v5"
+          ],
+          "license": [
+            "GPL v2"
+          ],
+          "vermagic": [
+            "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64"
+          ]
+        },
+        "candidate_modinfo_matches_fresh": true,
+        "candidate_nonloadable_section_differences": [
+          {
+            "candidate": {
+              "flags": 0,
+              "sha256": "d0c7e7b20a7d21de8904350f2a9c329886e8e719bc4f923be64d6d50d8f030ef",
+              "size": 875,
+              "type": 1
+            },
+            "fresh": null,
+            "section": ".BTF"
+          },
+          {
+            "candidate": {
+              "flags": 2048,
+              "sha256": "361692f26889b635fb65dbd8eaa08b4ce15d52834231469bc17999196f4cb82a",
+              "size": 50737,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2048,
+              "sha256": "58efe19a4da7769a72d40f2c6b6a50da45279b2f39e476f15efcb4e7548c68d7",
+              "size": 50739,
+              "type": 1
+            },
+            "section": ".debug_info"
+          },
+          {
+            "candidate": {
+              "flags": 2048,
+              "sha256": "b216ddc12b26c250f7057e8ca90b6b1027385bd1fa61aa21d707ba83b0de2374",
+              "size": 4331,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2048,
+              "sha256": "7bb3d1bf91158607342647f2e793b3ef47b64385ec17b6abd2919a5604299bd6",
+              "size": 4224,
+              "type": 1
+            },
+            "section": ".debug_line"
+          },
+          {
+            "candidate": {
+              "flags": 2096,
+              "sha256": "6976cfec618da6c080f4caee77e59c3b27f6d9f65f56132d884cfd5c65e93ca2",
+              "size": 981,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2096,
+              "sha256": "e852999a340a6f1c91c8c20564daf60e9d24bd87f296fb11c1d5c9adf6ee6094",
+              "size": 1275,
+              "type": 1
+            },
+            "section": ".debug_line_str"
+          },
+          {
+            "candidate": {
+              "flags": 2096,
+              "sha256": "e08ff0d4970e71389c87e82d577293decd9985db90d89a517cfdd9a52f86d37f",
+              "size": 14231,
+              "type": 1
+            },
+            "fresh": {
+              "flags": 2096,
+              "sha256": "9649f2f44e55627a085ad436c7b35568525db9105ef04398ab993f1b08b48cfa",
+              "size": 14233,
+              "type": 1
+            },
+            "section": ".debug_str"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "2fb3cae3703c4300a046f7ebda8f61ef1de1bb90d1ed9c648d28b4e8c72b1e29",
+              "size": 336,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "b94928545326e530a48baa069d512646453529dcffb4c7150a7f5c340e796c4a",
+              "size": 336,
+              "type": 4
+            },
+            "section": ".rela.debug_info"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "0dd6b9c28069f5f6380ec669c7a21eda90f66c15c87a5e7a67249409001e7510",
+              "size": 7320,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "0ea0d4b84bbcf8c097543f505fd6c86007fcb3209e18632ad1ea598391b25cfe",
+              "size": 6888,
+              "type": 4
+            },
+            "section": ".rela.debug_line"
+          },
+          {
+            "candidate": {
+              "flags": 64,
+              "sha256": "a79f0d21bf16728e31d7941d6046a0cfda962c2163e5a667adc21fc4c7e935d2",
+              "size": 117144,
+              "type": 4
+            },
+            "fresh": {
+              "flags": 64,
+              "sha256": "56ab4dc5f0020822d51ea31ed9851576263d1f5f7092c6abaecd5092aeefb0f8",
+              "size": 117144,
+              "type": 4
+            },
+            "section": ".rela.debug_str_offsets"
+          },
+          {
+            "candidate": {
+              "flags": 0,
+              "sha256": "af4c9fe62a1da2f70cd873f252fb66c85bd6c6361828abda08193990ff551029",
+              "size": 637,
+              "type": 3
+            },
+            "fresh": {
+              "flags": 0,
+              "sha256": "2e68e6040a3d80405adc3236ce7e8bd59588efd82f7a972f8714e698327cc08a",
+              "size": 780,
+              "type": 3
+            },
+            "section": ".shstrtab"
+          },
+          {
+            "candidate": {
+              "flags": 0,
+              "sha256": "a1954874128f4586413ddf2dcd189adbd86b188226bc311726e6a1237adc59ee",
+              "size": 1878,
+              "type": 3
+            },
+            "fresh": {
+              "flags": 0,
+              "sha256": "f672f24e8d08e79bf4450967f7085f352d1cb94c8e2ad9527a5d7cfdcd658a16",
+              "size": 2100,
+              "type": 3
+            },
+            "section": ".strtab"
+          },
+          {
+            "candidate": {
+              "flags": 0,
+              "sha256": "448c5b3c46d63d795003f37cbcbbeabd5c3f4d52fe8b7dde71322de1042284d2",
+              "size": 4320,
+              "type": 2
+            },
+            "fresh": {
+              "flags": 0,
+              "sha256": "f43898b2d165f06e6a9fe88c99aae07e5fe45a2e7330921d3704d299d0157602",
+              "size": 4320,
+              "type": 2
+            },
+            "section": ".symtab"
+          }
+        ],
+        "candidate_runtime_content_differences": [],
+        "candidate_runtime_content_matches_fresh": true,
+        "candidate_runtime_section_layout_differences": [],
+        "candidate_runtime_section_layout_matches_fresh": true,
+        "fresh": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__platform_driver_register",
+              "__stack_chk_fail",
+              "_ctype",
+              "_dev_err",
+              "_dev_info",
+              "_printk",
+              "atomic_notifier_chain_register",
+              "atomic_notifier_chain_unregister",
+              "devm_kmalloc",
+              "get_ss_panic_buf_byte",
+              "kernel_kobj",
+              "kfree",
+              "kobject_del",
+              "kobject_init_and_add",
+              "kobject_put",
+              "memchr",
+              "memcpy",
+              "memset",
+              "nvmem_cell_get",
+              "nvmem_cell_read",
+              "nvmem_cell_write",
+              "panic",
+              "panic_notifier_list",
+              "platform_driver_unregister",
+              "register_kretprobe",
+              "scnprintf",
+              "snprintf",
+              "strcmp",
+              "strlen",
+              "sysfs_create_group",
+              "unregister_kretprobe"
+            ]
+          },
+          "modinfo": {
+            "alias": [
+              "of:N*T*Czte,reboot-ext",
+              "of:N*T*Czte,reboot-extC*"
+            ],
+            "depends": [
+              "qcom_q6v5"
+            ],
+            "license": [
+              "GPL v2"
+            ],
+            "vermagic": [
+              "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "fresh_promoted": false,
+        "kernel_source_identity": true,
+        "missing_imports": [],
+        "namespace_match": true,
+        "stock": {
+          "elf": {
+            "elf_type": 1,
+            "machine": 183,
+            "undefined_symbols": [
+              "__platform_driver_register",
+              "__stack_chk_fail",
+              "_ctype",
+              "_dev_err",
+              "_dev_info",
+              "_printk",
+              "atomic_notifier_chain_register",
+              "atomic_notifier_chain_unregister",
+              "devm_kmalloc",
+              "get_ss_panic_buf_byte",
+              "kernel_kobj",
+              "kfree",
+              "kobject_del",
+              "kobject_init_and_add",
+              "kobject_put",
+              "memchr",
+              "memcpy",
+              "memset",
+              "nvmem_cell_get",
+              "nvmem_cell_read",
+              "nvmem_cell_write",
+              "panic",
+              "panic_notifier_list",
+              "platform_driver_unregister",
+              "register_kretprobe",
+              "scnprintf",
+              "snprintf",
+              "strcmp",
+              "strlen",
+              "sysfs_create_group",
+              "unregister_kretprobe"
+            ]
+          },
+          "modinfo": {
+            "alias": [
+              "of:N*T*Czte,reboot-ext",
+              "of:N*T*Czte,reboot-extC*"
+            ],
+            "depends": [
+              "qcom_q6v5"
+            ],
+            "license": [
+              "GPL v2"
+            ],
+            "vermagic": [
+              "6.12.23-maybe-dirty-4k SMP preempt mod_unload modversions aarch64"
+            ]
+          }
+        },
+        "stock_depends_match_target": true,
+        "target_vermagic": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k SMP preempt mod_unload modversions aarch64",
+        "target_vermagic_match": true,
+        "undefined_symbols_match": true,
+        "unexpected_imports": [],
+        "vermagic_accepted": true,
+        "vermagic_match": false
+      },
+      "status": "static_verified",
+      "stock": {
+        "exists": true,
+        "path": "C:\\w_haptic_remove_c6\\reference_modules\\full_vendor_boot\\zte_reboot_ext.ko",
+        "sha256": "1e5b8e9e91f304236802d52a316570f6649b8f504b58558b28909d48c62d910f",
+        "size": 29648
+      },
+      "traceability": {
+        "declared_hardening_deviations": [],
+        "exists": true,
+        "mapped_functions": 14,
+        "mapped_identities": [
+          {
+            "stock_entry": "1010fc",
+            "stock_function": "attr_show"
+          },
+          {
+            "stock_entry": "101144",
+            "stock_function": "attr_store"
+          },
+          {
+            "stock_entry": "10118c",
+            "stock_function": "boot_nvmem_show"
+          },
+          {
+            "stock_entry": "10131c",
+            "stock_function": "boot_nvmem_store"
+          },
+          {
+            "stock_entry": "101378",
+            "stock_function": "cleanup_module"
+          },
+          {
+            "stock_entry": "100654",
+            "stock_function": "count_format_args"
+          },
+          {
+            "stock_entry": "10073c",
+            "stock_function": "entry_panic"
+          },
+          {
+            "stock_entry": "100554",
+            "stock_function": "fill_nvmem_buf"
+          },
+          {
+            "stock_entry": "101348",
+            "stock_function": "init_module"
+          },
+          {
+            "stock_entry": "10105c",
+            "stock_function": "register_panic_hook"
+          },
+          {
+            "stock_entry": "100eec",
+            "stock_function": "save_panic_buf_data_to_nvmem"
+          },
+          {
+            "stock_entry": "1010bc",
+            "stock_function": "zte_reboot_ext_panic"
+          },
+          {
+            "stock_entry": "100acc",
+            "stock_function": "zte_reboot_ext_probe"
+          },
+          {
+            "stock_entry": "100ea8",
+            "stock_function": "zte_reboot_ext_remove"
+          }
+        ],
+        "mapping_review_errors": [],
+        "mapping_review_passed": true,
+        "passed": true,
+        "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\zte_reboot_ext\\reconstruction_map.json",
+        "stock_sha256": "1e5b8e9e91f304236802d52a316570f6649b8f504b58558b28909d48c62d910f",
+        "traceability_errors": [],
+        "traceability_passed": true,
+        "unmapped_functions": []
+      },
+      "warnings": [
+        "candidate and fresh module SHA-256 differ in allocated build-id metadata and/or non-allocated debug/BTF sections; runtime content, section layout, and modinfo match"
+      ]
+    }
+  ],
+  "generated_utc": "2026-11-11T19:09:41.330276+00:00",
+  "mode": "offline-only",
+  "promote_fresh_requested": false,
+  "rebuild_requested": true,
+  "run_root": "public repository evidence: C:\\w_haptic_remove_c6",
+  "schema_version": "1.0",
+  "summary": {
+    "driver_count": 1,
+    "hardware_verified": [],
+    "not_ready_for_100_percent_claim": [
+      "zte_reboot_ext"
+    ],
+    "static_verified": [
+      "zte_reboot_ext"
+    ]
+  },
+  "target_kernel_manifest": "C:\\w_haptic_remove_c6\\kernel_development\\config\\target_kernel.json"
+}

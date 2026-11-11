@@ -1,5 +1,9 @@
 # Status de reconstrucao do `zte_reboot_ext`
 
+## Snapshot reconciliado e revalidação Docker — 2026-11-11
+
+O snapshot curado foi sincronizado com a árvore versionada: nove arquivos copiados (seis includes assembly e três documentos), zero removidos; a verificação posterior encontrou zero diferenças. A validação canônica reconstruiu 14/14 funções Ghidra e passou em rastreabilidade, revisão do mapa, identidade do kernel, imports/aliases e dois builds limpos reproduzíveis. Os dois builds deram SHA-256 `a6a823e3a35abc50292883f43951838b8715ed851da5d27304ebe94c68f498a2` (242336 bytes). O candidato registrado continua `42ef53dce4e2b7decf091877ef395b35250045aae0dd159f21a526d6002672e0`; seu SHA completo difere do rebuild em metadados build-id e/ou debug/BTF, mas conteúdo executável, layout de seções e modinfo coincidem. O auditor retorna `static_verified`; não houve promoção do módulo, revisão independente ou teste em hardware. O estado não significa equivalência comportamental total nem prontidão de dispositivo. Evidência: `reverse_engineering/validation/reconstructed/zte_reboot_ext/attestation/source_snapshot_reconcile_20261111/`.
+
 O driver concluiu os gates estaticos 0 a 7: stock e dependencia vendor rastreados, 14 funcoes reconstruidas, imports/aliases exatos, build reproduzivel, KCFI 14/14, comparacao Ghidra 14/14 e harness comportamental reproduzivel.
 
 Nao e permitido declarar 100% concluido. Faltam revisao independente, validacao supervisionada no hardware e promocao final (gates 8 a 10).
