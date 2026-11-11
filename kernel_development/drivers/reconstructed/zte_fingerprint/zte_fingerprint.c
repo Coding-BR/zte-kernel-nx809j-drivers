@@ -451,6 +451,7 @@ noinline void gf_cleanup(struct gf_dev *gf_dev_opaque)
 {
 	struct gf_device *gf_dev = (struct gf_device *)gf_dev_opaque;
 	int enabled;
+	int disable_ret;
 
 	if (!gf_dev)
 		return;
@@ -459,14 +460,18 @@ noinline void gf_cleanup(struct gf_dev *gf_dev_opaque)
 
 	if (!IS_ERR_OR_NULL(gf_dev->vdd_reg)) {
 		enabled = regulator_is_enabled(gf_dev->vdd_reg);
-		if (enabled > 0) {
-			regulator_disable(gf_dev->vdd_reg);
-			pr_info("gf_dev-gf_cleanup. remove vdd success\n");
-		} else if (!enabled) {
-			pr_warn("gf_dev-gf_cleanup vdd regulator already disabled\n");
+		if (enabled) {
+			if (enabled < 0)
+				pr_warn("gf_dev-gf_cleanup failed to query vdd state, rc=%d; attempting to balance regulator enable\n",
+					enabled);
+			disable_ret = regulator_disable(gf_dev->vdd_reg);
+			if (disable_ret)
+				pr_warn("gf_dev-gf_cleanup failed to disable vdd regulator, rc=%d\n",
+					disable_ret);
+			else
+				pr_info("gf_dev-gf_cleanup. remove vdd success\n");
 		} else {
-			pr_warn("gf_dev-gf_cleanup failed to query vdd state, rc=%d\n",
-				enabled);
+			pr_warn("gf_dev-gf_cleanup vdd regulator already disabled\n");
 		}
 	}
 

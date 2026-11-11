@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "generated_utc_date": "2026-11-11",
+  "driver": "zte_fingerprint",
+  "status": "SOURCE_FIX_BUILT; DRIVER_RECONSTRUCTION_INCOMPLETE",
+  "finding": {
+    "function": "gf_cleanup@001026bc",
+    "issue": "A negative regulator_is_enabled result skipped regulator_disable before releasing the devres group.",
+    "stock_behavior": "Ghidra stock pseudocode branches on is_enabled == 0; every nonzero result reaches regulator_disable.",
+    "target_kernel_behavior": [
+      "regulator_is_enabled returns positive, zero, or a negative error.",
+      "The devm regulator release callback calls regulator_put.",
+      "regulator_put warns when this consumer still has a nonzero enable_count and requires driver enables to be balanced by disables."
+    ],
+    "failure_path": "gf_open routes resource initialization failures through gf_cleanup; gf_cleanup attempts regulator cleanup before devres_release_group releases the devm regulator handle."
+  },
+  "change": {
+    "source_file": "kernel_development/drivers/reconstructed/zte_fingerprint/zte_fingerprint.c",
+    "source_function": "gf_cleanup",
+    "source_sha256": "8d2c3d4e8cdb81dd58e9973f3fb19cdd7592b38f8bfb67f2483f7db40dafd015",
+    "behavior": "Attempt regulator_disable for any nonzero regulator_is_enabled result, including errors. Log the query error and the disable return code; report success only when regulator_disable succeeds.",
+    "reconstruction_map_sha256": "f12d296d3f250d41dce47741a330907a7f999fb1f90f344810d3a846c231cc06"
+  },
+  "evidence": {
+    "stock_module_sha256": "4ad15396f5c4fa1f6153dbb6e469476a9ec437daee186498dce94bc28f7d8675",
+    "stock_ghidra_pseudocode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_fingerprint/offline_static/ghidra_stock/decompiled/0023_001026bc_gf_cleanup.c",
+      "sha256": "ed6763792f0b0aa771527e93596d144173db9a5d00d4f697349a0efd448d6612"
+    },
+    "stock_assembly": {
+      "path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_hardening_20261111/stock_assembly_fresh/0023_gf_cleanup_001026bc.asm",
+      "sha256": "fd7a247c72575a3d660ef7df53164e62e4840d0a0d9c7891e3063f3b1b18d3bc",
+      "observation": "CBNZ w0 at offset 0x1f20 branches to regulator_disable at offset 0x1f34."
+    },
+    "docker_kernel_source": {
+      "repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git",
+      "head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+      "release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+      "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+      "regulator_core_sha256": "ac7b4b2956a253bb31849b5db5f61239bd924df09ccd4be1f05e68dfff1c83c6",
+      "regulator_devres_sha256": "bdcec035dcb73a822f7e9c98e8c548a181c4ae77d1635df5b324ca5339a8f8eb"
+    }
+  },
+  "build_validation": {
+    "validator_report": "validator_verified.json",
+    "validator_report_sha256": "858b086b6fa308febbb271e79916b44c3e508c2e08b0e69bdaefd3bdd5215b7b",
+    "kernel_source_identity": "MATCH",
+    "two_clean_docker_builds_passed": true,
+    "reproducible": true,
+    "build_sha256": "ed77cbf07e7cdf104450003a9f8bc0c1abacc0b703f591379c4d3feb396c590b",
+    "build_size_bytes": 396584,
+    "fresh_module_promoted": false,
+    "current_curated_module_sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21",
+    "full_validator_status": "incomplete_or_failed",
+    "remaining_failed_checks": [
+      "candidate_runtime_content_matches_fresh",
+      "candidate_runtime_section_layout_matches_fresh",
+      "mapping_review",
+      "undefined_symbols_match"
+    ],
+    "pending_mapping_reviews": 11,
+    "host_harness_run": false,
+    "smartphone_test_run": false
+  },
+  "curated_sync": {
+    "initial_sync_report": "curated_sync_applied.json",
+    "initial_sync_copied_files": 3,
+    "final_sync_report": "curated_sync_final.json",
+    "final_sync_copied_files": 1,
+    "map_sync_report": "curated_sync_map_applied.json",
+    "map_sync_copied_files": 1,
+    "removed_files": 0,
+    "passed": true
+  },
+  "limitations": [
+    "This batch establishes a source-level cleanup correction and reproducible compilation, not runtime behavior on the handset.",
+    "The candidate remains a hardening deviation pending independent review; no static_verified or hardware_verified status is claimed."
+  ]
+}
