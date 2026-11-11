@@ -4,7 +4,7 @@ Atualizado em 2026-11-11. O estado atual é um candidato de hardening estático 
 
 ## Candidato atual
 
-- Módulo: SHA-256 de3804dab5e06e66965e237c95b725d378e9c55314c63f76e1acc5ce2cfd2ce7; 395.912 bytes.
+- Módulo: SHA-256 e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21; 395.992 bytes.
 - Fonte C: alterações de ciclo de vida/sincronização em zte_fingerprint.c; ioctl compatível continua ligado ao fragmento assembly versionado.
 - Docker: duas compilações limpas idênticas no builder nx809j-repro; identidade do kernel fonte: MATCH.
 - Evidência por função: 30 identidades Ghidra comparadas; 19 assemblies idênticos ao stock e 11 diferenças declaradas no mapa. Equivalência stock dessas 11 funções não está estabelecida.
@@ -12,7 +12,7 @@ Atualizado em 2026-11-11. O estado atual é um candidato de hardening estático 
 - Estado: não promover como static_verified até revisão independente das diferenças e resolução da paridade ABI.
 - Hardware: não houve carregamento do módulo, unbind, unload nem teste de ciclo de vida no aparelho nesta rodada.
 
-A atestação completa está em reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_hardening_20261111/.
+A atestação completa está em reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_multi_fd_cleanup_20261111/.
 
 ## Baseline estático anterior
 
@@ -26,6 +26,7 @@ O stock usado como referência nesta cadeia continua sendo SHA-256 4ad15396f5c4f
 - Sincronização dos caminhos ioctl, open/release, IRQ e remove.
 - Drenagem do trabalho de retry do notifier antes do teardown.
 - Bloqueio de rebind enquanto referências de arquivo antigas, grupo devres ou IRQ ainda permanecem.
+- O ioctl CLEANUP retorna -EBUSY quando existe outro descritor aberto, preservando recursos compartilhados até o último usuário.
 - Uso das APIs devres exportadas pelo KMI alvo; devres_close_group não está disponível no KMI consultado.
 
 ## Próximos gates

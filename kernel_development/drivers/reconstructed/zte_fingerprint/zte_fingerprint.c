@@ -1050,6 +1050,10 @@ static long gf_ioctl_dispatch(struct file *file, unsigned int cmd,
 	}
 
 	if (cmd == 0x670c) {
+		if (gf_dev->ref_count != 1) {
+			ret = -EBUSY;
+			goto out_unlock;
+		}
 		gf_release_irq(gf_dev);
 		WRITE_ONCE(gf_dev->opened, 0);
 	}
