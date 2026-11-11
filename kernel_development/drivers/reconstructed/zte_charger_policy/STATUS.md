@@ -10,6 +10,15 @@
 - A auditoria integral ainda retorna `static_verified: []`: imports indefinidos e conteudo/layout runtime diferem do candidato ativo; a revisao do mapa segue incompleta. Nenhum teste de host ou no smartphone foi executado neste lote.
 - Evidencias: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/README.md` e `attestation.json`.
 
+## Auditoria complementar — concorrencia dos campos de estado — 2026-11-11
+
+- A auditoria estatica encontrou acessos sem sincronizacao comum entre setters de controle/propriedade e timeout_work: status (0x1ec), last_status (0x1f0), policy_disabled (0x1e8), timeout_seconds_runtime (0x1f4), force_discharging_sec (0x1f8) e demo_sts (0x219). O worker e os handlers de estado leem e/ou atualizam esses campos; alguns setters tambem os escrevem e enfileiram trabalho.
+- A evidencia Ghidra e o assembly stock dessas funcoes mostram loads/stores ordinarios; a busca dos corpos e das chamadas nao encontrou locks, operacoes exclusivas/atomicas ou barreiras cobrindo esses acessos. Isto confirma o comportamento sem lock no stock, mas nao reproduz uma intercalacao nem demonstra corrupcao em runtime.
+- A fonte reconstruida e os candidatos ainda nao promovidos aplicam o gate atomico runtime_stopping e a drenagem de teardown para a corrida de vida util descrita no lote lifetime_sync_atomic_gate_20261110. O .ko ativo continua antigo; mesmo na fonte atual, o gate nao serializa as transicoes normais desses campos.
+- A fonte atual coincide com a fonte do snapshot Docker curado (SHA-256 c3da1145c1f06fe42e7bf00972ff1bcab552ac58fb5c3f9919f018123827483b). O .ko ativo e ambos os mapas ainda apontam para 2f87a9fa...; o candidato 915b27b1... continua nao promovido. Como esta revisao nao alterou codigo, nao houve novo build Docker nem teste de host/aparelho.
+- Nenhum lock foi adicionado: STATIC_RECONSTRUCTION_PROTOCOL.md proibe inferir locks sem evidencia do stock. Registrar como risco herdado do comportamento stock; qualquer mitigacao exige uma trilha de hardening separada e nao deve ser apresentada como equivalencia estatica.
+- Resultado, matriz de acessos e hashes: reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/state_field_sync_audit_20261111/.
+
 ## Lote anterior — `lifetime_sync_atomic_gate_20261110`
 
 - Fonte atual: SHA-256 `b4888b64d1533a1badf93c384b2df722455730a83bd258124b9d3d15dd908513`.

@@ -1,0 +1,239 @@
+{
+  "schema_version": "1.0",
+  "generated_date": "2026-11-11",
+  "driver": "zte_charger_policy",
+  "batch": "state_field_sync_audit_20261111",
+  "stage": "static_reconstruction_review",
+  "result": "STATIC_RISK_CONFIRMED; runtime impact and failing interleaving not established",
+  "source_changed": false,
+  "docker_build_performed": false,
+  "host_or_device_test_performed": false,
+  "finding": {
+    "summary": "Stock callbacks and timeout work access shared policy fields without a common driver lock; reviewed stock paths contain ordinary accesses and no lock/atomic/barrier primitives for these fields.",
+    "field_matrix": "access_matrix.json",
+    "runtime_reproduced": false,
+    "mitigation_added": false,
+    "reason_no_mitigation": "The static reconstruction protocol forbids inventing locks without stock evidence. Safety hardening would be a separate semantic delta, not an exact stock reconstruction.",
+    "distinct_from_teardown_gate": "The current reconstructed source and unpromoted candidates use runtime_stopping and synchronous drains for teardown lifetime; the active .ko is older. The gate does not serialize normal policy state transitions."
+  },
+  "measured_static_scan": {
+    "calls_reviewed": 101,
+    "lock_or_atomic_api_call_matches": 0,
+    "selected_stock_assembly_functions": 11,
+    "exclusive_atomic_or_barrier_instruction_matches": 0,
+    "caveat": "Static name/instruction scan scoped to reviewed functions; it is not a proof about every path in the module."
+  },
+  "identity": {
+    "repository_source": {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c",
+      "sha256": "c3da1145c1f06fe42e7bf00972ff1bcab552ac58fb5c3f9919f018123827483b"
+    },
+    "docker_curated_source": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\zte_charger_policy\\zte_charger_policy.c",
+      "sha256": "c3da1145c1f06fe42e7bf00972ff1bcab552ac58fb5c3f9919f018123827483b"
+    },
+    "active_candidate_repository": {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.ko",
+      "sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec",
+      "promoted": true
+    },
+    "active_candidate_docker_curated": {
+      "path": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia\\curated\\zte_charger_policy\\zte_charger_policy.ko",
+      "sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec"
+    },
+    "fresh_candidate_not_promoted": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/fresh_candidate_unpromoted.ko",
+      "sha256": "915b27b135bdcbe1e61d6ba889fd4985e8562a652d23a773ef1faebee8496e58",
+      "promoted": false
+    },
+    "stock_module": {
+      "path": "reference_modules/stock/zte_charger_policy.ko",
+      "sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c"
+    },
+    "reconstruction_map": {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/reconstruction_map.json",
+      "sha256": "f02af42447b987e82b59b59fc07887cfacdd6907cb1bcf0d1e78eb985ca2e1c0",
+      "candidate_sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec"
+    }
+  },
+  "evidence_inputs": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/calls.jsonl",
+      "sha256": "dac9384e3ce72f5340cb241b9cdf63b8ae0e18a19255f100467c9cd1fd24398d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/pseudocode.c",
+      "sha256": "e577fc1f255f97453f99ce312a014651fd3ed8569b93576ac70de80e83638f4f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/manifest.json",
+      "sha256": "da8b420d6afbe724732520c7de2fff02b0b7b9cb7eaa6279ec065449b1b03c8c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/manifest.json",
+      "sha256": "cced75c263afbce34f345e406f2637ee19f54f77df1c880dde8d7f7213dfe32b"
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/STATIC_RECONSTRUCTION_PROTOCOL.md",
+      "sha256": "a566a864a53fae5f1659366fa186943b53ca07df4ca48b103306dde64e76a494"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_atomic_gate_20261110/attestation.json",
+      "sha256": "a58effb7ad42ece212f01634dbf01cea26d8b01beeb19e278504c7be442f142f"
+    }
+  ],
+  "pinned_kernel_sources": [
+    {
+      "path_in_kernel_volume": "kernel/kernel_platform/common/drivers/power/supply/power_supply_core.c",
+      "sha256": "e02c8813380a478a00665788c28c0f0ca09f349e57213d61efe765b14101afb2",
+      "role": "power_supply_unregister and use_cnt"
+    },
+    {
+      "path_in_kernel_volume": "kernel/kernel_platform/common/drivers/power/supply/power_supply_sysfs.c",
+      "sha256": "aee8b63fda8ee81719a45e3676fdeb3e4ac0f2e7645fe6c6942c32fa8b683f26",
+      "role": "sysfs property setter callback"
+    },
+    {
+      "path_in_kernel_volume": "kernel/kernel_platform/common/kernel/notifier.c",
+      "sha256": "1f4a1b2384a8751d780d39a748ef5beda21149f6e715af54df131ff9add2c44e",
+      "role": "blocking notifier unregister synchronization"
+    },
+    {
+      "path_in_kernel_volume": "kernel/kernel_platform/common/kernel/time/alarmtimer.c",
+      "sha256": "37900e979556d1db91ca0050b2dc190ace04eecb7690d076dacfa2890d2086d2",
+      "role": "alarm_cancel callback drain"
+    },
+    {
+      "path_in_kernel_volume": "kernel/kernel_platform/common/kernel/workqueue.c",
+      "sha256": "192be8175ff7fed8445758f98a18fc67e88245801ee75f84378af82fda3dd46e",
+      "role": "cancel_delayed_work_sync drain and temporary requeue prevention"
+    }
+  ],
+  "reviewed_stock_functions": [
+    {
+      "name": "charger_policy_status_ide",
+      "entry": "00100a34",
+      "assembly_path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0000_charger_policy_status_ide_00100a34.asm",
+      "assembly_sha256": "13d110ac2cd0cdf365314bd9708d41639fed2e030fb0b16ec8870ee1fa465d34"
+    },
+    {
+      "name": "charger_policy_status_runchging",
+      "entry": "00100bc4",
+      "assembly_path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0001_charger_policy_status_runchging_00100bc4.asm",
+      "assembly_sha256": "9332170ef55ef18759f418359d5582f3062050226f327a2159c1034b38209e8e"
+    },
+    {
+      "name": "charger_policy_status_rundischging",
+      "entry": "00100e88",
+      "assembly_path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0002_charger_policy_status_rundischging_00100e88.asm",
+      "assembly_sha256": "4cb63a088abc0a1f9784c54641b7e69238f926132747a7be92269b0c05a03039"
+    },
+    {
+      "name": "charger_policy_status_forcedischging",
+      "entry": "00101160",
+      "assembly_path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0003_charger_policy_status_forcedischging_00101160.asm",
+      "assembly_sha256": "8ddb43fad95fa46a1dc8128d7c8415b6674423ace40338feb507d4b12ebec4d4"
+    },
+    {
+      "name": "charger_policy_timeout_alarm_cb",
+      "entry": "00101208",
+      "assembly_path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0004_charger_policy_timeout_alarm_cb_00101208.asm",
+      "assembly_sha256": "eefe8cf5cf813b4a547f4d1afd4e320814185398f354fbcdae91f2beb444ff2e"
+    },
+    {
+      "name": "charger_policy_demo_sts_set",
+      "entry": "00101264",
+      "assembly_path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0005_charger_policy_demo_sts_set_00101264.asm",
+      "assembly_sha256": "774a553ee555b9c0f77f0ba80336561f469c82b613ef12189900169812f87783"
+    },
+    {
+      "name": "charger_policy_expired_sec_set",
+      "entry": "001014f4",
+      "assembly_path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0009_charger_policy_expired_sec_set_001014f4.asm",
+      "assembly_sha256": "32234fd80b0691cbae83a9a941213a25ae39365d87b6aa8631748f3d67fd774f"
+    },
+    {
+      "name": "charger_policy_force_disching_sec_set",
+      "entry": "00101638",
+      "assembly_path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0011_charger_policy_force_disching_sec_set_00101638.asm",
+      "assembly_sha256": "fb179645b96bec63f4401be9a0b811116d1ec9db1626e45a1b8e3f12f8a912a2"
+    },
+    {
+      "name": "charger_policy_enable_status_set",
+      "entry": "001019d0",
+      "assembly_path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0017_charger_policy_enable_status_set_001019d0.asm",
+      "assembly_sha256": "be74f194b5bc5832f818611a725194eaef5ebca0508af088440e3695083b29ab"
+    },
+    {
+      "name": "charger_policy_timeout_handler_work",
+      "entry": "00102f34",
+      "assembly_path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0029_charger_policy_timeout_handler_work_00102f34.asm",
+      "assembly_sha256": "3067f9db8128f3b5a068efda552bd95cb8b82c5269f4c238f9c83077d70c28f6"
+    },
+    {
+      "name": "policy_psy_set_property",
+      "entry": "00103678",
+      "assembly_path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly/0033_policy_psy_set_property_00103678.asm",
+      "assembly_sha256": "2b5f1eea65c22de0fbff1c6e5a18edb4ee35407e6276c051cd0f6d7887cc81ae"
+    }
+  ],
+  "validation_limits": [
+    "No native runtime race, KCSAN or lockdep reproduction was run.",
+    "No source or production object was modified, so no Docker rebuild was needed.",
+    "The full-driver reconstruction remains incomplete: the current map and active .ko remain bound to an earlier candidate, and the full audit still reports static_verified empty."
+  ],
+  "documentation_sync": {
+    "dryrun": {
+      "path": "source_sync_dryrun.json",
+      "sha256": "9ee2069d9cab915d8baf67ffbd9e033f8dccd1b1ce64d574f40c98537353d6ad",
+      "planned_content_mismatch": [
+        "STATUS.md"
+      ]
+    },
+    "applied": {
+      "path": "source_sync_applied.json",
+      "sha256": "543b5798647984231037951dba98404e55fe68883934668d002a90ddacf64e1f",
+      "passed": true,
+      "copied": [
+        "STATUS.md"
+      ],
+      "removed": []
+    },
+    "postverify": {
+      "path": "source_sync_postverify.json",
+      "sha256": "82cb342269234e24d7914cfd6f382aa4bc0e3acb1cd6b42c128b701d8adee725",
+      "passed": true,
+      "remaining": {
+        "content_mismatch": [],
+        "missing_from_curated": [],
+        "unexpected_in_curated": []
+      }
+    },
+    "source_status_sha256": "2dac74e1388ddcc204eab4034ff5829544fac7a196ba29f11474945ff50aeef4",
+    "docker_status_sha256": "2dac74e1388ddcc204eab4034ff5829544fac7a196ba29f11474945ff50aeef4",
+    "source_manifest_sha256": "6fe7ee46d2d28c51c7b447bd11a66cb062e60bb230873f4a4454b30d8b5c8cba",
+    "docker_manifest_sha256": "6fe7ee46d2d28c51c7b447bd11a66cb062e60bb230873f4a4454b30d8b5c8cba"
+  },
+  "artifacts": [
+    {
+      "path": "README.md",
+      "sha256": "f5ec1326f5974fce243908099d51e0914d12af4115a1b79f213f921af3e05cb2"
+    },
+    {
+      "path": "access_matrix.json",
+      "sha256": "ad5761065b759f321ede3786f2dccddbed89c065e0113d9c24680509c0194954"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/STATUS.md",
+      "sha256": "2dac74e1388ddcc204eab4034ff5829544fac7a196ba29f11474945ff50aeef4"
+    },
+    {
+      "path": "source_sync_applied.json",
+      "sha256": "543b5798647984231037951dba98404e55fe68883934668d002a90ddacf64e1f"
+    },
+    {
+      "path": "source_sync_postverify.json",
+      "sha256": "82cb342269234e24d7914cfd6f382aa4bc0e3acb1cd6b42c128b701d8adee725"
+    }
+  ]
+}

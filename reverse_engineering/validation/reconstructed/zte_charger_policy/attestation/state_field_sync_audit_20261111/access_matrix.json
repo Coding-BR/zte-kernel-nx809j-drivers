@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_charger_policy",
+  "scope": "static shared-state access review; no runtime interleaving reproduced",
+  "fields": [
+    {
+      "field": "policy_disabled",
+      "offset_hex": "0x1e8",
+      "size_bytes": 4,
+      "writers": [
+        "policy_psy_set_property (stock entry 00103678; PRESENT property)",
+        "charger_policy_enable_status_set (stock entry 001019d0)"
+      ],
+      "readers": [
+        "charger_policy_timeout_handler_work (stock entry 00102f34)",
+        "policy_psy_get_property (stock entry 00103564)",
+        "charger_policy_enable_status_get (stock entry 00101a80)"
+      ],
+      "synchronization_observed_in_stock": "no lock or atomic/barrier operation in reviewed paths",
+      "assessment": "writer/worker state access is not serialized by a driver lock"
+    },
+    {
+      "field": "status",
+      "offset_hex": "0x1ec",
+      "size_bytes": 4,
+      "writers": [
+        "policy_psy_set_property (stock entry 00103678; ONLINE property)",
+        "charger_policy_status_disable (stock entry 00101378; called by charger_policy_demo_sts_set)",
+        "charger_policy_timeout_handler_work and its status handlers"
+      ],
+      "readers": [
+        "charger_policy_timeout_handler_work and status handlers",
+        "charger_policy_get_status (stock entry 00101b04)",
+        "policy_psy_get_property (stock entry 00103564)"
+      ],
+      "synchronization_observed_in_stock": "no lock or atomic/barrier operation in reviewed paths",
+      "assessment": "state transitions may overlap with property writes or readers"
+    },
+    {
+      "field": "last_status",
+      "offset_hex": "0x1f0",
+      "size_bytes": 4,
+      "writers": [
+        "charger_policy_status_disable (stock entry 00101378)",
+        "charger_policy_timeout_handler_work and status handlers"
+      ],
+      "readers": [
+        "charger_policy_timeout_handler_work and status handlers"
+      ],
+      "synchronization_observed_in_stock": "no lock or atomic/barrier operation in reviewed paths",
+      "assessment": "worker state-transition pair is unsynchronized during normal operation"
+    },
+    {
+      "field": "timeout_seconds_runtime",
+      "offset_hex": "0x1f4",
+      "size_bytes": 4,
+      "writers": [
+        "charger_policy_expired_sec_set (stock entry 001014f4)"
+      ],
+      "readers": [
+        "charger_policy_status_ide (stock entry 00100a34), called from timeout work"
+      ],
+      "synchronization_observed_in_stock": "no lock or atomic/barrier operation in reviewed paths",
+      "assessment": "configuration update can overlap with worker use; impact not reproduced"
+    },
+    {
+      "field": "force_discharging_sec",
+      "offset_hex": "0x1f8",
+      "size_bytes": 4,
+      "writers": [
+        "charger_policy_force_disching_sec_set (stock entry 00101638)"
+      ],
+      "readers": [
+        "charger_policy_status_runchging (stock entry 00100bc4)",
+        "charger_policy_status_rundischging (stock entry 00100e88)",
+        "charger_policy_status_forcedischging (stock entry 00101160)"
+      ],
+      "synchronization_observed_in_stock": "no lock or atomic/barrier operation in reviewed paths",
+      "assessment": "configuration update can overlap with worker use; impact not reproduced"
+    },
+    {
+      "field": "demo_sts",
+      "offset_hex": "0x219",
+      "size_bytes": 1,
+      "writers": [
+        "charger_policy_demo_sts_set (stock entry 00101264)",
+        "charger_policy_probe during initialization"
+      ],
+      "readers": [
+        "charger_policy_timeout_handler_work and status handlers",
+        "policy_psy_get_property (stock entry 00103564)",
+        "charger_policy_demo_sts_get (stock entry 001013c8)"
+      ],
+      "synchronization_observed_in_stock": "no lock or atomic/barrier operation in reviewed paths",
+      "assessment": "control flag access is not serialized with a running worker"
+    }
+  ],
+  "excluded_from_finding": [
+    {
+      "field": "runtime_stopping",
+      "offset_hex": "0x214",
+      "reason": "atomic in current reconstructed source for teardown admission; active .ko is older, and the gate does not serialize normal policy fields"
+    },
+    {
+      "field": "force_discharging_sec_nanoseconds",
+      "offset_hex": "0x200",
+      "reason": "initialized during probe and consumed by alarm paths; no concurrent runtime setter was identified in reviewed controls"
+    }
+  ],
+  "limits": [
+    "Static evidence establishes unsynchronized access patterns, not a particular failing interleaving.",
+    "No source lock was added because the stock evidence contains no such lock and the reconstruction protocol forbids inventing one."
+  ]
+}
