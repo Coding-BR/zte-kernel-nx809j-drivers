@@ -75,3 +75,20 @@ O prompt obrigatório da pipeline estabelece que stock ELF, Assembly, relocation
 - Política de módulos Ghidra: https://github.com/morluto/rea/blob/main/docs/ghidra-mips.md
 - Semântica do provedor Ghidra: https://github.com/morluto/rea/blob/main/docs/ghidra-provider.md
 - Faixa Node e instalação Ghidra: https://github.com/morluto/rea/blob/main/docs/installation.md
+
+## Revalidação do upstream nesta execução — 2026-11-11
+
+- `git ls-remote https://github.com/morluto/rea.git HEAD` retornou `5fde39454e5457448c87b107c0fc034d1674a74b`. O registro npm ainda publica `rea-agents 6.8.0`, com Node `^22.23.4 || ^24.22.1 || >=26.12.1`; este host continua em Node `v26.5.1` e não tem `rea` no `PATH`.
+- A documentação Windows atual ampliou a trilha Ghidra para PE ARMNT/ARM64, além de x86/x64, DOS MZ e raw 6502. Isso continua sem admitir ELF relocatable `.ko`; portanto não habilita diretamente os módulos AArch64 do NX809J neste Windows.
+- O upstream agora documenta explicitamente `ET_REL` Linux para Ghidra na trilha MIPS32/o32. Não encontrei no HEAD consultado uma trilha equivalente verificada para `ET_REL` AArch64. Uma tentativa em Linux poderia ser um experimento exploratório, mas não é uma capacidade confirmada nem um gate confiável para este alvo.
+- A documentação atual continua descrevendo `inspect-kernel-module` como leitura de metadados e seções, e ADB como operações delimitadas para estado, logs, arquivos e ciclo de vida de aplicativos. Não oferece shell arbitrário ou carregamento `insmod`/`rmmod` do driver. Isso não fecha a validação dinâmica do módulo no telefone.
+- Decisão mantida: não instalar REA nem torná-lo dependência/gate. Para as funções difíceis, só há justificativa para um piloto isolado em Linux se ele conseguir abrir um `.ko` stock AArch64, produzir um dossiê hash-bound e acrescentar observações que não estejam nos exports Ghidra/Assembly/P-Code existentes. O teste do REA deve continuar subordinado aos gates atuais de Joern, Docker, Assembly, KCFI e harness.
+
+## Fontes desta execução
+
+- HEAD consultado: https://github.com/morluto/rea (commit `5fde39454e5457448c87b107c0fc034d1674a74b`).
+- README e CLI: https://github.com/morluto/rea/blob/main/README.md e https://github.com/morluto/rea/blob/main/docs/getting-started/cli.md
+- Ghidra Windows P0: https://github.com/morluto/rea/blob/main/docs/providers/windows-ghidra-p0.md
+- Ghidra ET_REL MIPS: https://github.com/morluto/rea/blob/main/docs/ghidra-mips.md
+- Módulos Linux: https://github.com/morluto/rea/blob/main/docs/kernel-modules.md
+- ADB Android: https://github.com/morluto/rea/blob/main/docs/guides/android/adb-device-analysis.md
