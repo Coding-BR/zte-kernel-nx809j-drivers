@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "review_id": "rdbg_unbind_rebind_lifetime_review_20261111",
+  "driver": "rdbg",
+  "result": "STATIC_RISK_CONFIRMED",
+  "scope": [
+    "platform unbind/rebind",
+    "qcom_smem_state handle ownership",
+    "probe publication versus character-device write"
+  ],
+  "candidate": {
+    "module_sha256": "7accb38ca56d57cced2ddb9c8f829e01f80aca37a54ea53aab05ab189573d5a9",
+    "map_sha256_before_review": "a82dbfd3655e3fcc85040790c437a2fa4341ae1a15d421fd7958a9cbd9efba08",
+    "map_sha256_after_review": "5d6871cc63f5059b8a72868ff91b1567bd2f4831f9dd73a468f5f954287ab557",
+    "relevant_source_sha256": {
+      "rdbg_fn_01_cleanup_module.c": "f83d87947051b07fa96cdadfad74594191256cc7408986d8cf19df688eda1407",
+      "rdbg_fn_04_probe.c": "ca8a24a7adbff11c9ad2142fc7fe723b26ae208a13dee5409a383c02b9b523dc",
+      "rdbg_fn_06_write.c": "7da8f12f6acb9f148028bf7450bd44f758dd48d585d915656e79e2ab327cefea",
+      "rdbg_fn_07_init_module.c": "1d2a99c66c6ca9eba607695bd4d51deb7532fb1020dc820c4a30f0ca3ca775bd",
+      "rdbg_reconstruction_layout.h": "234e4d3285a8773e7fb78445bc4102ee6123b49a8be8c102c74347145137d956"
+    }
+  },
+  "stock": {
+    "module_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
+    "probe_assembly_sha256": "363d63c568c1d02b822efac9d5ce29bd41ab172e1bb8e08c59c7bf0432f9ca5b"
+  },
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "kernel_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "kernel_source_file_sha256": {
+      "drivers/base/dd.c": "405ff5610410ddc30dec483423f54c9be46c8d307f930989cfd44860a1185930",
+      "drivers/base/platform.c": "deb56bde49fca1e12ec4e81fb7107713db3d3e8e6a953ddc6d8218c3d6dfc1c8",
+      "drivers/soc/qcom/smem_state.c": "39360f4a65caf991621d7c19438b500cb0bd807d617491bd95fbda9cfb0b3265",
+      "include/linux/platform_device.h": "a389221f5551054244d8ce3f4154f8da7b994c7a22b88134f66aba4c621f998f"
+    },
+    "curated_snapshot": {
+      "candidate_module_sha256": "7accb38ca56d57cced2ddb9c8f829e01f80aca37a54ea53aab05ab189573d5a9",
+      "map_sha256_before_review": "a82dbfd3655e3fcc85040790c437a2fa4341ae1a15d421fd7958a9cbd9efba08",
+      "files_compared_byte_for_byte": [
+        "rdbg_fn_00_on_interrupt_from.c",
+        "rdbg_fn_01_cleanup_module.c",
+        "rdbg_fn_02_release.c",
+        "rdbg_fn_03_open.c",
+        "rdbg_fn_04_probe.c",
+        "rdbg_fn_05_read.c",
+        "rdbg_fn_06_write.c",
+        "rdbg_fn_07_init_module.c",
+        "rdbg_metadata.c",
+        "rdbg_reconstruction_layout.h",
+        "Makefile",
+        "reconstruction_map.json",
+        "STATUS.md",
+        "validation_plan.json",
+        "vendor.Module.symvers"
+      ],
+      "all_match_repository_before_review": true,
+      "map_sha256_after_review": "5d6871cc63f5059b8a72868ff91b1567bd2f4831f9dd73a468f5f954287ab557",
+      "all_match_repository_after_review": true
+    }
+  },
+  "findings": [
+    {
+      "id": "RDBG-REBIND-01",
+      "status": "CONFIRMED_STATIC_REFERENCE_LEAK_ON_SUCCESSFUL_REPROBE",
+      "claim": "The driver has no per-device remove callback. Each successful reprobe calls qcom_smem_state_get and overwrites the stored handle; qcom_smem_state_get increments the provider kref and requires qcom_smem_state_put. Module-exit cleanup sees and puts only the currently stored pointer.",
+      "candidate_evidence": [
+        "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_07_init_module.c:58-64",
+        "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_04_probe.c:97-101",
+        "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_01_cleanup_module.c:28-42"
+      ],
+      "kernel_evidence": [
+        "drivers/base/platform.c:1418-1425",
+        "drivers/base/dd.c:547-558, 561-570, 1239-1286",
+        "drivers/soc/qcom/smem_state.c:60-153",
+        "include/linux/platform_device.h:242-258"
+      ]
+    },
+    {
+      "id": "RDBG-REBIND-02",
+      "status": "CONFIRMED_UNSYNCHRONIZED_STATE_PUBLICATION",
+      "claim": "Probe publishes smem_bit and smem_state without a lock shared with rdbg_write. The writer uses both fields after the SMQ write mutex has been released. The race is statically possible; an observable failure is not established.",
+      "candidate_evidence": [
+        "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_04_probe.c:97-101",
+        "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_06_write.c:153, 157-171, 203"
+      ]
+    }
+  ],
+  "negative_findings": [
+    "No use-after-free was established for a successful rebind; the acquired handle remains referenced until a matching put or provider orphaning.",
+    "No runtime crash, state corruption, or user-visible failure was observed."
+  ],
+  "validation": {
+    "canonical_curated_snapshot_source_files_match": true,
+    "canonical_curated_module_matches_candidate": true,
+    "adb_devices": "NONE_ATTACHED",
+    "phone_test": "NOT_RUN",
+    "module_load_or_unbind_test": "NOT_RUN",
+    "source_changed": false,
+    "docker_rebuild": "NOT_RUN_NO_SOURCE_CHANGE",
+    "docker_kernel_source_inspection": "READ_ONLY"
+  },
+  "recommended_next_step": "Implement per-device online/offline gating and in-flight operation draining around state use, then add a remove callback that releases the SMEM handle exactly once. Preserve or update the 0x1c8 data stride and verify repeated unbind/rebind plus open/write concurrency."
+}

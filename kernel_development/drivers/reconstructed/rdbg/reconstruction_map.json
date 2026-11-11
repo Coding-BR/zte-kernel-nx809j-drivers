@@ -27,7 +27,7 @@
       "source_file": "rdbg_fn_01_cleanup_module.c",
       "source_function": "cleanup_module",
       "status": "HARDENED_STOCK_DEVIATION",
-      "mapping_note": "Intentional lifetime hardening: unregister the platform driver before destroying client storage, release all retained qcom_smem_state_get() handles with qcom_smem_state_put(), and release the full character-device range reserved at init (stock passes count 1 for the 16-minor allocation). This differs from stock and requires runtime/reload validation. The handle release covers module exit; per-device unbind/rebind remains unverified because the driver has no remove callback.",
+      "mapping_note": "Intentional lifetime hardening: unregister the platform driver before destroying client storage, release all retained qcom_smem_state_get() handles with qcom_smem_state_put(), and release the full character-device range reserved at init (stock passes count 1 for the 16-minor allocation). A static unbind/rebind review on 2026-11-11 confirmed that the driver has no per-device remove callback: each successful reprobe obtains another kref and overwrites the stored handle, while module-exit cleanup can put only the current pointer. Probe also publishes smem_bit/state without synchronization shared with rdbg_write. No UAF or runtime failure was established; repair requires per-device operation quiescence and exactly-once handle release, followed by runtime/reload validation.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0007_00101974_cleanup_module.jsonl",
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0007_cleanup_module_00101974.asm",
@@ -44,7 +44,9 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_smem_state_lifetime_20261110/docker_validation.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_smem_state_lifetime_20261110/docker_validation.md",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_smem_state_lifetime_20261110/kernel_smem_state_lifetime_excerpt.txt",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_smem_state_lifetime_20261110/source_sync_final.json"
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_smem_state_lifetime_20261110/source_sync_final.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_unbind_rebind_lifetime_review_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_unbind_rebind_lifetime_review_20261111/review.json"
       ]
     },
     {
