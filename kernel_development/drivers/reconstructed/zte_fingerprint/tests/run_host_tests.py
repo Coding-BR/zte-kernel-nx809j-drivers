@@ -23,7 +23,7 @@ FUNCTIONS = [
 ]
 
 COVERAGE = {
-    "gf_ioctl": "test_full_lifecycle/ioctl_matrix",
+    "gf_ioctl": "test_full_lifecycle/ioctl_matrix_and_closed_and_open_cleanup_gate",
     "gf_compat_ioctl": "test_full_lifecycle/compat_ioctl",
     "gf_open": "test_full_lifecycle/open_release",
     "gf_release": "test_full_lifecycle/open_release",

@@ -3,22 +3,19 @@
   "driver": "zte_fingerprint",
   "candidate_sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21",
   "stock_sha256": "4ad15396f5c4fa1f6153dbb6e469476a9ec437daee186498dce94bc28f7d8675",
-  "generated_utc": "2026-11-11T13:25:41Z",
+  "generated_utc": "2026-11-11T14:39:00Z",
   "baseline_candidate_sha256": "8fbc779e8238738398d80e24902c88fbdbd9b1552c935f4d3f010f029ac34247",
   "candidate_state": "HARDENING_CANDIDATE_PENDING_INDEPENDENT_REVIEW",
   "mappings": [
     {
       "evidence": [
-        "Ghidra stock pseudocode and P-Code at 00101bf8 reviewed",
-        "exact 27-instruction body and 108-byte symbol matched stock; source alias gf_probe_list_del binds to ELF symbol list_del",
-        "stock extractor recorded NO_VALID_KCFI_PREAMBLE because the candidate preamble overlaps the function body; KCFI is explicitly N/A for this direct helper",
-        "Docker hard-protocol core passed assembly, reproducibility, KCFI exception handling, Joern and map gates",
-        "host harness covers list_del/gf_probe_list_del with reproducible result",
-        "no hardware execution claim",
-        "attestation: reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/next001_zte_fingerprint_list_del_exact_v1",
-        "Current hardening candidate differs from stock assembly for this function; stock equivalence is not established.",
-        "Independent review of the declared hardening deviation is pending.",
-        "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_multi_fd_cleanup_20261111/hardening_deviations.json"
+        "Ghidra stock pseudocode and P-Code for gf_ioctl at 00100824 reviewed: the closed-device gate permits only 0x6707 and 0x6708 before the 0x670c CLEANUP case calls gf_cleanup",
+        "Stock AArch64 assembly at 00100824 confirms the CLEANUP dispatch reaches gf_cleanup; the candidate dispatcher must preserve opened until the inner handler passes its gate",
+        "Current dispatcher checks opened before releasing the IRQ, returns -EBUSY when multiple descriptors share resources, and clears opened only after CLEANUP returns",
+        "Host harness now covers CLEANUP with multiple descriptors and successful cleanup with one descriptor; reproducible across two host builds/runs",
+        "Current hardening candidate differs from stock assembly for this function; exact stock equivalence is not claimed",
+        "No smartphone runtime or IRQ concurrency test claim",
+        "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_cleanup_ioctl_20261111/audit.json"
       ],
       "source_file": "zte_fingerprint.c",
       "source_function": "gf_ioctl",
@@ -29,7 +26,7 @@
       "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
       "independent_review": "PENDING",
       "review_disposition": "PENDING_INDEPENDENT_REVIEW",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_multi_fd_cleanup_20261111/hardening_deviations.json"
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_cleanup_ioctl_20261111/audit.json"
     },
     {
       "evidence": [

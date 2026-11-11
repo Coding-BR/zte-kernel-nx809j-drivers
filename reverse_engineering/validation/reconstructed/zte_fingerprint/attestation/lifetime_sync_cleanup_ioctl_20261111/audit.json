@@ -1,0 +1,316 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-11T14:48:12Z",
+  "driver": "zte_fingerprint",
+  "decision": "CLEANUP_IOCTL_FIXED_STATICALLY_VALIDATED_CANDIDATE_NOT_PROMOTED_DEVICE_NOT_TESTED",
+  "issue": {
+    "function": "gf_ioctl_dispatch",
+    "ioctl": "0x670c CLEANUP",
+    "root_cause": "The dispatcher cleared opened before calling gf_ioctl. The inner ioctl gate then returned -ENODEV before gf_cleanup could release resources. For an already closed device the old dispatcher could release the IRQ before that rejection.",
+    "fix": "Reject CLEANUP on a closed device before IRQ teardown; preserve the single-descriptor guard; keep opened true while gf_ioctl invokes gf_cleanup; clear opened after the handler returns."
+  },
+  "source": {
+    "path": "kernel_development/drivers/reconstructed/zte_fingerprint/zte_fingerprint.c",
+    "sha256": "9a1f0db850cd84e1d0eb01e775d1115e42c9ae13ac8221ac78f4e256417079fe",
+    "map_path": "kernel_development/drivers/reconstructed/zte_fingerprint/reconstruction_map.json",
+    "map_sha256": "952e268e7c03af273d21629ee3f7a772b801fd7e522b0ed99374bb1f3dc1e73e",
+    "status_path": "kernel_development/drivers/reconstructed/zte_fingerprint/STATUS.md",
+    "status_sha256": "99cb32e716e4e697f522dcc5dbb8d9c395214f997382053b30a09aee1e61fa70"
+  },
+  "reference": {
+    "stock_module_path": "reference_modules/stock/zte_fingerprint.ko",
+    "stock_module_sha256": "4ad15396f5c4fa1f6153dbb6e469476a9ec437daee186498dce94bc28f7d8675",
+    "curated_candidate_sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21",
+    "candidate_matches_map": true
+  },
+  "host_harness": {
+    "report_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_cleanup_ioctl_20261111/host_test_report.json",
+    "report_sha256": "10b600c8c0af2f69aa1cc27489182c38c40687a63b4bd233eff91c677df087b6",
+    "passed": true,
+    "reproducible": true,
+    "covered_functions": 30,
+    "covered_function_names": [
+      "gf_ioctl",
+      "gf_compat_ioctl",
+      "gf_open",
+      "gf_release",
+      "gf_disable_irq",
+      "gf_enable_irq",
+      "nav_event_input",
+      "_inline_copy_to_user",
+      "_inline_copy_from_user",
+      "gf_irq",
+      "gf_probe",
+      "gf_remove",
+      "goodixfp_init_drm_notifier",
+      "list_del",
+      "goodixfp_drm_get_pannel",
+      "goodix_fb_state_chg_callback",
+      "sendnlmsg",
+      "netlink_init",
+      "nl_data_ready",
+      "netlink_exit",
+      "zte_goodix_pinctrl_init",
+      "zte_goodix_pinctrl_select",
+      "gf_parse_dts",
+      "gf_cleanup",
+      "gf_power_on",
+      "gf_power_off",
+      "gf_hw_reset",
+      "gf_irq_num",
+      "init_module",
+      "cleanup_module"
+    ],
+    "cleanup_cases": [
+      "multiple descriptors: -EBUSY while shared IRQ/resources remain",
+      "closed device: -ENODEV and IRQ/resources remain",
+      "single open descriptor: CLEANUP succeeds and releases IRQ/devres group"
+    ],
+    "two_binary_sha256_equal": true,
+    "runs_passed": true
+  },
+  "canonical_docker": {
+    "sync_report_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_cleanup_ioctl_20261111/curated_sync_final.json",
+    "sync_report_sha256": "b8c6015f0dc906e9cc9c29f01737dee732c0aa2693c6e29a3e19133764cfdb0c",
+    "sync_passed": true,
+    "sync_remaining": {
+      "content_mismatch": [],
+      "missing_from_curated": [],
+      "unexpected_in_curated": []
+    },
+    "source_manifest_sha256": "cfeb5934a0aa433ce47406fd83e3130c8f94f42233c7c3c57ac20748b245e377",
+    "docker_snapshot_manifest_sha256": "cfeb5934a0aa433ce47406fd83e3130c8f94f42233c7c3c57ac20748b245e377",
+    "source_and_snapshot_match": true,
+    "validator_report_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_cleanup_ioctl_20261111/validator_final.json",
+    "validator_report_sha256": "3d8b30d6e9fef7d9fd1bf12abad5c05b0ef923e481c4b56338f956ae0dd255f0",
+    "build_passed": true,
+    "reproducible_build": true,
+    "build_cycles": [
+      {
+        "cycle": 1,
+        "sha256": "19130f10be986d6b6e209c7d3e413ce0fd74e48de934e76d3c7b7a82e1a3cd97",
+        "size_bytes": 396472
+      },
+      {
+        "cycle": 2,
+        "sha256": "19130f10be986d6b6e209c7d3e413ce0fd74e48de934e76d3c7b7a82e1a3cd97",
+        "size_bytes": 396472
+      }
+    ],
+    "kernel_source_identity": {
+      "checks": {
+        "bindgen_sha256": true,
+        "bindgen_version": true,
+        "clang_binary_sha256": true,
+        "clang_revision": true,
+        "clang_version": true,
+        "config_sha256": true,
+        "docker_image_id": true,
+        "kernel_release": true,
+        "localversion_sha256": true,
+        "module_symvers_sha256": true,
+        "rust_toolchain": true,
+        "rustc_sha256": true,
+        "source_head": true,
+        "source_repository": true
+      },
+      "expected": {
+        "bindgen_sha256": "548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706",
+        "bindgen_version": "0.69.5",
+        "clang_binary_sha256": "69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044",
+        "clang_revision": "clang-r536225",
+        "clang_version": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+        "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+        "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+        "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+        "localversion_sha256": "e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475",
+        "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+        "rust_toolchain": "rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)",
+        "rustc_sha256": "ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c",
+        "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+        "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git"
+      },
+      "image_command": {
+        "argv": [
+          "docker",
+          "image",
+          "inspect",
+          "--format",
+          "{{.Id}}",
+          "nubia-sm8850-kernel-builder:nx809j-repro"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390\n"
+      },
+      "mismatches": [],
+      "observed": {
+        "bindgen_sha256": "548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706",
+        "bindgen_version": "bindgen 0.69.5",
+        "clang_binary_sha256": "69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044",
+        "clang_revision": "clang-r536225",
+        "clang_version": "Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)",
+        "config_sha256": "b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288",
+        "docker_image": "nubia-sm8850-kernel-builder:nx809j-repro",
+        "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+        "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+        "localversion_sha256": "e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475",
+        "module_symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+        "rust_toolchain": "rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)",
+        "rustc_sha256": "ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c",
+        "source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+        "source_repository": "https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git"
+      },
+      "passed": true,
+      "probe_command": {
+        "argv": [
+          "docker",
+          "run",
+          "--rm",
+          "-v",
+          "nubia_sm8850_kernel_src_nx809j_oout_20261030:/work/src:ro",
+          "-v",
+          "nubia_sm8850_kernel_toolchains:/work/toolchains:ro",
+          "-v",
+          "nx809j_bindgen_0695:/work/bindgen:ro",
+          "-e",
+          "PATH=/work/toolchains/rust-1.82.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "-w",
+          "/work/src/kernel",
+          "nubia-sm8850-kernel-builder:nx809j-repro",
+          "python3",
+          "-c",
+          "\nimport hashlib\nimport json\nimport pathlib\nimport subprocess\n\ndef run(args):\n    result = subprocess.run(args, capture_output=True, text=True, check=False)\n    return result.stdout.strip() if result.returncode == 0 else None\n\ndef digest(path):\n    try:\n        return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()\n    except OSError:\n        return None\n\nsource_root = pathlib.Path(\"/work/src/kernel\")\ncommon = source_root / \"kernel_platform/common\"\nbuild_output = source_root / \".codex-kbuild/identity\"\nbuild_inputs = source_root / \"target_build_inputs\"\nlocalversion_rel = \"kernel_platform/common/localversion.nx809j-target\"\nbindgen = pathlib.Path(\"/work/bindgen/bin/bindgen\")\nclang = pathlib.Path(\"/work/toolchains/clang-r536225/bin/clang.real\")\nrustc = pathlib.Path(\"/work/toolchains/rust-1.82.0/bin/rustc\")\nclang_version = run([str(clang), \"--version\"])\nrust_toolchain = run([str(rustc), \"--version\"])\n\nprint(json.dumps({\n    \"source_head\": run([\"git\", \"-C\", str(source_root), \"rev-parse\", \"HEAD\"]),\n    \"source_repository\": run([\"git\", \"-C\", str(source_root), \"config\", \"--get\", \"remote.origin.url\"]),\n    \"kernel_release\": run([\"make\", \"-s\", \"-C\", str(common), f\"O={build_output}\", \"ARCH=arm64\", \"LLVM=1\", \"LLVM_IAS=1\", \"kernelrelease\"]),\n    \"config_sha256\": digest(build_output / \".config\"),\n    \"module_symvers_sha256\": digest(build_output / \"Module.symvers\"),\n    \"localversion_sha256\": digest(common / \"localversion.nx809j-target\"),\n    \"bindgen_version\": run([str(bindgen), \"--version\"]),\n    \"bindgen_sha256\": digest(bindgen),\n    \"clang_revision\": \"clang-r536225\",\n    \"clang_version\": clang_version.splitlines()[0] if clang_version else None,\n    \"clang_binary_sha256\": digest(clang),\n    \"rust_toolchain\": rust_toolchain,\n    \"rustc_sha256\": digest(rustc),\n}))\n"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "{\"source_head\": \"3356b35306d35d5a480e3b63df1a9f065b5d9f55\", \"source_repository\": \"https://github.com/Coding-BR/android_kernel_nubia_sm8850_qwjujube.git\", \"kernel_release\": \"6.12.23-android16-5-gf1bdb13583da-ab13761046-4k\", \"config_sha256\": \"b3ca00186d0849f409e760297023cd3b198202656f216f5726704c05fa944288\", \"module_symvers_sha256\": \"28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83\", \"localversion_sha256\": \"e6e709d1774e4e549dedc3e27619be24709f510e64493c1744c11bd045503475\", \"bindgen_version\": \"bindgen 0.69.5\", \"bindgen_sha256\": \"548b0056945e282fdb35da366350e68feb9ff28b6582398db171f12229089706\", \"clang_revision\": \"clang-r536225\", \"clang_version\": \"Android (12833971, +pgo, +bolt, +lto, +mlgo, based on r536225) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project b3a530ec6537146650e42be89f1089e9a3588460)\", \"clang_binary_sha256\": \"69e6d00e8596eba85cbcf2cd87639fe3f8dbed397cba6d98a8c2def68a7a4044\", \"rust_toolchain\": \"rustc 1.82.0-dev (f6e511eec 2024-10-15) (Android Rust Toolchain version linux-12909517)\", \"rustc_sha256\": \"ca6db735044d275ae381c743b72a757b7072a3c0c71bbfe47829b8c5948fb24c\"}\n"
+      },
+      "probe_error": null,
+      "required": true,
+      "status": "MATCH"
+    },
+    "candidate_promoted": false,
+    "candidate_runtime_content_matches_fresh": false,
+    "candidate_runtime_section_layout_matches_fresh": false,
+    "static_verified": [],
+    "hardware_verified": [],
+    "final_status": "incomplete_or_failed"
+  },
+  "stock_comparison": {
+    "stock_assembly_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_cleanup_ioctl_20261111/stock_assembly_fresh",
+    "stock_assembly_manifest_sha256": "5dc608d82e1b2e1ee4dc5d3811eac785d1f2eaff06530e9751a652318f89d48b",
+    "candidate_assembly_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_cleanup_ioctl_20261111/candidate_assembly",
+    "candidate_assembly_manifest_sha256": "a345aecada29efa2f7264c613c3ee12a0e3ff624e5f3aa8695598910e5735564",
+    "comparison_report_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_cleanup_ioctl_20261111/assembly_comparison.json",
+    "comparison_report_sha256": "81ee62a3fad912a736a5153a8fec3806bd369e02cd54d32f69485137a075df75",
+    "dispatcher_assembly_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_cleanup_ioctl_20261111/dispatcher_assembly/0000_gf_ioctl_dispatch.asm",
+    "dispatcher_assembly_sha256": "18e21fc831690e2675913291552bf6b61c01f0a3757207bc555bfb747906acdf",
+    "dispatcher_manifest_sha256": "4019aac2f1ab2e2500410e104af21502536f2bee88d905b90d1929ccaef1edfd",
+    "functions_compared": 30,
+    "exact_functions": 19,
+    "declared_deviation_count": 11,
+    "deviations": [
+      {
+        "function_identity": "cleanup_module@00102ac8",
+        "difference": "instructions"
+      },
+      {
+        "function_identity": "gf_cleanup@001026bc",
+        "difference": "symbol_size, instructions, relocations"
+      },
+      {
+        "function_identity": "gf_compat_ioctl@00100dc4",
+        "difference": "instructions"
+      },
+      {
+        "function_identity": "gf_ioctl@00100824",
+        "difference": "symbol_size, instructions, relocations"
+      },
+      {
+        "function_identity": "gf_open@00100de8",
+        "difference": "symbol_size, instructions, relocations"
+      },
+      {
+        "function_identity": "gf_probe@00101554",
+        "difference": "symbol_size, instructions, relocations"
+      },
+      {
+        "function_identity": "gf_release@00100fe8",
+        "difference": "symbol_size, instructions, relocations"
+      },
+      {
+        "function_identity": "gf_remove@00101968",
+        "difference": "symbol_size, instructions, relocations"
+      },
+      {
+        "function_identity": "goodix_fb_state_chg_callback@00101db8",
+        "difference": "symbol_size, instructions"
+      },
+      {
+        "function_identity": "goodixfp_init_drm_notifier@00101ac0",
+        "difference": "symbol_size, instructions, relocations"
+      },
+      {
+        "function_identity": "init_module@001029b0",
+        "difference": "symbol_size, instructions, relocations"
+      }
+    ],
+    "dispatcher_order_review": "At offsets 0x844-0x854 the dispatcher checks opened/ref_count; 0x858-0x85c releases IRQ; 0x88c calls gf_ioctl; 0x89c clears opened after return."
+  },
+  "abi_kmi": {
+    "report_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_cleanup_ioctl_20261111/abi_surface.json",
+    "report_sha256": "c0446d11dd0f0324056e7ff175e6f81530d2a22aa46e5a12912edb1155baea54",
+    "target_vermagic_match": true,
+    "target_modversions_match": true,
+    "candidate_import_crc_count": 74,
+    "mismatched_crc_symbols": [],
+    "missing_crc_symbols": [],
+    "strict_imports_match": false,
+    "missing_imports": [
+      "gpio_free"
+    ],
+    "unexpected_imports": [
+      "devres_open_group",
+      "devres_release_group"
+    ],
+    "stock_dependencies": [
+      "panel_event_notifier",
+      "zlog_common"
+    ],
+    "candidate_dependencies": [
+      "zlog_common"
+    ],
+    "strict_metadata_match": false,
+    "report_passed": false
+  },
+  "traceability_review": {
+    "all_ghidra_identities_mapped": true,
+    "mapped_functions": 30,
+    "independent_review_passed": false,
+    "pending_deviation_mappings": [
+      0,
+      1,
+      2,
+      3,
+      10,
+      11,
+      12,
+      15,
+      23,
+      28,
+      29
+    ]
+  },
+  "device_validation": {
+    "performed": false,
+    "adb_or_module_load_actions": [],
+    "hardware_verified": false
+  },
+  "limitations": [
+    "The host harness is a simulation and does not validate phone hardware or IRQ concurrency.",
+    "The fresh build is reproducible but differs from the currently curated candidate in runtime content and section layout; it was not promoted.",
+    "Eleven function-level hardening deviations remain pending independent review.",
+    "Strict import/metadata parity remains unresolved despite matching target vermagic and the 74 target import CRCs."
+  ]
+}

@@ -379,6 +379,17 @@ static void test_full_lifecycle(void)
 	nl_sk = &host.sock_object;
 	pid = 42;
 	gf_irq(1, &gf_dev_static);
+	CHECK(gf_compat_ioctl(&file, 0x6708, 0) == 0);
+	CHECK(!gf_dev_static.opened);
+	CHECK(gf_compat_ioctl(&file, 0x670c, 0) == -ENODEV);
+	CHECK(gf_dev_static.irq_requested);
+	CHECK(gf_dev_static.resource_group != NULL);
+	CHECK(gf_compat_ioctl(&file, 0x6707, 0) == 0);
+	CHECK(gf_dev_static.opened);
+	CHECK(gf_compat_ioctl(&file, 0x670c, 0) == 0);
+	CHECK(!gf_dev_static.irq_requested);
+	CHECK(gf_dev_static.resource_group == NULL);
+	CHECK(!gf_dev_static.opened);
 	CHECK(gf_release(&inode, &file) == 0);
 	CHECK(host.zlog_register_calls == 1 && host.zlog_unregister_calls == 1);
 

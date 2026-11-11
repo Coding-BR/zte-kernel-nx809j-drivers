@@ -1,38 +1,30 @@
 # Status de reconstrução do zte_fingerprint
 
-Atualizado em 2026-11-11 14:11 UTC. A fonte atual contém correções de hardening validadas offline; o módulo curado ainda é um artefato anterior e não contém a correção mais recente. O estado permanece pendente de revisão independente, paridade ABI e validação no smartphone.
+Atualizado em 2026-11-11 14:39 UTC. A correção mais recente trata o ioctl `CLEANUP`: o dispatcher agora preserva `opened` até o handler chamar `gf_cleanup` e evita soltar a IRQ quando o dispositivo já está fechado. O estado segue como candidato de hardening, com revisão independente, paridade ABI e validação no smartphone pendentes.
 
-## Candidato atual
+## Candidato e fonte
 
-- Módulo curado atual: SHA-256 `e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21`; ele não contém a correção mais recente em `zte_fp_init`.
-- Fonte atual: SHA-256 `7e68141d80088a413b3a8e1e9f7606fe9e8731e24a8f67a23b7a7b132dcb57dc`. `zte_fp_init` agora trata o retorno positivo de falha de `netlink_init`, desfaz a criação do class/chrdev e não registra o platform driver.
-- Docker canônico: duas compilações limpas idênticas (`38fc17bccc50c4251f439923657a6ca670c22ba496ccf37ffa718fb9cb8210e2`); identidade do kernel fonte: MATCH. O candidato curado diverge do novo build em conteúdo/layout executável, portanto o `.ko` novo não foi promovido.
-- Harness de host: PASS reproduzível, 30 funções; cobre `CLEANUP` compatível com dois descritores (`-EBUSY`) e falha de `netlink_kernel_create` com rollback completo.
-- Evidência por função: 30 identidades Ghidra comparadas; 19 assemblies idênticos ao stock e 11 diferenças declaradas no mapa. Equivalência stock dessas 11 funções não está estabelecida.
-- Assembly: 30 identidades comparadas; 19 exatas e 11 diferenças declaradas. `netlink_init` segue idêntica; `init_module` tem 336 bytes contra 276 bytes stock e continua em revisão.
-- ABI: 74 CRCs de imports conferem com o KMI do alvo e o vermagic confere. A paridade estrita de imports falha: `gpio_free` foi removido; `devres_open_group` e `devres_release_group` foram adicionados. A dependência `panel_event_notifier` do stock é explicada no kernel-alvo pela exportação built-in em `vmlinux`; o estado runtime do smartphone ainda não foi verificado.
-- Estado: a fonte corrigida está validada offline, mas o `.ko` curado permanece anterior; não marcar `static_verified` nem testar esse artefato como se contivesse a correção.
-- Hardware: não houve carregamento do módulo, unbind, unload nem teste de ciclo de vida no aparelho nesta rodada.
+- Módulo curado: SHA-256 `e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21`; esse artefato é anterior às correções recentes e não corresponde à fonte atual.
+- Fonte C atual: SHA-256 `9a1f0db850cd84e1d0eb01e775d1115e42c9ae13ac8221ac78f4e256417079fe`.
+- Docker canônico: duas compilações limpas reproduzíveis, ambas SHA-256 `19130f10be986d6b6e209c7d3e413ce0fd74e48de934e76d3c7b7a82e1a3cd97`; identidade do kernel fonte: MATCH; release `6.12.23-android16-5-gf1bdb13583da-ab13761046-4k`.
+- O módulo recém-compilado não foi promovido: o candidato curado ainda diverge em conteúdo e layout executável, e a paridade estrita de imports falha.
 
-A atestação mais recente está em reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/init_netlink_failure_20261111/; o lote de multi-descritor está em `attestation/lifetime_sync_multi_fd_cleanup_20261111/`.
+## Evidência atual
 
-## Baseline estático anterior
+- Harness de host: PASS reproduzível, 30 funções. Verifica `CLEANUP` com dois descritores (`-EBUSY` sem soltar recursos), com um descritor fechado (`-ENODEV` sem efeitos) e com um descritor aberto (IRQ e grupo devres liberados); também cobre o rollback de falha do Netlink.
+- Assembly: 30 identidades comparadas contra Ghidra; 19 exatas e 11 diferenças declaradas. O assembly recém-extraído de `gf_ioctl_dispatch` confirma a ordem: valida `opened` e `ref_count`, libera a IRQ, chama `gf_ioctl` e só então limpa `opened`.
+- ABI: vermagic e CRCs do KMI conferem quando incluído `vendor.Module.symvers`; a paridade estrita falha, com `gpio_free` ausente e `devres_open_group`/`devres_release_group` adicionais. A dependência stock `panel_event_notifier` é fornecida por `vmlinux` na fonte alvo, mas o estado do telefone continua sem verificação.
+- Validador final: continua `incomplete_or_failed`; não marcar `static_verified` nem tratar o `.ko` curado como contendo a correção atual.
+- Hardware: não houve carregamento, unbind, unload ou teste de ciclo de vida no smartphone nesta rodada.
 
-O candidato anterior, SHA-256 8fbc779e8238738398d80e24902c88fbdbd9b1552c935f4d3f010f029ac34247 (393.544 bytes), havia sido promovido como baseline offline, com 30 funções rastreadas e gates estáticos anteriores aprovados. Ele é histórico; não representa o novo candidato de hardening.
+A atestação desta correção está em `reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_cleanup_ioctl_20261111/`. Os lotes anteriores de inicialização Netlink e múltiplos descritores permanecem registrados em suas atestações versionadas.
 
-O stock usado como referência nesta cadeia continua sendo SHA-256 4ad15396f5c4fa1f6153dbb6e469476a9ec437daee186498dce94bc28f7d8675.
+## Histórico e gates pendentes
 
-## Alterações de ciclo de vida avaliadas
+O candidato anterior SHA-256 `8fbc779e8238738398d80e24902c88fbdbd9b1552c935f4d3f010f029ac34247` (393.544 bytes) é apenas o baseline offline histórico. O stock usado nesta cadeia continua sendo SHA-256 `4ad15396f5c4fa1f6153dbb6e469476a9ec437daee186498dce94bc28f7d8675`.
 
-- Remoção de gpio_free manual para GPIOs geridos por devm.
-- Sincronização dos caminhos ioctl, open/release, IRQ e remove.
-- Drenagem do trabalho de retry do notifier antes do teardown.
-- Bloqueio de rebind enquanto referências de arquivo antigas, grupo devres ou IRQ ainda permanecem.
-- O ioctl CLEANUP retorna -EBUSY quando existe outro descritor aberto, preservando recursos compartilhados até o último usuário.
-- Uso das APIs devres exportadas pelo KMI alvo; devres_close_group não está disponível no KMI consultado.
+As mudanças avaliadas incluem remoção de `gpio_free` manual sobre GPIOs `devm`, sincronização de `open/release/ioctl/IRQ/remove`, drenagem do trabalho de retry do notifier, bloqueio de rebind com referências antigas, proteção de `CLEANUP` para múltiplos descritores e uso das APIs devres exportadas pelo KMI alvo.
 
-## Próximos gates
-
-1. Revisão independente, função a função, das 11 diferenças de assembly e da semântica de teardown. Só então atualizar a decisão de revisão no mapa.
-2. Revisão independente dos 11 desvios e decisão sobre a diferença de imports antes de promover o `.ko` atual.
-3. Fazer validação dinâmica supervisionada no aparelho, com registro de logs e estado observado; manter o resultado separado da evidência estática.
+1. Revisar independentemente as 11 diferenças de assembly e atualizar o mapa apenas com uma decisão real de revisão.
+2. Resolver ou justificar a diferença estrita de imports antes de promover o `.ko` recompilado.
+3. Fazer validação dinâmica supervisionada no aparelho, com logs, estado observado e rollback; manter esse resultado separado da evidência estática.
