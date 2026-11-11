@@ -39,6 +39,7 @@ struct host_state {
 	int netlink_create_calls;
 	int netlink_release_calls;
 	int unicast_calls;
+	int class_destroy_calls;
 	int copy_to_calls;
 	int copy_from_calls;
 	int zlog_register_calls;
@@ -176,7 +177,11 @@ struct class *class_create(const char *name)
 	return &host.class_object;
 }
 
-void class_destroy(struct class *class_pointer) { CHECK(class_pointer == &host.class_object); }
+void class_destroy(struct class *class_pointer)
+{
+	CHECK(class_pointer == &host.class_object);
+	host.class_destroy_calls++;
+}
 
 int alloc_chrdev_region(dev_t *dev, unsigned int first, unsigned int count, const char *name)
 {
@@ -443,6 +448,14 @@ static void test_direct_helpers(void)
 
 static void test_module_entrypoints(void)
 {
+	host_reset_state();
+	host.fail_netlink = 1;
+	CHECK(init_module() == -ENOMEM);
+	CHECK(host.platform_register_calls == 0);
+	CHECK(host.chrdev_register_calls == 1 && host.chrdev_unregister_calls == 1);
+	CHECK(host.class_destroy_calls == 1);
+	CHECK(host.netlink_release_calls == 0);
+
 	host_reset_state();
 	CHECK(init_module() == 0);
 	cleanup_module();

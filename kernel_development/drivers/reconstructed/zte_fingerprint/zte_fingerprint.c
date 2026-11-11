@@ -1300,11 +1300,11 @@ static int __init zte_fp_init(void)
 	}
 
 	ret = netlink_init();
-	if (ret < 0) {
+	if (ret != 0) {
 		class_destroy(gf_class);
 		unregister_chrdev(SPIDEV_MAJOR, gf_driver.driver.name);
 		pr_warn("zte_fingerprint: Failed to initialize netlink.\n");
-		return ret;
+		return ret < 0 ? ret : -ENOMEM;
 	}
 
 	ret = platform_driver_register(&gf_driver);

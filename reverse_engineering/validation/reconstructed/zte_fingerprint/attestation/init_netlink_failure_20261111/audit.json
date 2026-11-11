@@ -1,0 +1,176 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-11T14:14:53.034535+00:00",
+  "driver": "zte_fingerprint",
+  "status": "SOURCE_FIX_STATICALLY_VALIDATED_CANDIDATE_NOT_PROMOTED_REVIEW_PENDING",
+  "finding": {
+    "function": "zte_fp_init (stock init_module at 001029b0)",
+    "stock_netlink_init_failure_result": 1,
+    "previous_caller_check": "ret < 0",
+    "problem": "netlink_init returns the positive sentinel 1 when netlink_kernel_create returns NULL, so the caller treated initialization failure as success and continued registering the platform driver.",
+    "change": "zte_fp_init now rejects every nonzero netlink_init result, unwinds class and chrdev registration, skips platform_driver_register, and translates a positive failure sentinel to -ENOMEM. netlink_init itself remains unchanged.",
+    "stock_evidence": {
+      "ghidra_init_module_call_sites": {
+        "platform_driver_register": "00102a5c",
+        "netlink_init": "00102a94",
+        "order": "platform_driver_register precedes netlink_init; stock decompilation ignores the result"
+      },
+      "netlink_init_function": {
+        "stock_entry": "0010202c",
+        "stock_symbol_bytes": 152,
+        "candidate_symbol_bytes": 152,
+        "stock_instruction_count": 38,
+        "candidate_instruction_count": 38,
+        "assembly_comparison_passed": true,
+        "stock_and_candidate_assembly_show_return_1_on_socket_creation_failure": true,
+        "evidence": [
+          "offline_static/ghidra_stock/decompiled/0017_0010202c_netlink_init.c",
+          "attestation/lifetime_sync_hardening_20261111/stock_assembly_fresh/0017_netlink_init_0010202c.asm",
+          "attestation/init_netlink_failure_20261111/candidate_assembly/0017_netlink_init_0010202c.asm"
+        ]
+      },
+      "init_module_assembly": {
+        "stock_bytes": 276,
+        "candidate_bytes": 336,
+        "stock_instructions": 69,
+        "candidate_instructions": 84,
+        "status": "declared hardening deviation; independent review pending"
+      }
+    }
+  },
+  "notifier_and_netlink_lifetime_review": {
+    "target_kernel_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "target_source_files": [
+      {
+        "path": "kernel_platform/common/drivers/soc/qcom/zte_parity.c",
+        "sha256": "5bbd51872e9638526d5ce3abad80fd0a1a7a1de13f70f4beb5cd382c5d42edcb",
+        "evidence_lines": {
+          "trigger_holds_panel_client_mutex_across_callback": "306-317",
+          "unregister_takes_same_mutex_list_del_then_frees_client": "348-360"
+        }
+      },
+      {
+        "path": "kernel_platform/common/drivers/soc/qcom/Makefile",
+        "sha256": "d53691833ce811790b5274e5a220487b0b27d7e7b5056a7b320a71d1bcc6a5ef",
+        "evidence": "line 43: obj-y += zte_parity.o"
+      },
+      {
+        "path": "kernel/.codex-kbuild/identity/Module.symvers",
+        "sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+        "evidence": [
+          "line 2923: panel_event_notifier_register CRC 0x1988207d, provider vmlinux",
+          "line 2924: panel_event_notifier_unregister CRC 0x57bbc774, provider vmlinux"
+        ]
+      }
+    ],
+    "conclusion": [
+      "The target notifier trigger holds panel_client_mutex while invoking callbacks. Unregister takes that mutex before removing the client and frees it only after the callback critical section has drained.",
+      "The driver callback checks removing with READ_ONCE and does not acquire device_list_lock. gf_remove releases device_list_lock before cancel_delayed_work_sync and panel_event_notifier_unregister, then reacquires it for IRQ/resource teardown; this avoids a callback/remove lock cycle.",
+      "zte_fp_exit unregisters the platform driver before netlink_exit. The remove path drains delayed work, unregisters the panel callback, and frees the IRQ before the netlink socket is released.",
+      "Stock cleanup_module calls netlink_exit before platform_driver_unregister (Ghidra call sites 00102ad8 then 00102ae8); the candidate reverses this order as a lifetime hardening deviation."
+    ],
+    "assessment": "No callback-after-free or callback-versus-netlink-teardown race found in these paths against the target notifier implementation."
+  },
+  "panel_event_notifier_dependency_disposition": {
+    "stock_depends": [
+      "zlog_common,panel_event_notifier"
+    ],
+    "candidate_depends": [
+      "zlog_common"
+    ],
+    "target_source_provider": "vmlinux; zte_parity.o is built-in (obj-y)",
+    "disposition": "The missing panel_event_notifier module dependency is explained for this target source: both symbols are exported by built-in vmlinux. This does not resolve the strict undefined-import delta."
+  },
+  "verification": {
+    "source_sha256": "7e68141d80088a413b3a8e1e9f7606fe9e8731e24a8f67a23b7a7b132dcb57dc",
+    "reconstruction_map_sha256": "0c4556bd3bda83f5252aa888cd110b6516471951431e7f114f576e495e4fc338",
+    "curated_sync": {
+      "passed": true,
+      "copied_files": 2,
+      "source_manifest_sha256": "e56d33ce7473f0c72d0f52eb23903994a74f65bee3a5bfab946a5f33009f2d43",
+      "curated_manifest_sha256": "e56d33ce7473f0c72d0f52eb23903994a74f65bee3a5bfab946a5f33009f2d43",
+      "report": "curated_sync_final.json",
+      "report_sha256": "ca8d9f10aeffa40981b864c852f91b6c6cd805b8c43201b7652413faf7f2a9dc"
+    },
+    "host_harness": {
+      "passed": true,
+      "reproducible": true,
+      "covered_function_count": 30,
+      "report_sha256": "fc60190feea0623b16eb917cd56c9d84b73e865319453c174c1efce0736a8dcd",
+      "failure_injection": "netlink_kernel_create returns NULL; init_module returns -ENOMEM, platform_driver_register is not called, class is destroyed, chrdev is unregistered, no socket release is attempted"
+    },
+    "docker": {
+      "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+      "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+      "kernel_source_identity_match": true,
+      "two_clean_builds_reproducible": true,
+      "fresh_build_1_sha256": "38fc17bccc50c4251f439923657a6ca670c22ba496ccf37ffa718fb9cb8210e2",
+      "fresh_build_2_sha256": "38fc17bccc50c4251f439923657a6ca670c22ba496ccf37ffa718fb9cb8210e2",
+      "curated_candidate_sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21",
+      "candidate_matches_fresh": false,
+      "candidate_runtime_content_matches_fresh": false,
+      "candidate_runtime_layout_matches_fresh": false,
+      "fresh_candidate_promoted": false,
+      "validator_status": "incomplete_or_failed",
+      "validator_errors": [
+        "module parity check failed: undefined_symbols_match",
+        "module parity check failed: candidate_runtime_content_matches_fresh",
+        "module parity check failed: candidate_runtime_section_layout_matches_fresh"
+      ],
+      "report_sha256": "9707f937a8fe2f90403a4fb8f6b927d11b6f7a5db42eb6e0abb1fbbf2d7caca2",
+      "report": "validator_final.json"
+    },
+    "assembly": {
+      "functions_compared": 30,
+      "exact_functions": 19,
+      "declared_deviations": 11,
+      "deviation_names": [
+        "cleanup_module",
+        "gf_cleanup",
+        "gf_compat_ioctl",
+        "gf_ioctl",
+        "gf_open",
+        "gf_probe",
+        "gf_release",
+        "gf_remove",
+        "goodix_fb_state_chg_callback",
+        "goodixfp_init_drm_notifier",
+        "init_module"
+      ],
+      "netlink_init_exact": true,
+      "init_module_stock_bytes": 276,
+      "init_module_candidate_bytes": 336,
+      "comparison_report_sha256": "0f4a788d80697c71f34b841a3a488e12eeeb71e6ee6eaacfa5b2ce513bb44996",
+      "candidate_manifest_sha256": "f3fcf9f78605c93e5807e221e99d70e9d34b5012a0f1fc7b7997c0f4e1bf6e80",
+      "fresh_module_sha256": "38fc17bccc50c4251f439923657a6ca670c22ba496ccf37ffa718fb9cb8210e2"
+    },
+    "abi": {
+      "target_modversions_match": true,
+      "target_vermagic_match": true,
+      "candidate_import_crc_count": 74,
+      "mismatched_crc_symbols": [],
+      "missing_crc_symbols": [],
+      "strict_undefined_symbol_parity": false,
+      "missing_stock_imports": [
+        "gpio_free"
+      ],
+      "new_candidate_imports": [
+        "devres_open_group",
+        "devres_release_group"
+      ],
+      "report": "abi_surface.json",
+      "report_sha256": "e0e8768fadac090bff5347738d2d5f0eacd48952b27968ce95c07bb478f428f1"
+    }
+  },
+  "review": {
+    "independent_review": "PENDING",
+    "hardware_validation": "NOT_PERFORMED",
+    "static_verified": false,
+    "reason": "The source fix is built and tested, but the curated candidate remains an older binary and the strict ABI import delta plus 11 assembly deviations remain unresolved."
+  },
+  "limitations": [
+    "The host harness is deterministic and does not model real kernel scheduling or hardware IRQ/notifier concurrency.",
+    "No module load, unbind, unload or smartphone runtime test was performed.",
+    "The target-source notifier implementation and target Module.symvers were inspected; matching phone runtime state remains unverified."
+  ]
+}
