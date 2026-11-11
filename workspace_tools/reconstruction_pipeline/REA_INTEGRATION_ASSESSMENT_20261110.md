@@ -53,9 +53,25 @@ O prompt obrigatório da pipeline estabelece que stock ELF, Assembly, relocation
 
 ## Fontes
 
-- Repositório e revisão consultada: https://github.com/morluto/rea (HEAD observado: `e2585aa7ce31c37866ca46991ec656fdffaa3b90`).
+- Repositório e revisão consultada: https://github.com/morluto/rea (consulta inicial: `e2585aa7ce31c37866ca46991ec656fdffaa3b90`; revalidação posterior: `40d9f1a5e84b6985811d20cff030a192c23bbb2c`).
 - CLI e evidência: https://github.com/morluto/rea/blob/main/docs/getting-started/cli.md
 - Módulos Linux: https://github.com/morluto/rea/blob/main/docs/kernel-modules.md
 - Limite Ghidra no Windows: https://github.com/morluto/rea/blob/main/docs/providers/windows-ghidra-p0.md
 - ADB Android: https://github.com/morluto/rea/blob/main/docs/guides/android/adb-device-analysis.md
 - Pipeline local: `HARD_DRIVER_AGENT_PROMPT.md`, `HARD_DRIVER_RECONSTRUCTION_PROTOCOL.md`, `compare_function_assembly.py`, `compare_ghidra_function_semantics.py` e `run_hard_driver_protocol.py`.
+
+## Revalidação do HEAD atual — 2026-11-11
+
+- `git ls-remote` retorna agora `be6ec3f164ee916cf877c5af0ed87de7344423ae`; o pacote npm consultado continua em `rea-agents 6.8.0`, com engines `^22.23.4 || ^24.22.1 || >=26.12.1`. O Node local `v26.5.1` não satisfaz essa faixa.
+- A documentação atual separa o Ghidra completo de Linux/macOS do P0 experimental no Windows. O P0 do Windows continua limitado a PE, DOS MZ e raw 6502; não serve para abrir diretamente os `.ko` ELF AArch64 deste alvo. Linux/macOS exigem Ghidra e JDK compatíveis instalados.
+- Há uma trilha explícita de Ghidra para objetos `ET_REL` MIPS32/o32 e o projeto também documenta a inspeção genérica de módulos `.ko`. Não encontrei uma trilha de suporte ou verificação equivalente para `ET_REL` AArch64. Portanto, a importação desses módulos pelo Ghidra em Linux é uma hipótese de piloto, não uma capacidade confirmada do REA.
+- `inspect-kernel-module` continua sendo inspeção de metadados e seções: `.modinfo`, CRCs clássicos em `__versions`, presença de `this_module` e trailer de assinatura. O próprio guia mantém `struct module` desconhecido e não decodifica registros `__ksymtab`; essa ferramenta não reconstrói funções nem substitui Kbuild.
+- O REA expõe um CLI e dossiês de funções Ghidra que poderiam facilitar consultas pontuais. Nosso fluxo já conserva pseudocódigo/P-Code, instruções, xrefs, Assembly e relocations com identidade e hashes, então o ganho incremental ainda não está demonstrado. ADB do REA usa operações delimitadas para leitura, arquivos e ciclo de vida de aplicativos; não aceita shell arbitrário, `input` ou `monkey`, nem oferece `insmod`/`rmmod`. A consulta local `adb devices -l` não encontrou dispositivo conectado.
+- Decisão: continuar sem dependência obrigatória e sem gate REA. Um piloto isolado em Linux só se justifica se for possível abrir um `.ko` stock AArch64 `ET_REL`, obter um dossiê de uma função difícil e comparar a saída hash-bound com o corpus Ghidra existente. Descartar o piloto se não expuser evidência nova ou se as relocations não puderem ser interpretadas de forma verificável.
+
+## Fontes da revalidação atual
+
+- Repositório/HEAD: https://github.com/morluto/rea (HEAD `be6ec3f164ee916cf877c5af0ed87de7344423ae`).
+- Política de módulos Ghidra: https://github.com/morluto/rea/blob/main/docs/ghidra-mips.md
+- Semântica do provedor Ghidra: https://github.com/morluto/rea/blob/main/docs/ghidra-provider.md
+- Faixa Node e instalação Ghidra: https://github.com/morluto/rea/blob/main/docs/installation.md
