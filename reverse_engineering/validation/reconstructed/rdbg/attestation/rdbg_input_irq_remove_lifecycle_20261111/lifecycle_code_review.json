@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "reviewed_on": "2026-11-11",
+  "review_type": "local_static_code_review",
+  "independent_mapping_review": false,
+  "result": "NO_BLOCKING_FINDING_IN_STATIC_REVIEW",
+  "scope": [
+    "rdbg_fn_02_release.c",
+    "rdbg_fn_03_open.c",
+    "rdbg_fn_04_probe.c",
+    "rdbg_fn_05_read.c",
+    "rdbg_fn_07_init_module.c",
+    "rdbg_metadata.c",
+    "rdbg_reconstruction_layout.h"
+  ],
+  "observations": [
+    "Open, release, and input-device removal serialize access to the active per-device file context using rdbg_file_lifecycle_lock.",
+    "Where both locks are needed, lifecycle lock precedes input IRQ lock; the probe publication path takes only the input IRQ lock, so no reverse lock order was found.",
+    "Input removal marks the IRQ unavailable, marks the active file context offline, wakes blocked readers, and calls free_irq before releasing the lifecycle lock.",
+    "Read checks the offline marker both before waiting and after waking; release skips free_irq when remove has already invalidated the per-file IRQ snapshot.",
+    "Device minor bounds are checked before array indexing, and the module initialization guard constrains the device count to the 16-entry device table."
+  ],
+  "unresolved": [
+    "This is not an independent review and does not satisfy the pending independent review metadata for the seven hardening mappings.",
+    "No runtime race test, fault injection, module load, phone test, or hardware validation was performed.",
+    "The full validator remains incomplete because the curated module is not the fresh build and strict import parity remains unresolved."
+  ],
+  "supporting_evidence": [
+    "docker_validation.json",
+    "joern_gate/joern_gate_report.json",
+    "assembly_comparison.json",
+    "kcfi_comparison_mapped.json"
+  ]
+}

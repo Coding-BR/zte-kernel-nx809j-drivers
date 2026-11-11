@@ -46,11 +46,19 @@ ssize_t rdbg_read(struct file *filp, char __user *buffer, size_t count,
 		result = -EINVAL;
 		goto out;
 	}
+	if (READ_ONCE(file_context->requested_irq) < 0) {
+		result = -ENODEV;
+		goto out;
+	}
 
 	error = wait_for_completion_interruptible(&rdbgdata->work);
 	if (error) {
 		dev_err(rdbgdata->device, "%s: Error in wait\n", "rdbg_read");
 		result = error;
+		goto out;
+	}
+	if (READ_ONCE(file_context->requested_irq) < 0) {
+		result = -ENODEV;
 		goto out;
 	}
 

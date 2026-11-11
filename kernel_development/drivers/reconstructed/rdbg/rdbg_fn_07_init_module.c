@@ -81,6 +81,8 @@ static int __init rdbg_init(void)
 					 sizeof(struct rdbg_data_layout), GFP_KERNEL);
 	if (!g_rdbg_instance.clients)
 		return -ENOMEM;
+	for (index = 0; index < g_rdbg_instance.count; index++)
+		rdbgdevice->rdbg_data[index].in.irq_base_id = -ENODEV;
 	ret = platform_driver_register(&rdbg_driver);
 	if (ret)
 		goto free_clients;

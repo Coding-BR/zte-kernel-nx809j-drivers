@@ -2,14 +2,23 @@
 
 Status: HARDENED_CANDIDATE_OFFLINE. Runtime and hardware validation remain incomplete.
 
-## Current candidate: SMEM provider device-link lifetime - 2026-11-11
+## Latest unpromoted source build: input IRQ and open-file lifecycle - 2026-11-11
+
+- The source now validates the device minor before indexing, snapshots an initialized input IRQ, serializes open/release/input-remove with a lifecycle mutex, wakes blocked readers during input-device removal, and frees the IRQ exactly once. The open file remains offline until release after unbind; a later open can use the rebound IRQ.
+- Two clean canonical Docker builds produced the same fresh module SHA-256 `ea8df043f38c9eaca65d86907099ead0f94054f59b9fda6c1cb16aaf3047b406` (880,912 bytes). The repository and Docker curated module remain at the last promoted SHA-256 `30a548c904a8cb8e6ea53966c427a9276a4727b8958017cf9e86a854342d23a5` (797,936 bytes); the fresh build was not promoted.
+- Strict Joern source gate passed with zero parser problems and no blockers. Mapped KCFI IDs match 8/8 functions. Assembly comparison is exact for `on_interrupt_from`; the other 7 functions differ as declared hardening deviations.
+- The full validator remains `incomplete_or_failed`: the curated module does not contain the fresh source build, strict undefined-symbol parity differs (including the new `complete_all` import), and independent review for seven existing hardening mappings is still pending. No map or module promotion was made.
+- This is offline static evidence only. No module load, device unbind/rebind, phone test, or hardware validation was performed. Reconstruction and runtime validation remain incomplete.
+- Batch evidence: `reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_remove_lifecycle_20261111/README.md`.
+
+## Last promoted offline candidate: SMEM provider device-link lifetime - 2026-11-11
 
 - Candidate module SHA-256: `30a548c904a8cb8e6ea53966c427a9276a4727b8958017cf9e86a854342d23a5` (797,936 bytes). Two clean canonical Docker builds match byte-for-byte using target `clang-r536225`.
 - `rdbg_probe` creates a managed device link to the qcom_smp2p provider before `qcom_smem_state_get()`. `rdbg_init` registers a new `.remove` callback that clears and puts the output state handle under `rdbg_smem_state_lock` before provider removal.
 - Core protocol: Docker reproducibility, input/map identity, Joern scope/slice, and KCFI passed. Relocation-aware assembly failed. Fresh Ghidra normalized-C and P-Code comparisons were not run because this job had no candidate export; the report’s false fields mean not measured. No promotion or stock-equivalence claim is made.
 - Final validator confirms the fresh candidate matches the curated module byte-for-byte; stock/Ghidra identity, target kernel identity, module metadata, and traceability pass. Overall status is still incomplete because independent review for seven hardening deviations is pending and strict undefined-symbol parity differs. Report: `reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/docker_validation_final_public_evidence.json`.
 - Pinned-kernel source evidence confirms `qcom,smem-states` is not covered by `of_supplier_bindings[]`, and supplier unbind waits for active managed-link consumers to unbind before provider removal.
-- Remaining: input IRQ and open-file lifetime across unbind, runtime rebind/failure-injection, phone validation, and independent review. Overall status remains `HARDENED_CANDIDATE_OFFLINE`; the complete reconstruction is not verified.
+- At this earlier promoted checkpoint, input IRQ and open-file lifetime across unbind were still open. A later unpromoted source build addresses those paths statically; runtime rebind/failure-injection, phone validation, and independent review remain open. Overall status remains `HARDENED_CANDIDATE_OFFLINE`; the complete reconstruction is not verified.
 - Full batch record: `reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/README.md`.
 
 ## Previous candidate: SMEM error-pointer handling in open - 2026-11-11 (SHA 3090b8ef...)

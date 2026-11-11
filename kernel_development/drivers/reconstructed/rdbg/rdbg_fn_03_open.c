@@ -208,16 +208,22 @@ int rdbg_open(struct inode *inode, struct file *filp)
 	}
 
 	device_id = MINOR(inode->i_rdev);
+	if (device_id < 0 || device_id >= device->num_devices) {
+		err = -ENODEV;
+		goto bail;
+	}
+
+	mutex_lock(&rdbg_file_lifecycle_lock);
 	rdbgdata = &device->rdbg_data[device_id];
-	if (rdbgdata->device_opened) {
+	if (!proc_info[device_id].name || IS_ERR_OR_NULL(rdbgdata->device)) {
+		err = -ENODEV;
+		goto out_unlock;
+	}
+	if (rdbgdata->device_opened || rdbg_active_file_contexts[device_id]) {
 		dev_err(rdbgdata->device, "%s: Device already opened\n",
 			__func__);
 		err = -EEXIST;
-		goto bail;
-	}
-	if (unlikely(device_id > 15)) {
-		asm volatile(".inst 0xd42aa240");
-		unreachable();
+		goto out_unlock;
 	}
 
 	rdbgdata->smem_size = proc_info[device_id].smem_buffer_size;
@@ -225,7 +231,7 @@ int rdbg_open(struct inode *inode, struct file *filp)
 		dev_err(rdbgdata->device, "%s: smem not initialized\n",
 			__func__);
 		err = -ENOMEM;
-		goto bail;
+		goto out_unlock;
 	}
 
 	smem_addr = qcom_smem_get(0xffffffff,
@@ -242,14 +248,14 @@ int rdbg_open(struct inode *inode, struct file *filp)
 		err = PTR_ERR(smem_addr);
 		dev_err(rdbgdata->device,
 			"%s: qcom_smem_get failed, Err=%d\n", __func__, err);
-		goto bail;
+		goto out_unlock;
 	}
 	if (!smem_addr) {
 		dev_err(rdbgdata->device,
 			"%s: Could not allocate smem memory\n", __func__);
 		pr_err("rdbg:Could not allocate smem memory\n");
 		err = -ENOMEM;
-		goto bail;
+		goto out_unlock;
 	}
 	rdbgdata->smem_addr = smem_addr;
 
@@ -260,7 +266,7 @@ int rdbg_open(struct inode *inode, struct file *filp)
 			proc_info[device_id].name);
 		pr_err("rdbg:Sub system debug is not enabled\n");
 		err = -ECOMM;
-		goto bail;
+		goto out_unlock;
 	}
 
 	file_context = kzalloc(sizeof(*file_context), GFP_KERNEL);
@@ -273,6 +279,10 @@ int rdbg_open(struct inode *inode, struct file *filp)
 	mutex_lock(&rdbg_input_irq_lock);
 	file_context->requested_irq = rdbgdata->in.irq_base_id;
 	mutex_unlock(&rdbg_input_irq_lock);
+	if (file_context->requested_irq < 0) {
+		err = -ENODEV;
+		goto file_context_bail;
+	}
 
 	init_completion(&rdbgdata->work);
 	err = request_threaded_irq(file_context->requested_irq, NULL,
@@ -299,19 +309,24 @@ int rdbg_open(struct inode *inode, struct file *filp)
 	}
 
 	rdbgdata->device_opened = 1;
+	rdbg_active_file_contexts[device_id] = file_context;
 	filp->private_data = file_context;
+	mutex_unlock(&rdbg_file_lifecycle_lock);
 	return 0;
 
 smq_bail:
 	/* The IRQ is owned only after request_threaded_irq() succeeds. */
 	free_irq(file_context->requested_irq,
 		 &device->rdbg_data[device_id]);
+	file_context->requested_irq = -1;
 	smq_dtor(&rdbgdata->producer_smrb);
 	smq_dtor(&rdbgdata->consumer_smrb);
 	mutex_destroy(&rdbgdata->write_mutex);
 file_context_bail:
 	mutex_destroy(&file_context->read_mutex);
 	kfree(file_context);
+out_unlock:
+	mutex_unlock(&rdbg_file_lifecycle_lock);
 bail:
 	return err;
 }

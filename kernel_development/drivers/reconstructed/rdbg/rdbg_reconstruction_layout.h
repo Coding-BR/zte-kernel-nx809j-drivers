@@ -21,6 +21,10 @@ struct rdbg_module_storage {
 extern struct rdbg_module_storage g_rdbg_instance;
 extern struct mutex rdbg_smem_state_lock;
 extern struct mutex rdbg_input_irq_lock;
+extern struct mutex rdbg_file_lifecycle_lock;
+
+struct rdbg_file_context_layout;
+extern struct rdbg_file_context_layout *rdbg_active_file_contexts[16];
 
 struct platform_driver;
 struct platform_device;

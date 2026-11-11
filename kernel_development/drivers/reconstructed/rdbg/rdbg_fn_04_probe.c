@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
+#include <linux/completion.h>
 #include <linux/device.h>
 #include <linux/err.h>
 #include <linux/errno.h>
@@ -259,19 +260,45 @@ void rdbg_remove(struct platform_device *pdev)
 	struct rdbg_device_layout *device =
 		(struct rdbg_device_layout *)&g_rdbg_instance;
 	struct rdbg_data_layout *rdbgdata;
+	struct rdbg_file_context_layout *file_context;
 	struct qcom_smem_state *state;
 	char node_name[64];
 	int index;
+	int irq;
 	int ret;
 
-	if (!device->rdbg_data ||
-	    !of_find_property(pdev->dev.of_node, "qcom,smem-states", NULL))
+	if (!device->rdbg_data)
 		return;
 
 	for (index = 0; index < device->num_devices; index++) {
 		if (!proc_info[index].name)
 			continue;
 
+		ret = snprintf(node_name, sizeof(node_name),
+			       "qcom,smp2p-interrupt-rdbg-%d-in", index);
+		if (ret < 0 || ret >= (int)sizeof(node_name))
+			continue;
+		if (of_device_is_compatible(pdev->dev.of_node, node_name)) {
+			rdbgdata = &device->rdbg_data[index];
+			mutex_lock(&rdbg_file_lifecycle_lock);
+			mutex_lock(&rdbg_input_irq_lock);
+			rdbgdata->in.irq_base_id = -ENODEV;
+			mutex_unlock(&rdbg_input_irq_lock);
+
+			file_context = rdbg_active_file_contexts[index];
+			if (file_context) {
+				irq = READ_ONCE(file_context->requested_irq);
+				WRITE_ONCE(file_context->requested_irq, -1);
+				complete_all(&rdbgdata->work);
+				if (irq >= 0)
+					free_irq(irq, rdbgdata);
+			}
+			mutex_unlock(&rdbg_file_lifecycle_lock);
+			return;
+		}
+
+		if (!of_find_property(pdev->dev.of_node, "qcom,smem-states", NULL))
+			continue;
 		ret = snprintf(node_name, sizeof(node_name),
 			       "qcom,smp2p-interrupt-rdbg-%d-out", index);
 		if (ret < 0 || ret >= (int)sizeof(node_name))
