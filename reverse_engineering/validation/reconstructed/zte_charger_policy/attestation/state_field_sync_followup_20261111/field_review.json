@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_charger_policy",
+  "batch": "state_field_sync_followup_20261111",
+  "scope": "static field-access follow-up against stock Ghidra assembly/P-Code and pinned NX809J kernel source",
+  "fields": [
+    {
+      "field": "running_discharging",
+      "offset_hex": "0x21b",
+      "size_bytes": 1,
+      "writers": [
+        {
+          "function": "charger_policy_status_ide",
+          "stock_entry": "00100a34",
+          "operation": "STRB to policy+0x21b in overtime transition"
+        },
+        {
+          "function": "charger_policy_status_disable",
+          "stock_entry": "00101378",
+          "operation": "STRB zero to policy+0x21b; called by charger_policy_demo_sts_set before queue_delayed_work_on"
+        },
+        {
+          "function": "charger_policy_timeout_handler_work",
+          "stock_entry": "00102f34",
+          "operation": "STRB zero at param_1+0x173; param_1 is policy+0xa8, so the effective field offset is policy+0x21b"
+        }
+      ],
+      "readers": [
+        {
+          "function": "charger_policy_expired_sts_get",
+          "stock_entry": "0010146c",
+          "context": "zte_misc get callback"
+        },
+        {
+          "function": "policy_psy_get_property",
+          "stock_entry": "00103564",
+          "context": "power_supply get_property callback; reads AUTHENTIC property"
+        },
+        {
+          "function": "charger_policy_status_runchging",
+          "stock_entry": "00100bc4",
+          "context": "timeout worker status handler"
+        },
+        {
+          "function": "charger_policy_status_rundischging",
+          "stock_entry": "00100e88",
+          "context": "timeout worker status handler"
+        },
+        {
+          "function": "charger_policy_check_soc_reach_min",
+          "stock_entry": "00102224",
+          "context": "helper reached from timeout worker status handlers"
+        }
+      ],
+      "synchronization_observed_in_stock": "ordinary byte loads/stores; no common driver lock, exclusive atomic access, or barrier in the reviewed paths",
+      "assessment": "cross-context unsynchronized access pattern confirmed statically; runtime interleaving and functional impact were not reproduced"
+    },
+    {
+      "field": "log_limit",
+      "offset_hex": "0x21d",
+      "size_bytes": 1,
+      "writers": [
+        {
+          "function": "charger_policy_timeout_handler_work",
+          "stock_entry": "00102f34",
+          "operation": "writes at param_1+0x175, equivalent to policy+0x21d after the worker base adjustment"
+        }
+      ],
+      "readers": [
+        {
+          "functions": [
+            "charger_policy_timeout_handler_work",
+            "charger_policy_status_ide",
+            "charger_policy_status_runchging",
+            "charger_policy_status_rundischging",
+            "charger_policy_status_forcedischging",
+            "charger_policy_check_soc_reach_min"
+          ],
+          "context": "timeout worker and synchronously invoked state handlers/helpers"
+        }
+      ],
+      "notifier_check": {
+        "function": "charger_policy_notifier_switch",
+        "stock_entry": "001034d8",
+        "result": "no load/store of policy+0x21d found in source or stock assembly"
+      },
+      "assessment": "excluded from cross-context race finding; the notifier_handler text at source line 931 is a log label inside charger_policy_timeout_handler_work, not a notifier callback access"
+    }
+  ],
+  "limits": [
+    "Static accesses establish absence of a common synchronization operation in the reviewed module paths, not a specific failing interleaving.",
+    "The power_supply kernel-source observations describe callback dispatch and do not establish runtime scheduling on a device.",
+    "No driver source, active module, or reconstruction-map status was changed by this review."
+  ]
+}
