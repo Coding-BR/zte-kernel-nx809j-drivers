@@ -272,6 +272,43 @@ static void test_property_helpers(void)
 	CHECK(charger_policy_get_prop_by_name("battery", POWER_SUPPLY_PROP_CAPACITY, &value) == -ENODEV);
 }
 
+static void test_reference_cleanup_on_property_error(void)
+{
+	struct charger_policy_info policy;
+	u32 value = 0;
+
+	reset_host();
+	init_policy(&policy);
+	host.fail_standard_property = 1;
+	CHECK(charger_policy_get_prop_by_name("battery", POWER_SUPPLY_PROP_CAPACITY, &value) == -EIO);
+	CHECK(host.put_calls == 1);
+
+	host.fail_standard_get = 1;
+	CHECK(charger_policy_get_prop_by_name("battery", POWER_SUPPLY_PROP_CAPACITY, &value) == -ENODEV);
+	CHECK(host.put_calls == 1);
+	host.fail_standard_get = 0;
+
+	host.policy.desc = &policy_psy_desc;
+	CHECK(!charger_policy_get_status());
+	CHECK(host.put_calls == 2);
+	host.fail_standard_property = 0;
+	host.policy.values[POWER_SUPPLY_PROP_AUTHENTIC] = 1;
+	CHECK(charger_policy_get_status());
+	CHECK(host.put_calls == 3);
+
+	host.fail_zte_property = 1;
+	CHECK(zte_charger_policy_get_prop_by_name("zte_usb", 18, &value) == -EIO);
+	CHECK(host.zte_put_calls == 1);
+
+	host.fail_zte_get = 1;
+	CHECK(zte_charger_policy_get_prop_by_name("zte_usb", 18, &value) == -ENODEV);
+	CHECK(host.zte_put_calls == 1);
+	host.fail_zte_get = 0;
+	host.fail_zte_property = 0;
+	CHECK(zte_charger_policy_get_prop_by_name("zte_usb", 18, &value) == 0);
+	CHECK(host.zte_put_calls == 2);
+}
+
 static void test_state_machine(void)
 {
 	struct charger_policy_info policy;
@@ -391,14 +428,14 @@ static void test_failed_probe_cleanup_and_retry(void)
 	CHECK(host.notifier_unregister_calls == 1);
 	CHECK(host.power_supply_unregister_calls == 1);
 	CHECK(host.destroy_workqueue_calls == 1);
-	CHECK(policy->runtime_stopping == 0);
+	CHECK(!charger_policy_runtime_stopping(policy));
 	CHECK(policy->probe_work.pending == 1);
 
 	policy->probe_work.pending = 0;
 	policy->probe_work.work.func(&policy->probe_work.work);
 	CHECK(host.misc_register_calls == 10);
 	CHECK(policy->policy_psy == &host.policy);
-	CHECK(policy->runtime_stopping == 0);
+	CHECK(!charger_policy_runtime_stopping(policy));
 	charger_policy_remove(&pdev);
 	CHECK(host.misc_unregister_calls == 14);
 	CHECK(host.notifier_unregister_calls == 2);
@@ -431,6 +468,7 @@ static void test_failure_paths(void)
 int main(void)
 {
 	test_property_helpers();
+	test_reference_cleanup_on_property_error();
 	test_state_machine();
 	test_callbacks();
 	test_alarm_notifier_and_status();

@@ -51,6 +51,10 @@ PROBE = {"charger_policy_probe", "charger_policy_probe_work", "charger_policy_re
          "charger_policy_stop_runtime"}
 ALARM = {"charger_policy_timeout_alarm_cb", "charger_policy_notifier_switch", "charger_policy_get_status"}
 MODULE = {"init_module", "cleanup_module"}
+REFERENCE_CLEANUP = {
+    "charger_policy_get_prop_by_name", "charger_policy_get_status",
+    "zte_charger_policy_get_prop_by_name",
+}
 
 def test_id(function: str) -> str:
     if function in CALLBACKS:
@@ -59,6 +63,8 @@ def test_id(function: str) -> str:
         return "test_state_machine;test_failure_paths"
     if function in PROBE:
         return "test_probe_remove_and_module"
+    if function in REFERENCE_CLEANUP:
+        return "test_reference_cleanup_on_property_error"
     if function in ALARM:
         return "test_alarm_notifier_and_status"
     if function in MODULE:
