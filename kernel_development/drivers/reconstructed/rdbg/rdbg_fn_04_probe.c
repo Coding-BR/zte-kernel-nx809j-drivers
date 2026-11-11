@@ -108,6 +108,17 @@ int rdbg_probe(struct platform_device *pdev)
 				}
 
 				old_state = *(struct qcom_smem_state **)gpio_ptr;
+				if (state != old_state) {
+					struct rdbg_data_layout *rdbgdata =
+						container_of(
+							(struct qcom_smem_state **)gpio_ptr,
+							struct rdbg_data_layout,
+							out.smem_state);
+
+					rdbgdata->gpio_out_offset = 0;
+					memset(rdbgdata->state_registers, 0,
+					       sizeof(rdbgdata->state_registers));
+				}
 				*(struct qcom_smem_state **)gpio_ptr = state;
 				if (!IS_ERR_OR_NULL(old_state))
 					qcom_smem_state_put(old_state);

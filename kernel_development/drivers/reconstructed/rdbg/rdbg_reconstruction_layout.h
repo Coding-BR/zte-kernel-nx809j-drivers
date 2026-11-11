@@ -34,11 +34,13 @@ struct rdbg_proc_info_layout {
 
 extern const struct rdbg_proc_info_layout proc_info[16];
 
+struct qcom_smem_state;
+
 struct rdbg_gpio_info_layout {
 	int gpio_base_id;
 	int irq_base_id;
 	unsigned int smem_bit;
-	void *smem_state;
+	struct qcom_smem_state *smem_state;
 };
 
 struct rdbg_smq_block_map_layout {
@@ -112,7 +114,7 @@ struct rdbg_data_layout {
 	struct rdbg_smq_layout producer_smrb;
 	struct rdbg_smq_layout consumer_smrb;
 	struct mutex write_mutex;
-	u8 unmodeled_tail[0x1c8 - 0x118 - sizeof(struct mutex)];
+	u32 state_registers[32];
 };
 
 struct rdbg_file_context_layout {
@@ -155,6 +157,8 @@ static_assert(offsetof(struct rdbg_data_layout, device_opened) == 0x60);
 static_assert(offsetof(struct rdbg_data_layout, producer_smrb) == 0x78);
 static_assert(offsetof(struct rdbg_data_layout, consumer_smrb) == 0xc8);
 static_assert(offsetof(struct rdbg_data_layout, write_mutex) == 0x118);
+static_assert(offsetof(struct rdbg_data_layout, state_registers) == 0x148);
+static_assert(sizeof(((struct rdbg_data_layout *)0)->state_registers) == 0x80);
 static_assert(sizeof(struct rdbg_data_layout) == 0x1c8);
 static_assert(offsetof(struct rdbg_device_layout, rdbg_data) == 0x98);
 static_assert(offsetof(struct rdbg_device_layout, num_devices) == 0x94);

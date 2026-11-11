@@ -1,0 +1,148 @@
+#include <linux/module.h>
+#include <linux/export-internal.h>
+#include <linux/compiler.h>
+
+MODULE_INFO(name, KBUILD_MODNAME);
+
+__visible struct module __this_module
+__section(".gnu.linkonce.this_module") = {
+	.name = KBUILD_MODNAME,
+	.init = init_module,
+#ifdef CONFIG_MODULE_UNLOAD
+	.exit = cleanup_module,
+#endif
+	.arch = MODULE_ARCH_INIT,
+};
+
+
+
+static const struct modversion_info ____versions[]
+__used __section("__versions") = {
+	{ 0x7da92691, "complete" },
+	{ 0xbd0cdbf7, "platform_driver_unregister" },
+	{ 0x995658e3, "mutex_lock" },
+	{ 0xc4ec5251, "qcom_smem_state_put" },
+	{ 0x995658e3, "mutex_unlock" },
+	{ 0x8b487fa5, "device_destroy" },
+	{ 0xe66cdaff, "class_destroy" },
+	{ 0xf97173b5, "cdev_del" },
+	{ 0x0bc5fb0d, "unregister_chrdev_region" },
+	{ 0x31359e90, "kfree" },
+	{ 0xdd0d6b2a, "free_irq" },
+	{ 0x16b5b21d, "_printk" },
+	{ 0x869bde71, "qcom_smem_get" },
+	{ 0x8ee1928d, "mem_alloc_profiling_key" },
+	{ 0x760296b1, "kmalloc_caches" },
+	{ 0x266d672c, "__kmalloc_cache_noprof" },
+	{ 0x81d49dc6, "__mutex_init" },
+	{ 0xd4e429b7, "__init_swait_queue_head" },
+	{ 0xc407eb52, "request_threaded_irq" },
+	{ 0x27865ec7, "__kmalloc_noprof" },
+	{ 0x110f4d3a, "memset" },
+	{ 0x4a35b4cb, "_dev_err" },
+	{ 0xf4386284, "snprintf" },
+	{ 0x3118db51, "of_device_is_compatible" },
+	{ 0x75abbb63, "of_find_property" },
+	{ 0x873dc599, "qcom_smem_state_get" },
+	{ 0x8345e27c, "of_irq_get_byname" },
+	{ 0xf8191fb5, "wait_for_completion_interruptible" },
+	{ 0x5c76e3f3, "__check_object_size" },
+	{ 0x1f42c609, "__arch_copy_to_user" },
+	{ 0x1f42c609, "__arch_copy_from_user" },
+	{ 0xabfcb568, "qcom_smem_state_update_bits" },
+	{ 0x58997344, "__platform_driver_register" },
+	{ 0xa5dac1ce, "alloc_chrdev_region" },
+	{ 0x44f7075e, "cdev_init" },
+	{ 0xfa855fab, "cdev_add" },
+	{ 0xdc5f8372, "class_create" },
+	{ 0xbdd865ba, "device_create" },
+	{ 0xde6485ed, "module_layout" },
+};
+
+static const u32 ____version_ext_crcs[]
+__used __section("__version_ext_crcs") = {
+	0x7da92691,
+	0xbd0cdbf7,
+	0x995658e3,
+	0xc4ec5251,
+	0x995658e3,
+	0x8b487fa5,
+	0xe66cdaff,
+	0xf97173b5,
+	0x0bc5fb0d,
+	0x31359e90,
+	0xdd0d6b2a,
+	0x16b5b21d,
+	0x869bde71,
+	0x8ee1928d,
+	0x760296b1,
+	0x266d672c,
+	0x81d49dc6,
+	0xd4e429b7,
+	0xc407eb52,
+	0x27865ec7,
+	0x110f4d3a,
+	0x4a35b4cb,
+	0xf4386284,
+	0x3118db51,
+	0x75abbb63,
+	0x873dc599,
+	0x8345e27c,
+	0xf8191fb5,
+	0x5c76e3f3,
+	0x1f42c609,
+	0x1f42c609,
+	0xabfcb568,
+	0x58997344,
+	0xa5dac1ce,
+	0x44f7075e,
+	0xfa855fab,
+	0xdc5f8372,
+	0xbdd865ba,
+	0xde6485ed,
+};
+static const char ____version_ext_names[]
+__used __section("__version_ext_names") =
+	"complete\0"
+	"platform_driver_unregister\0"
+	"mutex_lock\0"
+	"qcom_smem_state_put\0"
+	"mutex_unlock\0"
+	"device_destroy\0"
+	"class_destroy\0"
+	"cdev_del\0"
+	"unregister_chrdev_region\0"
+	"kfree\0"
+	"free_irq\0"
+	"_printk\0"
+	"qcom_smem_get\0"
+	"mem_alloc_profiling_key\0"
+	"kmalloc_caches\0"
+	"__kmalloc_cache_noprof\0"
+	"__mutex_init\0"
+	"__init_swait_queue_head\0"
+	"request_threaded_irq\0"
+	"__kmalloc_noprof\0"
+	"memset\0"
+	"_dev_err\0"
+	"snprintf\0"
+	"of_device_is_compatible\0"
+	"of_find_property\0"
+	"qcom_smem_state_get\0"
+	"of_irq_get_byname\0"
+	"wait_for_completion_interruptible\0"
+	"__check_object_size\0"
+	"__arch_copy_to_user\0"
+	"__arch_copy_from_user\0"
+	"qcom_smem_state_update_bits\0"
+	"__platform_driver_register\0"
+	"alloc_chrdev_region\0"
+	"cdev_init\0"
+	"cdev_add\0"
+	"class_create\0"
+	"device_create\0"
+	"module_layout\0"
+;
+
+MODULE_INFO(depends, "smem");
+

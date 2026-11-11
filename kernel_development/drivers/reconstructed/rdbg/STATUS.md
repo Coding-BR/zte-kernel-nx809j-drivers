@@ -2,7 +2,17 @@
 
 Status: HARDENED_CANDIDATE_OFFLINE. Runtime and hardware validation remain incomplete.
 
-## Current candidate: SMEM error-pointer handling in open - 2026-11-11
+## Current candidate: SMEM state shadow recovery - 2026-11-11
+
+- Candidate module SHA-256: `aab63c927d0865e58360321046d71457c712c85d3d67af95a91998c63370fb26` (791,752 bytes). Two clean builds in the canonical Docker environment produced identical bytes.
+- `rdbg_probe` resets the software SMEM shadow and cursor when it receives a different state handle; `rdbg_write` only advances that shadow after a successful provider update. Both are explicitly `candidate_hardening_deviation` mappings.
+- Core gates passed for reproducible Docker build, input/map identity, Joern scope/slice, and KCFI. Strict assembly/relocation parity failed. Strict Ghidra comparison also failed for `rdbg_probe` and `rdbg_write` on body size, normalized C, and P-Code operation shape. The core report is `reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/protocol_core_bootstrap_final/hard_protocol_report.json`; promotion is false.
+- The Ghidra export identity matches the module, but semantic equivalence is not established; see the strict per-function report linked in the batch README.
+- Pinned source review found that the consumer lock does not protect against SMP2P provider unregister/removal around `qcom_smem_state_update_bits()`. A provider remove-vs-update lifetime window remains unresolved; see `reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/kernel_provider_lifetime_excerpt.md`.
+- This remains an offline hardened candidate, not a completed reconstruction. Runtime provider rebind, open-file behavior, remote delivery, module load, and phone hardware remain unverified; the driver still lacks a per-device `.remove` callback.
+- Full batch record: `reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/README.md`.
+
+## Previous candidate: SMEM error-pointer handling in open - 2026-11-11 (SHA 3090b8ef...)
 
 - Candidate module SHA-256: 3090b8ef5015294ddafdb9ffea6fdfd7c67444ab42fe11b67d66bdefbf4f3b30 (790,056 bytes). Two clean final builds in the canonical Docker environment produced identical bytes and matched the curated candidate.
 - Stock Ghidra and assembly show `rdbg_open` only falls back from common to device-specific SMEM for `-ENOENT`, then checks `NULL` without rejecting a remaining `ERR_PTR`.

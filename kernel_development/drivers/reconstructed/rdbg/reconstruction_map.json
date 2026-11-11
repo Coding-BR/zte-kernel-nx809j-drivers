@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "driver": "rdbg",
-  "candidate_sha256": "3090b8ef5015294ddafdb9ffea6fdfd7c67444ab42fe11b67d66bdefbf4f3b30",
+  "candidate_sha256": "aab63c927d0865e58360321046d71457c712c85d3d67af95a91998c63370fb26",
   "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
   "reconstruction_mode": "partial_c_microtasks",
   "mappings": [
@@ -213,9 +213,13 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/kcfi_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/abi_surface.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/docker_validation_final.json",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/candidate_assembly/manifest.json"
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/candidate_assembly/manifest.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/kernel_provider_lifetime_excerpt.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/ghidra_semantic_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/protocol_core_bootstrap_final/hard_protocol_report.json"
       ],
-      "mapping_note": "Current candidate deviation: serializes qcom_smem_state_get, smem_bit/state publication, and old-handle release with the module-wide rdbg_smem_state_lock also used by rdbg_write. Successful reprobe swaps the handle and puts the previous reference; failed lookup preserves the current handle and returns the lookup error. The module-wide character device retains one provider handle until module exit. Static rebind accounting is reviewed; runtime unbind/rebind and input-IRQ/open-file behavior remain unverified. IRQ publication is additionally serialized with rdbg_input_irq_lock; rdbg_open snapshots this field under the same lock so request_threaded_irq and matching free_irq use one per-open IRQ identity.",
+      "mapping_note": "Declared hardening deviation: serializes SMEM lookup, state-handle publication, replacement put, and paired output state under rdbg_smem_state_lock. When a successful lookup returns a different handle, resets gpio_out_offset and the 32-word software shadow to match the freshly initialized provider item. Strict assembly and Ghidra semantic comparisons fail for this changed body; no stock equivalence is claimed. The lock does not synchronize with SMP2P provider unregister/remove; qcom_smem_state_update_bits has no provider-call lifetime guard around ops.update_bits(priv). Provider unbind/rebind and active client behavior remain unverified.",
       "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
       "independent_review": "PENDING",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
@@ -275,7 +279,7 @@
       "source_file": "rdbg_fn_06_write.c",
       "source_function": "rdbg_write",
       "status": "candidate_hardening_deviation",
-      "mapping_note": "The write operation resolves rdbg_data through the per-open file context that owns the consumer read mutex. Its SMQ write behavior remains serialized by the existing write mutex. Current candidate also holds rdbg_smem_state_lock while reading the paired smem_bit/state fields and calling qcom_smem_state_update_bits; rdbg_probe and cleanup use the same lock. The pinned qcom_smp2p_kick() wmb orders outbound queue data before notification; remote-side and inbound ordering remain unverified.",
+      "mapping_note": "Declared hardening deviation: resolves rdbg_data through the per-open file context and keeps SMQ queue writes serialized by write_mutex. The output notification reads the state handle/bit under rdbg_smem_state_lock and calls qcom_smem_state_update_bits; software shadow/cursor advance only on success. Since queue bytes are already committed, rdbg_write reports the queued byte count after notification error to avoid duplicate user retry writes; a later successful notification may deliver the pending queue. Strict assembly and Ghidra semantic comparisons fail for the changed body. The consumer lock does not exclude provider teardown; runtime behavior and remote delivery are unverified.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0002_00100a9c_rdbg_write.jsonl",
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0002_rdbg_write_00100a9c.asm",
@@ -318,7 +322,11 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/kcfi_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/abi_surface.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/docker_validation_final.json",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/candidate_assembly/manifest.json"
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/candidate_assembly/manifest.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/kernel_provider_lifetime_excerpt.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/ghidra_semantic_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/protocol_core_bootstrap_final/hard_protocol_report.json"
       ],
       "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
       "independent_review": "PENDING",

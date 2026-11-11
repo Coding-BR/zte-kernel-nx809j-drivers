@@ -160,7 +160,7 @@ static void send_interrupt_to_subsystem(struct rdbg_data_layout *rdbgdata)
 	struct qcom_smem_state *state;
 	unsigned int offset;
 	unsigned int val;
-	u32 *registers = (u32 *)rdbgdata + 0x52;
+	u32 *registers = rdbgdata->state_registers;
 
 	mutex_lock(&rdbg_smem_state_lock);
 	state = rdbgdata->out.smem_state;
@@ -176,8 +176,11 @@ static void send_interrupt_to_subsystem(struct rdbg_data_layout *rdbgdata)
 		__builtin_unreachable();
 	}
 	val = registers[offset] ^ BIT(rdbgdata->out.smem_bit + offset);
-	qcom_smem_state_update_bits(state,
-				    BIT(rdbgdata->out.smem_bit + offset), val);
+	if (qcom_smem_state_update_bits(
+		    state, BIT(rdbgdata->out.smem_bit + offset), val)) {
+		mutex_unlock(&rdbg_smem_state_lock);
+		return;
+	}
 	registers[offset] = val;
 	rdbgdata->gpio_out_offset = (offset + 1) % 32;
 	mutex_unlock(&rdbg_smem_state_lock);
