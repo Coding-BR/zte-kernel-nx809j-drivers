@@ -995,8 +995,7 @@ static __used int charger_policy_demo_sts_set_model(const char *val, const void 
 		return -EINVAL;
 	}
 
-	if (sscanf(val, "%d", &val_int) != 1)
-		return -EINVAL;
+	sscanf(val, "%d", &val_int);
 
 	val_int = (val_int != 0);
 	pr_info("policy: %s(): new demo status %d\n", "charger_policy_demo_sts_set", val_int);

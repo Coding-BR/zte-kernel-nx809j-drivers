@@ -1,0 +1,299 @@
+{
+  "schema_version": "1.0",
+  "batch": "demo_sts_call_relocation_20261110",
+  "generated_utc": "2026-11-11T02:59:20.227655+00:00",
+  "target": "zte_charger_policy / charger_policy_demo_sts_set@00101264",
+  "targeted_static_fix": {
+    "status": "passed",
+    "root_cause": {
+      "previous_candidate_sha256": "08cb726c96f9a822c5d3fa8acb3ead9e67abd1d79a42efcd417128af4f6e602c",
+      "callsite": ".text+0x13b0",
+      "old_instruction": "0x9400000a (BL immediate without relocation)",
+      "old_target": ".text+0x13d8, KCFI preamble immediately preceding charger_policy_demo_sts_get at .text+0x13dc",
+      "stock_call": "Ghidra 00101350 -> charger_policy_status_disable@00101378"
+    },
+    "fix": {
+      "assembly_relocation": "R_AARCH64_CALL26 charger_policy_status_disable",
+      "built_candidate_relocation": "00000000000013b0:  R_AARCH64_CALL26\t.text+0x27a4",
+      "resolved_target_symbol": "charger_policy_status_disable",
+      "resolved_target_section_offset": "0x27a4",
+      "c_model_sscanf_return_handling": "ignored to match stock behavior"
+    },
+    "assembly_comparison": {
+      "passed": true,
+      "stock_source_sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c",
+      "checked_functions": 4,
+      "functions": [
+        "charger_policy_demo_sts_set@00101264",
+        "charger_policy_status_disable@00101378",
+        "charger_policy_notifier_switch@001034d8",
+        "policy_psy_set_property@00103678"
+      ],
+      "demo_sts_checks": {
+        "instructions": true,
+        "relocations": true,
+        "section": true,
+        "symbol_size": true
+      }
+    },
+    "kcfi": {
+      "passed": true,
+      "function": "charger_policy_demo_sts_set",
+      "stock_type_id": "0x4cf999cb",
+      "candidate_type_id": "0x4cf999cb",
+      "section_match": true,
+      "size_match": true
+    }
+  },
+  "docker_build": {
+    "canonical_engineering_root": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia",
+    "curated_root_used": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated",
+    "two_clean_builds_passed": true,
+    "reproducible": true,
+    "first_build": {
+      "exists": true,
+      "path": "C:\\w_haptic_remove_c6\\reverse_engineering\\validation\\reconstructed\\zte_charger_policy\\attestation\\demo_sts_call_relocation_20261110\\docker_work_canonical\\zte_charger_policy\\cycle_1\\zte_charger_policy.ko",
+      "sha256": "915b27b135bdcbe1e61d6ba889fd4985e8562a652d23a773ef1faebee8496e58",
+      "size": 337168
+    },
+    "second_build": {
+      "exists": true,
+      "path": "C:\\w_haptic_remove_c6\\reverse_engineering\\validation\\reconstructed\\zte_charger_policy\\attestation\\demo_sts_call_relocation_20261110\\docker_work_canonical\\zte_charger_policy\\cycle_2\\zte_charger_policy.ko",
+      "sha256": "915b27b135bdcbe1e61d6ba889fd4985e8562a652d23a773ef1faebee8496e58",
+      "size": 337168
+    },
+    "candidate_promoted": false
+  },
+  "whole_driver_audit": {
+    "status": "incomplete_or_failed",
+    "static_verified": [],
+    "errors": [
+      "module parity check failed: undefined_symbols_match",
+      "module parity check failed: candidate_runtime_content_matches_fresh",
+      "module parity check failed: candidate_runtime_section_layout_matches_fresh"
+    ],
+    "checks": {
+      "aarch64_rel": true,
+      "alias_match": true,
+      "candidate_hash_matches_map": true,
+      "candidate_modinfo_matches_fresh": true,
+      "candidate_runtime_content_matches_fresh": false,
+      "candidate_runtime_section_layout_matches_fresh": false,
+      "function_traceability": true,
+      "ghidra_export": true,
+      "kernel_source_identity": true,
+      "makefile": true,
+      "mapping_review": false,
+      "namespace_match": true,
+      "reproducible_build": true,
+      "source_directory": true,
+      "source_files": 2,
+      "undefined_symbols_match": false,
+      "vermagic_accepted": true
+    },
+    "active_candidate": {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.ko",
+      "exists": true,
+      "size_bytes": 331368,
+      "sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec"
+    },
+    "reconstruction_map": {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/reconstruction_map.json",
+      "exists": true,
+      "size_bytes": 82737,
+      "sha256": "f02af42447b987e82b59b59fc07887cfacdd6907cb1bcf0d1e78eb985ca2e1c0"
+    },
+    "declared_active_candidate_sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec",
+    "fresh_candidate": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/fresh_candidate_unpromoted.ko",
+      "exists": true,
+      "size_bytes": 337168,
+      "sha256": "915b27b135bdcbe1e61d6ba889fd4985e8562a652d23a773ef1faebee8496e58"
+    }
+  },
+  "limits": [
+    "No host harness was run.",
+    "No smartphone test or module load was performed.",
+    "Targeted function parity does not complete or promote the whole driver."
+  ],
+  "preserved_failed_artifacts": [
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/driver_audit.json",
+      "exists": true,
+      "size_bytes": 18324,
+      "sha256": "28dd804761725e9ca02c104dee25160dc6e44c282bb8fabe4031f456362c27d5",
+      "note": "Invocacao inicial com --curated-root apontando para a pasta do driver; parou antes de compilar."
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/assembly_comparison_archived_stock.json",
+      "exists": true,
+      "size_bytes": 20985,
+      "sha256": "d4520723c8d2c1c83ab4993b596465e7d1e4605ec93b3bc5fec8cb3641c81117",
+      "note": "Comparacao auxiliar contra a exportacao assembly arquivada, cujo manifesto referencia caminho de stock de outra instalacao; tres comparacoes de relocations nao passaram."
+    }
+  ],
+  "evidence": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c",
+      "exists": true,
+      "size_bytes": 65560,
+      "sha256": "c3da1145c1f06fe42e7bf00972ff1bcab552ac58fb5c3f9919f018123827483b"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/charger_policy_demo_sts_set_exact.inc",
+      "exists": true,
+      "size_bytes": 4574,
+      "sha256": "688a94f3650264f2bc153e6614ec36d490e2d9b8c558fa73b20f17c78305f826"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/STATUS.md",
+      "exists": true,
+      "size_bytes": 12933,
+      "sha256": "d06777d9a31864451a8840318cbdaa33bf368fb5ec5812e3ed180757e00ae1d3"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/reconstruction_map.json",
+      "exists": true,
+      "size_bytes": 82737,
+      "sha256": "f02af42447b987e82b59b59fc07887cfacdd6907cb1bcf0d1e78eb985ca2e1c0"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.ko",
+      "exists": true,
+      "size_bytes": 331368,
+      "sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec"
+    },
+    {
+      "path": "reference_modules/stock/zte_charger_policy.ko",
+      "exists": true,
+      "size_bytes": 68872,
+      "sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/functions.jsonl",
+      "exists": true,
+      "size_bytes": 17688,
+      "sha256": "2b5dde99a7487a4406a7c4e475d5c891e6ab939cccc64147c756aa47824bb5f0"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/ghidra_stock/calls.jsonl",
+      "exists": true,
+      "size_bytes": 62752,
+      "sha256": "dac9384e3ce72f5340cb241b9cdf63b8ae0e18a19255f100467c9cd1fd24398d"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/stock_assembly/manifest.json",
+      "exists": true,
+      "size_bytes": 31654,
+      "sha256": "367f4e2c531041af066242f95f95b6ddacbd1bd8083662d94debff7f2e35d48f"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/stock_assembly/0005_charger_policy_demo_sts_set_00101264.asm",
+      "exists": true,
+      "size_bytes": 4902,
+      "sha256": "774a553ee555b9c0f77f0ba80336561f469c82b613ef12189900169812f87783"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_atomic_gate_20261110/fresh_candidate_unpromoted.ko",
+      "exists": true,
+      "size_bytes": 337144,
+      "sha256": "08cb726c96f9a822c5d3fa8acb3ead9e67abd1d79a42efcd417128af4f6e602c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/previous_candidate_demo_sts_set.asm",
+      "exists": true,
+      "size_bytes": 5195,
+      "sha256": "40d5a0b869bc65080b293d57d55e310e52e4cd7533dc4515c52f2fa8cea0c388"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/fresh_candidate_unpromoted.ko",
+      "exists": true,
+      "size_bytes": 337168,
+      "sha256": "915b27b135bdcbe1e61d6ba889fd4985e8562a652d23a773ef1faebee8496e58"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/candidate_assembly/manifest.json",
+      "exists": true,
+      "size_bytes": 31766,
+      "sha256": "5b4b22f24adb541be77230e1ac2d91249fca7b3aefaf036fa3e28c3f05e7e605"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/candidate_assembly/0005_charger_policy_demo_sts_set_00101264.asm",
+      "exists": true,
+      "size_bytes": 5246,
+      "sha256": "e6f5917c3a4130999babb98fc3736510504fa79274b3d48874c382f85b73c728"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/assembly_comparison.json",
+      "exists": true,
+      "size_bytes": 22776,
+      "sha256": "62fa8cad6f9a39813c2c1d5b745e21175d249dca4d8e282ce6a2176081fe9d2b"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/kcfi_stock.json",
+      "exists": true,
+      "size_bytes": 644,
+      "sha256": "18c2491a8154ff72fef0144c66f82b60d919cd2245899a44f82a0908ab1a3a35"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/kcfi_candidate.json",
+      "exists": true,
+      "size_bytes": 745,
+      "sha256": "d4bd2e95036ddd350e6754fccc78799e43611aa6436469e5800b5bedc9f9d249"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/kcfi_comparison.json",
+      "exists": true,
+      "size_bytes": 1142,
+      "sha256": "d494f1ea49b970e8b2a806b73918db9eecd102ee711e86438600eedcfebae37c"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/driver_audit_canonical.json",
+      "exists": true,
+      "size_bytes": 82141,
+      "sha256": "e63f74814a5d0bb34597027c9e1ceabc68187b8354319bc7a7867915c6cf0fac"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/driver_audit_canonical.md",
+      "exists": true,
+      "size_bytes": 1084,
+      "sha256": "9b5e9728a6871c1f7184ae5d26aedc604f3336d90af376d261fbb7a9808a38ab"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/source_sync_dryrun.json",
+      "exists": true,
+      "size_bytes": 27754,
+      "sha256": "89e0e4495fc149663bf25638227cd09eaa63032fd1416492a4c8f42799876a72"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/source_sync_applied.json",
+      "exists": true,
+      "size_bytes": 27746,
+      "sha256": "79b80aab1d0ef32ff238b247c7703b24c4e024e283b80b097e491bb6cb4e9adf"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/source_sync_postverify.json",
+      "exists": true,
+      "size_bytes": 27591,
+      "sha256": "92241972aa697e17483f493a2c753d4ef883f4b405d09bfe5faea03d64c958c5"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/source_sync_status_dryrun.json",
+      "exists": true,
+      "size_bytes": 27638,
+      "sha256": "f7e37f589b950a927646eaf146d4e9f13fef5983a14625e20f684e29e7c13026"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/source_sync_status_applied.json",
+      "exists": true,
+      "size_bytes": 27632,
+      "sha256": "e95c0736c0291b7d629b52fd0c4a2cd87f16f6fc9c2a83c422cc520c45ffa9a8"
+    },
+    {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/source_sync_final_postverify.json",
+      "exists": true,
+      "size_bytes": 27591,
+      "sha256": "6b2bf0fdbb7fecd49f46ab546e533fff208280ce5be6f8feff53fc3d6f9fdca9"
+    }
+  ]
+}

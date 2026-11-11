@@ -1,6 +1,16 @@
 # Status do Driver `zte_charger_policy`
 
-## Estado atual — lote `lifetime_sync_atomic_gate_20261110`
+## Estado atual — lote `demo_sts_call_relocation_20261110`
+
+- A revisao do candidato anterior encontrou uma chamada `BL` fixa em `charger_policy_demo_sts_set`: no `.ko` nao promovido `08cb726c96f9a822c5d3fa8acb3ead9e67abd1d79a42efcd417128af4f6e602c`, o salto em `.text+0x13b0` terminava em `.text+0x13d8`, que e o preambulo KCFI imediatamente anterior a `charger_policy_demo_sts_get` em `.text+0x13dc`, e nao `charger_policy_status_disable`.
+- A ilha assembly agora declara `R_AARCH64_CALL26, charger_policy_status_disable`. No novo candidato, a relocation no callsite `.text+0x13b0` aponta para `.text+0x27a4`, entrada de `charger_policy_status_disable`. O modelo C tambem passou a ignorar o retorno de `sscanf`, como faz o stock.
+- O snapshot curado do Docker canonico foi sincronizado e verificado. Duas builds limpas produziram o mesmo `.ko`: SHA-256 `915b27b135bdcbe1e61d6ba889fd4985e8562a652d23a773ef1faebee8496e58` (337.168 bytes).
+- Assembly estrito: 4/4 funcoes passam (`charger_policy_demo_sts_set`, `charger_policy_status_disable`, `charger_policy_notifier_switch` e `policy_psy_set_property`). KCFI de `charger_policy_demo_sts_set`: type ID `0x4cf999cb` igual ao stock; tamanho tambem coincide.
+- O candidato permanece nao promovido. O `.ko` ativo e o mapa continuam vinculados ao SHA-256 `2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec` (331.368 bytes).
+- A auditoria integral ainda retorna `static_verified: []`: imports indefinidos e conteudo/layout runtime diferem do candidato ativo; a revisao do mapa segue incompleta. Nenhum teste de host ou no smartphone foi executado neste lote.
+- Evidencias: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/README.md` e `attestation.json`.
+
+## Lote anterior — `lifetime_sync_atomic_gate_20261110`
 
 - Fonte atual: SHA-256 `b4888b64d1533a1badf93c384b2df722455730a83bd258124b9d3d15dd908513`.
 - A revisão encontrou uma corrida entre setters sysfs da power supply e a drenagem inicial de `timeout_work`: um callback de propriedade já ativo pode enfileirar trabalho depois do primeiro cancelamento. O unregister da power supply e a segunda drenagem permanecem necessários.
