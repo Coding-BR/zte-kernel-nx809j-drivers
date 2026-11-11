@@ -1,6 +1,18 @@
 # Status do Driver `zte_charger_policy`
 
-## Estado atual — lote `power_supply_ref_cleanup_20261110`
+## Estado atual — lote `lifetime_sync_atomic_gate_20261110`
+
+- Fonte atual: SHA-256 `b4888b64d1533a1badf93c384b2df722455730a83bd258124b9d3d15dd908513`.
+- A revisão encontrou uma corrida entre setters sysfs da power supply e a drenagem inicial de `timeout_work`: um callback de propriedade já ativo pode enfileirar trabalho depois do primeiro cancelamento. O unregister da power supply e a segunda drenagem permanecem necessários.
+- `runtime_stopping` passou a `atomic_t` no espaço de quatro bytes já reservado do struct: offset 532 e tamanho total 544 permanecem iguais. Os handlers usam `atomic_cmpxchg(0, 0)` como leitura ordenada e o teardown usa `atomic_xchg`; a mudança não altera as ilhas de assembly stock não relacionadas.
+- A sincronização para o snapshot curado do Docker NX809J foi aplicada. Duas builds limpas produziram o mesmo candidato não promovido: SHA-256 `08cb726c96f9a822c5d3fa8acb3ead9e67abd1d79a42efcd417128af4f6e602c` (337.144 bytes). O artefato está em `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_atomic_gate_20261110/fresh_candidate_unpromoted.ko`.
+- O `.ko` ativo continua no SHA-256 `2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec` (331.368 bytes); o mapa continua vinculado a esse candidato ativo. O build novo não foi promovido.
+- KCFI dos cinco símbolos públicos: IDs/tipos iguais ao stock (PASS; tamanho do corpo ignorado). Comparação de assembly dos cinco corpos afetados: seções correspondem, mas opcodes e tamanhos diferem intencionalmente; relocations correspondem em 1/5. O gate estrito de assembly é FAIL 5/5 e não declara equivalência.
+- Auditoria estrita do módulo: build reproduzível, identidade do kernel/toolchain, `vermagic`, aliases, namespaces e rastreabilidade passam. Paridade de símbolos indefinidos, conteúdo/layout runtime entre candidato ativo antigo e build novo e revisão do mapa permanecem incompletos; o relatório retorna `static_verified: []`.
+- Harness de host, teste no smartphone, carregamento do módulo e revisão humana independente não foram executados. O driver permanece incompleto e não deve ser descrito como reconstruído/concluído.
+- Evidências deste lote: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/lifetime_sync_atomic_gate_20261110/README.md` e `attestation.json`.
+
+## Lote anterior — `power_supply_ref_cleanup_20261110`
 
 - Fonte atual: SHA-256 `8c2efe95c8d244873a49283441cacaa8ea9f0cff804b9cddb810fa3e58a6aa51`.
 - Candidato `.ko` ativo continua no SHA-256 `2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec` (331.368 bytes), anterior à fonte atual; não foi substituído.

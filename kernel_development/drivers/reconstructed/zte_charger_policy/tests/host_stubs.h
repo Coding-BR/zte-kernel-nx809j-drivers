@@ -15,6 +15,22 @@ typedef uint32_t u32;
 typedef uint64_t u64;
 typedef int64_t s64;
 typedef s64 ktime_t;
+typedef struct { int counter; } atomic_t;
+
+static inline void atomic_set(atomic_t *v, int i)
+{
+	__atomic_store_n(&v->counter, i, __ATOMIC_SEQ_CST);
+}
+
+static inline int atomic_xchg(atomic_t *v, int i)
+{
+	return __atomic_exchange_n(&v->counter, i, __ATOMIC_SEQ_CST);
+}
+
+static inline int atomic_cmpxchg(atomic_t *v, int old, int new_value)
+{
+	return __sync_val_compare_and_swap(&v->counter, old, new_value);
+}
 
 #define GFP_KERNEL 0u
 #define PAGE_SIZE 4096u

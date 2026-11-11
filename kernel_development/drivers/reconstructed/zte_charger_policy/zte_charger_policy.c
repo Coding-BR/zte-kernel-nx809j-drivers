@@ -3,6 +3,7 @@
 #else
 #include <linux/module.h>
 #include <linux/kernel.h>
+#include <linux/atomic.h>
 #include <linux/init.h>
 #include <linux/platform_device.h>
 #include <linux/power_supply.h>
@@ -108,8 +109,7 @@ struct charger_policy_info {
 	u8 notifier_registered;                            /* 0x211 (529) */
 	u8 timeout_work_initialized;                       /* 0x212 (530) */
 	u8 timeout_alarm_initialized;                      /* 0x213 (531) */
-	u8 runtime_stopping;                               /* 0x214 (532) */
-	u8 lifetime_padding[3];                            /* 0x215 (533) */
+	atomic_t runtime_stopping;                         /* 0x214 (532) */
 
 	/* Status booleans / bytes */
 	u8 low_temp_status;                                /* 0x218 (536) */
@@ -122,6 +122,7 @@ struct charger_policy_info {
 };
 
 static_assert(sizeof(struct charger_policy_info) == 544);
+static_assert(offsetof(struct charger_policy_info, runtime_stopping) == 532);
 static_assert(offsetof(struct charger_policy_info, timeout_alarm) == 40);
 static_assert(offsetof(struct charger_policy_info, timeout_wq) == 160);
 static_assert(offsetof(struct charger_policy_info, timeout_work) == 168);
@@ -136,6 +137,18 @@ static_assert(offsetof(struct charger_policy_info, low_temp_status) == 536);
 /* Global logger limit tracker and probe count */
 static u64 charger_policy_logger_limit_time_pre_0;
 static u32 charger_policy_check_retry_probe_count;
+
+/* RMW reads serialize late queued work against the teardown transition. */
+static bool charger_policy_runtime_stopping(struct charger_policy_info *policy)
+{
+	return atomic_cmpxchg(&policy->runtime_stopping, 0, 0) != 0;
+}
+
+static void charger_policy_set_runtime_stopping(struct charger_policy_info *policy,
+						int stopping)
+{
+	atomic_xchg(&policy->runtime_stopping, stopping);
+}
 
 /* Status functions */
 static __used int charger_policy_status_disable(struct charger_policy_info *policy);
@@ -812,7 +825,7 @@ static __used void charger_policy_timeout_handler_work_model(struct work_struct 
 	bool is_charging = false;
 	int ret;
 
-	if (READ_ONCE(policy->runtime_stopping))
+	if (charger_policy_runtime_stopping(policy))
 		return;
 
 	now_sec = get_current_time_seconds();
@@ -934,15 +947,15 @@ static enum alarmtimer_restart charger_policy_timeout_alarm_cb(struct alarm *ala
 {
 	struct charger_policy_info *policy = container_of(alarm, struct charger_policy_info, timeout_alarm);
 
-	if (READ_ONCE(policy->runtime_stopping))
+	if (charger_policy_runtime_stopping(policy))
 		return ALARMTIMER_NORESTART;
 
 	alarm_start_relative(alarm, ns_to_ktime(1000000LL * policy->force_discharging_sec_nanoseconds));
-	if (!READ_ONCE(policy->runtime_stopping) &&
+	if (!charger_policy_runtime_stopping(policy) &&
 	    !delayed_work_pending(&policy->timeout_work)) {
 		queue_delayed_work(policy->timeout_wq, &policy->timeout_work, msecs_to_jiffies(100));
 	}
-	return READ_ONCE(policy->runtime_stopping) ? ALARMTIMER_NORESTART : ALARMTIMER_RESTART;
+	return charger_policy_runtime_stopping(policy) ? ALARMTIMER_NORESTART : ALARMTIMER_RESTART;
 }
 
 /* Power supply notifier switch callback */
@@ -1340,7 +1353,7 @@ static void charger_policy_stop_runtime(struct charger_policy_info *policy)
 {
 	size_t i;
 
-	WRITE_ONCE(policy->runtime_stopping, 1);
+	charger_policy_set_runtime_stopping(policy, 1);
 
 	if (policy->misc_callbacks_registered) {
 		for (i = 0; i < ARRAY_SIZE(charger_policy_misc_callbacks); i++)
@@ -1550,7 +1563,7 @@ static __used void charger_policy_probe_work_model(struct work_struct *work)
 	size_t i;
 	int ret;
 
-	if (READ_ONCE(policy->runtime_stopping))
+	if (charger_policy_runtime_stopping(policy))
 		return;
 
 	pr_info("policy: %s(): begin execution\n", "charger_policy_probe_work");
@@ -1623,7 +1636,7 @@ check_retry:
 	}
 
 	pr_info("policy: %s(): charger policy driver retry[%d]!!!\n", "charger_policy_probe_work", charger_policy_check_retry_probe_count);
-	WRITE_ONCE(policy->runtime_stopping, 0);
+	charger_policy_set_runtime_stopping(policy, 0);
 	queue_delayed_work(policy->probe_wq, &policy->probe_work, msecs_to_jiffies(5000));
 }
 
@@ -1656,6 +1669,7 @@ static __used int charger_policy_probe_model(struct platform_device *pdev)
 	if (!policy)
 		return -ENOMEM;
 
+	atomic_set(&policy->runtime_stopping, 0);
 	policy->dev = dev;
 	platform_set_drvdata(pdev, policy);
 
@@ -1849,7 +1863,7 @@ static __used void charger_policy_remove_model(struct platform_device *pdev)
 
 	if (policy) {
 		platform_set_drvdata(pdev, NULL);
-		WRITE_ONCE(policy->runtime_stopping, 1);
+		charger_policy_set_runtime_stopping(policy, 1);
 		if (policy->probe_wq) {
 			cancel_delayed_work_sync(&policy->probe_work);
 			charger_policy_stop_runtime(policy);
