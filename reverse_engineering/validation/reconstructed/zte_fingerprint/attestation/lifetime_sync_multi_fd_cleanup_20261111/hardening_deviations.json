@@ -1,12 +1,12 @@
 {
   "schema_version": "1.0",
-  "generated_utc": "2026-11-11T13:27:56Z",
+  "generated_utc": "2026-11-11T13:47:09Z",
   "driver": "zte_fingerprint",
   "status": "HARDENING_CANDIDATE_PENDING_INDEPENDENT_REVIEW",
   "candidate": {
     "sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21",
     "size_bytes": 395992,
-    "source_sha256": "9e9e267034d0c609bd63e80a3fe51c450a571622c5e4e7a8d65ccd56a3a37019",
+    "source_sha256": "bdec70e931c24d460be80fab296f4951274ef83c0e1441248352132c1a5922fc",
     "map_sha256": "be7947f1306f77204666e2b9e2a4abb72243e016327a9fcc7e9ace92ec671e3e"
   },
   "previous_candidate": {
@@ -27,10 +27,10 @@
     "target_kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
     "kernel_source_identity": "MATCH",
     "two_clean_builds_reproducible": true,
-    "build_1_sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21",
-    "build_2_sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21",
-    "canonical_build_report": "validator_final.json",
-    "canonical_build_report_sha256": "1c3116ddb5001fb658f83547f49d2aa1dd05791351ba2fc7d8350092b0bd77eb"
+    "build_1_sha256": "51fa3d1311f37c097d82ec33cf2b50fda858dc753143ad893732e4e9b2451c78",
+    "build_2_sha256": "51fa3d1311f37c097d82ec33cf2b50fda858dc753143ad893732e4e9b2451c78",
+    "canonical_build_report": "validator_compat_fallback_final.json",
+    "canonical_build_report_sha256": "ef1546b507e9224d608f1a208349f004f13059de02683c77e2f85c21a5d1ed4f"
   },
   "assembly": {
     "stock_functions": 30,
@@ -81,16 +81,18 @@
     "Synchronize ioctl, open/release, IRQ and remove lifetime paths.",
     "Drain notifier retry work before teardown and prevent rebind while stale file references remain.",
     "Return -EBUSY from CLEANUP when ref_count is not one, protecting resources shared with another open descriptor.",
-    "Keep devres API usage within target KMI exports."
+    "Keep devres API usage within target KMI exports.",
+    "Route the C fallback for compat_ioctl through the same synchronized dispatcher as the exact assembly wrapper.",
+    "Refresh host stubs for READ_ONCE/WRITE_ONCE, devres groups and list_empty; cover compat CLEANUP with two open descriptors."
   ],
   "canonical_snapshot_validation": {
-    "report": "validator_final.json",
+    "report": "validator_compat_fallback_final.json",
     "status": "incomplete_or_failed",
     "two_clean_builds_passed": true,
-    "build_1_sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21",
-    "build_2_sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21",
+    "build_1_sha256": "51fa3d1311f37c097d82ec33cf2b50fda858dc753143ad893732e4e9b2451c78",
+    "build_2_sha256": "51fa3d1311f37c097d82ec33cf2b50fda858dc753143ad893732e4e9b2451c78",
     "kernel_source_identity": "MATCH",
-    "candidate_content_match": true,
+    "candidate_content_match": false,
     "candidate_layout_match": true,
     "function_traceability": true,
     "map_review_passed": false,
@@ -100,15 +102,27 @@
       "module parity check failed: undefined_symbols_match"
     ],
     "map_sha256": "be7947f1306f77204666e2b9e2a4abb72243e016327a9fcc7e9ace92ec671e3e",
-    "validator_sha256": "1c3116ddb5001fb658f83547f49d2aa1dd05791351ba2fc7d8350092b0bd77eb"
+    "validator_sha256": "ef1546b507e9224d608f1a208349f004f13059de02683c77e2f85c21a5d1ed4f",
+    "runtime_content_match": true,
+    "loadable_metadata_match": false,
+    "exact_candidate_hash_match": false,
+    "fresh_promotion": "not performed; strict import parity gate failed"
   },
   "curated_sync_final": {
-    "report": "curated_sync_final.json",
+    "report": "curated_sync_compat_fallback_final.json",
     "passed": true,
     "copied_files": 1,
     "removed_stale_source_files": 0,
     "source_module_sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21",
     "curated_module_sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21",
     "map_sha256": "be7947f1306f77204666e2b9e2a4abb72243e016327a9fcc7e9ace92ec671e3e"
+  },
+  "host_harness": {
+    "report": "kernel_development/drivers/validation/zte_fingerprint/host_test_report.json",
+    "report_sha256": "8b13439d2fa4e7cf449703d3c25ed449b73605447f0d6df8478bcd3adf3870f0",
+    "passed": true,
+    "reproducible": true,
+    "covered_functions": 30,
+    "compat_cleanup_with_two_open_files": "PASS: returned -EBUSY and preserved the resource group and IRQ"
   }
 }

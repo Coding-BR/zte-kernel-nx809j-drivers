@@ -1021,11 +1021,14 @@ static noinline long gf_ioctl(struct file *file, unsigned int cmd,
 	return ret;
 }
 
+static long gf_ioctl_dispatch(struct file *file, unsigned int cmd,
+			      unsigned long arg);
+
 #ifndef ZTE_FINGERPRINT_GF_COMPAT_IOCTL_EXACT
 static noinline long gf_compat_ioctl(struct file *file, unsigned int cmd,
                                      unsigned long arg)
 {
-	return gf_ioctl(file, cmd, arg);
+	return gf_ioctl_dispatch(file, cmd, arg);
 }
 #else
 extern long gf_compat_ioctl(struct file *file, unsigned int cmd,

@@ -106,6 +106,20 @@ void host_reset_state(void)
 	host.panel_object.marker = 1;
 }
 
+void *host_devres_open_group(struct device *dev, void *id, gfp_t flags)
+{
+	CHECK(dev == &host.platform_object.dev);
+	CHECK(id == NULL);
+	CHECK(flags == GFP_KERNEL);
+	return &host;
+}
+
+void host_devres_release_group(struct device *dev, void *id)
+{
+	CHECK(dev == &host.platform_object.dev);
+	CHECK(id == &host);
+}
+
 void *host_kzalloc(size_t size, gfp_t flags)
 {
 	(void)flags;
@@ -329,6 +343,7 @@ static void test_full_lifecycle(void)
 {
 	struct inode inode = { .i_rdev = MKDEV(240, 0) };
 	struct file file = { 0 };
+	struct file second_file = { 0 };
 	struct platform_device *pdev;
 	struct panel_event_notification notification;
 	struct sk_buff *packet;
@@ -347,6 +362,11 @@ static void test_full_lifecycle(void)
 	CHECK(gf_ioctl(&file, 0x80046700, (unsigned long)&version) == 0);
 	CHECK(version == 25);
 	CHECK(gf_compat_ioctl(&file, 0x80046700, (unsigned long)&version) == 0);
+	CHECK(gf_open(&inode, &second_file) == 0);
+	CHECK(gf_compat_ioctl(&file, 0x670c, 0) == -EBUSY);
+	CHECK(gf_dev_static.ref_count == 2);
+	CHECK(gf_dev_static.resource_group != NULL && gf_dev_static.irq_requested);
+	CHECK(gf_release(&inode, &second_file) == 0);
 	CHECK(gf_ioctl(&file, 0x4004670e, (unsigned long)&action) == 0);
 	CHECK(gf_ioctl(&file, 0x40086709, (unsigned long)&key) == 0);
 	goodixfp_drm_get_pannel(&host.node_object);

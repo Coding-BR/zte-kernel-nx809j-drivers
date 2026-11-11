@@ -156,6 +156,8 @@ void host_init_list(struct list_head *head);
 void host_list_add_tail(struct list_head *entry, struct list_head *head);
 void host_list_del(struct list_head *entry);
 void __list_del_entry(struct list_head *entry);
+void *host_devres_open_group(struct device *dev, void *id, gfp_t flags);
+void host_devres_release_group(struct device *dev, void *id);
 unsigned long host_find_first_zero_bit(const unsigned long *bitmap, unsigned long bits);
 void host_set_bit(unsigned long bit, unsigned long *bitmap);
 void host_clear_bit(unsigned long bit, unsigned long *bitmap);
@@ -266,6 +268,7 @@ void panel_event_notifier_unregister(void *cookie);
 #define list_add(entry, head) host_list_add_tail(entry, head)
 #define gf_dev_static gf
 #define list_del(entry) host_list_del(entry)
+#define list_empty(head) ((head)->next == (head))
 #define list_entry(pointer, type, member) container_of(pointer, type, member)
 #define list_for_each(position, head) for ((position) = (head)->next; (position) != (head); (position) = (position)->next)
 #define list_for_each_entry(position, head, member) \
@@ -276,6 +279,10 @@ void panel_event_notifier_unregister(void *cookie);
 #define mutex_init(lock) host_init_mutex(lock)
 #define mutex_lock(lock) host_mutex_lock(lock)
 #define mutex_unlock(lock) host_mutex_unlock(lock)
+#define READ_ONCE(value) (value)
+#define WRITE_ONCE(value, new_value) ((value) = (new_value))
+#define devres_open_group(dev, id, flags) host_devres_open_group(dev, id, flags)
+#define devres_release_group(dev, id) host_devres_release_group(dev, id)
 #define kzalloc(size, flags) host_kzalloc(size, flags)
 #define kfree(pointer) host_kfree(pointer)
 #define find_first_zero_bit(bitmap, bits) host_find_first_zero_bit(bitmap, bits)
