@@ -199,6 +199,7 @@ int rdbg_open(struct inode *inode, struct file *filp)
 	struct rdbg_data_layout *rdbgdata = NULL;
 	struct rdbg_file_context_layout *file_context = NULL;
 	int err = 0;
+	void *smem_addr = NULL;
 
 	if (!inode || !device->rdbg_data) {
 		pr_err("Memory not allocated yet\n");
@@ -227,24 +228,30 @@ int rdbg_open(struct inode *inode, struct file *filp)
 		goto bail;
 	}
 
-	rdbgdata->smem_addr = qcom_smem_get(0xffffffff,
-					    proc_info[device_id].smem_buffer_addr,
-					    &rdbgdata->smem_size);
-	if (IS_ERR(rdbgdata->smem_addr)) {
+	smem_addr = qcom_smem_get(0xffffffff,
+				  proc_info[device_id].smem_buffer_addr,
+				  &rdbgdata->smem_size);
+	if (IS_ERR(smem_addr) && PTR_ERR(smem_addr) == -ENOENT) {
 		pr_err("rdbg: Can't retrieve data from common SMEM region.\n"
 		       "Retrieving data from device specific partition.\n");
-		if (PTR_ERR(rdbgdata->smem_addr) == -ENOENT)
-			rdbgdata->smem_addr = qcom_smem_get(device_id,
-							    proc_info[device_id].smem_buffer_addr,
-							    &rdbgdata->smem_size);
+		smem_addr = qcom_smem_get(device_id,
+					   proc_info[device_id].smem_buffer_addr,
+					   &rdbgdata->smem_size);
 	}
-	if (!rdbgdata->smem_addr) {
+	if (IS_ERR(smem_addr)) {
+		err = PTR_ERR(smem_addr);
+		dev_err(rdbgdata->device,
+			"%s: qcom_smem_get failed, Err=%d\n", __func__, err);
+		goto bail;
+	}
+	if (!smem_addr) {
 		dev_err(rdbgdata->device,
 			"%s: Could not allocate smem memory\n", __func__);
 		pr_err("rdbg:Could not allocate smem memory\n");
 		err = -ENOMEM;
 		goto bail;
 	}
+	rdbgdata->smem_addr = smem_addr;
 
 	if (check_subsystem_debug_enabled(rdbgdata->smem_addr,
 					  rdbgdata->smem_size / 2)) {

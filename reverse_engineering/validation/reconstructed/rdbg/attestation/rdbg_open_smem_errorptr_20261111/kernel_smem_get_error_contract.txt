@@ -1,0 +1,31 @@
+Target kernel evidence
+=====================
+Docker source volume: nubia_sm8850_kernel_src_nx809j_oout_20261030
+Kernel source commit: 3356b35306d35d5a480e3b63df1a9f065b5d9f55
+File: kernel_platform/common/drivers/soc/qcom/smem.c, qcom_smem_get(), lines 681-700
+
+void *qcom_smem_get(unsigned host, unsigned item, size_t *size)
+{
+        struct smem_partition *part;
+        void *ptr = ERR_PTR(-EPROBE_DEFER);
+
+        if (!__smem)
+                return ptr;
+
+        if (WARN_ON(item >= __smem->item_count))
+                return ERR_PTR(-EINVAL);
+
+        if (host < SMEM_HOST_COUNT && __smem->partitions[host].virt_base) {
+                part = &__smem->partitions[host];
+                ptr = qcom_smem_get_private(__smem, part, item, size);
+        } else if (__smem->global_partition.virt_base) {
+                part = &__smem->global_partition;
+                ptr = qcom_smem_get_private(__smem, part, item, size);
+        } else {
+                ptr = qcom_smem_get_global(__smem, item, size);
+        }
+
+        return ptr;
+}
+
+This implementation can return ERR_PTR(-EPROBE_DEFER) and ERR_PTR(-EINVAL), in addition to errors returned by the partition lookup helpers.

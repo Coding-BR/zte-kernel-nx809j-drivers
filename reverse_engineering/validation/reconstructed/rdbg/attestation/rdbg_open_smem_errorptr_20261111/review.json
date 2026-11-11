@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "driver": "rdbg",
+  "review_id": "rdbg_open_smem_errorptr_20261111",
+  "candidate_sha256": "3090b8ef5015294ddafdb9ffea6fdfd7c67444ab42fe11b67d66bdefbf4f3b30",
+  "candidate_size_bytes": 790056,
+  "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
+  "conclusion": "rdbg_open now validates both qcom_smem_get results before publishing or dereferencing the shared-memory pointer. The stock binary has an unchecked ERR_PTR path for errors other than -ENOENT; the new code preserves the provider errno and returns before check_subsystem_debug_enabled.",
+  "findings": [
+    {
+      "id": "RDBG-OPEN-SMEM-ERRPTR-01",
+      "status": "ADDRESSED_STATICALLY",
+      "stock_evidence": [
+        "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/decompiled/0003_00100ecc_rdbg_open.c",
+        "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0003_00100ecc_rdbg_open.jsonl",
+        "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0003_rdbg_open_00100ecc.asm"
+      ],
+      "target_kernel_evidence": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/kernel_smem_get_error_contract.txt",
+      "description": "Stock checks IS_ERR after the common qcom_smem_get call, falls back only for -ENOENT, then checks only NULL before using the pointer. The pinned target qcom_smem_get can return ERR_PTR(-EPROBE_DEFER) when __smem is unavailable and ERR_PTR(-EINVAL) for an invalid item. Such a pointer reaches check_subsystem_debug_enabled in stock. The candidate stores the result locally, performs the device-specific fallback only for -ENOENT, checks IS_ERR after either call, returns PTR_ERR on failure, checks NULL, and only then publishes rdbgdata->smem_addr."
+    },
+    {
+      "id": "RDBG-IRQ-IDENTITY-01",
+      "status": "PRESERVED_FROM_PREVIOUS_CANDIDATE",
+      "evidence": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json",
+      "description": "Probe publication and open snapshot use the same mutex; free_irq uses the per-open requested IRQ."
+    },
+    {
+      "id": "RDBG-SMEM-REBIND-01",
+      "status": "PRESERVED_FROM_PREVIOUS_CANDIDATE",
+      "evidence": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/review.json",
+      "description": "The module-owned SMEM state handle replacement and use remain serialized by rdbg_smem_state_lock."
+    }
+  ],
+  "assembly": {
+    "report": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/assembly_comparison.json",
+    "checked_functions": 8,
+    "stock_exact_functions": [
+      "on_interrupt_from"
+    ],
+    "declared_hardening_deviation_functions": [
+      "cleanup_module",
+      "init_module",
+      "rdbg_open",
+      "rdbg_probe",
+      "rdbg_read",
+      "rdbg_release",
+      "rdbg_write"
+    ],
+    "rdbg_open_strict_exact": false
+  },
+  "kcfi": {
+    "report": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/kcfi_comparison.json",
+    "passed": true,
+    "functions_matched": 8,
+    "size_is_gating": false
+  },
+  "abi": {
+    "report": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/abi_surface.json",
+    "passed": false,
+    "candidate_only_imports": [
+      "free_irq",
+      "platform_driver_unregister",
+      "qcom_smem_state_put"
+    ],
+    "missing_imports": [],
+    "unexpected_exports": [],
+    "all_target_import_crcs_match": true,
+    "target_vermagic_matches": true
+  },
+  "build": {
+    "report": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/docker_validation_final.json",
+    "canonical_docker_rebuilds": 2,
+    "expected_candidate_sha256": "3090b8ef5015294ddafdb9ffea6fdfd7c67444ab42fe11b67d66bdefbf4f3b30",
+    "kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "builder_image": "nubia-sm8850-kernel-builder:latest",
+    "builder_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "passed": true,
+    "reproducible": true,
+    "cycle_sha256": [
+      "3090b8ef5015294ddafdb9ffea6fdfd7c67444ab42fe11b67d66bdefbf4f3b30",
+      "3090b8ef5015294ddafdb9ffea6fdfd7c67444ab42fe11b67d66bdefbf4f3b30"
+    ],
+    "candidate_matches_fresh": true
+  },
+  "overall_validation": {
+    "validator_status": "incomplete_or_failed",
+    "static_verified": false,
+    "hardware_verified": false,
+    "blocking_checks": [
+      "undefined_symbols_match",
+      "mapping_review"
+    ],
+    "independent_mapping_review": "PENDING for seven declared hardening deviations",
+    "traceability_passed": true,
+    "reason": "The source-to-stock identity map is complete, but the validator requires current independent hardening review metadata. Strict imports still differ by free_irq, platform_driver_unregister, and qcom_smem_state_put."
+  },
+  "runtime": {
+    "adb_devices_attached": 0,
+    "module_load_test": false,
+    "unbind_rebind_test": false,
+    "phone_hardware_test": false,
+    "host_harness_run": false
+  },
+  "limitations": [
+    "This is a hardening deviation from stock, not a stock-exact function reconstruction.",
+    "Runtime behavior is unverified because no device is attached.",
+    "The per-device platform remove callback remains absent.",
+    "Strict import parity and independent mapping review remain unresolved."
+  ],
+  "prior_review_check": {
+    "path": "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/mapping_review.json",
+    "candidate_sha256": "6a25975d91059eae065cd28058515a767ceefe6ec4210347bc5712d3071ca2bc",
+    "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
+    "applicable_to_current_candidate": false,
+    "reason": "That review covered an earlier stock-exact candidate and explicitly noted that no second human peer review was performed; it cannot attest the seven current hardened deviations."
+  }
+}

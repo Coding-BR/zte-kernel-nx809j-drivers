@@ -80,6 +80,7 @@ Regras inviolaveis:
   exigindo paridade independente de Assembly/relocacoes. O fallback nunca
   transforma body-size, P-Code, KCFI, Joern ou Docker em PASS;
 - procure contraexemplos de retorno, stores, calls, ordem, errno e cleanup;
+- para APIs do kernel que retornam ponteiros, leia o contrato no source do target; se puderem retornar `ERR_PTR`, valide cada resultado, inclusive fallback, com `IS_ERR`/`PTR_ERR` antes de testar `NULL` ou dereferenciar, e nunca publique ponteiros de erro;
 - nao modele MMIO, IRQ, DMA, firmware ou bus como se o modelo provasse o efeito
   fisico;
 - nao use cast, hardening desativado, Assembly `naked`, `.inst` opaco ou
