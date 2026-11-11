@@ -1,0 +1,252 @@
+{
+  "driver": "rdbg",
+  "evidence": {
+    "device_tree_context": [
+      {
+        "expected_sha256": null,
+        "hash_matches": true,
+        "path": "C:\\w_haptic_remove_c6\\reverse_engineering\\validation\\reconstructed\\rdbg\\offline_static\\device_tree_context.json",
+        "sha256": "daa693be2574c51e5c699bb25924f5110a872a7c9866f66756c0739bcb181921",
+        "size": 16760,
+        "status": "PRESENT_UNREVIEWED"
+      }
+    ],
+    "stock_assembly_manifest": [
+      {
+        "expected_sha256": null,
+        "hash_matches": true,
+        "path": "C:\\w_haptic_remove_c6\\reverse_engineering\\validation\\reconstructed\\rdbg\\offline_static\\stock_assembly\\manifest.json",
+        "sha256": "b24d256f5140053ff42942c1327009ed50f69ea23def9f81af2054b943ece591",
+        "size": 6835,
+        "status": "PRESENT_UNREVIEWED"
+      }
+    ],
+    "stock_kcfi": [
+      {
+        "expected_sha256": null,
+        "hash_matches": true,
+        "path": "C:\\w_haptic_remove_c6\\reverse_engineering\\validation\\reconstructed\\rdbg\\offline_static\\stock_kcfi.json",
+        "sha256": "d29a6564683348af9f346a377eca7115b01c9b8d23bcbc5c4a0dedb6800b48a2",
+        "size": 2503,
+        "status": "PRESENT_UNREVIEWED"
+      }
+    ],
+    "stock_module": [
+      {
+        "expected_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b4b55cd11a12",
+        "hash_matches": false,
+        "path": "C:\\w_haptic_remove_c6\\reference_modules\\full_vendor_boot\\rdbg.ko",
+        "sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
+        "size": 35280,
+        "status": "HASH_MISMATCH"
+      }
+    ]
+  },
+  "functions": [
+    {
+      "alias": "f000",
+      "candidate_function": "rdbg_probe",
+      "identity": "rdbg_probe@1004ac",
+      "kcfi_required": true,
+      "source_function": "rdbg_probe",
+      "stock_entry": "001004ac",
+      "stock_function": "rdbg_probe",
+      "stock_symbol_offset": "0x4"
+    },
+    {
+      "alias": "f001",
+      "candidate_function": "rdbg_write",
+      "identity": "rdbg_write@100a9c",
+      "kcfi_required": true,
+      "source_function": "rdbg_write",
+      "stock_entry": "00100a9c",
+      "stock_function": "rdbg_write",
+      "stock_symbol_offset": "0x5f4"
+    }
+  ],
+  "generated_utc": "2026-11-11T16:25:04.751884+00:00",
+  "ghidra": {
+    "calls": {
+      "path": "C:\\w_haptic_remove_c6\\reverse_engineering\\validation\\reconstructed\\rdbg\\offline_static\\ghidra_stock\\rdbg.ko\\calls.jsonl",
+      "sha256": "a62b7289858f573b613ad954eda70e1cfb99d066fe544a5f4f87ef6f51656010",
+      "size": 15822
+    },
+    "functions": {
+      "path": "C:\\w_haptic_remove_c6\\reverse_engineering\\validation\\reconstructed\\rdbg\\offline_static\\ghidra_stock\\rdbg.ko\\functions.jsonl",
+      "sha256": "123992e8f8a39a063421843da00c36f30ffa79cdcc50fa4fca1e6dba03376ee5",
+      "size": 3045
+    },
+    "root": "C:\\w_haptic_remove_c6\\reverse_engineering\\validation\\reconstructed\\rdbg\\offline_static\\ghidra_stock\\rdbg.ko"
+  },
+  "ghidra_semantic_comparison_inputs": {
+    "candidate_export": null,
+    "enabled": false,
+    "input_files": [],
+    "stock_entry_bias": 0,
+    "stock_export": "C:\\w_haptic_remove_c6\\reverse_engineering\\validation\\reconstructed\\rdbg\\offline_static\\ghidra_stock\\rdbg.ko"
+  },
+  "job": {
+    "path": "C:\\w_haptic_remove_c6\\reverse_engineering\\validation\\reconstructed\\rdbg\\attestation\\rdbg_state_update_recovery_20261111\\bootstrap_job.json",
+    "sha256": "9f82b53fe1be4e4ecf6c1b147d7f5c942cff177a619e8dd0f3a769705e789062",
+    "size": 3272
+  },
+  "map_bindings": [
+    {
+      "identity": "rdbg_probe@1004ac",
+      "map_status": "candidate_under_static_validation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "source_file": "rdbg_fn_04_probe.c",
+      "source_function": "rdbg_probe"
+    },
+    {
+      "identity": "rdbg_write@100a9c",
+      "map_status": "candidate_under_static_validation",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "source_file": "rdbg_fn_06_write.c",
+      "source_function": "rdbg_write"
+    }
+  ],
+  "mode": "core",
+  "profiles": [
+    "STATEFUL_MEMORY",
+    "CALLBACK_ABI",
+    "CONCURRENCY_LIFETIME"
+  ],
+  "reconstruction_map": {
+    "path": "C:\\w_haptic_remove_c6\\kernel_development\\drivers\\reconstructed\\rdbg\\reconstruction_map.json",
+    "sha256": "801b51f7224489f4b21ba5e2b7bdc4c809df29e08c864b584e1bad40cea106f3",
+    "size": 44800
+  },
+  "runner_scripts": [
+    {
+      "path": "workspace_tools/reconstruction_pipeline/compare_function_assembly.py",
+      "sha256": "99f98ea8bd1662f5786b4c6c223a6f4bd475c90f21868a2d726d4971a9e1b3b8",
+      "size": 172517
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/compare_kcfi_callsites.py",
+      "sha256": "c55d711dbe08c7a44d26a337056c524925f45a95182a3926f2d55646e3d5c73a",
+      "size": 14008
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/compare_kcfi_reports.py",
+      "sha256": "75e4b85300e91411d87e707de9590b5731c0f7d7ac123973a18f2d27c91fec87",
+      "size": 6170
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/extract_kcfi.py",
+      "sha256": "3ba45b1707d825ed354d2147803681b0fae6a58b02c00a1cb00c2c43804dd5d8",
+      "size": 13247
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/extract_module_assembly.py",
+      "sha256": "eeee06b9c9faecee0a856ff14b1a344ca49ab8c255337c8ca192ef0892546697",
+      "size": 13854
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/run_hard_driver_protocol.py",
+      "sha256": "fe26330045844ddd53aae173ad0a9fa7bcaff2c432ccd625ae848997174cf715",
+      "size": 100607
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/run_joern_reconstruction_gate.py",
+      "sha256": "675b8cff0ccdf54f8898fb18c0ae6e8bd4cab27657a9abd035d2aab42483bd09",
+      "size": 52953
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/target_kernel_defaults.py",
+      "sha256": "d2f76f2867c34c84e5e6f85a582883df064b90614ed0765567a22ae99d513afb",
+      "size": 960
+    },
+    {
+      "path": "workspace_tools/reconstruction_pipeline/validate_reconstructed_drivers.py",
+      "sha256": "d4d249fc959aaf1465e05f5fc4d7b12fda0efd694b16a5355c1d3835596a5cf6",
+      "size": 65475
+    }
+  ],
+  "runtimes": {
+    "engineering_root": "C:\\Users\\adria\\Desktop\\drivers\\kernel-docker-workspace\\engenharia",
+    "java_home": "C:\\Program Files\\Microsoft\\jdk-21.0.12.8-hotspot",
+    "joern_home": "C:\\w_haptic_remove_c6\\reproducible_environment\\.tools\\joern-v4.0.548\\joern-cli",
+    "joern_lock": {
+      "path": "C:\\w_haptic_remove_c6\\workspace_tools\\reconstruction_pipeline\\joern\\joern.lock.json",
+      "sha256": "add1b8e77e87723da0af2f25c452a3b95cc4ee68bee72b2ecd9cece045a14373",
+      "size": 1652
+    },
+    "python": "C:\\Users\\adria\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
+  },
+  "schema_version": "1.0",
+  "source": {
+    "file_count": 12,
+    "files": [
+      {
+        "path": "Makefile",
+        "sha256": "fa6cb6901f45e11c5914ba3cedeb55ece025a47b28debe2ec27e4450c41e3310",
+        "size": 221
+      },
+      {
+        "path": "rdbg_fn_00_on_interrupt_from.c",
+        "sha256": "b96f25b4092140cb0eb6d23982de5a87be77ab75cbb4080ef195338adffb928f",
+        "size": 545
+      },
+      {
+        "path": "rdbg_fn_01_cleanup_module.c",
+        "sha256": "80eee845865e395ac025ced94ea25f35fee4c03af083ed9706df802589a7cd7d",
+        "size": 1938
+      },
+      {
+        "path": "rdbg_fn_02_release.c",
+        "sha256": "ca6757aa412ca5edb43957e31ac672b489c8aeaaa3cdcb1354fb29a05c085fd5",
+        "size": 1831
+      },
+      {
+        "path": "rdbg_fn_03_open.c",
+        "sha256": "e8bf533b6b0728a54340745cacc6f166ca5c0afe2d1993bba5df4b840c8b5b0f",
+        "size": 9113
+      },
+      {
+        "path": "rdbg_fn_04_probe.c",
+        "sha256": "611fb0315bf41e94685885f42ae060e3b466df94c013a9531f601364faba0b3a",
+        "size": 6503
+      },
+      {
+        "path": "rdbg_fn_05_read.c",
+        "sha256": "f1b406c7261b19b6c0d003608f0830f7eca82815edad4ce0cd601ceedafb02e6",
+        "size": 4940
+      },
+      {
+        "path": "rdbg_fn_06_write.c",
+        "sha256": "13f10e63dd36f841ae782eba49c42ab4a4af2e3581ba68edf9a617a4baf70a17",
+        "size": 5480
+      },
+      {
+        "path": "rdbg_fn_07_init_module.c",
+        "sha256": "8b3518de51869f98dae1b448f66f157babd0d18344ef7b67849f6110a7f3f2e7",
+        "size": 4780
+      },
+      {
+        "path": "rdbg_metadata.c",
+        "sha256": "12128fa4c2cf1edb76a374dc7da5bb7f065529edfc147307a80b347bae2a5e62",
+        "size": 223
+      },
+      {
+        "path": "rdbg_reconstruction_layout.h",
+        "sha256": "0080b0f0315681d64a1806b0f8ce3144a0a38cebfbe8aa79157362ad7aa65ad0",
+        "size": 4741
+      },
+      {
+        "path": "vendor.Module.symvers",
+        "sha256": "3634581b1aaf8680a82cbde132f5b6aa48e2a4fcd5f6c3e8f95307db82890b34",
+        "size": 49
+      }
+    ],
+    "root": "C:\\w_haptic_remove_c6\\kernel_development\\drivers\\reconstructed\\rdbg",
+    "status": "PRESENT",
+    "tree_sha256": "ed3905dce75a0c41a263bf844870349e4711436c2fbd6551c222cc2414172a15"
+  },
+  "stock_module": {
+    "path": "C:\\w_haptic_remove_c6\\reference_modules\\full_vendor_boot\\rdbg.ko",
+    "sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
+    "size": 35280
+  }
+}
