@@ -10,6 +10,16 @@
 - A auditoria integral ainda retorna `static_verified: []`: imports indefinidos e conteudo/layout runtime diferem do candidato ativo; a revisao do mapa segue incompleta. Nenhum teste de host ou no smartphone foi executado neste lote.
 - Evidencias: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/README.md` e `attestation.json`.
 
+## Correção da comparação de assembly — 2026-11-11
+
+- A contagem anterior de 3/38 exatas foi produzida com um manifesto stock que apontava para um caminho absoluto inexistente neste worktree. Sem carregar o ELF stock, o comparador não resolvia offsets de `.rodata`; 29 funções tiveram falsos negativos somente nas relocations.
+- O manifesto portátil `reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly_resolved/manifest.json` mantém os 38 corpos originais e os liga ao módulo stock versionado, SHA-256 `0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c`.
+- No `.ko` ativo `2f87a9fa...`, a comparação rebased passa em 32/38 funções; falham `charger_policy_demo_sts_set` e cinco funções de probe/remove/timeout. O mapa agora contém 29 entradas `promoted_offline_exact`, seis `reviewed` não exatas e três `candidate_under_static_validation`.
+- No candidato fresh não promovido `915b27b1...`, passam 30/38; falham três funções de cleanup de referência e cinco funções de ciclo de vida. A correção de relocation em `charger_policy_demo_sts_set` agora passa. Os três caminhos de cleanup permanecem sem equivalência semântica estabelecida.
+- A auditoria ELF confirma que o delta KMI do candidato fresh é deliberado: ausentes `devm_kfree` e `devm_power_supply_register`; novos `alarm_cancel`, `cancel_delayed_work_sync`, `destroy_workqueue`, `power_supply_register`, `power_supply_unregister`, `zte_misc_unregister_callback` e `alt_cb_patch_nops`. Este último é referenciado por `.rela.altinstructions` gerada para os atomics do gate de teardown. Portanto `undefined_symbols_match` segue falso.
+- A auditoria integral do driver continua incompleta (`static_verified: []`); o candidato fresh não foi promovido, a revisão independente e a validação física seguem pendentes. Não houve alteração de C, novo build, teste de host nem teste no aparelho neste lote; o Docker foi usado para as evidências ELF/assembly e para sincronizar os documentos/mapa.
+- Evidências hash-bound: `reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/assembly_relocation_rebind_20261111/` e `attestation/kmi_delta_root_cause_20261111/`.
+
 ## Auditoria complementar — concorrencia dos campos de estado — 2026-11-11
 
 - A auditoria estatica encontrou acessos sem sincronizacao comum entre setters de controle/propriedade e timeout_work: status (0x1ec), last_status (0x1f0), policy_disabled (0x1e8), timeout_seconds_runtime (0x1f4), force_discharging_sec (0x1f8) e demo_sts (0x219). O worker e os handlers de estado leem e/ou atualizam esses campos; alguns setters tambem os escrevem e enfileiram trabalho.

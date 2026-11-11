@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0",
+  "driver": "zte_charger_policy",
+  "batch": "kmi_delta_root_cause_20261111",
+  "generated_utc": "2026-11-11T04:04:50.550197+00:00",
+  "scope": "Explain the active-versus-fresh module undefined-symbol delta using a read-only ELF section/symbol/relocation inspection.",
+  "identities": {
+    "stock_sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c",
+    "active_candidate_sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec",
+    "fresh_candidate_sha256": "915b27b135bdcbe1e61d6ba889fd4985e8562a652d23a773ef1faebee8496e58",
+    "current_source_sha256": "c3da1145c1f06fe42e7bf00972ff1bcab552ac58fb5c3f9919f018123827483b"
+  },
+  "result": {
+    "undefined_symbols_match_stock": false,
+    "missing_from_fresh_candidate": [
+      "devm_kfree",
+      "devm_power_supply_register"
+    ],
+    "unexpected_in_fresh_candidate": [
+      "alarm_cancel",
+      "alt_cb_patch_nops",
+      "cancel_delayed_work_sync",
+      "destroy_workqueue",
+      "power_supply_register",
+      "power_supply_unregister",
+      "zte_misc_unregister_callback"
+    ],
+    "classification": "The six lifecycle imports reflect explicit cleanup/teardown hardening; alt_cb_patch_nops is referenced by relocations in .rela.altinstructions emitted for the atomic runtime gate. This is intentional KMI divergence, not stock ABI parity."
+  },
+  "provenance": {
+    "inspection": "Read-only llvm-readelf output captured in symbol_surface_inspection.txt from the canonical Docker toolchain.",
+    "tool_path": "/work/toolchains/clang-r536225/bin/llvm-readelf",
+    "tool_version": "not recorded in the captured output",
+    "prior_docker_build_attestation": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/attestation.json",
+      "sha256": "0913f00f5675ac3d7d9a5d121b824b4d4b723a78d3a9c5b03b6f76b72bd995b1",
+      "two_clean_builds_same_candidate": true
+    },
+    "source_sync_applied": {
+      "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/assembly_relocation_rebind_20261111/source_sync_applied.json",
+      "sha256": "5a4d466d15b740f3d38e271e72be3f102f4b270c923dc90585b6e5f62e9f515e",
+      "passed": true,
+      "docker_curated_manifest_sha256": "9185d2e3939dca09c5dc3a30794eab43b3415849f936f31a08b8aadf602d8f2f"
+    }
+  },
+  "artifacts": {
+    "records": [
+      {
+        "path": "reference_modules/stock/zte_charger_policy.ko",
+        "size_bytes": 68872,
+        "sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.ko",
+        "size_bytes": 331368,
+        "sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/fresh_candidate_unpromoted.ko",
+        "size_bytes": 337168,
+        "sha256": "915b27b135bdcbe1e61d6ba889fd4985e8562a652d23a773ef1faebee8496e58"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c",
+        "size_bytes": 65560,
+        "sha256": "c3da1145c1f06fe42e7bf00972ff1bcab552ac58fb5c3f9919f018123827483b"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/demo_sts_call_relocation_20261110/attestation.json",
+        "size_bytes": 14057,
+        "sha256": "0913f00f5675ac3d7d9a5d121b824b4d4b723a78d3a9c5b03b6f76b72bd995b1"
+      },
+      {
+        "path": "workspace_tools/reconstruction_pipeline/audit_module_abi_surface.py",
+        "size_bytes": 11220,
+        "sha256": "6a90462184015f10553db84cadf65df8264cfff1e822e9b49a18b2187c398d50"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/kmi_delta_root_cause_20261111/symbol_surface_inspection.txt",
+        "size_bytes": 2474,
+        "sha256": "3eddb087c0cc14f419253d2d43fd695d3f19ed81e4f70b55c376f1973b2896e4"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/kmi_delta_root_cause_20261111/README.md",
+        "size_bytes": 1747,
+        "sha256": "0e8093965cef18e235cd819095f168ec87dbef41f603dc070686d58ff236837c"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/zte_charger_policy/reconstruction_map.json",
+        "size_bytes": 99964,
+        "sha256": "63adebbd50010a1ac062188d001aefa9761c9cf175705bab70c277aa06d7c3b1"
+      },
+      {
+        "path": "kernel_development/drivers/reconstructed/zte_charger_policy/STATUS.md",
+        "size_bytes": 17164,
+        "sha256": "11ec6ac38d363ae8e6d6c347690d830c64a3e2c17476594a6a19a60b6804ccfa"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/assembly_relocation_rebind_20261111/source_sync_dryrun.json",
+        "size_bytes": 27704,
+        "sha256": "f887316d166cc15947d003ae617786ebb1318344d169218fb73b2c1b511a94ad"
+      },
+      {
+        "path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/assembly_relocation_rebind_20261111/source_sync_applied.json",
+        "size_bytes": 27696,
+        "sha256": "5a4d466d15b740f3d38e271e72be3f102f4b270c923dc90585b6e5f62e9f515e"
+      }
+    ]
+  },
+  "limitations": [
+    "The import delta remains a whole-module ABI/KMI mismatch against stock.",
+    "This report does not authorize changing the hardening or promoting the candidate.",
+    "No device loading or runtime test was performed."
+  ]
+}
