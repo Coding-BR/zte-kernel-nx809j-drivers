@@ -345,15 +345,21 @@
         "exact 67-instruction/268-byte ELF body",
         "Docker hard protocol CORE_GATES_PASS",
         "KCFI type ID 0x7bff871d matched",
-        "host harness passed reproducibly"
+        "host harness passed reproducibly",
+        "Serialize the nl_sk borrow and netlink_unicast call with netlink_exit so sock_release cannot overlap an active sender.",
+        "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_netlink_socket_20261111/audit.json"
       ],
       "source_file": "zte_fingerprint.c",
       "source_function": "sendnlmsg",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "candidate_hardening_deviation",
       "stock_entry": "00101f1c",
       "stock_function": "sendnlmsg",
       "stock_pseudocode": "decompiled/0016_00101f1c_sendnlmsg.c",
-      "attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/next016_zte_fingerprint_sendnlmsg_exact_v1"
+      "attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/next016_zte_fingerprint_sendnlmsg_exact_v1",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PENDING",
+      "review_disposition": "PENDING_INDEPENDENT_REVIEW",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_netlink_socket_20261111/audit.json"
     },
     {
       "evidence": [
@@ -361,30 +367,42 @@
         "exact 38-instruction/152-byte ELF body",
         "Docker hard protocol CORE_GATES_PASS",
         "KCFI type ID 0x6fbb3035 matched",
-        "host harness passed reproducibly"
+        "host harness passed reproducibly",
+        "Publish nl_sk while holding the same lifetime mutex used by sendnlmsg and netlink_exit.",
+        "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_netlink_socket_20261111/audit.json"
       ],
       "source_file": "zte_fingerprint.c",
       "source_function": "netlink_init",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "candidate_hardening_deviation",
       "stock_entry": "0010202c",
       "stock_function": "netlink_init",
       "stock_pseudocode": "decompiled/0017_0010202c_netlink_init.c",
-      "attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/next017_zte_fingerprint_netlink_init_exact_v1"
+      "attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/next017_zte_fingerprint_netlink_init_exact_v1",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PENDING",
+      "review_disposition": "PENDING_INDEPENDENT_REVIEW",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_netlink_socket_20261111/audit.json"
     },
     {
       "evidence": [
         "Ghidra stock pseudocode/P-Code reviewed",
         "exact 55-instruction/220-byte ELF body",
         "Docker hard protocol CORE_GATES_PASS",
-        "host harness passed reproducibly"
+        "host harness passed reproducibly",
+        "Use READ_ONCE/WRITE_ONCE for pid shared between the netlink receive callback and sendnlmsg.",
+        "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_netlink_socket_20261111/audit.json"
       ],
       "source_file": "zte_fingerprint.c",
       "source_function": "nl_data_ready",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "candidate_hardening_deviation",
       "stock_entry": "001020c8",
       "stock_function": "nl_data_ready",
       "stock_pseudocode": "decompiled/0018_001020c8_nl_data_ready.c",
-      "attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/next018_zte_fingerprint_nl_data_ready_exact_v1"
+      "attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/next018_zte_fingerprint_nl_data_ready_exact_v1",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PENDING",
+      "review_disposition": "PENDING_INDEPENDENT_REVIEW",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_netlink_socket_20261111/audit.json"
     },
     {
       "evidence": [
@@ -392,15 +410,21 @@
         "exact 16-instruction/64-byte ELF body",
         "Docker hard protocol CORE_GATES_PASS",
         "KCFI type ID 0xe5c47d60 matched",
-        "host harness passed reproducibly"
+        "host harness passed reproducibly",
+        "Detach and release nl_sk while holding the lifetime mutex; an active sender must finish before sock_release.",
+        "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_netlink_socket_20261111/audit.json"
       ],
       "source_file": "zte_fingerprint.c",
       "source_function": "netlink_exit",
-      "status": "PROMOTED_OFFLINE_EXACT",
+      "status": "candidate_hardening_deviation",
       "stock_entry": "001021a8",
       "stock_function": "netlink_exit",
       "stock_pseudocode": "decompiled/0019_001021a8_netlink_exit.c",
-      "attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/next019_zte_fingerprint_netlink_exit_exact_v1"
+      "attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/next019_zte_fingerprint_netlink_exit_exact_v1",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PENDING",
+      "review_disposition": "PENDING_INDEPENDENT_REVIEW",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_netlink_socket_20261111/audit.json"
     },
     {
       "evidence": [

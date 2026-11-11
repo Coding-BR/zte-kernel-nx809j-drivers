@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-11T15:51:18Z",
+  "driver": "zte_fingerprint",
+  "status": "CANDIDATE_HARDENING_BUILD_REPRODUCED_REVIEW_PENDING",
+  "scope": {
+    "source_file": "kernel_development/drivers/reconstructed/zte_fingerprint/zte_fingerprint.c",
+    "source_sha256": "44442e7c928ff02a32521ee62297fe51e832214ad3678505adc2acea7a9161d4",
+    "reconstruction_map": "kernel_development/drivers/reconstructed/zte_fingerprint/reconstruction_map.json",
+    "reconstruction_map_sha256": "dc58c6f9e65dab86e24d2680e09e3e7c57a8fcc563551a4e2d37d562f373c788",
+    "functions": [
+      "sendnlmsg",
+      "netlink_init",
+      "nl_data_ready",
+      "netlink_exit"
+    ]
+  },
+  "change": {
+    "summary": "Serialize Netlink socket publication, use, and release so netlink_kernel_release cannot overlap an active netlink_unicast call.",
+    "details": [
+      "A static mutex protects nl_sk. sendnlmsg holds it from the pointer/PID check through netlink_unicast and unlocks on every return path.",
+      "netlink_init publishes nl_sk while holding the mutex.",
+      "netlink_exit detaches nl_sk and calls netlink_kernel_release while holding the mutex, after existing senders have completed.",
+      "nl_data_ready uses READ_ONCE/WRITE_ONCE for pid shared with sendnlmsg."
+    ],
+    "unresolved_related_risk": "This does not drain a panel callback already selected by the stock panel_event_notifier provider. A callback can still be executing module text after unregister returns; see lifetime_sync_panel_callback_race_20261111/audit.json."
+  },
+  "target_kernel_evidence": {
+    "kernel_source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "docker_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "netlink_api_source": {
+      "path_in_source_volume": "kernel/kernel_platform/common/net/netlink/af_netlink.c",
+      "sha256": "60a65ec8f9699d7894de72a1cff4a47f4062d3803565b363c4d22c685b2663f2",
+      "observed": [
+        "netlink_unicast uses the supplied sender socket in sock_sndtimeo and netlink_getsockbyportid.",
+        "netlink_kernel_release calls sock_release(sk->sk_socket)."
+      ]
+    },
+    "call_context": {
+      "irq_sender": "gf_irq is registered as the threaded handler with request_threaded_irq(irq, NULL, gf_irq, IRQF_TRIGGER_RISING | IRQF_ONESHOT, ...).",
+      "display_sender": {
+        "sde_kms_source_sha256": "a1299405f16e069262bb3ce563eff21165b6e3c58f6144876b7c4fd6c1968dad",
+        "msm_atomic_source_sha256": "2a24c5add51c909e582e73cea97d32d4c236e2d2a7b2db9cff2fb18fe1e7b523",
+        "observed": "The display callback is reached through _sde_kms_drm_check_dpms from the MSM DRM commit path; complete_commit executes in the commit kthread callback, with a synchronous fallback in commit context. These call paths support taking a mutex."
+      }
+    }
+  },
+  "docker_build": {
+    "workspace": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia",
+    "curated_source_sync": "PASS",
+    "curated_sync_report": "curated_sync_source.json",
+    "clean_rebuilds": 2,
+    "kernel_source_identity": "MATCH",
+    "module_size_bytes": 397880,
+    "module_sha256_cycle_1": "3cd6ed3765cb159e2aab87ea0ed48f72b4e5dd4319ba4cea5362ff57e39e7d34",
+    "module_sha256_cycle_2": "3cd6ed3765cb159e2aab87ea0ed48f72b4e5dd4319ba4cea5362ff57e39e7d34",
+    "reproducible": true,
+    "fresh_module_promoted": false,
+    "curated_module_sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21"
+  },
+  "assembly_comparison": {
+    "stock_directory": "../lifetime_sync_hardening_20261111/stock_assembly_fresh",
+    "candidate_directory": "candidate_assembly",
+    "report": "assembly_comparison.json",
+    "exact_match": false,
+    "interpretation": "The comparison correctly reports intentional assembly deviations caused by the new locking and access primitives. This is not stock-exact reconstruction and does not establish semantic correctness; the mappings remain pending independent review.",
+    "functions": [
+      {"name": "sendnlmsg", "stock_instructions": 67, "candidate_instructions": 75, "stock_bytes": 268, "candidate_bytes": 300},
+      {"name": "netlink_init", "stock_instructions": 38, "candidate_instructions": 47, "stock_bytes": 152, "candidate_bytes": 188},
+      {"name": "nl_data_ready", "stock_instructions": 55, "candidate_instructions": 56, "stock_bytes": 220, "candidate_bytes": 224},
+      {"name": "netlink_exit", "stock_instructions": 16, "candidate_instructions": 20, "stock_bytes": 64, "candidate_bytes": 80}
+    ]
+  },
+  "full_validator": {
+    "report": "validator.json",
+    "status": "incomplete_or_failed",
+    "static_verified": false,
+    "hardware_verified": false,
+    "passed_checks": [
+      "reproducible_build",
+      "kernel_source_identity",
+      "function_traceability",
+      "candidate_modinfo_matches_fresh",
+      "vermagic_accepted"
+    ],
+    "failed_or_pending_checks": [
+      "candidate_runtime_content_matches_fresh: curated .ko is stale",
+      "candidate_runtime_section_layout_matches_fresh: curated .ko is stale",
+      "undefined_symbols_match: existing import parity mismatch",
+      "mapping_review: 15 hardening mappings still require independent review"
+    ],
+    "review_disposition": "PENDING_INDEPENDENT_REVIEW"
+  },
+  "not_run": [
+    "Host harness",
+    "Smartphone module load, unbind, unload, or lifecycle test"
+  ],
+  "next_gates": [
+    "Independent review of the four Netlink hardening deviations and the other pending map deviations.",
+    "Resolve the separate stock panel notifier callback quiescence race before claiming safe unload.",
+    "Resolve strict module import/content/layout parity before any promotion.",
+    "Run supervised dynamic validation on the target phone after the static gates are resolved."
+  ]
+}

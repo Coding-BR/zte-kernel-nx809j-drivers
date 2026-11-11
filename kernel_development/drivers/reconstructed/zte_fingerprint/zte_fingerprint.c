@@ -125,6 +125,7 @@ static_assert(offsetof(struct gf_device, screen_state_wq) == 160);
 /* Global static device reference (since original uses a fixed instance layout) */
 static struct gf_device gf;
 static struct sock *nl_sk;
+static DEFINE_MUTEX(netlink_lock);
 
 static noinline void gf_probe_list_del(struct list_head *entry) __asm__("list_del");
 
@@ -144,20 +145,21 @@ static void nl_data_ready(struct sk_buff *skb)
 	skb_get(skb);
 	if (skb->len >= nlmsg_total_size(0)) {
 	#ifdef ZTE_FINGERPRINT_HOST_TEST
-		pid = NETLINK_CB(skb).portid;
+		WRITE_ONCE(pid, NETLINK_CB(skb).portid);
 	#else
-		pid = *(u32 *)(*(void **)((char *)skb + 0xe0) + 0xc);
+		WRITE_ONCE(pid, *(u32 *)(*(void **)((char *)skb + 0xe0) + 0xc));
 	#endif
-		printk("\0016%s: gf_kernel, update pid=%d\n", __func__, pid);
+		printk("\0016%s: gf_kernel, update pid=%d\n", __func__, READ_ONCE(pid));
 		sk_skb_reason_drop(NULL, skb, 2);
 	}
-	printk("\0016%s: gf_kernel, current pid=%d\n", __func__, pid);
+	printk("\0016%s: gf_kernel, current pid=%d\n", __func__, READ_ONCE(pid));
 }
 
 noinline int sendnlmsg(char *msg)
 {
 	struct nlmsghdr *nlh;
 	int ret = -ENODEV;
+	u32 destination_pid;
 	#ifndef ZTE_FINGERPRINT_HOST_TEST
 	register char *event_msg __asm__("x22") = msg;
 	register struct sk_buff *event_skb __asm__("x19");
@@ -166,17 +168,25 @@ noinline int sendnlmsg(char *msg)
 	struct sk_buff *event_skb;
 	#endif
 
-	if (!event_msg || !nl_sk || !pid)
+	if (!event_msg)
 		return ret;
 
+	mutex_lock(&netlink_lock);
+	destination_pid = READ_ONCE(pid);
+	if (!nl_sk || !destination_pid)
+		goto out_unlock;
+
 	event_skb = alloc_skb(NLMSG_SPACE(32), GFP_ATOMIC);
-	if (!event_skb)
-		return -ENOMEM;
+	if (!event_skb) {
+		ret = -ENOMEM;
+		goto out_unlock;
+	}
 
 	nlh = nlmsg_put(event_skb, 0, 0, 0, 32, 0);
 	if (!nlh) {
 		kfree_skb(event_skb);
-		return -EMSGSIZE;
+		ret = -EMSGSIZE;
+		goto out_unlock;
 	}
 
 	*(u64 *)((char *)event_skb + 0x34) = 0;
@@ -185,14 +195,18 @@ noinline int sendnlmsg(char *msg)
 	pr_info("gf_dev-gf_kernel, send message: %d\n", (int)*event_msg);
 	#ifndef ZTE_FINGERPRINT_HOST_TEST
 	register int event_ret __asm__("w19");
-	event_ret = netlink_unicast(nl_sk, event_skb, pid, MSG_DONTWAIT);
-	pr_info("gf_dev-gf_kernel, pid=%d, ret=%d\n", pid, event_ret);
-	return event_ret & (event_ret >> 31);
+	event_ret = netlink_unicast(nl_sk, event_skb, destination_pid, MSG_DONTWAIT);
+	pr_info("gf_dev-gf_kernel, pid=%d, ret=%d\n", destination_pid, event_ret);
+	ret = event_ret & (event_ret >> 31);
 	#else
-	ret = netlink_unicast(nl_sk, event_skb, pid, MSG_DONTWAIT);
-	pr_info("gf_dev-gf_kernel, pid=%d, ret=%d\n", pid, ret);
-	return ret & (ret >> 31);
+	ret = netlink_unicast(nl_sk, event_skb, destination_pid, MSG_DONTWAIT);
+	pr_info("gf_dev-gf_kernel, pid=%d, ret=%d\n", destination_pid, ret);
+	ret = ret & (ret >> 31);
 	#endif
+
+out_unlock:
+	mutex_unlock(&netlink_lock);
+	return ret;
 }
 
 noinline int netlink_init(void)
@@ -202,21 +216,28 @@ noinline int netlink_init(void)
 	memset(&cfg, 0, sizeof(cfg));
 	cfg.input = nl_data_ready;
 
+	mutex_lock(&netlink_lock);
 	nl_sk = netlink_kernel_create(&init_net, GF_NETLINK_PROTO, &cfg);
 	if (!nl_sk) {
+		mutex_unlock(&netlink_lock);
 		printk("\0013create netlink socket error\n");
 		return 1;
 	}
+	mutex_unlock(&netlink_lock);
 
 	return 0;
 }
 
 noinline void netlink_exit(void)
 {
-	if (nl_sk) {
-		netlink_kernel_release(nl_sk);
-		nl_sk = NULL;
-	}
+	struct sock *sk;
+
+	mutex_lock(&netlink_lock);
+	sk = nl_sk;
+	nl_sk = NULL;
+	if (sk)
+		netlink_kernel_release(sk);
+	mutex_unlock(&netlink_lock);
 	printk("\0016self module exited\n");
 }
 
