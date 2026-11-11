@@ -21,7 +21,6 @@ extern ssize_t rdbg_read(struct file *filp, char __user *buffer,
 			size_t count, loff_t *position);
 extern ssize_t rdbg_write(struct file *filp, const char __user *buffer,
 			 size_t count, loff_t *position);
-
 struct rdbg_module_storage g_rdbg_instance __used = {
 	.count = 16,
 };
@@ -57,6 +56,7 @@ const struct rdbg_proc_info_layout proc_info[16] __used = {
 
 struct platform_driver rdbg_driver __used = {
 	.probe = rdbg_probe,
+	.remove = rdbg_remove,
 	.driver = {
 		.name = "rdbg",
 		.of_match_table = rdbg_match_table,

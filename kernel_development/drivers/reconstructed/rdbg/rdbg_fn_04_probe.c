@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: GPL-2.0-only
+#include <linux/device.h>
 #include <linux/err.h>
 #include <linux/errno.h>
 #include <linux/kernel.h>
 #include <linux/of.h>
 #include <linux/of_device.h>
 #include <linux/of_irq.h>
+#include <linux/of_platform.h>
 #include <linux/platform_device.h>
 #include <linux/slab.h>
 #include <linux/soc/qcom/smem_state.h>
@@ -16,6 +18,55 @@ static const char rdbg_probe_format_out[] __used
 	__attribute__((section(".rodata.str1.1"))) = "%s%d-out";
 static const char rdbg_probe_format_in[] __used
 	__attribute__((section(".rodata.str1.1"))) = "%s%d-in";
+
+static int rdbg_link_smem_provider(struct platform_device *pdev)
+{
+	struct of_phandle_args args;
+	struct device_node *provider_node;
+	struct platform_device *provider_pdev;
+	struct device_link *link;
+	int index;
+	int ret;
+
+	index = of_property_match_string(pdev->dev.of_node,
+					 "qcom,smem-state-names",
+					 "rdbg-smp2p-out");
+	if (index < 0)
+		return index;
+
+	ret = of_parse_phandle_with_args(pdev->dev.of_node,
+					 "qcom,smem-states",
+					 "#qcom,smem-state-cells",
+					 index, &args);
+	if (ret)
+		return ret;
+
+	/* SMP2P registers each state on a child node of its platform device. */
+	provider_node = of_get_parent(args.np);
+	of_node_put(args.np);
+	if (!provider_node)
+		return -EINVAL;
+
+	provider_pdev = of_find_device_by_node(provider_node);
+	of_node_put(provider_node);
+	if (!provider_pdev)
+		return -EPROBE_DEFER;
+
+	link = device_link_add(&pdev->dev, &provider_pdev->dev,
+			       DL_FLAG_AUTOREMOVE_CONSUMER);
+	put_device(&provider_pdev->dev);
+	if (!link) {
+		dev_err(&pdev->dev, "failed to link SMEM state provider\n");
+		return -EINVAL;
+	}
+
+	/* A late link must not let probe race a provider removal already in flight. */
+	if (READ_ONCE(link->status) == DL_STATE_SUPPLIER_UNBIND ||
+	    READ_ONCE(link->status) == DL_STATE_DORMANT)
+		return -EPROBE_DEFER;
+
+	return 0;
+}
 
 int rdbg_probe(struct platform_device *pdev)
 {
@@ -96,6 +147,10 @@ int rdbg_probe(struct platform_device *pdev)
 				asm volatile("" : "+r"(gpio_ptr));
 				struct qcom_smem_state *state;
 				struct qcom_smem_state *old_state;
+				err = rdbg_link_smem_provider(pdev);
+				if (err)
+					goto cleanup;
+
 				mutex_lock(&rdbg_smem_state_lock);
 				state = qcom_smem_state_get(
 					dev, "rdbg-smp2p-out",
@@ -197,4 +252,43 @@ output_error:
 		 "brk #1"
 		 : : : : cleanup);
 	__builtin_unreachable();
+}
+
+void rdbg_remove(struct platform_device *pdev)
+{
+	struct rdbg_device_layout *device =
+		(struct rdbg_device_layout *)&g_rdbg_instance;
+	struct rdbg_data_layout *rdbgdata;
+	struct qcom_smem_state *state;
+	char node_name[64];
+	int index;
+	int ret;
+
+	if (!device->rdbg_data ||
+	    !of_find_property(pdev->dev.of_node, "qcom,smem-states", NULL))
+		return;
+
+	for (index = 0; index < device->num_devices; index++) {
+		if (!proc_info[index].name)
+			continue;
+
+		ret = snprintf(node_name, sizeof(node_name),
+			       "qcom,smp2p-interrupt-rdbg-%d-out", index);
+		if (ret < 0 || ret >= (int)sizeof(node_name))
+			continue;
+		if (!of_device_is_compatible(pdev->dev.of_node, node_name))
+			continue;
+
+		rdbgdata = &device->rdbg_data[index];
+		mutex_lock(&rdbg_smem_state_lock);
+		state = rdbgdata->out.smem_state;
+		rdbgdata->out.smem_state = NULL;
+		rdbgdata->gpio_out_offset = 0;
+		memset(rdbgdata->state_registers, 0,
+		       sizeof(rdbgdata->state_registers));
+		if (!IS_ERR_OR_NULL(state))
+			qcom_smem_state_put(state);
+		mutex_unlock(&rdbg_smem_state_lock);
+		return;
+	}
 }

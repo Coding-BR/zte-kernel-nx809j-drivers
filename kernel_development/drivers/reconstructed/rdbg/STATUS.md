@@ -2,15 +2,15 @@
 
 Status: HARDENED_CANDIDATE_OFFLINE. Runtime and hardware validation remain incomplete.
 
-## Current candidate: SMEM state shadow recovery - 2026-11-11
+## Current candidate: SMEM provider device-link lifetime - 2026-11-11
 
-- Candidate module SHA-256: `aab63c927d0865e58360321046d71457c712c85d3d67af95a91998c63370fb26` (791,752 bytes). Two clean builds in the canonical Docker environment produced identical bytes.
-- `rdbg_probe` resets the software SMEM shadow and cursor when it receives a different state handle; `rdbg_write` only advances that shadow after a successful provider update. Both are explicitly `candidate_hardening_deviation` mappings.
-- Core gates passed for reproducible Docker build, input/map identity, Joern scope/slice, and KCFI. Strict assembly/relocation parity failed. Strict Ghidra comparison also failed for `rdbg_probe` and `rdbg_write` on body size, normalized C, and P-Code operation shape. The core report is `reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/protocol_core_bootstrap_final/hard_protocol_report.json`; promotion is false.
-- The Ghidra export identity matches the module, but semantic equivalence is not established; see the strict per-function report linked in the batch README.
-- Pinned source review found that the consumer lock does not protect against SMP2P provider unregister/removal around `qcom_smem_state_update_bits()`. A provider remove-vs-update lifetime window remains unresolved; see `reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/kernel_provider_lifetime_excerpt.md`.
-- This remains an offline hardened candidate, not a completed reconstruction. Runtime provider rebind, open-file behavior, remote delivery, module load, and phone hardware remain unverified; the driver still lacks a per-device `.remove` callback.
-- Full batch record: `reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/README.md`.
+- Candidate module SHA-256: `30a548c904a8cb8e6ea53966c427a9276a4727b8958017cf9e86a854342d23a5` (797,936 bytes). Two clean canonical Docker builds match byte-for-byte using target `clang-r536225`.
+- `rdbg_probe` creates a managed device link to the qcom_smp2p provider before `qcom_smem_state_get()`. `rdbg_init` registers a new `.remove` callback that clears and puts the output state handle under `rdbg_smem_state_lock` before provider removal.
+- Core protocol: Docker reproducibility, input/map identity, Joern scope/slice, and KCFI passed. Relocation-aware assembly failed. Fresh Ghidra normalized-C and P-Code comparisons were not run because this job had no candidate export; the report’s false fields mean not measured. No promotion or stock-equivalence claim is made.
+- Final validator confirms the fresh candidate matches the curated module byte-for-byte; stock/Ghidra identity, target kernel identity, module metadata, and traceability pass. Overall status is still incomplete because independent review for seven hardening deviations is pending and strict undefined-symbol parity differs. Report: `reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/docker_validation_final_public_evidence.json`.
+- Pinned-kernel source evidence confirms `qcom,smem-states` is not covered by `of_supplier_bindings[]`, and supplier unbind waits for active managed-link consumers to unbind before provider removal.
+- Remaining: input IRQ and open-file lifetime across unbind, runtime rebind/failure-injection, phone validation, and independent review. Overall status remains `HARDENED_CANDIDATE_OFFLINE`; the complete reconstruction is not verified.
+- Full batch record: `reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/README.md`.
 
 ## Previous candidate: SMEM error-pointer handling in open - 2026-11-11 (SHA 3090b8ef...)
 

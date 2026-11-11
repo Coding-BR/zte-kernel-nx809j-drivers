@@ -23,7 +23,9 @@ extern struct mutex rdbg_smem_state_lock;
 extern struct mutex rdbg_input_irq_lock;
 
 struct platform_driver;
+struct platform_device;
 extern struct platform_driver rdbg_driver;
+void rdbg_remove(struct platform_device *pdev);
 
 struct rdbg_proc_info_layout {
 	const char *name;

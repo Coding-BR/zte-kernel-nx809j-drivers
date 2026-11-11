@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "driver": "rdbg",
-  "candidate_sha256": "aab63c927d0865e58360321046d71457c712c85d3d67af95a91998c63370fb26",
+  "candidate_sha256": "30a548c904a8cb8e6ea53966c427a9276a4727b8958017cf9e86a854342d23a5",
   "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
   "reconstruction_mode": "partial_c_microtasks",
   "mappings": [
@@ -42,7 +42,7 @@
       "source_file": "rdbg_fn_01_cleanup_module.c",
       "source_function": "cleanup_module",
       "status": "candidate_hardening_deviation",
-      "mapping_note": "Intentional lifetime hardening: unregister the platform driver before destroying shared client storage, release the current module-owned qcom_smem_state handle for each slot under rdbg_smem_state_lock, and release the full character-device range reserved at init (stock passes count 1 for the 16-minor allocation). A successful reprobe replaces the current handle under the same lock and puts the previous reference, so repeated binds do not leak handles. No per-device remove callback is present; the provider handle is retained to module exit for the module-wide character device. Runtime unbind/rebind and open-file behavior remain unverified.",
+      "mapping_note": "Intentional lifetime hardening. Module exit unregisters the platform driver before destroying shared client storage, so the registered per-device .remove callback runs for bound output consumers and clears/puts their SMEM state handles under rdbg_smem_state_lock. A final guarded sweep releases any remaining module-owned handles, and cleanup releases the full character-device range reserved at init. Runtime unbind/rebind, active input IRQs, and open-file behavior remain unverified.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0007_00101974_cleanup_module.jsonl",
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0007_cleanup_module_00101974.asm",
@@ -83,12 +83,16 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/kcfi_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/abi_surface.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/docker_validation_final.json",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/candidate_assembly/manifest.json"
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/candidate_assembly/manifest.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/kernel_provider_device_link_evidence.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/docker_validation_build_clangr536225.json"
       ],
       "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
       "independent_review": "PENDING",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/review.json"
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/review.json"
     },
     {
       "stock_function": "rdbg_release",
@@ -217,13 +221,17 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/README.md",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/kernel_provider_lifetime_excerpt.md",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/ghidra_semantic_comparison.json",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/protocol_core_bootstrap_final/hard_protocol_report.json"
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_update_recovery_20261111/protocol_core_bootstrap_final/hard_protocol_report.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/kernel_provider_device_link_evidence.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/docker_validation_build_clangr536225.json"
       ],
-      "mapping_note": "Declared hardening deviation: serializes SMEM lookup, state-handle publication, replacement put, and paired output state under rdbg_smem_state_lock. When a successful lookup returns a different handle, resets gpio_out_offset and the 32-word software shadow to match the freshly initialized provider item. Strict assembly and Ghidra semantic comparisons fail for this changed body; no stock equivalence is claimed. The lock does not synchronize with SMP2P provider unregister/remove; qcom_smem_state_update_bits has no provider-call lifetime guard around ops.update_bits(priv). Provider unbind/rebind and active client behavior remain unverified.",
+      "mapping_note": "Declared hardening deviation. The probe serializes SMEM lookup, handle publication/replacement, and paired output shadow state under rdbg_smem_state_lock. Before qcom_smem_state_get(), it resolves the referenced state child to its qcom_smp2p parent platform device and adds a managed DL_FLAG_AUTOREMOVE_CONSUMER device link; this supplies provider-unbind ordering missing from the qcom,smem-states firmware binding table. The registered .remove callback clears the per-client handle and shadow under the same lock and puts the handle before provider teardown. Strict stock equivalence is not claimed. Runtime unbind/rebind is unverified; input IRQ/open-file lifetime remains unresolved.",
       "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
       "independent_review": "PENDING",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/review.json"
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/review.json"
     },
     {
       "stock_function": "rdbg_read",
@@ -339,7 +347,7 @@
       "source_file": "rdbg_fn_07_init_module.c",
       "source_function": "rdbg_init",
       "status": "candidate_hardening_deviation",
-      "mapping_note": "Intentional lifetime hardening: free clients if platform_driver_register fails; unregister a successfully registered platform driver on every subsequent init failure; release any qcom_smem_state_get() handles acquired by probe before freeing client storage. This differs from stock and requires failure-injection/runtime validation. Current handle cleanup on init failure uses rdbg_smem_state_lock, shared with probe and write, before freeing client storage.",
+      "mapping_note": "Intentional lifetime hardening. The probe/remove pair now has a managed device link to the qcom_smp2p provider; init_module registers rdbg_remove as the platform-driver .remove callback. Existing unwind paths free clients if platform_driver_register fails, unregister a registered driver on later init failure, and release any qcom_smem_state_get() handles acquired by probe before freeing client storage. This differs from stock and requires failure-injection and runtime validation. Input IRQ/open-file lifetime remains unverified.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0006_00101638_init_module.jsonl",
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0006_init_module_00101638.asm",
@@ -385,12 +393,16 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/kcfi_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/abi_surface.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/docker_validation_final.json",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/candidate_assembly/manifest.json"
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/candidate_assembly/manifest.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/kernel_provider_device_link_evidence.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/docker_validation_build_clangr536225.json"
       ],
       "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
       "independent_review": "PENDING",
       "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
-      "hardening_attestation": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_open_smem_errorptr_20261111/review.json"
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/review.json"
     }
   ],
   "unmapped_stock_functions": []

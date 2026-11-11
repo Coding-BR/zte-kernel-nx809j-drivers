@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0",
+  "driver": "rdbg",
+  "review_id": "rdbg_state_provider_devlink_20261111",
+  "candidate_sha256": "30a548c904a8cb8e6ea53966c427a9276a4727b8958017cf9e86a854342d23a5",
+  "candidate_size_bytes": 797936,
+  "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
+  "conclusion": "For the output SMEM state path, the candidate now creates a managed device link to the qcom_smp2p supplier before acquiring the state handle. Its .remove callback clears and puts that handle under the same mutex used across qcom_smem_state_update_bits(), so managed supplier unbind orders consumer teardown before provider removal. This is supported by pinned-kernel source and a reproducible Docker build; it is not runtime-verified or stock-exact.",
+  "findings": [
+    {
+      "id": "RDBG-SMEM-PROVIDER-LIFETIME-01",
+      "status": "ADDRESSED_STATICALLY",
+      "evidence": [
+        "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_04_probe.c",
+        "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_07_init_module.c",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/kernel_provider_device_link_evidence.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/candidate_remove_assembly/manifest.json"
+      ],
+      "description": "The qcom,smem-states property is absent from the pinned kernel of_supplier_bindings table. The output probe resolves the state child node to its parent qcom_smp2p platform device and adds a managed DL_FLAG_AUTOREMOVE_CONSUMER link before qcom_smem_state_get(). The .remove callback nulls the handle, clears shadow/cursor state, and puts the handle while holding rdbg_smem_state_lock. rdbg_write holds this same lock across the provider callback, so remove waits for an in-flight update."
+    },
+    {
+      "id": "RDBG-INPUT-IRQ-OPEN-FILE-LIFETIME-01",
+      "status": "OPEN",
+      "evidence": "kernel_development/drivers/reconstructed/rdbg/rdbg_fn_04_probe.c; kernel_development/drivers/reconstructed/rdbg/rdbg_fn_03_open.c; kernel_development/drivers/reconstructed/rdbg/rdbg_fn_02_release.c",
+      "description": "The new .remove callback handles the output SMEM state only. An open character-device file may retain a requested input IRQ; input IRQ/domain teardown and concurrent open-file operations across provider unbind are not yet drained or verified."
+    }
+  ],
+  "build": {
+    "report": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/docker_validation_build_clangr536225.json",
+    "canonical_docker_rebuilds": 2,
+    "passed": true,
+    "reproducible": true,
+    "candidate_sha256": "30a548c904a8cb8e6ea53966c427a9276a4727b8958017cf9e86a854342d23a5",
+    "kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "builder_image": "nubia-sm8850-kernel-builder:latest",
+    "clang_revision": "clang-r536225",
+    "final_validator_report": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/docker_validation_final_public_evidence.json",
+    "candidate_matches_fresh": true,
+    "candidate_matches_curated": true,
+    "static_identity_checks_passed": [
+      "aarch64_rel",
+      "alias_match",
+      "function_traceability",
+      "ghidra_export",
+      "kernel_source_identity",
+      "namespace_match",
+      "reproducible_build",
+      "vermagic_accepted"
+    ]
+  },
+  "core_protocol": {
+    "report": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_provider_devlink_20261111/provider_link_protocol_core_corrected/hard_protocol_report.json",
+    "status": "CORE_GATES_FAIL",
+    "promotion_authorized": false,
+    "passed_gates": [
+      "DOCKER_REPRODUCIBLE",
+      "INPUT_IDENTITY",
+      "JOERN_SCOPED",
+      "JOERN_SLICE",
+      "KCFI",
+      "MAP_IDENTITY"
+    ],
+    "failed_gates": [
+      "ASSEMBLY_RELOCATIONS"
+    ],
+    "strict_stock_equivalence": {
+      "assembly_relocations": false,
+      "ghidra_normalized_c": "NOT_RUN_NO_CANDIDATE_EXPORT",
+      "ghidra_pcode_shape": "NOT_RUN_NO_CANDIDATE_EXPORT"
+    },
+    "interpretation": "Expected strict failures for this declared hardening deviation; no equivalence or promotion is claimed.",
+    "ghidra_semantic_comparison": {
+      "status": "NOT_RUN",
+      "reason": "provider_link_job.json did not supply a candidate Ghidra export; hard_protocol_report.json input manifest records enabled=false and candidate_export=null. Its false C/P-Code flags do not represent failed comparisons."
+    }
+  },
+  "overall_validation": {
+    "status": "HARDENED_CANDIDATE_OFFLINE",
+    "static_verified": false,
+    "hardware_verified": false,
+    "independent_mapping_review": "PENDING",
+    "validator_status": "incomplete_or_failed",
+    "traceability_passed": true,
+    "candidate_matches_fresh": true,
+    "blocking_checks": [
+      "mapping_review",
+      "undefined_symbols_match"
+    ],
+    "candidate_only_imports": [
+      "__of_parse_phandle_with_args",
+      "__stack_chk_fail",
+      "device_link_add",
+      "free_irq",
+      "of_find_device_by_node",
+      "of_get_parent",
+      "of_property_match_string",
+      "platform_driver_unregister",
+      "put_device",
+      "qcom_smem_state_put"
+    ],
+    "mapping_review": "PENDING for seven hardening deviations"
+  },
+  "runtime": {
+    "adb_device_checked": false,
+    "module_load_test": false,
+    "provider_unbind_rebind_test": false,
+    "phone_hardware_test": false,
+    "host_harness_run": false
+  },
+  "limitations": [
+    "This change addresses the output SMEM provider callback lifetime only.",
+    "Input IRQ, active file descriptors, and operations across unbind/rebind remain unverified.",
+    "Strict assembly and Ghidra semantic parity do not pass; this is not a stock-exact reconstruction.",
+    "Runtime, failure injection, independent review, and phone validation remain pending.",
+    "The final validator confirms stock/Ghidra identity and two reproducible builds, but mapping_review and strict import parity remain incomplete.",
+    "A fresh Ghidra export of the current candidate was not available; normalized-C and P-Code comparisons were not run in this batch."
+  ]
+}
