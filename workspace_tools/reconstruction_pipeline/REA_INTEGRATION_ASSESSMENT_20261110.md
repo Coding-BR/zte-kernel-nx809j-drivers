@@ -44,6 +44,13 @@ O prompt obrigatório da pipeline estabelece que stock ELF, Assembly, relocation
 4. Comparar cada observação nova com o export Ghidra, Assembly/P-Code e relocations que já usamos. Registrar divergências e limitações; nenhuma saída do REA pode virar `PASS` automaticamente.
 5. Manter o piloto somente se reduzir trabalho manual ou revelar referências/fluxos que a exportação atual não cobre. A promoção continua dependente dos gates existentes, inclusive Docker.
 
+## Revalidação — 2026-11-11
+
+- O `HEAD` público de `morluto/rea` mudou desde a consulta inicial; `git ls-remote` agora retorna `40d9f1a5e84b6985811d20cff030a192c23bbb2c`. A documentação atual mantém os mesmos limites relevantes: Node `26.12.1+` e Ghidra no Windows em escopo experimental para PE/DOS/6502, sem cobrir o ELF relocatable AArch64 do NX809J.
+- Neste host, `node --version` continua em `v26.5.1` e não há comando `rea` no `PATH`. Não instalei o pacote nem rodei `rea setup`.
+- A documentação ADB atual confirma que REA não aceita linha de shell arbitrária, `input` ou `monkey`. Ela fornece leituras ADB delimitadas e algumas operações explícitas de pacote/arquivo; não executa `insmod`/`rmmod` nem testa diretamente o driver reconstruído no smartphone.
+- Conclusão mantida: não adicionar REA como dependência nem como gate obrigatório agora. Um piloto futuro pode valer como interface exploratória de funções no Ghidra se for executado em Linux com Node/Ghidra compatíveis, e somente se as saídas forem comparadas e vinculadas às identidades/hash já usados pela pipeline.
+
 ## Fontes
 
 - Repositório e revisão consultada: https://github.com/morluto/rea (HEAD observado: `e2585aa7ce31c37866ca46991ec656fdffaa3b90`).
