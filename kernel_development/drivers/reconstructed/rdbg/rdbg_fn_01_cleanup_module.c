@@ -33,6 +33,7 @@ void __exit cleanup_module(void)
 			struct rdbg_data_layout *rdbgdata =
 				&device->rdbg_data[slot];
 
+			mutex_lock(&rdbg_smem_state_lock);
 			if (!IS_ERR_OR_NULL(rdbgdata->out.smem_state)) {
 				struct qcom_smem_state *state =
 					rdbgdata->out.smem_state;
@@ -40,6 +41,7 @@ void __exit cleanup_module(void)
 				rdbgdata->out.smem_state = NULL;
 				qcom_smem_state_put(state);
 			}
+			mutex_unlock(&rdbg_smem_state_lock);
 		}
 	}
 

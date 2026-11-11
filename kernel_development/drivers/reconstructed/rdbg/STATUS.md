@@ -1,17 +1,16 @@
-# rdbg — lifetime-hardened offline candidate; validation incomplete
+# rdbg - lifetime-hardened offline candidate; validation incomplete
 
-Status: `HARDENED_CANDIDATE_OFFLINE`; runtime and hardware validation remain incomplete.
+Status: HARDENED_CANDIDATE_OFFLINE. Runtime and hardware validation remain incomplete.
 
-- The map covers all 8 stock functions: 2 remain `PROMOTED_OFFLINE_EXACT`; `init_module`, `cleanup_module`, `rdbg_open`, `rdbg_release`, `rdbg_read`, and `rdbg_write` are `HARDENED_STOCK_DEVIATION`.
-- Current candidate: SHA-256 `7accb38ca56d57cced2ddb9c8f829e01f80aca37a54ea53aab05ab189573d5a9`, 785760 bytes. Two clean builds in the canonical Docker workspace produced this same hash.
-- Static lifecycle fixes: unregister the platform driver before freeing shared client storage; release every retained `qcom_smem_state_get()` handle on module exit and init failure; unwind successful registration on every later init failure; free `clients` when driver registration fails; release all 16 character-device minors reserved by init.
-- Reader concurrency hardening remains: a per-open mutex serializes consumer dequeues, and the consumer queue uses `write_mutex` for free-node handoff. Stock `rdbg_data` tail bytes remain untouched because stock `rdbg_write` uses the SMP2P state shadow through offset `0x1c8`.
-- The generic offline audit remains `incomplete_or_failed`: the candidate adds target-exported `free_irq`, `platform_driver_unregister`, and `qcom_smem_state_put` imports, and the six hardened mappings lack independent second review. Traceability, target identity, and reproducible-build results are recorded in [`rdbg_smem_state_lifetime_20261110`](../../../../reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_smem_state_lifetime_20261110/README.md).
-- Outbound queue writes are statically ordered before the SMP2P kick by the pinned `qcom_smp2p_kick()` `wmb()`. Remote-side cache/coherency behavior and inbound ordering remain unverified. The driver still lacks a per-device `remove` callback, so unbind/rebind lifetime needs a separate review. No runtime module reload, failure-injection, KUnit, lockdep, KCSAN, or NX809J test was run. ADB reported no attached device; no module was loaded.
+## Current candidate and SMEM rebind fix - 2026-11-11
 
-## Per-device unbind/rebind review - 2026-11-11
-
-The pinned kernel review confirms that rdbg_driver has no remove callback. A successful re-probe calls non-devm qcom_smem_state_get() again and overwrites the stored pointer; the provider API increments a kref and requires a matching qcom_smem_state_put(), while module-exit cleanup can release only the currently reachable pointer. The earlier reference is therefore leaked after repeated successful binds. Probe also publishes the state bit/pointer without a lock shared with rdbg_write; the writer releases write_mutex before using that pair. This is a confirmed static lifetime/accounting risk and a possible concurrent access race, not a reproduced crash or data corruption. No UAF was established. Correct repair needs a per-device operation gate/drain and state ownership policy; preserve or deliberately update the 0x1c8 data stride. Evidence: reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_unbind_rebind_lifetime_review_20261111/README.md.
+- Candidate module SHA-256: 398986ee7560c4e61e1849583eb42efea1f37fd5d746003d0e202fd758853f35 (788,976 bytes). Two clean builds in the canonical Docker environment produced identical bytes.
+- The map covers all 8 stock functions: 1 remains PROMOTED_OFFLINE_EXACT; 7 are explicitly HARDENED_STOCK_DEVIATION. The new hardening changes the probe function and is not labeled stock-exact.
+- rdbg_probe now serializes qcom_smem_state_get, paired smem_bit/state publication, and replacement of an older handle with rdbg_smem_state_lock. On successful reprobe it puts the previous kref while holding the lock shared with rdbg_write. On lookup failure it preserves the old pointer and returns the error. Init-failure and module-exit puts use the same lock.
+- Static checks: KCFI type IDs match for 8/8 functions; assembly comparison leaves on_interrupt_from exact and records the other 7 functions as declared deviations. Target vermagic, module metadata, aliases, dependency set, exports, and all target CRC checks pass.
+- Strict import parity remains incomplete by exactly three candidate-only imports: free_irq, platform_driver_unregister, and qcom_smem_state_put. The new candidate adds no imports relative to the preceding hardened candidate.
+- The repository candidate and canonical Docker curated snapshot match. Docker kernel source commit: 3356b35306d35d5a480e3b63df1a9f065b5d9f55. Build, ABI, assembly, and KCFI evidence: reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/.
+- ADB reports no attached device. No phone test, module load, unbind/rebind, or host harness was run. This batch addresses the SMEM handle leak and paired-state publication race found on the prior candidate hash 7accb38c...; the module still has no per-device remove callback, and IRQ/open-file behavior across unbind/rebind remains unverified.
 
 The full lifecycle batch record is [`platform_driver_teardown_hardening_20261110/README.md`](../../../../reverse_engineering/validation/reconstructed/rdbg/attestation/platform_driver_teardown_hardening_20261110/README.md).
 

@@ -142,6 +142,7 @@ free_clients:
 			struct rdbg_data_layout *rdbgdata =
 				&rdbgdevice->rdbg_data[index];
 
+			mutex_lock(&rdbg_smem_state_lock);
 			if (!IS_ERR_OR_NULL(rdbgdata->out.smem_state)) {
 				struct qcom_smem_state *state =
 					rdbgdata->out.smem_state;
@@ -149,6 +150,7 @@ free_clients:
 				rdbgdata->out.smem_state = NULL;
 				qcom_smem_state_put(state);
 			}
+			mutex_unlock(&rdbg_smem_state_lock);
 		}
 	}
 	kfree(g_rdbg_instance.clients);

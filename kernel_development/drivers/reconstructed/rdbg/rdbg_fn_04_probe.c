@@ -94,26 +94,27 @@ int rdbg_probe(struct platform_device *pdev)
 				asm volatile("add %0, x28, x22"
 					     : "=r"(gpio_ptr));
 				asm volatile("" : "+r"(gpio_ptr));
-				void *state = qcom_smem_state_get(
+				struct qcom_smem_state *state;
+				struct qcom_smem_state *old_state;
+				mutex_lock(&rdbg_smem_state_lock);
+				state = qcom_smem_state_get(
 					dev, "rdbg-smp2p-out",
 					(unsigned int *)((char *)gpio_ptr - 8));
-
-				*(void **)gpio_ptr = state;
 				if (IS_ERR_OR_NULL(state)) {
+					mutex_unlock(&rdbg_smem_state_lock);
 					pr_err("rdbg: failed get smem state\n");
-					asm volatile("ldr %w0, [x28, x22]"
-						     : "=r"(err) : : "memory");
-					asm goto("cbz %w0, %l[input_name_stage]\n\t"
-						 "b %l[output_error_log]"
-						 : : "r"(err) : "cc"
-						 : input_name_stage, output_error_log);
-					__builtin_unreachable();
+					err = IS_ERR(state) ? PTR_ERR(state) : -ENODEV;
+					goto cleanup;
 				}
+
+				old_state = *(struct qcom_smem_state **)gpio_ptr;
+				*(struct qcom_smem_state **)gpio_ptr = state;
+				if (!IS_ERR_OR_NULL(old_state))
+					qcom_smem_state_put(old_state);
+				mutex_unlock(&rdbg_smem_state_lock);
 			}
 		}
 
-input_name_stage:
-		;
 		asm goto volatile("mov x0, %x[buffer]\n\t"
 				  "mov w1, #0x20\n\t"
 				  "adrp x2, %c[format]\n\t"
@@ -174,7 +175,6 @@ cleanup:
 	return err;
 output_error:
 	asm volatile("mov %w0, #-22" : "=r"(err) : : "memory");
-output_error_log:
 	pr_err("%s: register_smp2p_out failed for %s\n", __func__,
 	       proc_name);
 	asm goto("b %l[cleanup]\n\t"

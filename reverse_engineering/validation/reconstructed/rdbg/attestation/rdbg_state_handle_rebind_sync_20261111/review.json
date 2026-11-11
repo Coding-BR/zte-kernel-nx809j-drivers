@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "review_id": "rdbg_state_handle_rebind_sync_20261111",
+  "driver": "rdbg",
+  "result": "STATIC_FIX_VERIFIED_BUILD_REPRODUCIBLE_RUNTIME_UNVERIFIED",
+  "previous_candidate_sha256": "7accb38ca56d57cced2ddb9c8f829e01f80aca37a54ea53aab05ab189573d5a9",
+  "candidate_sha256": "398986ee7560c4e61e1849583eb42efea1f37fd5d746003d0e202fd758853f35",
+  "candidate_map_sha256": "a10782dbe1d319df7d6d2960449d74481791fd61c26f4f0ebd45e2868ce42748",
+  "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
+  "findings": [
+    {
+      "id": "RDBG-REBIND-01",
+      "resolution": "ADDRESSED_STATICALLY",
+      "description": "Successful reprobe obtains a provider handle, swaps it under rdbg_smem_state_lock, then puts the prior reference under the same lock. This keeps exactly one reference reachable per output slot across repeated successful rebinds; module exit puts the current reference once."
+    },
+    {
+      "id": "RDBG-REBIND-02",
+      "resolution": "ADDRESSED_STATICALLY",
+      "description": "qcom_smem_state_get writes smem_bit and rdbg_probe publishes smem_state while holding rdbg_smem_state_lock. send_interrupt_to_subsystem reads both fields and calls qcom_smem_state_update_bits under that lock, so the paired state cannot be observed mid-publication."
+    },
+    {
+      "id": "RDBG-REBIND-03",
+      "resolution": "FAILED_LOOKUP_PRESERVES_EXISTING_HANDLE",
+      "description": "An error return from qcom_smem_state_get no longer overwrites the stored pointer with an ERR_PTR; the probe returns the lookup error."
+    }
+  ],
+  "residuals": [
+    "There is still no per-device platform remove callback. The SMEM handle is retained as module-owned state until module exit to match the module-wide character-device lifetime; runtime behavior during device/provider unbind was not exercised.",
+    "Input IRQ identifier and already-open file behavior across platform unbind/rebind remain unverified.",
+    "No phone test, module load, unbind/rebind test, or host harness was run because adb devices -l showed no connected device."
+  ],
+  "validation": {
+    "two_clean_docker_builds_identical": true,
+    "assembly_checked_functions": 8,
+    "assembly_stock_exact_functions": [
+      "on_interrupt_from"
+    ],
+    "assembly_declared_deviations": [
+      "cleanup_module",
+      "init_module",
+      "rdbg_open",
+      "rdbg_probe",
+      "rdbg_read",
+      "rdbg_release",
+      "rdbg_write"
+    ],
+    "kcfi_passed_functions": 8,
+    "target_crc_missing": [],
+    "target_crc_mismatched": [],
+    "strict_import_parity": false,
+    "candidate_only_imports_vs_stock": [
+      "free_irq",
+      "platform_driver_unregister",
+      "qcom_smem_state_put"
+    ],
+    "no_new_imports_vs_previous_candidate": true,
+    "repo_and_curated_snapshot_match": true
+  }
+}

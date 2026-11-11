@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0",
+  "driver": "rdbg",
+  "batch": "rdbg_state_handle_rebind_sync_20261111",
+  "candidate_sha256": "398986ee7560c4e61e1849583eb42efea1f37fd5d746003d0e202fd758853f35",
+  "candidate_size_bytes": 788976,
+  "source_sha256": {
+    "rdbg_fn_01_cleanup_module.c": "80eee845865e395ac025ced94ea25f35fee4c03af083ed9706df802589a7cd7d",
+    "rdbg_fn_04_probe.c": "d3b85e6a7805a9cd2d222ba720ef60a7d8d3b189a55a57f3f6a84084038470ee",
+    "rdbg_fn_06_write.c": "43ae6a458ef226885a70fb24ea0a86bdec94a70ca491abe625f19c0f3ce1e79d",
+    "rdbg_fn_07_init_module.c": "8b3518de51869f98dae1b448f66f157babd0d18344ef7b67849f6110a7f3f2e7",
+    "rdbg_metadata.c": "0432ecfa2fa8571b673b07f66c0f7c83d6fe6bb954a247b19073c91244de7067",
+    "rdbg_reconstruction_layout.h": "2486d12bdd5ec3b2fffe2cccb9abfab22813ae9c32b238c1d815db69400f54b9"
+  },
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:latest",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "kernel_source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "kernel_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "toolchain_volume": "nubia_sm8850_kernel_toolchains",
+    "clang": "clang-r536225",
+    "build_command_template": [
+      "make",
+      "-C",
+      "/work/src/kernel/kernel_platform/common",
+      "O=/work/kernel_out",
+      "ARCH=arm64",
+      "LLVM=1",
+      "LLVM_IAS=1",
+      "M=/work/validation/rdbg/cycle_N",
+      "KCFLAGS=-ffile-prefix-map=/work/validation/rdbg/cycle_N=/rdbg -fdebug-prefix-map=/work/validation/rdbg/cycle_N=/rdbg",
+      "KBUILD_EXTRA_SYMBOLS=/work/validation/rdbg/cycle_N/vendor.Module.symvers",
+      "-j",
+      "8",
+      "modules"
+    ],
+    "cycles": [
+      {
+        "cycle": "cycle_1",
+        "returncode": 0,
+        "candidate_sha256": "398986ee7560c4e61e1849583eb42efea1f37fd5d746003d0e202fd758853f35"
+      },
+      {
+        "cycle": "cycle_2",
+        "returncode": 0,
+        "candidate_sha256": "398986ee7560c4e61e1849583eb42efea1f37fd5d746003d0e202fd758853f35"
+      }
+    ],
+    "reproducible": true,
+    "warnings": [
+      "BTF skipped because vmlinux is unavailable."
+    ]
+  },
+  "snapshot_sync": {
+    "repo_candidate_sha256": "398986ee7560c4e61e1849583eb42efea1f37fd5d746003d0e202fd758853f35",
+    "docker_curated_candidate_sha256": "398986ee7560c4e61e1849583eb42efea1f37fd5d746003d0e202fd758853f35",
+    "files_compared_byte_for_byte": [
+      "rdbg_fn_00_on_interrupt_from.c",
+      "rdbg_fn_01_cleanup_module.c",
+      "rdbg_fn_02_release.c",
+      "rdbg_fn_03_open.c",
+      "rdbg_fn_04_probe.c",
+      "rdbg_fn_05_read.c",
+      "rdbg_fn_06_write.c",
+      "rdbg_fn_07_init_module.c",
+      "rdbg_metadata.c",
+      "rdbg_reconstruction_layout.h",
+      "Makefile",
+      "reconstruction_map.json",
+      "STATUS.md",
+      "validation_plan.json",
+      "vendor.Module.symvers"
+    ],
+    "all_match": true
+  },
+  "assembly": {
+    "checked_functions": 8,
+    "passed": false,
+    "stock_exact_functions": [
+      "on_interrupt_from"
+    ],
+    "declared_deviation_functions": [
+      "cleanup_module",
+      "init_module",
+      "rdbg_open",
+      "rdbg_probe",
+      "rdbg_read",
+      "rdbg_release",
+      "rdbg_write"
+    ],
+    "comparison_path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/assembly_comparison.json"
+  },
+  "kcfi": {
+    "passed": true,
+    "functions": 8,
+    "comparison_path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/kcfi_comparison.json"
+  },
+  "abi": {
+    "passed": false,
+    "checks": {
+      "aliases_match": true,
+      "candidate_is_aarch64_relocatable": true,
+      "depends_set_match": true,
+      "exports_match": true,
+      "imports_match": false,
+      "metadata_match": true,
+      "target_modversions_match": true,
+      "target_vermagic_match": true
+    },
+    "unexpected_imports_vs_stock": [
+      "free_irq",
+      "platform_driver_unregister",
+      "qcom_smem_state_put"
+    ],
+    "missing_imports_vs_stock": [],
+    "target_missing_crc_symbols": [],
+    "target_mismatched_crc_symbols": [],
+    "report_path": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/abi_audit.json"
+  },
+  "runtime": {
+    "adb": "NONE_ATTACHED",
+    "phone_test": "NOT_RUN",
+    "unbind_rebind": "NOT_RUN",
+    "host_harness": "NOT_RUN"
+  }
+}

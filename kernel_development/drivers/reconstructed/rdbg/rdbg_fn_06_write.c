@@ -2,6 +2,7 @@
 #include <linux/bitops.h>
 #include <linux/bug.h>
 #include <linux/device.h>
+#include <linux/err.h>
 #include <linux/errno.h>
 #include <linux/fs.h>
 #include <linux/kernel.h>
@@ -156,19 +157,30 @@ bail:
 
 static void send_interrupt_to_subsystem(struct rdbg_data_layout *rdbgdata)
 {
-	unsigned int offset = rdbgdata->gpio_out_offset;
+	struct qcom_smem_state *state;
+	unsigned int offset;
 	unsigned int val;
 	u32 *registers = (u32 *)rdbgdata + 0x52;
 
+	mutex_lock(&rdbg_smem_state_lock);
+	state = rdbgdata->out.smem_state;
+	if (IS_ERR_OR_NULL(state)) {
+		mutex_unlock(&rdbg_smem_state_lock);
+		return;
+	}
+
+	offset = rdbgdata->gpio_out_offset;
 	if (offset > 0x1f) {
+		mutex_unlock(&rdbg_smem_state_lock);
 		asm volatile("brk #0x5512" ::: "memory");
 		__builtin_unreachable();
 	}
 	val = registers[offset] ^ BIT(rdbgdata->out.smem_bit + offset);
-	qcom_smem_state_update_bits(rdbgdata->out.smem_state,
+	qcom_smem_state_update_bits(state,
 				    BIT(rdbgdata->out.smem_bit + offset), val);
 	registers[offset] = val;
 	rdbgdata->gpio_out_offset = (offset + 1) % 32;
+	mutex_unlock(&rdbg_smem_state_lock);
 }
 
 ssize_t rdbg_write(struct file *filp, const char __user *buffer, size_t count,
