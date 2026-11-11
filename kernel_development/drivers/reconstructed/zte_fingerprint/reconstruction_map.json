@@ -3,7 +3,7 @@
   "driver": "zte_fingerprint",
   "candidate_sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21",
   "stock_sha256": "4ad15396f5c4fa1f6153dbb6e469476a9ec437daee186498dce94bc28f7d8675",
-  "generated_utc": "2026-11-11T14:39:00Z",
+  "generated_utc": "2026-11-11T15:05:26Z",
   "baseline_candidate_sha256": "8fbc779e8238738398d80e24902c88fbdbd9b1552c935f4d3f010f029ac34247",
   "candidate_state": "HARDENING_CANDIDATE_PENDING_INDEPENDENT_REVIEW",
   "mappings": [
@@ -237,7 +237,8 @@
         "attestation: reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/next012_zte_fingerprint_gf_remove_exact_v1",
         "Current hardening candidate differs from stock assembly for this function; stock equivalence is not established.",
         "Independent review of the declared hardening deviation is pending.",
-        "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_multi_fd_cleanup_20261111/hardening_deviations.json"
+        "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_multi_fd_cleanup_20261111/hardening_deviations.json",
+        "Stock panel_event_notifier.ko interleaving audit: current remove order drains registration work before unregister and frees IRQ before wakeup-source teardown, but stock unregister does not wait for a callback already copied by trigger; see reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_panel_callback_race_20261111/audit.json"
       ],
       "source_file": "zte_fingerprint.c",
       "source_function": "gf_remove",
@@ -261,7 +262,8 @@
         "attestation: reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/next013_zte_fingerprint_goodixfp_init_drm_notifier_exact_v1",
         "Current hardening candidate differs from stock assembly for this function; stock equivalence is not established.",
         "Independent review of the declared hardening deviation is pending.",
-        "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_multi_fd_cleanup_20261111/hardening_deviations.json"
+        "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_multi_fd_cleanup_20261111/hardening_deviations.json",
+        "Current worker/remove ordering closes late registration by draining delayed work before unregister; stock provider unregister still does not drain callbacks already copied by trigger; see reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_panel_callback_race_20261111/audit.json"
       ],
       "source_file": "zte_fingerprint.c",
       "source_function": "goodixfp_init_drm_notifier",
@@ -323,7 +325,8 @@
         "host harness passed reproducibly",
         "Current hardening candidate differs from stock assembly for this function; stock equivalence is not established.",
         "Independent review of the declared hardening deviation is pending.",
-        "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_multi_fd_cleanup_20261111/hardening_deviations.json"
+        "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_multi_fd_cleanup_20261111/hardening_deviations.json",
+        "READ_ONCE(removing/opened) is a gate, not callback quiescence: stock provider copies callback/client_data under mutex, unlocks, then calls; unregister can return while that callback is pending/in flight; see reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_panel_callback_race_20261111/audit.json"
       ],
       "source_file": "zte_fingerprint.c",
       "source_function": "goodix_fb_state_chg_callback",

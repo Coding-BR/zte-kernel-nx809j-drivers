@@ -1,0 +1,164 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-11T15:10:35Z",
+  "audit_id": "zte_fingerprint_panel_callback_lifetime_20261111",
+  "driver": "zte_fingerprint",
+  "classification": "UNRESOLVED_CALLBACK_QUIESCENCE_AT_STOCK_PROVIDER_BOUNDARY",
+  "confidence": {
+    "stock_module_static_interleaving": "HIGH",
+    "provider_active_on_current_phone": "UNCONFIRMED_ADB_DISCONNECTED"
+  },
+  "source_identity": {
+    "driver_source_path": "kernel_development/drivers/reconstructed/zte_fingerprint/zte_fingerprint.c",
+    "driver_source_sha256": "9a1f0db850cd84e1d0eb01e775d1115e42c9ae13ac8221ac78f4e256417079fe",
+    "reconstruction_map_path": "kernel_development/drivers/reconstructed/zte_fingerprint/reconstruction_map.json",
+    "reconstruction_map_sha256": "a90faaf2637ddcadc3ee4aae5aca81be788f97eadf34bad9f620b2730f8e422b",
+    "stock_fingerprint_module_sha256": "4ad15396f5c4fa1f6153dbb6e469476a9ec437daee186498dce94bc28f7d8675",
+    "current_curated_candidate_sha256": "e79cc7305b471d2a94192ef26708bf273c552d78c15c7b24e190a1972dfdde21",
+    "latest_reproducible_build_sha256": "19130f10be986d6b6e209c7d3e413ce0fd74e48de934e76d3c7b7a82e1a3cd97",
+    "full_vendor_boot_fingerprint_sha256": "4ad15396f5c4fa1f6153dbb6e469476a9ec437daee186498dce94bc28f7d8675",
+    "full_vendor_boot_fingerprint_matches_stock": true
+  },
+  "stock_panel_notifier": {
+    "module_path": "reference_modules/full_vendor_boot/panel_event_notifier.ko",
+    "module_sha256": "b7ce336cb2e9adc911fb43ad6784219605061e2c4c93f4fc381c5aff7a256f2a",
+    "module_size_bytes": 17512,
+    "dependency_manifest_path": "reference_modules/full_vendor_boot/modules.dep",
+    "dependency_manifest_sha256": "785df56626de6bbad330530f884b2a55a5be6a09addc7e60d16c1b9b1c91cf43",
+    "zte_fingerprint_dependency_line": "/lib/modules/zte_fingerprint.ko: /lib/modules/panel_event_notifier.ko /lib/modules/zlog_common.ko /lib/modules/zlog_exception.ko",
+    "assembly_manifest_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_panel_callback_race_20261111/stock_panel_notifier_assembly/manifest.json",
+    "assembly_manifest_sha256": "cd1ace542e39293fbbf9d643358eacfb2e7d51b223a8feeb7cd9cc257fa18a24",
+    "trigger_assembly_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_panel_callback_race_20261111/stock_panel_notifier_assembly/0000_panel_event_notification_trigger.asm",
+    "trigger_assembly_sha256": "988326136bf9638c4a5e66324b98a77e5efbbd9f9d2d6cda12f5e0ade3527018",
+    "unregister_assembly_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_panel_callback_race_20261111/stock_panel_notifier_assembly/0001_panel_event_notifier_unregister.asm",
+    "unregister_assembly_sha256": "1e70d14abcce01b04557c12c6bb26a576ba20a994c07e160c046a2d65b03973d",
+    "register_assembly_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_panel_callback_race_20261111/stock_panel_notifier_assembly/0002_panel_event_notifier_register.asm",
+    "register_assembly_sha256": "1dd60ee12fd06b402b3f4be6d23db9a80c1352815d345662aeeedf6ec054c481",
+    "relevant_stock_instructions": [
+      {
+        "trigger_offset": "0x1d0",
+        "operation": "load callback and client_data from registry slot while panel registry mutex is held"
+      },
+      {
+        "trigger_offset": "0x1d4",
+        "operation": "unlock panel registry mutex"
+      },
+      {
+        "trigger_offset": "0x200",
+        "operation": "indirectly invoke the previously loaded callback"
+      },
+      {
+        "unregister_offsets": "0x12c-0x140",
+        "operation": "lock registry, zero callback/client fields, unlock registry; no wait for copied callback"
+      }
+    ],
+    "inference": "A concurrent trigger can copy the callback and client_data, release the registry mutex, and be descheduled before the indirect call. Unregister can then clear the registry and return; the copied function pointer can still enter or continue after driver teardown."
+  },
+  "fingerprint_driver_interleaving": {
+    "stock_ghidra_remove_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/offline_static/ghidra_stock/decompiled/0011_00101968_gf_remove.c",
+    "stock_ghidra_remove_sha256": "1440324c682faf4f8cc934063577237c409f53de5b7cb4bfd723145b155e72fa",
+    "stock_ghidra_worker_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/offline_static/ghidra_stock/decompiled/0012_00101ac0_goodixfp_init_drm_notifier.c",
+    "stock_ghidra_worker_sha256": "317bf163762f162c2539d7513e5512bfcfd25bbd1c0cf5aa773ba65cf3f02411",
+    "stock_ghidra_callback_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/offline_static/ghidra_stock/decompiled/0015_00101db8_goodix_fb_state_chg_callback.c",
+    "stock_ghidra_callback_sha256": "095508088d4c65ef0b7096b5a3415b9cf905ecba11144da585c4bc781551889a",
+    "candidate_source_path": "kernel_development/drivers/reconstructed/zte_fingerprint/zte_fingerprint.c",
+    "candidate_source_sha256": "9a1f0db850cd84e1d0eb01e775d1115e42c9ae13ac8221ac78f4e256417079fe",
+    "candidate_lifecycle_observations": [
+      "gf_remove sets removing before teardown; the callback exits if it observes removing or closed state.",
+      "The worker now is canceled/drained before cookie unregister, preventing late registration after unregister.",
+      "The IRQ is released in gf_remove before fp_wakelock removal; module exit unregisters the platform driver before netlink_exit.",
+      "A callback that passed the removing/opened checks before remove is not tracked or drained by the driver."
+    ],
+    "host_test_limit": "The host panel notifier stub only counts register/unregister calls; it never dispatches a callback or models concurrent trigger/unregister. Existing host PASS therefore does not cover this boundary race.",
+    "assembly_comparison_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_cleanup_ioctl_20261111/assembly_comparison.json",
+    "assembly_comparison_sha256": "81ee62a3fad912a736a5153a8fec3806bd369e02cd54d32f69485137a075df75",
+    "minimal_schedule": [
+      "T1: panel_event_notification_trigger locks the registry, copies callback/client_data, unlocks, then is paused before blr.",
+      "T2: gf_remove sets removing, drains screen_state_work, calls unregister; unregister clears the registry and returns without waiting for T1.",
+      "T2: remove tears down IRQ/resources and returns; module exit may continue into netlink/module teardown.",
+      "T1: resumes and invokes the copied callback, which may already have passed the removing/opened test before teardown."
+    ]
+  },
+  "canonical_docker_provider": {
+    "source_volume": "nubia_sm8850_kernel_src_nx809j_oout_20261030",
+    "kernel_source_head": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "provider_source": "/work/src/kernel/kernel_platform/common/drivers/soc/qcom/zte_parity.c",
+    "provider_source_sha256": "5bbd51872e9638526d5ce3abad80fd0a1a7a1de13f70f4beb5cd382c5d42edcb",
+    "excerpt_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_panel_callback_race_20261111/docker_target_provider_excerpt.c",
+    "excerpt_sha256": "f01ba647185b12b822f76ad719c57d6232b1699b38469716c9780ff252abc98c",
+    "excerpt_lines": "zte_parity.c lines 292-363",
+    "header": "/work/src/kernel/kernel_platform/common/include/linux/soc/qcom/panel_event_notifier.h",
+    "header_sha256": "e33f99fcb264365505d9bdc49125fa0e8b76994be7150ad4aeba63932f9f961d",
+    "target_Module.symvers_sha256": "28083216e6811ec80cee75c23da0c33168eb1206e008cd2cc469fe4592f0ac83",
+    "export_records": [
+      "panel_event_notification_trigger exported by vmlinux",
+      "panel_event_notifier_register exported by vmlinux",
+      "panel_event_notifier_unregister exported by vmlinux"
+    ],
+    "provider_behavior": "The Docker compatibility provider invokes callbacks while holding panel_client_mutex; unregister removes the list entry under the same mutex. This serializes teardown for this provider but differs from the stock full_vendor_boot module assembly.",
+    "interpretation": "A module build against the Docker source proves compilation and ABI linkage, not the callback lifetime behavior of the stock full_vendor_boot provider."
+  },
+  "device_observation": {
+    "command": "adb devices -l",
+    "connected_devices": [],
+    "result": "No device was listed; the active handset provider and runtime race are unverified."
+  },
+  "resolution": {
+    "driver_only_fix_sufficient": false,
+    "reason": "A driver-side in-flight counter begins only after callback entry; it cannot cover the provider interval after copying the pointer but before invoking it. The observed stock API has no unregister drain guarantee.",
+    "required_boundary": "panel_event_notifier provider/API must prevent new selections and wait for all already selected callbacks before unregister returns (for example SRCU or a carefully audited per-client reference/completion scheme). Preserve the shipped callback ABI and review callback reentrancy before choosing locking.",
+    "source_changed": false,
+    "driver_module_rebuilt_for_this_audit": true
+  },
+  "status": {
+    "static_verified": false,
+    "hardware_verified": false,
+    "overall_driver_status": "incomplete_or_failed",
+    "risk_runtime_reproduced": false
+  },
+  "next_gates": [
+    "Identify the provider actually active on the NX809J with ADB/runtime module inventory.",
+    "Resolve unregister quiescence at the provider/API boundary for the stock implementation.",
+    "Add a deterministic concurrent trigger/unregister test against that implementation.",
+    "Rebuild the target kernel/provider and dependent module in the canonical Docker environment, then separately perform controlled phone validation."
+  ],
+  "post_audit_traceability_check": {
+    "report_path": "reverse_engineering/validation/reconstructed/zte_fingerprint/attestation/lifetime_sync_panel_callback_race_20261111/validator_post_audit_rebuild.json",
+    "report_sha256": "38f871c4c3a34e6fadef879c15307c522d71bac3a50257bb3a9cdcf74b9aab91",
+    "generated_utc": "2026-11-11T15:08:52.438022+00:00",
+    "rebuild_requested": true,
+    "rebuild_passed": true,
+    "reproducible_build": true,
+    "build_cycle_hashes": [
+      "19130f10be986d6b6e209c7d3e413ce0fd74e48de934e76d3c7b7a82e1a3cd97",
+      "19130f10be986d6b6e209c7d3e413ce0fd74e48de934e76d3c7b7a82e1a3cd97"
+    ],
+    "static_verified": [],
+    "hardware_verified": [],
+    "driver_status": "incomplete_or_failed",
+    "kernel_source_identity_match": true,
+    "function_traceability": true,
+    "mapped_functions": 30,
+    "unmapped_functions": [],
+    "independent_mapping_review": false,
+    "pending_mapping_review_errors": [
+      "mapping 0 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 1 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 2 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 3 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 10 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 11 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 12 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 15 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 23 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 28 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 29 declares a hardening deviation without its required review metadata and attestation"
+    ],
+    "remaining_failed_checks": [
+      "candidate_runtime_content_matches_fresh",
+      "candidate_runtime_section_layout_matches_fresh",
+      "mapping_review",
+      "undefined_symbols_match"
+    ]
+  }
+}
