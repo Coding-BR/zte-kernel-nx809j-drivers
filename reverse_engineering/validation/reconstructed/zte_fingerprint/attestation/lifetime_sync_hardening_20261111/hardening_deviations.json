@@ -1,0 +1,216 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-11T13:05:26Z",
+  "driver": "zte_fingerprint",
+  "status": "HARDENING_CANDIDATE_PENDING_INDEPENDENT_REVIEW",
+  "candidate": {
+    "sha256": "de3804dab5e06e66965e237c95b725d378e9c55314c63f76e1acc5ce2cfd2ce7",
+    "size_bytes": 395912,
+    "source_sha256": "ea2ea9125a1b348dda5d58d5da7f2b1a8c0374201f26816ff56222f0a8cd97db",
+    "compat_ioctl_include_sha256": "672487e11311226804fae744156f615ecb96e749a256b2d7e2d91c10228ee89c"
+  },
+  "previous_offline_baseline": {
+    "sha256": "8fbc779e8238738398d80e24902c88fbdbd9b1552c935f4d3f010f029ac34247",
+    "size_bytes": 393544
+  },
+  "stock": {
+    "sha256": "4ad15396f5c4fa1f6153dbb6e469476a9ec437daee186498dce94bc28f7d8675"
+  },
+  "docker": {
+    "image": "nubia-sm8850-kernel-builder:nx809j-repro",
+    "image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390",
+    "target_kernel_release": "6.12.23-android16-5-gf1bdb13583da-ab13761046-4k",
+    "kernel_source_identity": "MATCH",
+    "two_clean_builds_reproducible": true,
+    "build_1_sha256": "de3804dab5e06e66965e237c95b725d378e9c55314c63f76e1acc5ce2cfd2ce7",
+    "build_2_sha256": "de3804dab5e06e66965e237c95b725d378e9c55314c63f76e1acc5ce2cfd2ce7"
+  },
+  "assembly": {
+    "stock_functions": 30,
+    "exact_functions": 19,
+    "deviations": [
+      {
+        "stock_function": "cleanup_module",
+        "stock_entry": "00102ac8",
+        "failed_checks": [
+          "instructions"
+        ],
+        "comparison_failure": "instructions"
+      },
+      {
+        "stock_function": "gf_cleanup",
+        "stock_entry": "001026bc",
+        "failed_checks": [
+          "instructions",
+          "relocations",
+          "symbol_size"
+        ],
+        "comparison_failure": "symbol_size, instructions, relocations"
+      },
+      {
+        "stock_function": "gf_compat_ioctl",
+        "stock_entry": "00100dc4",
+        "failed_checks": [
+          "instructions"
+        ],
+        "comparison_failure": "instructions"
+      },
+      {
+        "stock_function": "gf_ioctl",
+        "stock_entry": "00100824",
+        "failed_checks": [
+          "instructions",
+          "relocations",
+          "symbol_size"
+        ],
+        "comparison_failure": "symbol_size, instructions, relocations"
+      },
+      {
+        "stock_function": "gf_open",
+        "stock_entry": "00100de8",
+        "failed_checks": [
+          "instructions",
+          "relocations",
+          "symbol_size"
+        ],
+        "comparison_failure": "symbol_size, instructions, relocations"
+      },
+      {
+        "stock_function": "gf_probe",
+        "stock_entry": "00101554",
+        "failed_checks": [
+          "instructions",
+          "relocations",
+          "symbol_size"
+        ],
+        "comparison_failure": "symbol_size, instructions, relocations"
+      },
+      {
+        "stock_function": "gf_release",
+        "stock_entry": "00100fe8",
+        "failed_checks": [
+          "instructions",
+          "relocations",
+          "symbol_size"
+        ],
+        "comparison_failure": "symbol_size, instructions, relocations"
+      },
+      {
+        "stock_function": "gf_remove",
+        "stock_entry": "00101968",
+        "failed_checks": [
+          "instructions",
+          "relocations",
+          "symbol_size"
+        ],
+        "comparison_failure": "symbol_size, instructions, relocations"
+      },
+      {
+        "stock_function": "goodix_fb_state_chg_callback",
+        "stock_entry": "00101db8",
+        "failed_checks": [
+          "instructions",
+          "symbol_size"
+        ],
+        "comparison_failure": "symbol_size, instructions"
+      },
+      {
+        "stock_function": "goodixfp_init_drm_notifier",
+        "stock_entry": "00101ac0",
+        "failed_checks": [
+          "instructions",
+          "relocations",
+          "symbol_size"
+        ],
+        "comparison_failure": "symbol_size, instructions, relocations"
+      },
+      {
+        "stock_function": "init_module",
+        "stock_entry": "001029b0",
+        "failed_checks": [
+          "instructions",
+          "relocations",
+          "symbol_size"
+        ],
+        "comparison_failure": "symbol_size, instructions, relocations"
+      }
+    ],
+    "comparison_report": "assembly_comparison_final_rebind.json",
+    "comparison_report_sha256": "f24bbb2e3225178290ee45e031d771d400796593d1a3a61a879a41ac852be333"
+  },
+  "abi": {
+    "target_modversions_match": true,
+    "target_vermagic_match": true,
+    "strict_import_set_matches_stock": false,
+    "strict_dependency_set_matches_stock": false,
+    "missing_stock_imports": [
+      "gpio_free"
+    ],
+    "new_imports": [
+      "devres_open_group",
+      "devres_release_group"
+    ],
+    "stock_depends": [
+      "panel_event_notifier",
+      "zlog_common"
+    ],
+    "candidate_depends": [
+      "zlog_common"
+    ]
+  },
+  "review": {
+    "independent_review": "PENDING",
+    "hardware_validation": "NOT_PERFORMED_ADB_EMPTY",
+    "static_verified": false
+  },
+  "changes": [
+    "Avoid manual gpio_free for devm-owned GPIO resources.",
+    "Synchronize ioctl, open/release, IRQ and remove lifetime paths.",
+    "Drain notifier retry work before teardown and prevent rebind while stale file references remain.",
+    "Keep devres API usage within the target KMI exports."
+  ],
+  "canonical_snapshot_validation": {
+    "report": "validator_canonical_final.json",
+    "status": "incomplete_or_failed",
+    "two_clean_builds_passed": true,
+    "kernel_source_identity": "MATCH",
+    "candidate_matches_fresh_content": true,
+    "candidate_matches_fresh_layout": true,
+    "map_traceability": true,
+    "independent_review_gate": false,
+    "strict_import_parity": false,
+    "errors": [
+      "module parity check failed: undefined_symbols_match",
+      "mapping 0 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 1 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 2 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 3 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 10 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 11 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 12 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 15 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 23 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 28 declares a hardening deviation without its required review metadata and attestation",
+      "mapping 29 declares a hardening deviation without its required review metadata and attestation"
+    ],
+    "map_sha256": "83086fb1c50c8c809d26fe52327e09face31c92295efc4ad1e6048aa8b779caa",
+    "report_sha256": "0bdb4f13e25b9746d0ca4ddd11949418c18a5f9184fabb608adbaaca69bdd2fb"
+  },
+  "curated_snapshot_sync": {
+    "first_source_sync": {
+      "report": "curated_sync_apply.json",
+      "passed": true,
+      "copied_files": 4,
+      "removed_stale_source_files": 0
+    },
+    "final_map_sync": {
+      "report": "curated_sync_final.json",
+      "passed": true,
+      "copied_files": 1,
+      "removed_stale_source_files": 0
+    },
+    "module_sha256": "de3804dab5e06e66965e237c95b725d378e9c55314c63f76e1acc5ce2cfd2ce7",
+    "final_map_sha256": "83086fb1c50c8c809d26fe52327e09face31c92295efc4ad1e6048aa8b779caa",
+    "final_sync_report_sha256": "c081c59155c67759972be9487b81ad879278c24acaaf5b8f5fe08b17097e55c9"
+  }
+}

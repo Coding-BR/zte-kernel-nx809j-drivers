@@ -86,7 +86,7 @@ struct gf_device {
 	dev_t devt;                           // 0
 	struct list_head device_entry;        // 8
 	struct platform_device *pdev;         // 24
-	void *reserved_20;                    // 32
+	void *resource_group;                  // 32
 	void *reserved_28;                    // 40
 	struct input_dev *input_dev;          // 48
 	u32 ref_count;                        // 56
@@ -98,7 +98,9 @@ struct gf_device {
 	u64 reserved_50[4];                   // 80..111
 	u8 opened;                            // 112
 	u8 screen_state;                      // 113
-	u8 reserved_72[6];                    // 114..119
+	u8 irq_requested;                      // 114
+	u8 removing;                           // 115
+	u8 reserved_74[4];                     // 116..119
 	void *zlog_client;                    // 120
 	struct pinctrl *pinctrl;              // 128
 	struct pinctrl_state *pins_active;    // 136
@@ -114,6 +116,9 @@ static_assert(sizeof(struct gf_device) == 272);
 static_assert(offsetof(struct gf_device, device_entry) == 8);
 static_assert(offsetof(struct gf_device, ref_count) == 56);
 static_assert(offsetof(struct gf_device, opened) == 112);
+static_assert(offsetof(struct gf_device, resource_group) == 32);
+static_assert(offsetof(struct gf_device, irq_requested) == 114);
+static_assert(offsetof(struct gf_device, removing) == 115);
 static_assert(offsetof(struct gf_device, zlog_client) == 120);
 static_assert(offsetof(struct gf_device, screen_state_wq) == 160);
 
@@ -231,7 +236,7 @@ static void goodix_fb_state_chg_callback(enum panel_event_notifier_tag tag,
 		return;
 	}
 
-	if (!gf_dev->opened) {
+	if (READ_ONCE(gf_dev->removing) || !READ_ONCE(gf_dev->opened)) {
 		printk("\0014zte_fingerprint: [%s] Panel callback skipped: device unavailable\n",
 		       __func__);
 		return;
@@ -306,12 +311,18 @@ static noinline void goodixfp_init_drm_notifier(struct work_struct *work)
 	int ret, i;
 
 	pr_info("zte_fingerprint: [%s] enter\n", __func__);
+	if (READ_ONCE(gf_dev->removing) || !gf_dev->pdev)
+		return;
 	ret = goodixfp_drm_get_pannel(gf_dev->pdev->dev.of_node);
 	i = 0;
 	while (i != 25) {
 		if (ret != 0) {
+			if (READ_ONCE(gf_dev->removing))
+				return;
 			pr_err("zte_fingerprint: [%s] get pannel node error\n", __func__);
 			usleep_range(1000000, 1001000);
+			if (READ_ONCE(gf_dev->removing))
+				return;
 			ret = goodixfp_drm_get_pannel(gf_dev->pdev->dev.of_node);
 		}
 		i++;
@@ -320,6 +331,11 @@ static noinline void goodixfp_init_drm_notifier(struct work_struct *work)
 		pr_info("zte_fingerprint: [%s] get pannel node error after retrying 25 times\n",
 			__func__);
 
+	mutex_lock(&device_list_lock);
+	if (gf_dev->removing || !gf_dev->pdev) {
+		mutex_unlock(&device_list_lock);
+		return;
+	}
 	if (goodixfp_active_panel) {
 		pr_info("zte_fingerprint: [%s] success to get primary panel", __func__);
 		cookie = panel_event_notifier_register(1, 3,
@@ -331,6 +347,7 @@ static noinline void goodixfp_init_drm_notifier(struct work_struct *work)
 				__func__);
 		}
 	}
+	mutex_unlock(&device_list_lock);
 }
 
 /* ======================================================================
@@ -433,32 +450,36 @@ static void gf_disable_irq(struct gf_device *gf_dev)
 noinline void gf_cleanup(struct gf_dev *gf_dev_opaque)
 {
 	struct gf_device *gf_dev = (struct gf_device *)gf_dev_opaque;
+	int enabled;
 
-	#ifdef ZTE_FINGERPRINT_HOST_TEST
-	if (!gf_dev || IS_ERR_OR_NULL(gf_dev->vdd_reg))
+	if (!gf_dev)
 		return;
-	#endif
 
 	pr_info("[info] %s gf_dev\n", __func__);
 
-	if (gpio_is_valid(gf_dev->irq_gpio)) {
-		gpio_free(gf_dev->irq_gpio);
-		pr_info("gf_dev-gf_cleanup. remove irq_gpio success\n");
-	}
-
-	if (gpio_is_valid(gf_dev->reset_gpio)) {
-		gpio_free(gf_dev->reset_gpio);
-		pr_info("gf_dev-gf_cleanup. remove reset_gpio success\n");
-	}
-
-	if (!IS_ERR(gf_dev->vdd_reg)) {
-		if (regulator_is_enabled(gf_dev->vdd_reg)) {
+	if (!IS_ERR_OR_NULL(gf_dev->vdd_reg)) {
+		enabled = regulator_is_enabled(gf_dev->vdd_reg);
+		if (enabled > 0) {
 			regulator_disable(gf_dev->vdd_reg);
 			pr_info("gf_dev-gf_cleanup. remove vdd success\n");
-		} else {
+		} else if (!enabled) {
 			pr_warn("gf_dev-gf_cleanup vdd regulator already disabled\n");
+		} else {
+			pr_warn("gf_dev-gf_cleanup failed to query vdd state, rc=%d\n",
+				enabled);
 		}
 	}
+
+	if (gf_dev->resource_group && gf_dev->pdev) {
+		devres_release_group(&gf_dev->pdev->dev, gf_dev->resource_group);
+		gf_dev->resource_group = NULL;
+	}
+	gf_dev->vdd_reg = NULL;
+	gf_dev->pinctrl = NULL;
+	gf_dev->pins_active = NULL;
+	gf_dev->pins_suspend = NULL;
+	gf_dev->irq_gpio = -EINVAL;
+	gf_dev->reset_gpio = -EINVAL;
 }
 
 noinline int zte_goodix_pinctrl_init(struct gf_dev *gf_dev_opaque)
@@ -661,10 +682,26 @@ static irqreturn_t gf_irq(int irq, void *dev_id)
  * File Operations Callbacks
  * ====================================================================== */
 
+static void gf_release_irq(struct gf_device *gf_dev)
+{
+	if (!gf_dev->irq_requested)
+		return;
+
+	irq_set_irq_wake(gf_dev->irq_num, 0);
+	if (gf_dev->irq_enabled) {
+		gf_dev->irq_enabled = 0;
+		disable_irq(gf_dev->irq_num);
+	}
+
+	free_irq(gf_dev->irq_num, gf_dev);
+	gf_dev->irq_requested = 0;
+}
+
 static int gf_open(struct inode *inode, struct file *file)
 {
 	struct gf_device *gf_dev;
 	int ret = -ENXIO;
+	int irq_num;
 
 	pr_info("zte_fingerprint: %s: enter\n", __func__);
 
@@ -678,70 +715,85 @@ static int gf_open(struct inode *inode, struct file *file)
 		}
 	}
 
-	gf_dev->zlog_client = zlog_register_client(&goodix_zlog_fp_dev);
-	if (gf_dev->zlog_client)
-		pr_info("zte_fingerprint: %s zlog_register_goodixfp_client success\n",
-			__func__);
-	else
-		pr_err("zte_fingerprint: %s zlog_register_goodixfp_client fail\n",
-			__func__);
-
 	if (list_entry_is_head(gf_dev, &device_list, device_entry)) {
 		pr_info("zte_fingerprint: No device for minor %d\n", iminor(inode));
-	} else {
-		gf_dev->ref_count++;
-		file->private_data = gf_dev;
-		nonseekable_open(inode, file);
-		pr_info("zte_fingerprint: goodix: Succeed to open device. irq = %d\n",
-			gf_dev->irq_num);
-
-		if (gf_dev->ref_count == 1) {
-			ret = gf_parse_dts(gf_dev);
-			if (ret)
-				goto err_unlock_return;
-
-			pr_info("zte_fingerprint: %s: enter", "irq_setup");
-			gf_dev->irq_num = gf_irq_num((struct gf_dev *)gf_dev);
-			ret = request_threaded_irq(gf_dev->irq_num, NULL, gf_irq,
-						   IRQF_TRIGGER_RISING | IRQF_ONESHOT,
-						   "gf", gf_dev);
-			#ifdef ZTE_FINGERPRINT_HOST_TEST
-			int wake_irq = gf_dev->irq_num;
-			#else
-			register int wake_irq __asm__("w1");
-			asm volatile("ldr %w0, [%1, #0x40]"
-				     : "=r"(wake_irq)
-				     : "r"(&gf_dev->device_entry));
-			#endif
-			if (ret) {
-				#if defined(__aarch64__)
-				#pragma clang diagnostic push
-				#pragma clang diagnostic ignored "-Wformat-insufficient-args"
-				pr_err("zte_fingerprint: failed to request IRQ:%d\n");
-				#pragma clang diagnostic pop
-				#else
-				pr_err("zte_fingerprint: failed to request IRQ:%d\n", ret);
-				#endif
-				gf_cleanup((struct gf_dev *)gf_dev);
-				goto err_unlock_return;
-			}
-
-			irq_set_irq_wake(wake_irq, 1);
-			gf_dev->irq_enabled = 1;
-		}
-
-		gf_hw_reset((struct gf_dev *)gf_dev, 5);
-		gf_dev->opened = 1;
-		barrier();
-		ret = 0;
+		goto out_unlock;
+	}
+	if (gf_dev->removing || !gf_dev->devt || !gf_dev->pdev) {
+		ret = -ENODEV;
+		goto out_unlock;
+	}
+	if (gf_dev->ref_count && (!gf_dev->resource_group ||
+				  !gf_dev->irq_requested)) {
+		ret = -ENODEV;
+		goto out_unlock;
 	}
 
+	if (!gf_dev->ref_count) {
+		gf_dev->zlog_client = zlog_register_client(&goodix_zlog_fp_dev);
+		if (gf_dev->zlog_client)
+			pr_info("zte_fingerprint: %s zlog_register_goodixfp_client success\n",
+				__func__);
+		else
+			pr_err("zte_fingerprint: %s zlog_register_goodixfp_client fail\n",
+				__func__);
+
+		gf_dev->resource_group = devres_open_group(&gf_dev->pdev->dev,
+							  NULL, GFP_KERNEL);
+		if (!gf_dev->resource_group) {
+			ret = -ENOMEM;
+			goto err_zlog;
+		}
+
+		ret = gf_parse_dts(gf_dev);
+		if (ret)
+			goto err_resources;
+
+		pr_info("zte_fingerprint: %s: enter", "irq_setup");
+		irq_num = gf_irq_num((struct gf_dev *)gf_dev);
+		if (irq_num < 0) {
+			ret = irq_num;
+			goto err_resources;
+		}
+		gf_dev->irq_num = irq_num;
+		ret = request_threaded_irq(gf_dev->irq_num, NULL, gf_irq,
+					   IRQF_TRIGGER_RISING | IRQF_ONESHOT,
+					   "gf", gf_dev);
+		if (ret) {
+			pr_err("zte_fingerprint: failed to request IRQ: %d\n", ret);
+			goto err_resources;
+		}
+
+		gf_dev->irq_requested = 1;
+		irq_set_irq_wake(gf_dev->irq_num, 1);
+		gf_dev->irq_enabled = 1;
+	}
+
+	gf_dev->ref_count++;
+	file->private_data = gf_dev;
+	nonseekable_open(inode, file);
+	pr_info("zte_fingerprint: goodix: Succeed to open device. irq = %d\n",
+		gf_dev->irq_num);
+	gf_hw_reset((struct gf_dev *)gf_dev, 5);
+	WRITE_ONCE(gf_dev->opened, 1);
+	barrier();
+	ret = 0;
+	goto out_unlock;
+
+err_resources:
+	if (gf_dev->irq_requested)
+		gf_release_irq(gf_dev);
+	gf_cleanup((struct gf_dev *)gf_dev);
+	WRITE_ONCE(gf_dev->opened, 0);
+err_zlog:
+	if (gf_dev->zlog_client) {
+		zlog_unregister_client(gf_dev->zlog_client);
+		gf_dev->zlog_client = NULL;
+	}
+
+out_unlock:
 	mutex_unlock(&device_list_lock);
 	pr_info("zte_fingerprint: %s: end\n", __func__);
-	return ret;
-
-err_unlock_return:
-	mutex_unlock(&device_list_lock);
 	return ret;
 }
 
@@ -754,27 +806,21 @@ static int gf_release(struct inode *inode, struct file *file)
 	mutex_lock(&device_list_lock);
 	gf_dev = file->private_data;
 	file->private_data = NULL;
-	gf_dev->ref_count--;
-	if (gf_dev->ref_count == 0) {
+	if (gf_dev && gf_dev->ref_count)
+		gf_dev->ref_count--;
+	if (gf_dev && !gf_dev->ref_count) {
 		pr_info("zte_fingerprint: disble_irq. irq = %d\n", gf_dev->irq_num);
-		irq_set_irq_wake(gf_dev->irq_num, 0);
+		gf_release_irq(gf_dev);
+		if (!gf_dev->removing)
+			gf_cleanup((struct gf_dev *)gf_dev);
+		WRITE_ONCE(gf_dev->opened, 0);
 
-		if (gf_dev->irq_enabled) {
-			gf_dev->irq_enabled = 0;
-			disable_irq(gf_dev->irq_num);
-		} else {
-			pr_warn("zte_fingerprint: IRQ has been disabled.\n");
+		if (gf_dev->zlog_client) {
+			zlog_unregister_client(gf_dev->zlog_client);
+			gf_dev->zlog_client = NULL;
+			pr_info("zte_fingerprint: %s zlog_unregister_client goodix_zlog_fp_dev\n",
+				__func__);
 		}
-
-		free_irq(gf_dev->irq_num, gf_dev);
-		gf_cleanup((struct gf_dev *)gf_dev);
-		gf_dev->opened = 0;
-	}
-
-	if (gf_dev->zlog_client) {
-		zlog_unregister_client(gf_dev->zlog_client);
-		pr_info("zte_fingerprint: %s zlog_unregister_client goodix_zlog_fp_dev\n",
-			__func__);
 	}
 
 	mutex_unlock(&device_list_lock);
@@ -836,7 +882,8 @@ static void nav_event_input(int action)
 
 
 
-static long gf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+static noinline long gf_ioctl(struct file *file, unsigned int cmd,
+			      unsigned long arg)
 {
 	struct gf_device *gf_dev = file->private_data;
 	int ret = 0;
@@ -986,9 +1033,39 @@ extern long gf_compat_ioctl(struct file *file, unsigned int cmd,
 #include "gf_compat_ioctl_exact.inc"
 #endif
 
+static long gf_ioctl_dispatch(struct file *file, unsigned int cmd,
+			      unsigned long arg)
+{
+	struct gf_device *gf_dev = file->private_data;
+	long (*ioctl_fn)(struct file *, unsigned int, unsigned long) = gf_ioctl;
+	long ret;
+
+	if (!gf_dev)
+		return -EINVAL;
+
+	mutex_lock(&device_list_lock);
+	if (gf_dev->removing || !gf_dev->devt || !gf_dev->resource_group) {
+		ret = -ENODEV;
+		goto out_unlock;
+	}
+
+	if (cmd == 0x670c) {
+		gf_release_irq(gf_dev);
+		WRITE_ONCE(gf_dev->opened, 0);
+	}
+	OPTIMIZER_HIDE_VAR(ioctl_fn);
+	ret = ioctl_fn(file, cmd, arg);
+	if (cmd == 0x670c)
+		WRITE_ONCE(gf_dev->opened, 0);
+
+out_unlock:
+	mutex_unlock(&device_list_lock);
+	return ret;
+}
+
 static const struct file_operations gf_fops = {
 	.owner          = THIS_MODULE,
-	.unlocked_ioctl = gf_ioctl,
+	.unlocked_ioctl = gf_ioctl_dispatch,
 	.compat_ioctl   = gf_compat_ioctl,
 	.open           = gf_open,
 	.release        = gf_release,
@@ -1003,58 +1080,35 @@ static int gf_probe(struct platform_device *pdev)
 	struct gf_device *gf_dev = &gf;
 	struct device *dev_node;
 	unsigned long minor;
-	int ret = 0;
-#ifndef ZTE_FINGERPRINT_HOST_TEST
-	struct platform_device *pdev_reg = pdev;
-#else
-	struct platform_device *pdev_reg = pdev;
-#endif
+	int ret;
+	bool input_registered = false;
+	bool wakeup_added = false;
 
 	pr_info("zte_fingerprint: %s\n", __func__);
 
+	mutex_lock(&device_list_lock);
+	if (gf_dev->ref_count || gf_dev->resource_group || gf_dev->irq_requested) {
+		mutex_unlock(&device_list_lock);
+		pr_err("zte_fingerprint: refusing probe while old resources or files remain\n");
+		return -EBUSY;
+	}
 	INIT_LIST_HEAD(&gf_dev->device_entry);
-	gf_dev->pdev = pdev_reg;
+	gf_dev->pdev = pdev;
+	gf_dev->devt = 0;
+	gf_dev->ref_count = 0;
+	gf_dev->resource_group = NULL;
+	gf_dev->irq_requested = 0;
+	gf_dev->removing = 0;
+	gf_dev->irq_enabled = 0;
+	gf_dev->input_dev = NULL;
+	gf_dev->zlog_client = NULL;
+	gf_dev->screen_state_wq = NULL;
+	cookie = NULL;
+	goodixfp_active_panel = NULL;
 	*(u64 *)&gf_dev->irq_gpio = 0xffffffeaffffffeaULL;
 	*(u64 *)&gf_dev->reserved_44 = (u64)(u32)(-EINVAL);
 	gf_dev->opened = 0;
 	gf_dev->screen_state = 0;
-
-	/* Setup delayed workqueue for screen notifier */
-	#ifdef ZTE_FINGERPRINT_HOST_TEST
-	gf_dev->screen_state_wq = alloc_workqueue("screen_state_wq", 0x6000a, 1);
-	#else
-	gf_dev->screen_state_wq = alloc_workqueue("%s", 0x6000a, 1, "screen_state_wq");
-	#endif
-	if (gf_dev->screen_state_wq) {
-		INIT_DELAYED_WORK(&gf_dev->screen_state_work, goodixfp_init_drm_notifier);
-		queue_delayed_work(gf_dev->screen_state_wq, &gf_dev->screen_state_work, 1250);
-	}
-
-	mutex_lock(&device_list_lock);
-
-	/* Find first free minor */
-	minor = find_first_zero_bit(minors, 32);
-	if (minor >= 32) {
-		mutex_unlock(&device_list_lock);
-		ret = -ENODEV;
-		goto err_destroy_wq;
-	}
-
-	gf.devt = MKDEV(SPIDEV_MAJOR, minor);
-
-	/* Create device node /dev/goodix_fp */
-	dev_node = device_create(gf_class, &gf_dev->pdev->dev, gf.devt, &gf, "goodix_fp");
-	ret = PTR_ERR_OR_ZERO(dev_node);
-	if (ret) {
-		gf.devt = 0;
-		goto err_destroy_wq;
-	}
-
-	/* Claim minor */
-	set_bit(minor, minors);
-
-	/* Add to list */
-	list_add(&gf_dev->device_entry, &device_list);
 	mutex_unlock(&device_list_lock);
 
 	/* Allocate Input Device */
@@ -1062,7 +1116,7 @@ static int gf_probe(struct platform_device *pdev)
 	if (!gf_dev->input_dev) {
 		pr_err("zte_fingerprint: %s, failed to allocate input device\n", __func__);
 		ret = -ENOMEM;
-		goto err_destroy_device;
+		goto err_setup;
 	}
 
 	/* Capabilities */
@@ -1084,28 +1138,71 @@ static int gf_probe(struct platform_device *pdev)
 	ret = input_register_device(gf_dev->input_dev);
 	if (ret) {
 		pr_err("zte_fingerprint: failed to register input device\n");
-		goto err_free_input;
+		goto err_setup;
 	}
+	input_registered = true;
 
 	wakeup_source_add(&fp_wakelock);
+	wakeup_added = true;
+
+	/* Setup delayed workqueue for screen notifier before publishing the node. */
+	#ifdef ZTE_FINGERPRINT_HOST_TEST
+	gf_dev->screen_state_wq = alloc_workqueue("screen_state_wq", 0x6000a, 1);
+	#else
+	gf_dev->screen_state_wq = alloc_workqueue("%s", 0x6000a, 1, "screen_state_wq");
+	#endif
+	if (gf_dev->screen_state_wq) {
+		INIT_DELAYED_WORK(&gf_dev->screen_state_work, goodixfp_init_drm_notifier);
+		queue_delayed_work(gf_dev->screen_state_wq, &gf_dev->screen_state_work, 1250);
+	}
+
+	mutex_lock(&device_list_lock);
+	minor = find_first_zero_bit(minors, 32);
+	if (minor >= 32) {
+		mutex_unlock(&device_list_lock);
+		ret = -ENODEV;
+		goto err_setup;
+	}
+
+	gf_dev->devt = MKDEV(SPIDEV_MAJOR, minor);
+	dev_node = device_create(gf_class, &gf_dev->pdev->dev, gf_dev->devt,
+				 gf_dev, "goodix_fp");
+	ret = PTR_ERR_OR_ZERO(dev_node);
+	if (ret) {
+		gf_dev->devt = 0;
+		mutex_unlock(&device_list_lock);
+		goto err_setup;
+	}
+
+	set_bit(minor, minors);
+	list_add(&gf_dev->device_entry, &device_list);
+	mutex_unlock(&device_list_lock);
+
 	pr_info("zte_fingerprint: version V%d.%d.%02d.%02d\n", 1, 2, 4, 2);
 	return 0;
 
-err_free_input:
-	if (gf_dev->input_dev)
-		input_free_device(gf_dev->input_dev);
-err_destroy_device:
-	if (gf.devt) {
-		pr_info("zte_fingerprint: Err: status = %d\n", ret);
-		mutex_lock(&device_list_lock);
-		gf_probe_list_del(&gf_dev->device_entry);
-		device_destroy(gf_class, gf.devt);
-		clear_bit(MINOR(gf.devt), minors);
-		mutex_unlock(&device_list_lock);
+err_setup:
+	WRITE_ONCE(gf_dev->removing, 1);
+	if (gf_dev->screen_state_wq) {
+		cancel_delayed_work_sync(&gf_dev->screen_state_work);
+		destroy_workqueue(gf_dev->screen_state_wq);
+		gf_dev->screen_state_wq = NULL;
 	}
-err_destroy_wq:
+	if (cookie) {
+		panel_event_notifier_unregister(cookie);
+		cookie = NULL;
+	}
+	goodixfp_active_panel = NULL;
+	if (wakeup_added)
+		wakeup_source_remove(&fp_wakelock);
+	if (input_registered)
+		input_unregister_device(gf_dev->input_dev);
+	else if (gf_dev->input_dev)
+		input_free_device(gf_dev->input_dev);
+	gf_dev->input_dev = NULL;
 	gf_cleanup((struct gf_dev *)gf_dev);
 	gf_dev->opened = 0;
+	gf_dev->pdev = NULL;
 	return ret;
 }
 
@@ -1113,24 +1210,47 @@ static void gf_remove(struct platform_device *pdev)
 {
 	pr_info("zte_fingerprint: %s: gf_remove\n", __func__);
 
-	wakeup_source_remove(&fp_wakelock);
+	mutex_lock(&device_list_lock);
+	if (gf.removing) {
+		mutex_unlock(&device_list_lock);
+		return;
+	}
+	WRITE_ONCE(gf.removing, 1);
+	if (!list_empty(&gf.device_entry))
+		gf_probe_list_del(&gf.device_entry);
+	if (gf.devt) {
+		device_destroy(gf_class, gf.devt);
+		clear_bit(MINOR(gf.devt), minors);
+		gf.devt = 0;
+	}
+	mutex_unlock(&device_list_lock);
 
-	if (gf.input_dev)
-		input_unregister_device(gf.input_dev);
-	input_free_device(gf.input_dev);
+	if (gf.screen_state_wq)
+		cancel_delayed_work_sync(&gf.screen_state_work);
+	if (cookie) {
+		panel_event_notifier_unregister(cookie);
+		cookie = NULL;
+	}
+	goodixfp_active_panel = NULL;
 
 	mutex_lock(&device_list_lock);
-	__list_del_entry(&gf.device_entry);
-	gf.device_entry.next = LIST_POISON1;
-	gf.device_entry.prev = LIST_POISON2;
-	device_destroy(gf_class, gf.devt);
-	clear_bit(MINOR(gf.devt), minors);
-
-	if (gf.screen_state_wq) {
-		panel_event_notifier_unregister(cookie);
-		cancel_delayed_work_sync(&gf.screen_state_work);
-		destroy_workqueue(gf.screen_state_wq);
+	gf_release_irq(&gf);
+	gf_cleanup((struct gf_dev *)&gf);
+	WRITE_ONCE(gf.opened, 0);
+	if (gf.input_dev) {
+		input_unregister_device(gf.input_dev);
+		gf.input_dev = NULL;
 	}
+	wakeup_source_remove(&fp_wakelock);
+	if (gf.screen_state_wq) {
+		destroy_workqueue(gf.screen_state_wq);
+		gf.screen_state_wq = NULL;
+	}
+	if (gf.zlog_client) {
+		zlog_unregister_client(gf.zlog_client);
+		gf.zlog_client = NULL;
+	}
+	gf.pdev = NULL;
 	mutex_unlock(&device_list_lock);
 }
 
@@ -1172,22 +1292,31 @@ static int __init zte_fp_init(void)
 		return PTR_ERR(gf_class);
 	}
 
-	ret = platform_driver_register(&gf_driver);
+	ret = netlink_init();
 	if (ret < 0) {
 		class_destroy(gf_class);
 		unregister_chrdev(SPIDEV_MAJOR, gf_driver.driver.name);
-		pr_warn("zte_fingerprint: Failed to register SPI driver.\n");
+		pr_warn("zte_fingerprint: Failed to initialize netlink.\n");
+		return ret;
 	}
 
-	netlink_init();
+	ret = platform_driver_register(&gf_driver);
+	if (ret < 0) {
+		netlink_exit();
+		class_destroy(gf_class);
+		unregister_chrdev(SPIDEV_MAJOR, gf_driver.driver.name);
+		pr_warn("zte_fingerprint: Failed to register SPI driver.\n");
+		return ret;
+	}
+
 	pr_info("zte_fingerprint: status = 0x%x\n", ret);
 	return 0;
 }
 
 static void __exit zte_fp_exit(void)
 {
-	netlink_exit();
 	platform_driver_unregister(&gf_driver);
+	netlink_exit();
 	class_destroy(gf_class);
 	unregister_chrdev(SPIDEV_MAJOR, gf_driver.driver.name);
 }

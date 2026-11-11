@@ -10,7 +10,7 @@ __asm__(
 "    .inst 0x910003fd\n"
 "    .inst 0x92407c42\n"
 "    .inst 0x97fffe94\n"
-"    .reloc .-4, R_AARCH64_CALL26, gf_ioctl\n"
+"    .reloc .-4, R_AARCH64_CALL26, gf_ioctl_dispatch\n"
 "    .inst 0xa8c17bfd\n"
 "    .inst 0xd50323bf\n"
 "    .inst 0xd65f03c0\n"
