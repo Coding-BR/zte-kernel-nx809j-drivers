@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "review_date": "2026-11-11",
+  "target": "zte_tpd",
+  "scope": "static_vma_and_poll_lifetime",
+  "result": "STATIC_REVIEW_PASS_FOR_MMAP_AND_POLL_LIFETIME",
+  "overall_driver_status": "PARTIAL_SOURCE_MAP",
+  "stock_module": {
+    "path": "reference_modules/stock/zte_tpd.ko",
+    "sha256": "a3778a079e8ed2d5fafd2fe0f7f55b814a4a47cb8c9c091b6a09b55865b26342",
+    "bytes": 633536
+  },
+  "candidate_module": {
+    "path": "C:/Users/adria/Desktop/drivers/kernel-docker-workspace/engenharia/curated/zte_tpd/zte_tpd.ko",
+    "sha256": "05169eb97da2317d87b6921c946bd3970d3d111c4ba708a04378668a99d1e251",
+    "bytes": 7276320,
+    "matches_reconstruction_map": true
+  },
+  "stock_assembly": {
+    "syna_mmap@001147ec": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0175_syna_mmap_001147ec.asm",
+      "sha256": "47d0b4c19cd62ce259d1233ea0cac6d59041d34fb9b442662e8e65c1520e69c4",
+      "instruction_count": 44,
+      "bytes": 176,
+      "map_status": "PROMOTED_OFFLINE_EXACT"
+    },
+    "syna_dev_remove@001125bc": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0157_syna_dev_remove_001125bc.asm",
+      "sha256": "ace4aaba332c4f2d9b1eec7ab442fcb57827d590889449bbf1c25af0f042e5e5"
+    },
+    "syna_poll@00114510": {
+      "path": "reverse_engineering/validation/reconstructed/zte_tpd/offline_static/stock_assembly/0173_syna_poll_00114510.asm",
+      "sha256": "13ce36aa5c86843bef536efd95546a89ce01a6b8b028bca203af79fd8e425b26",
+      "map_status": "PROMOTED_OFFLINE_EXACT"
+    }
+  },
+  "candidate_source_text_sha256": {
+    "syna_input_agent.c": "2221b13fed6cf28e6656c8f8778586ac8b007197e6704451b6bdc5bb6e680d82",
+    "syna_cdev_create.c": "e773e4ab98b361246453448c48599d6d59f4866a7b82a2e4bb104f5271d36c93",
+    "syna_cdev_remove.c": "e80289f332dee27ed2b4d0496ed02d46cc2ebcf73743e091e5b30445509c85c4",
+    "syna_dev_process_touch_report_wrapper.c": "4b0d53a479b8439592fbb5fcfb81938cfc1fb72edd091d8293e6801c21482d51",
+    "syna_dev_remove.c": "de97dcca3a629b6099b66e8b977c9ffbea130d07f9cfd1779c8392363941adae",
+    "syna_tcm_remove_device.c": "7b7bbac7a7b1622eb8d2a78cab757a67e1000d31b9503a78dd380d16bd60571b",
+    "syna_mmap.c": "e8433f5d362fe442b9b80b20c2714bcd3ef7171dbbebb1a9fef69918fcb30fe6",
+    "globals.c": "aa02bc975151f6c1acc7c137129b3faf9eab0b44b9c13b3b89e98287594c9548"
+  },
+  "docker_source_text_match": "8/8 after normalizing CRLF/LF",
+  "kernel_source_evidence": {
+    "path": "kernel_platform/common/mm/mmap.c",
+    "vma_file_get_line": 1468,
+    "vma_lifetime_release_path": "kernel_platform/common/mm/vma.c:330-336",
+    "epoll_waitqueue_remove_path": "kernel_platform/common/fs/eventpoll.c:634-662"
+  },
+  "findings": [
+    "The VMA-held vm_file keeps the file context alive; the per-file owner reference therefore keeps the original mmap buffer allocated until final release.",
+    "The lifecycle gate drains mmap/poll operations before TCM teardown; retire clears tcm+0x460 before the later kfree site.",
+    "The active poll wrapper uses a module-static waitqueue, wakes it on reports and quiesce, and avoids epoll entries pointing into the freed TCM object.",
+    "The stock syna_poll body remains offline-exact but is not the poll callback in the current candidate file_operations."
+  ],
+  "unresolved": [
+    "Runtime mmap/epoll/remove interleavings and NX809J hardware behavior were not exercised.",
+    "The external stock panel_event_notifier callback quiescence window remains unresolved."
+  ],
+  "source_changed": false,
+  "candidate_rebuilt": false,
+  "rebuild_reason": "Reviewed source files match the canonical Docker snapshot; no source change was made."
+}
