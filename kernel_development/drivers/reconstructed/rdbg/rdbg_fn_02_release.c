@@ -51,7 +51,7 @@ int rdbg_release(struct inode *inode, struct file *filp)
 	if (rdbgdata->device_opened == 1) {
 		complete(&rdbgdata->work);
 		/* free_irq() removes the action and waits for its handler to finish. */
-		free_irq(rdbgdata->in.irq_base_id, rdbgdata);
+		free_irq(file_context->requested_irq, rdbgdata);
 		rdbg_smq_destroy(&rdbgdevice->rdbg_data[device_id].producer_smrb);
 		rdbg_smq_destroy(&rdbgdevice->rdbg_data[device_id].consumer_smrb);
 		mutex_destroy(&rdbgdata->write_mutex);

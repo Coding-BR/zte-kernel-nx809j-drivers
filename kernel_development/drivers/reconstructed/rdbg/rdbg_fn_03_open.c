@@ -263,9 +263,12 @@ int rdbg_open(struct inode *inode, struct file *filp)
 	}
 	file_context->rdbgdata = rdbgdata;
 	mutex_init(&file_context->read_mutex);
+	mutex_lock(&rdbg_input_irq_lock);
+	file_context->requested_irq = rdbgdata->in.irq_base_id;
+	mutex_unlock(&rdbg_input_irq_lock);
 
 	init_completion(&rdbgdata->work);
-	err = request_threaded_irq(rdbgdata->in.irq_base_id, NULL,
+	err = request_threaded_irq(file_context->requested_irq, NULL,
 				   on_interrupt_from,
 				   IRQF_ONESHOT | IRQF_TRIGGER_RISING |
 					   IRQF_TRIGGER_FALLING,
@@ -274,7 +277,7 @@ int rdbg_open(struct inode *inode, struct file *filp)
 	if (err) {
 		dev_err(rdbgdata->device,
 			"%s: Failed to register interrupt.Err=%d,irqid=%d.\n",
-			__func__, err, rdbgdata->in.irq_base_id);
+			__func__, err, file_context->requested_irq);
 		pr_err("rdbg : Failed to register interrupt %d\n", err);
 		goto file_context_bail;
 	}
@@ -294,7 +297,8 @@ int rdbg_open(struct inode *inode, struct file *filp)
 
 smq_bail:
 	/* The IRQ is owned only after request_threaded_irq() succeeds. */
-	free_irq(rdbgdata->in.irq_base_id, &device->rdbg_data[device_id]);
+	free_irq(file_context->requested_irq,
+		 &device->rdbg_data[device_id]);
 	smq_dtor(&rdbgdata->producer_smrb);
 	smq_dtor(&rdbgdata->consumer_smrb);
 	mutex_destroy(&rdbgdata->write_mutex);

@@ -143,10 +143,12 @@ int rdbg_probe(struct platform_device *pdev)
 				 : "=r"(gpio_ptr) : : "cc"
 				 : input_error);
 			int id = of_irq_get_byname(dev->of_node, "rdbg-smp2p-in");
+			mutex_lock(&rdbg_input_irq_lock);
 			*(int *)gpio_ptr = id;
 			asm volatile("" ::: "memory");
 			asm volatile("stur %w0, [x28, #-0x24]"
 				     : : "r"(id) : "memory");
+			mutex_unlock(&rdbg_input_irq_lock);
 		}
 		goto loop_continue;
 

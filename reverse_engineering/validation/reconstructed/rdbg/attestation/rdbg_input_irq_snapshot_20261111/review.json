@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "driver": "rdbg",
+  "review_id": "rdbg_input_irq_snapshot_20261111",
+  "candidate_sha256": "468b8d09e6f269d57571551fe4c5764d0799cee804347f0e2be2cbf7d58f8981",
+  "candidate_size_bytes": 789728,
+  "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
+  "conclusion": "The candidate statically pairs each open IRQ request with cleanup of the same per-open IRQ value. This addresses a mutable IRQ identity hazard; runtime safety across platform unbind/rebind is not established.",
+  "trigger": {
+    "stock_evidence": [
+      "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0000_001004ac_rdbg_probe.jsonl",
+      "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0003_00100ecc_rdbg_open.jsonl",
+      "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0004_001014cc_rdbg_release.jsonl",
+      "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/manifest.json"
+    ],
+    "observation": "Stock probe obtains an IRQ with of_irq_get_byname and publishes it in the client record; open requests the IRQ from that record. Candidate cleanup previously read the mutable record again, so a later probe update could make free_irq use a different identity than request_threaded_irq. This is a static race possibility, not a reproduced runtime failure."
+  },
+  "change": {
+    "probe": "Writes to in.irq_base_id are protected by rdbg_input_irq_lock.",
+    "open": "Copies in.irq_base_id into file_context->requested_irq under the same lock and passes the snapshot to request_threaded_irq and open-failure cleanup.",
+    "release": "Calls free_irq with the per-open requested_irq snapshot."
+  },
+  "assembly": {
+    "report": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/assembly_comparison.json",
+    "checked_functions": 8,
+    "stock_exact_functions": [
+      "on_interrupt_from"
+    ],
+    "declared_hardening_deviation_functions": [
+      "cleanup_module",
+      "init_module",
+      "rdbg_open",
+      "rdbg_probe",
+      "rdbg_read",
+      "rdbg_release",
+      "rdbg_write"
+    ],
+    "strict_exact_comparison_passed": false
+  },
+  "kcfi": {
+    "report": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/kcfi_comparison.json",
+    "passed": true,
+    "functions_matched": 8,
+    "size_is_gating": false
+  },
+  "abi": {
+    "report": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/abi_surface.json",
+    "passed": false,
+    "candidate_only_imports": [
+      "free_irq",
+      "platform_driver_unregister",
+      "qcom_smem_state_put"
+    ],
+    "missing_imports": [],
+    "missing_exports": [],
+    "unexpected_exports": [],
+    "all_target_import_crcs_match": true,
+    "target_vermagic_matches": true,
+    "candidate_vermagic_equals_stock": false
+  },
+  "build": {
+    "report": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/docker_validation_final.json",
+    "canonical_docker_rebuilds": 2,
+    "passed": true,
+    "reproducible": true,
+    "cycle_sha256": [
+      "468b8d09e6f269d57571551fe4c5764d0799cee804347f0e2be2cbf7d58f8981",
+      "468b8d09e6f269d57571551fe4c5764d0799cee804347f0e2be2cbf7d58f8981"
+    ],
+    "curated_candidate_matches_fresh_build": true,
+    "kernel_source_commit": "3356b35306d35d5a480e3b63df1a9f065b5d9f55",
+    "builder_image": "nubia-sm8850-kernel-builder:latest",
+    "builder_image_id": "sha256:25e32953c921a929b167364de58ca63d6454f44f1ef18616bd47f4e5d8f98390"
+  },
+  "overall_validation": {
+    "validator_status": "incomplete_or_failed",
+    "static_verified": false,
+    "hardware_verified": false,
+    "blocking_checks": [
+      "undefined_symbols_match",
+      "mapping_review"
+    ],
+    "independent_mapping_review": "PENDING for seven declared hardening deviations"
+  },
+  "runtime": {
+    "adb_devices_attached": 0,
+    "module_load_test": false,
+    "unbind_rebind_test": false,
+    "phone_hardware_test": false,
+    "host_harness_run": false,
+    "per_device_remove_callback_present": false
+  },
+  "limitations": [
+    "This change preserves the IRQ identity requested by each open file; it does not implement a per-device remove callback or prove the full unbind/rebind lifecycle.",
+    "The module remains a hardened offline candidate and is not claimed as a complete stock reconstruction.",
+    "The seven hardening-deviation mappings remain pending independent review in the repository validation gate."
+  ]
+}

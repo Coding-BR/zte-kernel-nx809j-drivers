@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "driver": "rdbg",
-  "candidate_sha256": "398986ee7560c4e61e1849583eb42efea1f37fd5d746003d0e202fd758853f35",
+  "candidate_sha256": "468b8d09e6f269d57571551fe4c5764d0799cee804347f0e2be2cbf7d58f8981",
   "stock_sha256": "05aaaf7e0da03cbf25343e32d9a0a7a965de6907eef342a1d9d4b0b55cd11a12",
   "reconstruction_mode": "partial_c_microtasks",
   "mappings": [
@@ -18,7 +18,14 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_function_boundary_audit_fresh_final.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/assembly_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/candidate_assembly/manifest.json",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/mapping_review.json"
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/mapping_review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/assembly_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/kcfi_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/abi_surface.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/docker_validation_final.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/candidate_assembly/manifest.json"
       ]
     },
     {
@@ -26,7 +33,7 @@
       "stock_entry": "00101974",
       "source_file": "rdbg_fn_01_cleanup_module.c",
       "source_function": "cleanup_module",
-      "status": "HARDENED_STOCK_DEVIATION",
+      "status": "candidate_hardening_deviation",
       "mapping_note": "Intentional lifetime hardening: unregister the platform driver before destroying shared client storage, release the current module-owned qcom_smem_state handle for each slot under rdbg_smem_state_lock, and release the full character-device range reserved at init (stock passes count 1 for the 16-minor allocation). A successful reprobe replaces the current handle under the same lock and puts the previous reference, so repeated binds do not leak handles. No per-device remove callback is present; the provider handle is retained to module exit for the module-wide character device. Runtime unbind/rebind and open-file behavior remain unverified.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0007_00101974_cleanup_module.jsonl",
@@ -53,16 +60,27 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/assembly_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/kcfi_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/abi_audit.json",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/candidate_assembly/manifest.json"
-      ]
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/candidate_assembly/manifest.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/assembly_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/kcfi_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/abi_surface.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/docker_validation_final.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/candidate_assembly/manifest.json"
+      ],
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PENDING",
+      "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json"
     },
     {
       "stock_function": "rdbg_release",
       "stock_entry": "001014cc",
       "source_file": "rdbg_fn_02_release.c",
       "source_function": "rdbg_release",
-      "status": "HARDENED_STOCK_DEVIATION",
-      "mapping_note": "Intentional lifetime hardening: call free_irq(irq, dev_id) after waking readers and before destroying SMQ/mutex state; reset device_opened only after teardown. This differs from stock and requires separate runtime/hardware validation. Historical exactness evidence remains valid only for the pre-hardening candidate.",
+      "status": "candidate_hardening_deviation",
+      "mapping_note": "Intentional lifetime hardening: call free_irq(irq, dev_id) after waking readers and before destroying SMQ/mutex state; reset device_opened only after teardown. This differs from stock and requires separate runtime/hardware validation. Historical exactness evidence remains valid only for the pre-hardening candidate. The current candidate frees file_context->requested_irq, captured at open, rather than rereading the mutable probe-published in.irq_base_id; this pairs cleanup with the IRQ actually requested by that file context.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0004_001014cc_rdbg_release.jsonl",
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0004_rdbg_release_001014cc.asm",
@@ -72,16 +90,27 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_function_boundary_audit_fresh_final.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/assembly_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/candidate_assembly/manifest.json",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/mapping_review.json"
-      ]
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/mapping_review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/assembly_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/kcfi_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/abi_surface.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/docker_validation_final.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/candidate_assembly/manifest.json"
+      ],
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PENDING",
+      "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json"
     },
     {
       "stock_function": "rdbg_open",
       "stock_entry": "00100ecc",
       "source_file": "rdbg_fn_03_open.c",
       "source_function": "rdbg_open",
-      "status": "HARDENED_STOCK_DEVIATION",
-      "mapping_note": "Intentional lifetime hardening: release the successfully requested IRQ on the post-request SMQ initialization failure path before destroying queue/mutex state. This differs from stock; historical exactness evidence remains valid only for the pre-hardening candidate.",
+      "status": "candidate_hardening_deviation",
+      "mapping_note": "Intentional lifetime hardening: release the successfully requested IRQ on the post-request SMQ initialization failure path before destroying queue/mutex state. This differs from stock; historical exactness evidence remains valid only for the pre-hardening candidate. The current candidate snapshots in.irq_base_id under rdbg_input_irq_lock and uses that per-open requested_irq for request_threaded_irq and open-failure cleanup, preserving the requested IRQ identity across a later probe update.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0003_00100ecc_rdbg_open.jsonl",
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0003_rdbg_open_00100ecc.asm",
@@ -93,15 +122,26 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_function_boundary_audit_fresh_final.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/assembly_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/candidate_assembly/manifest.json",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/mapping_review.json"
-      ]
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/mapping_review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/assembly_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/kcfi_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/abi_surface.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/docker_validation_final.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/candidate_assembly/manifest.json"
+      ],
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PENDING",
+      "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json"
     },
     {
       "stock_function": "rdbg_probe",
       "stock_entry": "001004ac",
       "source_file": "rdbg_fn_04_probe.c",
       "source_function": "rdbg_probe",
-      "status": "HARDENED_STOCK_DEVIATION",
+      "status": "candidate_hardening_deviation",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0000_001004ac_rdbg_probe.jsonl",
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/stock_assembly/0000_rdbg_probe_001004ac.asm",
@@ -126,16 +166,27 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/assembly_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/kcfi_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/abi_audit.json",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/candidate_assembly/manifest.json"
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/candidate_assembly/manifest.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/assembly_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/kcfi_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/abi_surface.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/docker_validation_final.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/candidate_assembly/manifest.json"
       ],
-      "mapping_note": "Current candidate deviation: serializes qcom_smem_state_get, smem_bit/state publication, and old-handle release with the module-wide rdbg_smem_state_lock also used by rdbg_write. Successful reprobe swaps the handle and puts the previous reference; failed lookup preserves the current handle and returns the lookup error. The module-wide character device retains one provider handle until module exit. Static rebind accounting is reviewed; runtime unbind/rebind and input-IRQ/open-file behavior remain unverified."
+      "mapping_note": "Current candidate deviation: serializes qcom_smem_state_get, smem_bit/state publication, and old-handle release with the module-wide rdbg_smem_state_lock also used by rdbg_write. Successful reprobe swaps the handle and puts the previous reference; failed lookup preserves the current handle and returns the lookup error. The module-wide character device retains one provider handle until module exit. Static rebind accounting is reviewed; runtime unbind/rebind and input-IRQ/open-file behavior remain unverified. IRQ publication is additionally serialized with rdbg_input_irq_lock; rdbg_open snapshots this field under the same lock so request_threaded_irq and matching free_irq use one per-open IRQ identity.",
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PENDING",
+      "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json"
     },
     {
       "stock_function": "rdbg_read",
       "stock_entry": "00100708",
       "source_file": "rdbg_fn_05_read.c",
       "source_function": "rdbg_read",
-      "status": "HARDENED_STOCK_DEVIATION",
+      "status": "candidate_hardening_deviation",
       "mapping_note": "Intentional concurrency hardening: serialize the per-open consumer dequeue/free-index operation with a file-context mutex. The consumer SMQ uses the existing write mutex for free-node handoff, preserving synchronization with writers; no per-client layout bytes are repurposed. This differs from stock and requires runtime stress validation.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0001_00100708_rdbg_read.jsonl",
@@ -156,15 +207,26 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/ghidra_boundary_repair_20261102/ghidra_function_boundary_audit_fresh_final.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/assembly_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/candidate_assembly/manifest.json",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/mapping_review.json"
-      ]
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/independent_mapping_review_20261102/mapping_review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/assembly_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/kcfi_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/abi_surface.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/docker_validation_final.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/candidate_assembly/manifest.json"
+      ],
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PENDING",
+      "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json"
     },
     {
       "stock_function": "rdbg_write",
       "stock_entry": "00100a9c",
       "source_file": "rdbg_fn_06_write.c",
       "source_function": "rdbg_write",
-      "status": "HARDENED_STOCK_DEVIATION",
+      "status": "candidate_hardening_deviation",
       "mapping_note": "The write operation resolves rdbg_data through the per-open file context that owns the consumer read mutex. Its SMQ write behavior remains serialized by the existing write mutex. Current candidate also holds rdbg_smem_state_lock while reading the paired smem_bit/state fields and calling qcom_smem_state_update_bits; rdbg_probe and cleanup use the same lock. The pinned qcom_smp2p_kick() wmb orders outbound queue data before notification; remote-side and inbound ordering remain unverified.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0002_00100a9c_rdbg_write.jsonl",
@@ -193,15 +255,26 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/assembly_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/kcfi_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/abi_audit.json",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/candidate_assembly/manifest.json"
-      ]
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/candidate_assembly/manifest.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/assembly_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/kcfi_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/abi_surface.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/docker_validation_final.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/candidate_assembly/manifest.json"
+      ],
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PENDING",
+      "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json"
     },
     {
       "stock_function": "init_module",
       "stock_entry": "00101638",
       "source_file": "rdbg_fn_07_init_module.c",
       "source_function": "rdbg_init",
-      "status": "HARDENED_STOCK_DEVIATION",
+      "status": "candidate_hardening_deviation",
       "mapping_note": "Intentional lifetime hardening: free clients if platform_driver_register fails; unregister a successfully registered platform driver on every subsequent init failure; release any qcom_smem_state_get() handles acquired by probe before freeing client storage. This differs from stock and requires failure-injection/runtime validation. Current handle cleanup on init failure uses rdbg_smem_state_lock, shared with probe and write, before freeing client storage.",
       "evidence": [
         "reverse_engineering/validation/reconstructed/rdbg/offline_static/ghidra_stock/rdbg.ko/pcode/0006_00101638_init_module.jsonl",
@@ -233,8 +306,19 @@
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/assembly_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/kcfi_comparison.json",
         "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/abi_audit.json",
-        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/candidate_assembly/manifest.json"
-      ]
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_state_handle_rebind_sync_20261111/candidate_assembly/manifest.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/README.md",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/assembly_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/kcfi_comparison.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/abi_surface.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/docker_validation_final.json",
+        "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/candidate_assembly/manifest.json"
+      ],
+      "semantic_equivalence": "NOT_ESTABLISHED_HARDENED_DEVIATION",
+      "independent_review": "PENDING",
+      "review_disposition": "DECLARED_HARDENING_DEVIATION_NOT_STOCK_RECONSTRUCTION",
+      "hardening_attestation": "reverse_engineering/validation/reconstructed/rdbg/attestation/rdbg_input_irq_snapshot_20261111/review.json"
     }
   ],
   "unmapped_stock_functions": []

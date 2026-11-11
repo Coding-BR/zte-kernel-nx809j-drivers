@@ -3,6 +3,7 @@
 #include <linux/mutex.h>
 
 DEFINE_MUTEX(rdbg_smem_state_lock);
+DEFINE_MUTEX(rdbg_input_irq_lock);
 
 MODULE_DESCRIPTION("rdbg module");
 MODULE_LICENSE("GPL");
