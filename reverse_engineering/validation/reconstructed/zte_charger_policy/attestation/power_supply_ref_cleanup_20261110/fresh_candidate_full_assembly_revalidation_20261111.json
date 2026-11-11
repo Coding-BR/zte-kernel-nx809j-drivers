@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-11-11T16:05:00Z",
+  "driver": "zte_charger_policy",
+  "status": "CURRENT_FRESH_CANDIDATE_REVALIDATED_NOT_PROMOTED",
+  "identity": {
+    "stock_module_sha256": "0513da230bbc9b82efacdac8309bbc24f94c9ae40f7faefc617ca7e86bf8316c",
+    "active_candidate_sha256": "2f87a9fa003ec14c8d2a4ab42f6cea598b99460cae13363c072ec05699093cec",
+    "current_fresh_candidate_path": "reverse_engineering/validation/reconstructed/zte_charger_policy/attestation/power_supply_ref_cleanup_20261110/fresh_candidate_unpromoted.ko",
+    "current_fresh_candidate_sha256": "4465ab8dc3cc09335a0f361ce28e2d6f3fa1602e77d0d89960b647fc5d439760",
+    "current_fresh_candidate_size_bytes": 331704,
+    "current_source_sha256": "c3da1145c1f06fe42e7bf00972ff1bcab552ac58fb5c3f9919f018123827483b",
+    "current_map_sha256_before_evidence_update": "63adebbd50010a1ac062188d001aefa9761c9cf175705bab70c277aa06d7c3b1",
+    "current_map_sha256_after_evidence_update": "a0c5561d6d86d0616aba6806358bf52cdb4e68144b725cea3bddb74fe8c65bd4",
+    "canonical_docker_source_manifest_sha256": "4947337c8aba53e7efd1bc66e2b2b81a78f24eee64b4adb001859a4a7d5c5b00",
+    "source_and_docker_snapshot_match": true,
+    "previous_demo_relocation_candidate_sha256": "915b27b135bdcbe1e61d6ba889fd4985e8562a652d23a773ef1faebee8496e58",
+    "previous_demo_relocation_candidate_size_bytes": 337168
+  },
+  "method": {
+    "targeted_candidate_assembly_manifest": "fresh_candidate_assembly_revalidated_20261111/manifest.json",
+    "targeted_candidate_assembly_manifest_sha256": "70cf0345050658e40dbd508f7071568099c07f0e685f9436d7fcf3b360a79173",
+    "targeted_cleanup_comparison": "fresh_candidate_assembly_comparison_revalidated_20261111.json",
+    "targeted_cleanup_comparison_sha256": "18ea88162d11e1cb5f539299064cd2c2bfbb219b2880c2473e92fdaaa98bdb4e",
+    "candidate_assembly_manifest": "fresh_candidate_assembly_full_revalidated_20261111/manifest.json",
+    "candidate_assembly_manifest_sha256": "745febbfcacb0d988c7cac4bd358474a8334bc9bd013b7ff16488b9a31a8884f",
+    "stock_assembly_manifest": "reverse_engineering/validation/reconstructed/zte_charger_policy/offline_static/stock_assembly_resolved/manifest.json",
+    "stock_function_inventory_sha256": "2b5dde99a7487a4406a7c4e475d5c891e6ab939cccc64147c756aa47824bb5f0",
+    "comparison_report": "fresh_candidate_full_assembly_comparison_revalidated_20261111.json",
+    "comparison_report_sha256": "8d8bb86a41e8097d814e12a73891d9bfcd4d2edb2ac3bcd40a7f2c46562e444b",
+    "scope": "All 38 stock_function@stock_entry identities, with stock relocations resolved using the versioned stock ELF."
+  },
+  "results": {
+    "checked_identities": 38,
+    "strict_assembly_exact": 29,
+    "strict_assembly_not_exact": 9,
+    "map_status_counts": {
+      "promoted_offline_exact": 29,
+      "reviewed_non_exact": 6,
+      "candidate_under_static_validation": 3
+    },
+    "failure_identities": [
+      "charger_policy_demo_sts_set@00101264",
+      "charger_policy_get_prop_by_name@00101bd8",
+      "charger_policy_get_status@00101b04",
+      "charger_policy_probe@001023ec",
+      "charger_policy_probe_work@00102c00",
+      "charger_policy_remove@00102b90",
+      "charger_policy_timeout_alarm_cb@00101208",
+      "charger_policy_timeout_handler_work@00102f34",
+      "zte_charger_policy_get_prop_by_name@00102020"
+    ],
+    "cleanup_function_comparisons": [
+      {
+        "identity": "charger_policy_get_status@00101b04",
+        "stock_instructions": 53,
+        "candidate_instructions": 56,
+        "stock_size_bytes": 212,
+        "candidate_size_bytes": 224,
+        "instruction_match": false,
+        "relocation_match": true,
+        "section_match": true,
+        "symbol_size_match": false
+      },
+      {
+        "identity": "charger_policy_get_prop_by_name@00101bd8",
+        "stock_instructions": 65,
+        "candidate_instructions": 67,
+        "stock_size_bytes": 260,
+        "candidate_size_bytes": 268,
+        "instruction_match": false,
+        "relocation_match": true,
+        "section_match": true,
+        "symbol_size_match": false
+      },
+      {
+        "identity": "zte_charger_policy_get_prop_by_name@00102020",
+        "stock_instructions": 65,
+        "candidate_instructions": 67,
+        "stock_size_bytes": 260,
+        "candidate_size_bytes": 268,
+        "instruction_match": false,
+        "relocation_match": true,
+        "section_match": true,
+        "symbol_size_match": false
+      }
+    ],
+    "state": "All three reference-cleanup functions have the intended added error-path put but remain non-exact to stock. The map statuses are unchanged."
+  },
+  "candidate_history": {
+    "distinction": "The 915b... candidate belongs to the earlier demo_sts relocation batch; the 4465... artifact is the later power_supply_ref_cleanup candidate built from the current source snapshot. Do not treat their module-level assembly reports as referring to the same binary.",
+    "cross_candidate_comparison": {
+      "report": "fresh_vs_prior_demo_candidate_comparison_20261111.json",
+      "report_sha256": "e1dbb512edc4e6f83bc721765a5508f4a50721149b1ed413e5e7b43bd84f20fc",
+      "checked_identities": 38,
+      "different_function_identities": [
+        "charger_policy_demo_sts_set@00101264",
+        "charger_policy_timeout_alarm_cb@00101208"
+      ],
+      "use_limit": "This compares two separate candidate binaries, not either candidate against stock. The current 4465... full stock comparison is authoritative for this source snapshot."
+    },
+    "current_candidate_rebuilds": "The referenced power_supply_ref_cleanup attestation records two clean protocol builds and two clean canonical Docker builds with identical SHA-256 4465ab8dc3cc09335a0f361ce28e2d6f3fa1602e77d0d89960b647fc5d439760.",
+    "fresh_candidate_promoted": false,
+    "active_candidate_replaced": false
+  },
+  "whole_driver_state": {
+    "static_verified": false,
+    "hardware_verified": false,
+    "full_validator_status": "incomplete_or_failed",
+    "post_map_no_rebuild_validator": {
+      "report": "validator_after_assembly_revalidation_20261111.json",
+      "report_sha256": "36ed36c4fe0c489ea666f823d6fe64c6dc91de978950c4d2986fd701580e3af7",
+      "rebuild_requested": false,
+      "status": "incomplete_or_failed",
+      "function_traceability": true,
+      "mapped_functions": 38,
+      "mapping_review": false,
+      "warning": "The no-rebuild check examines the still-active 2f87... module; its rebuild-dependent failures do not invalidate the separately hash-bound fresh 4465... Docker build."
+    },
+    "remaining_gates": [
+      "Three cleanup deviations lack established stock semantic equivalence and remain under static validation.",
+      "Six other functions remain reviewed non-exact deviations.",
+      "Whole-module undefined-symbol parity remains false.",
+      "The active candidate remains 2f87... and does not contain the 4465... cleanup changes.",
+      "Independent review, host harness, and device runtime validation remain pending."
+    ]
+  },
+  "execution_limits": {
+    "source_changed": false,
+    "docker_rebuild_repeated": false,
+    "snapshot_scope": "The cited 47-file source/Docker equality is the snapshot used for the earlier reproducible build, before this revalidation evidence was added to STATUS.md and reconstruction_map.json. The production C file hash is unchanged; the final sync below updates only map/status evidence.",
+    "final_map_status_sync": {
+      "report": "source_sync_revalidation_applied_20261111.json",
+      "report_sha256": "9c229939a456e1cad7239a5b3c896dcd03d520e4ac907c7b187ebcbf5a212df0",
+      "passed": true,
+      "source_and_docker_manifest_sha256": "19679ffe3c357ffc9913abe2cf2bf790ea10b375ea40bb1b7b8cfd87b2ac870b"
+    },
+    "reason_rebuild_not_repeated": "No production source changed. The current fresh artifact is already bound to the current source and matched canonical Docker source snapshot in the referenced reproducible-build attestation.",
+    "host_test_run": false,
+    "device_test_run": false
+  }
+}
