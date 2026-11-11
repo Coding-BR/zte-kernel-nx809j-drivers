@@ -339,7 +339,7 @@
       "source_file": "zte_misc.c",
       "stock_counterpart": null,
       "kind": "exported_hardening_api",
-      "description": "Unpublish one callback binding and wait for existing SRCU readers before freeing it."
+      "description": "Unpublish one callback binding and wait for existing SRCU readers before freeing it. This synchronous API must be called outside callbacks dispatched under zte_misc_callbacks_srcu; calling it from such a callback deadlocks in synchronize_srcu. The consumer may free priv only after unregister returns."
     }
   ]
 }

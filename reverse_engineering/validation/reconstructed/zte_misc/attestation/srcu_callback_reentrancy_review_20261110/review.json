@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "batch_id": "srcu_callback_reentrancy_review_20261110",
+  "driver": "zte_misc",
+  "review_scope": "static_callback_lifetime_and_unregister_reentrancy",
+  "source_modified": false,
+  "binary_modified": false,
+  "candidate_sha256": "4397e8fcd4880b10e2af32a32d361708f2c227c2c135840750061730f4ea8f8c",
+  "stock_sha256": "6455a3c97f10d10914248c4a92b0f92b06a8e06921def9c56c6a57a863703f9d",
+  "source_evidence": {
+    "path": "kernel_development/drivers/reconstructed/zte_misc/zte_misc.c",
+    "sha256": "2c6f992995eed2026348dd39f6c56909271af8056d2db88773e19a93c39f1e30",
+    "read_side_sections": [
+      "zte_misc_get_node_val",
+      "zte_misc_common_callback_get",
+      "zte_misc_common_callback_set"
+    ],
+    "lifetime_sequence": [
+      "read-side acquires zte_misc_callbacks_srcu",
+      "read-side dereferences binding and invokes the callback before srcu_read_unlock",
+      "unregister clears the binding under zte_misc_callbacks_lock",
+      "unregister calls synchronize_srcu on zte_misc_callbacks_srcu",
+      "unregister frees binding only after synchronize_srcu returns"
+    ],
+    "unregister_export_line": 216
+  },
+  "reconstruction_map": {
+    "path": "kernel_development/drivers/reconstructed/zte_misc/reconstruction_map.json",
+    "sha256": "d28003c0cfb18e7be8d102008551e172442f859b23c831bdd9d9e042170bfbdf",
+    "candidate_sha256": "4397e8fcd4880b10e2af32a32d361708f2c227c2c135840750061730f4ea8f8c",
+    "exact_function_count": 10,
+    "mapped_function_count": 14
+  },
+  "stock_evidence": {
+    "module_path": "reference_modules/full_vendor_boot/zte_misc.ko",
+    "module_sha256": "6455a3c97f10d10914248c4a92b0f92b06a8e06921def9c56c6a57a863703f9d",
+    "stock_register_pseudocode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_misc/offline_static/ghidra_stock/decompiled/0002_00100b10_zte_misc_register_callback.c",
+      "sha256": "85d762da0e1875471db7ab5c258f1248ccdbcad713dabd4b755ba9e509799ad2"
+    },
+    "stock_get_node_val_pseudocode": {
+      "path": "reverse_engineering/validation/reconstructed/zte_misc/offline_static/ghidra_stock/decompiled/0003_00100c5c_zte_misc_get_node_val.c",
+      "sha256": "9a4bb49ee09f5ce22b88786dd6893b988633e23c6552f7789bd657f53a595807"
+    },
+    "unregister_is_stock_function": false
+  },
+  "in_tree_callers": [
+    {
+      "path": "kernel_development/drivers/reconstructed/zte_charger_policy/zte_charger_policy.c",
+      "sha256": "ef0ff259425e6851d48f0be467eff7c004f0d13ea2aa3fec35ab60c18c98091d",
+      "callsite": "charger_policy_stop_runtime at line 1345",
+      "context": "probe failure or platform remove teardown"
+    },
+    {
+      "path": "kernel_development/drivers/reconstructed/zlog_test/zlog_test_main.c",
+      "sha256": "e78d87dcccc731630dc478e1039ecffe19b499782ace5e8a8de4d57dd003c0a8",
+      "callsite": "zlog_test_exit at line 387",
+      "context": "module exit before callback-owned state/work teardown"
+    }
+  ],
+  "findings": {
+    "binding_lifetime_safe_after_successful_unregister": true,
+    "priv_lifetime_safe_after_successful_unregister": true,
+    "priv_lifetime_condition": "consumer frees priv only after unregister returns",
+    "self_unregister_supported": false,
+    "self_unregister_result": "synchronize_srcu waits for the current read-side section and deadlocks",
+    "in_tree_direct_self_unregister_callers_found": false,
+    "external_consumers_audited": false,
+    "independent_review": "pending",
+    "hardware_validation": "not_run"
+  },
+  "comparison_status_unchanged": {
+    "assembly_exact": 10,
+    "assembly_checked": 14,
+    "reviewed_not_exact": 4,
+    "candidate_only_imports_gate": "incomplete_or_failed"
+  },
+  "reference": "https://docs.kernel.org/core-api/kernel-api.html"
+}

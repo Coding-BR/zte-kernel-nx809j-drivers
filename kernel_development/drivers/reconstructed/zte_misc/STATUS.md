@@ -11,6 +11,14 @@
 
 Recibos hash-bound: `reverse_engineering/validation/reconstructed/zte_misc/attestation/lifetime_sync_hardening_20261104/README.md` e `attestation.json`. A comparacao vigente e `assembly_comparison.json`.
 
+## Revisao complementar — contrato de unregister SRCU — 2026-11-10
+
+- Os leitores mantem a secao SRCU aberta durante a chamada do callback. O unregister despublica o binding, espera `synchronize_srcu()` e so entao libera a copia imutavel; o consumidor pode liberar `priv` depois do retorno, desde que chame unregister fora do callback.
+- Chamar `zte_misc_unregister_callback()` de dentro de um callback esperaria a propria secao SRCU terminar e causaria deadlock. A API nao detecta nem impede esse uso; consumidores externos ao repositorio ainda precisam ser auditados.
+- A busca em `kernel_development` encontrou os chamadores atuais em `zte_charger_policy_stop_runtime()` (falha de probe/remocao) e `zlog_test_exit()` (saida do modulo). Nenhuma implementacao de callback atual chama unregister diretamente.
+- `zte_misc_unregister_callback()` e uma extensao de hardening sem contraparte no stock Ghidra. A comparacao estrita do candidato continua em 10/14; esta revisao nao muda hash do binario nem os estados do mapa.
+- Recibo: `reverse_engineering/validation/reconstructed/zte_misc/attestation/srcu_callback_reentrancy_review_20261110/README.md` e `review.json`. Nenhum codigo-fonte mudou; nao foi necessario novo build Docker.
+
 O restante deste arquivo registra a atestacao do candidato anterior ao lote. Seus hashes e contagens nao descrevem o binario atual.
 
 ## Veredito do candidato anterior ao lote
